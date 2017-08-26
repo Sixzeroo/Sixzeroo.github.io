@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="图论," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="之前讲到了匈牙利算法，今天讲一个在匈牙利算法的基础上的解决最大全的完美二分匹配的问题的KM算法，这个算法在理解上面可能有一点难度，不过有一句话说得好：组合数学靠运气，计算几何瞎暴力，图论一顿套模板，数论只会gcd。23333.。。">
+<meta name="keywords" content="图论">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KM算法">
+<meta property="og:url" content="http://www.liuin.cn/2017/04/10/KM算法/index.html">
+<meta property="og:site_name" content="Sixzeroo的个人博客">
+<meta property="og:description" content="之前讲到了匈牙利算法，今天讲一个在匈牙利算法的基础上的解决最大全的完美二分匹配的问题的KM算法，这个算法在理解上面可能有一点难度，不过有一句话说得好：组合数学靠运气，计算几何瞎暴力，图论一顿套模板，数论只会gcd。23333.。。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-04-10T15:36:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="KM算法">
+<meta name="twitter:description" content="之前讲到了匈牙利算法，今天讲一个在匈牙利算法的基础上的解决最大全的完美二分匹配的问题的KM算法，这个算法在理解上面可能有一点难度，不过有一句话说得好：组合数学靠运气，计算几何瞎暴力，图论一顿套模板，数论只会gcd。23333.。。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.liuin.cn/2017/04/10/KM算法/"/>
+
+
+
+
+
+  <title>KM算法 | Sixzeroo的个人博客</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?eb51bd4c48350fa08cbc200aead6109f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sixzeroo的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.liuin.cn/2017/04/10/KM算法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sixzeroo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://oeziv5rwi.bkt.clouddn.com/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sixzeroo的个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">KM算法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-10T00:34:18+08:00">
+                2017-04-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/04/10/KM算法/" class="leancloud_visitors" data-flag-title="KM算法">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>之前讲到了匈牙利算法，今天讲一个在匈牙利算法的基础上的解决最大全的完美二分匹配的问题的KM算法，这个算法在理解上面可能有一点难度，不过有一句话说得好：组合数学靠运气，计算几何瞎暴力，图论一顿套模板，数论只会gcd。23333.。。<br><a id="more"></a></p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><h4 id="完备匹配"><a href="#完备匹配" class="headerlink" title="完备匹配"></a>完备匹配</h4><p>二分图中，含有较少点集合中的所有点都有匹配的点的时候，我们称这样的匹配叫完备匹配</p>
+<h4 id="完美匹配"><a href="#完美匹配" class="headerlink" title="完美匹配"></a>完美匹配</h4><p>在完备匹配的基础上，二分图中两个点的集合中点的个数相同。如果一个图的某个匹配中，所有的顶点都是匹配点，那么它就是一个完美匹配。完美匹配一定是最大匹配。</p>
+<h4 id="相关问题变形"><a href="#相关问题变形" class="headerlink" title="相关问题变形"></a>相关问题变形</h4><p>完备匹配变完美匹配：添加无用顶点和权值为0的边</p>
+<h4 id="顶点顶标"><a href="#顶点顶标" class="headerlink" title="顶点顶标"></a>顶点顶标</h4><p>为每个点设定一个顶标，设顶点Xi的顶标为A[ i ]，顶点Yj的顶标为B[ j ]，顶点Xi与Yj之间的边权为w[i,j]。在算法执行过程中的任一时刻，对于任一条边(i,j)，A[i]+B[j] &gt;= w[i,j] 始终成立。</p>
+<h4 id="相等子图"><a href="#相等子图" class="headerlink" title="相等子图"></a>相等子图</h4><p>G中满足A[i]+B[j]=w[i,j] 的边生成的子图<br>KM算法在G的相等子图中求一个完备匹配</p>
+<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><h4 id="算法流程"><a href="#算法流程" class="headerlink" title="算法流程"></a>算法流程</h4><p>初始化：令A[ i ]为所有与顶点Xi关联的边的最大权，B[ j ]=0<br>如果当前的相等子图没有完备匹配，就需要修改顶标以扩大相等子图<br>重复第二步，直到相等子图有完备匹配为止</p>
+<h4 id="修改顶标（关键）"><a href="#修改顶标（关键）" class="headerlink" title="修改顶标（关键）"></a>修改顶标（关键）</h4><p>KM算法的关键为如何修改顶标，以使顶标维持其性质的同时使相等子图得到扩展。<br>考虑到，如果当前相等子图不存在完备匹配，是因为存在某个不被匹配的x结点，在当前相等子图中不存在其的增广路。这样由这个点出发我们可得到一棵交错树，并且该树的所有叶子结点都在X集合中<br>这时如果我们把交错树中所有X集合结点的顶标减去d，所有Y集合结点的顶标加上d。则会发现：</p>
+<ol>
+<li>两端都在交错树中的边(i, j)，A[ i ]+B[ j ]的值没有变化。也就是说，它原来属于相等子图，现在仍属于相等子图。</li>
+<li>两端都不在交错树中的边(i, j)，A[ i ]和B[ j ]都没有变化。也就是说，它原来属于（或不属于）相等子图，现在仍属于（或不属于）相等子图。</li>
+<li>X端不在交错树中，Y端在交错树中的边(i, j)，它的A[ i ]+B[ j ]的值有所增大。它原来不属于相等子图，现在仍不属于相等子图。</li>
+<li>X端在交错树中，Y端不在交错树中的边(i, j)，它的A[ i ]+B[ j ]的值有所减小。也就说，它原来不属于相等子图，现在可能进入了相等子图，因而使相等子图得到了扩大。<br>确定d的值：（以确保每次修该顶标既能保持顶标性质，又能使至少一条边加入到相等子图中来，使其得到扩展。）<br>d=Min{A[ i ]+B[ j ]-w[i , j] | Xi在交错树中，Yj不在交错树中}</li>
+</ol>
+<h4 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h4><p>按照刚才的算法来的时间复杂度是O(n^4)，需要找O(n)次增广路，每次增广最多需要修改O(n)次顶标，每次修改顶标时由于要枚举边来求d值，复杂度为O(n2)。<br>可以看出，通过枚举边来求d的值是有改进空间的 。实际上我们给每个Y顶点一个“松弛量”函数slack，每次开始找增广路时初始化为无穷大。在寻找增广路的过程中，检查边(i,j)时，如果它不在相等子图中， 则让slack[j]变成原值与A[ i ]+B[j]-w[i,j]的较小值。这样，在修改顶标时，取所有不在交错树中的Y顶点的slack值中的最小值作为d值即可。但还要注意一点：修改顶标后，要把所有的slack值都减去d。<br>这样求d的复杂度降为O(n)级，使得总时间复杂度为O(n3)</p>
+<h2 id="模板（代码实现）"><a href="#模板（代码实现）" class="headerlink" title="模板（代码实现）"></a>模板（代码实现）</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> nx,ny;  <span class="comment">//两边的点数</span></div><div class="line"><span class="keyword">int</span> g[maxn][maxn];   <span class="comment">//建图</span></div><div class="line"><span class="keyword">int</span> linker[maxn],lx[maxn],ly[maxn];     <span class="comment">//y中欧各个点的匹配状态,x y 中各个点的标号</span></div><div class="line"><span class="keyword">int</span> slack[maxn];        <span class="comment">//松弛量数组</span></div><div class="line"><span class="keyword">bool</span> visx[maxn],visy[maxn];</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> x)</span></span></div><div class="line">&#123;</div><div class="line">	visx[x]=<span class="literal">true</span>;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> y=<span class="number">0</span>;y&lt;ny;y++)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">if</span>(visy[y]) <span class="keyword">continue</span>;</div><div class="line">		<span class="keyword">int</span> tmp=lx[x]+ly[y]-g[x][y];</div><div class="line">		<span class="keyword">if</span>(tmp==<span class="number">0</span>)    <span class="comment">//顶标符合要求，匈牙利算法寻找完备匹配</span></div><div class="line">		&#123;</div><div class="line">			visy[y]=<span class="literal">true</span>;</div><div class="line">			<span class="keyword">if</span>(linker[y]==<span class="number">-1</span> || dfs(linker[y]))</div><div class="line">			&#123;</div><div class="line">				linker[y]=x;</div><div class="line">				<span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">			&#125;</div><div class="line">			</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(slack[y]&gt;tmp)</div><div class="line">			slack[y] =tmp;        <span class="comment">//更新松弛量</span></div><div class="line">	&#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">KM</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="built_in">memset</span>(linker,<span class="number">-1</span>,<span class="keyword">sizeof</span>(linker));     <span class="comment">//初始化一开始匹配的点</span></div><div class="line">	<span class="built_in">memset</span>(ly,<span class="number">0</span>,<span class="keyword">sizeof</span>(ly));      <span class="comment">//y的顶标先全部变成0</span></div><div class="line">	<span class="comment">//初始化顶标</span></div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nx;i++)</div><div class="line">	&#123;</div><div class="line">		lx[i]= -INF;            <span class="comment">//求最大值，首先初始化为最小值</span></div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;ny;j++)</div><div class="line">			<span class="keyword">if</span>(g[i][j]&gt;lx[i]) lx[i]=g[i][j];</div><div class="line">	&#125;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> x=<span class="number">0</span>;x&lt;nx;x++)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;ny;i++)</div><div class="line">			slack[i]=INF;</div><div class="line">		<span class="comment">//算法核心部分</span></div><div class="line">		<span class="keyword">while</span>(<span class="literal">true</span>)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">memset</span>(visx,<span class="literal">false</span>,<span class="keyword">sizeof</span>(visx));</div><div class="line">            <span class="built_in">memset</span>(visy,<span class="literal">false</span>,<span class="keyword">sizeof</span>(visy));</div><div class="line">			<span class="keyword">if</span>(dfs(x)) <span class="keyword">break</span>;        <span class="comment">//找到完备匹配，退出</span></div><div class="line">			<span class="comment">//没有找到完备匹配，在交错树中更改相关节点的顶标值</span></div><div class="line">			<span class="keyword">int</span> d= INF;</div><div class="line">			<span class="comment">//修改顶标，增加相等子图中的边</span></div><div class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;ny;i++)</div><div class="line">				<span class="keyword">if</span>(!visy[i] &amp;&amp; d&gt;slack[i])</div><div class="line">					d=slack[i];          <span class="comment">//求出最小一个slack值</span></div><div class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nx;i++)     <span class="comment">//在交错树中的x的节点减少d</span></div><div class="line">				<span class="keyword">if</span>(visx[i])</div><div class="line">					lx[i]-=d;    </div><div class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;ny;i++)        <span class="comment">//不在交错树中的y的节点增加d</span></div><div class="line">			&#123;</div><div class="line">				<span class="keyword">if</span>(visy[i]) ly[i]+=d;     </div><div class="line">				<span class="keyword">else</span></div><div class="line">					slack[i] -=d;          <span class="comment">//x值减小，则相对的slack的值就会增大</span></div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">int</span> res=<span class="number">0</span>;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;ny;i++)</div><div class="line">		<span class="keyword">if</span>(linker[i]!=<span class="number">-1</span>)</div><div class="line">			res+=g[linker[i]][i];</div><div class="line">	<span class="keyword">return</span> res;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/图论/" rel="tag"># 图论</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/09/POJ-3276-开关问题/" rel="next" title="POJ 3276 (开关问题)">
+                <i class="fa fa-chevron-left"></i> POJ 3276 (开关问题)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/15/最大团问题/" rel="prev" title="最大团问题">
+                最大团问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://oeziv5rwi.bkt.clouddn.com/avatar.png"
+               alt="Sixzeroo" />
+          <p class="site-author-name" itemprop="name">Sixzeroo</p>
+           
+              <p class="site-description motion-element" itemprop="description">Do it better !</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#完备匹配"><span class="nav-number">1.0.1.</span> <span class="nav-text">完备匹配</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#完美匹配"><span class="nav-number">1.0.2.</span> <span class="nav-text">完美匹配</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#相关问题变形"><span class="nav-number">1.0.3.</span> <span class="nav-text">相关问题变形</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#顶点顶标"><span class="nav-number">1.0.4.</span> <span class="nav-text">顶点顶标</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#相等子图"><span class="nav-number">1.0.5.</span> <span class="nav-text">相等子图</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法"><span class="nav-number">2.</span> <span class="nav-text">算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法流程"><span class="nav-number">2.0.1.</span> <span class="nav-text">算法流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#修改顶标（关键）"><span class="nav-number">2.0.2.</span> <span class="nav-text">修改顶标（关键）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#优化"><span class="nav-number">2.0.3.</span> <span class="nav-text">优化</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模板（代码实现）"><span class="nav-number">3.</span> <span class="nav-text">模板（代码实现）</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sixzeroo</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("3YyBK9PnKj86xfGt1vr8ps6Q-gzGzoHsz", "Sf6vsslcm0nwqrxAcm1MMwRM");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

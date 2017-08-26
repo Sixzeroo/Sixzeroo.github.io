@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="模拟," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="第二次打CF，一开始的读题速度是快了一点但是在英语环境下对题目中的一些细节和关键部分的理解还是有待加强。这次想玩玩hack结果锁定题目太早了，导致A马上就被hack了，改都不能改，哎，好气啊。。。">
+<meta name="keywords" content="模拟">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Codeforces #381（Div.2）题解">
+<meta property="og:url" content="http://www.liuin.cn/2016/11/25/Codeforces-381（Div-2）题解/index.html">
+<meta property="og:site_name" content="Sixzeroo的个人博客">
+<meta property="og:description" content="第二次打CF，一开始的读题速度是快了一点但是在英语环境下对题目中的一些细节和关键部分的理解还是有待加强。这次想玩玩hack结果锁定题目太早了，导致A马上就被hack了，改都不能改，哎，好气啊。。。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-03-13T18:03:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Codeforces #381（Div.2）题解">
+<meta name="twitter:description" content="第二次打CF，一开始的读题速度是快了一点但是在英语环境下对题目中的一些细节和关键部分的理解还是有待加强。这次想玩玩hack结果锁定题目太早了，导致A马上就被hack了，改都不能改，哎，好气啊。。。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.liuin.cn/2016/11/25/Codeforces-381（Div-2）题解/"/>
+
+
+
+
+
+  <title>Codeforces #381（Div.2）题解 | Sixzeroo的个人博客</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?eb51bd4c48350fa08cbc200aead6109f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sixzeroo的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.liuin.cn/2016/11/25/Codeforces-381（Div-2）题解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sixzeroo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://oeziv5rwi.bkt.clouddn.com/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sixzeroo的个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Codeforces #381（Div.2）题解</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-25T17:25:32+08:00">
+                2016-11-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2016/11/25/Codeforces-381（Div-2）题解/" class="leancloud_visitors" data-flag-title="Codeforces #381（Div.2）题解">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>第二次打CF，一开始的读题速度是快了一点但是在英语环境下对题目中的一些细节和关键部分的理解还是有待加强。<br>这次想玩玩hack结果锁定题目太早了，导致A马上就被hack了，改都不能改，哎，好气啊。。。</p>
+<a id="more"></a>
+<h3 id="A"><a href="#A" class="headerlink" title="A"></a>A</h3><h4 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h4><p>Alynoa去买书，1、2、3本书套装的售价分别为a、b、c，已知Alynoa手中有n本书，假设他买了k本书后总共拥有的书的数量能够被4整除，求他购买这k本书的最小花费。</p>
+<h4 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h4><ul>
+<li>一开始想到的就是模拟，分四种情况（需要0/1/2/3本书）进行讨论，需要注意的是除0外的每种情况下都有三种选择，要从这些方案中找到一个最小消耗方案（一开始被hack了）</li>
+<li>后面发现可以用DP做（感觉有点大财小用），状态转移方程为 <em>dp[i]=min(dp[i-1]+a,dp[i-2]+b,dp[i-3]+c)</em></li>
+</ul>
+<h4 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h4><p>模拟做法：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">long</span> <span class="keyword">long</span>  n,a,b,c,p,res;</div><div class="line">    <span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;n)</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">cin</span>&gt;&gt;a&gt;&gt;b&gt;&gt;c;</div><div class="line">        p=n%<span class="number">4</span>;</div><div class="line">        <span class="keyword">if</span>(p==<span class="number">0</span>)</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cout</span>&lt;&lt;<span class="string">"0"</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">            <span class="keyword">continue</span>;</div><div class="line">        &#125;</div><div class="line">        p=<span class="number">4</span>-p;</div><div class="line">        <span class="keyword">if</span>(p==<span class="number">1</span>)</div><div class="line">        &#123;</div><div class="line">            res=min(a,min(<span class="number">3</span>*c,b+c));</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span>(p==<span class="number">2</span>)</div><div class="line">            res=min(<span class="number">2</span>*a,min(b,<span class="number">2</span>*c));</div><div class="line">        <span class="keyword">if</span>(p==<span class="number">3</span>)</div><div class="line">            res=min(<span class="number">3</span>*a,min(c,a+b));</div><div class="line">        <span class="built_in">cout</span>&lt;&lt;res&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>DP 做法：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">long</span> <span class="keyword">long</span>  n,a,b,c,res;</div><div class="line">    <span class="keyword">long</span> <span class="keyword">long</span> co[<span class="number">10</span>];</div><div class="line">    <span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;n)</div><div class="line">    &#123;</div><div class="line">        res=<span class="number">1e18</span>;</div><div class="line">        fill(co,co+<span class="number">9</span>,<span class="number">1e18</span>);</div><div class="line">        co[<span class="number">0</span>]=<span class="number">0</span>;  <span class="comment">//没买书的花费为0</span></div><div class="line">        <span class="built_in">cin</span>&gt;&gt;a&gt;&gt;b&gt;&gt;c;</div><div class="line">        <span class="keyword">if</span>(n%<span class="number">4</span>==<span class="number">0</span>)</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cout</span>&lt;&lt;<span class="string">"0"</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">            <span class="keyword">continue</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">10</span>;i++)   <span class="comment">//最多买9本书</span></div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span>(i&gt;=<span class="number">1</span>)co[i]=min(co[i],co[i<span class="number">-1</span>]+a);</div><div class="line">            <span class="keyword">if</span>(i&gt;=<span class="number">2</span>)co[i]=min(co[i],co[i<span class="number">-2</span>]+b);</div><div class="line">            <span class="keyword">if</span>(i&gt;=<span class="number">3</span>)co[i]=min(co[i],co[i<span class="number">-3</span>]+c);</div><div class="line">            <span class="keyword">if</span>((n+i)%<span class="number">4</span>==<span class="number">0</span>)res=min(res,co[i]);</div><div class="line">        &#125;</div><div class="line">        <span class="built_in">cout</span>&lt;&lt;res&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="B"><a href="#B" class="headerlink" title="B"></a>B</h3><h4 id="题目大意-1"><a href="#题目大意-1" class="headerlink" title="题目大意"></a>题目大意</h4><p>给出一些花的魅力值和花的一些组合（给出花魅力值的几个区间），求从这些组合中取出某几个中的花的魅力总数最大。</p>
+<blockquote>
+<p>The first line contains two integers n and m (1 ≤ n, m ≤ 100) — the number of flowers and the number of subarrays suggested by the mother.</p>
+<p>The second line contains the flowers moods — n integers a1, a2, …, an ( - 100 ≤ ai ≤ 100).</p>
+<p>The next m lines contain the description of the subarrays suggested by the mother. The i-th of these lines contain two integers li and ri (1 ≤ li ≤ ri ≤ n) denoting the subarray a[li], a[li + 1], …, a[ri].</p>
+<p>Each subarray can encounter more than once.</p>
+</blockquote>
+<hr>
+<h4 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h4><ul>
+<li>将给出的每个区间的花的魅力值相加，如果和为负就舍弃，和为正加入，算出最后的总和</li>
+</ul>
+<h4 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> n,m,a[<span class="number">101</span>],s[<span class="number">101</span>],res,i,j,x,y;</div><div class="line">    <span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;n&gt;&gt;m)</div><div class="line">    &#123;</div><div class="line">        res=s[<span class="number">0</span>]=<span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;=n;i++)</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cin</span>&gt;&gt;a[i];</div><div class="line">            s[i]=s[i<span class="number">-1</span>]+a[i];</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">while</span>(m--)</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cin</span>&gt;&gt;x&gt;&gt;y;</div><div class="line">            j=s[y]-s[x<span class="number">-1</span>];</div><div class="line">            <span class="keyword">if</span>(j&gt;<span class="number">0</span>)      <span class="comment">//只取和为正的区间</span></div><div class="line">                res+=j;</div><div class="line">        &#125;</div><div class="line">        <span class="built_in">cout</span>&lt;&lt;res&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<hr>
+<h3 id="C"><a href="#C" class="headerlink" title="C"></a>C</h3><h4 id="题目大意-2"><a href="#题目大意-2" class="headerlink" title="题目大意"></a>题目大意</h4><p>首先给出mex的定义：在数组中不存在的最小正整数。然后给出一个数组的长度n，和m个子数组区间（起止点），求依据这个信息能够构造的一个数组，使得所有的mex的最小值最大。并输出这个数组。</p>
+<h4 id="思路-2"><a href="#思路-2" class="headerlink" title="思路"></a>思路</h4><ul>
+<li>mex不难求，整体的mex最小值也很容易找到（就是所有给出区间长度的最小值+1）。关键是后面数组的构造。</li>
+<li>构造数组的方法，假设我们找到的最大的mex最小值为mexi，从数组开始0-mexi不停的循环赋值，因为求得的mexi是最小的并且构造是连续的，凡事数组长度大于mexi的区间都会有0-mex的所有数，这样这个区间就不会出现其mex值比发现的mexi值小的情况。</li>
+</ul>
+<h4 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</div><div class="line"></div><div class="line">ll a[<span class="number">100005</span>],b[<span class="number">100005</span>];</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> n,m;</div><div class="line">    <span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;n&gt;&gt;m)</div><div class="line">    &#123;</div><div class="line">        ll res=<span class="number">1e10</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;m;i++)</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cin</span>&gt;&gt;a[i]&gt;&gt;b[i];</div><div class="line">            res=min(res,b[i]-a[i]+<span class="number">1</span>);     <span class="comment">//取最小的mex值</span></div><div class="line">        &#125;</div><div class="line">        <span class="built_in">cout</span>&lt;&lt;res&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">        <span class="keyword">int</span> tem=<span class="number">0</span>;</div><div class="line">        <span class="keyword">while</span>(n--)     <span class="comment">//重复不断地从0-mexi赋值</span></div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cout</span>&lt;&lt;tem&lt;&lt;<span class="string">" "</span>;</div><div class="line">            tem++;</div><div class="line">            <span class="keyword">if</span>(tem==res)</div><div class="line">                tem=<span class="number">0</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ol>
+<li>在理解题意、解题速度方面，英语还是一个很大的障碍。这次比赛就是因为英语，在很多地方对题目的理解都存在偏差。要学好英语</li>
+<li>因为好奇hack是什么，所以A题一过样例就锁定了，结果被hack了还不能改。呜呜呜。。。hack是高手玩的东西，以后不要一过了就锁定题目，要hack也要等快结束了再玩（不过话说那个时候能hack的就已经被hack得差不多了。。。）</li>
+<li>练水题速度、练水题速度、练水题速度。重要的事情说三遍！</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/模拟/" rel="tag"># 模拟</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/16/初次打codeforces/" rel="next" title="初次打codeforces">
+                <i class="fa fa-chevron-left"></i> 初次打codeforces
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/25/技术的正宗与野路子/" rel="prev" title="技术的正宗与野路子（转）">
+                技术的正宗与野路子（转） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://oeziv5rwi.bkt.clouddn.com/avatar.png"
+               alt="Sixzeroo" />
+          <p class="site-author-name" itemprop="name">Sixzeroo</p>
+           
+              <p class="site-description motion-element" itemprop="description">Do it better !</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#A"><span class="nav-number">1.</span> <span class="nav-text">A</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#题目大意"><span class="nav-number">1.1.</span> <span class="nav-text">题目大意</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#思路"><span class="nav-number">1.2.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码"><span class="nav-number">1.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#B"><span class="nav-number">2.</span> <span class="nav-text">B</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#题目大意-1"><span class="nav-number">2.1.</span> <span class="nav-text">题目大意</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#思路-1"><span class="nav-number">2.2.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码-1"><span class="nav-number">2.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#C"><span class="nav-number">3.</span> <span class="nav-text">C</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#题目大意-2"><span class="nav-number">3.1.</span> <span class="nav-text">题目大意</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#思路-2"><span class="nav-number">3.2.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码-2"><span class="nav-number">3.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sixzeroo</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("3YyBK9PnKj86xfGt1vr8ps6Q-gzGzoHsz", "Sf6vsslcm0nwqrxAcm1MMwRM");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="爬虫," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="Requests 是一个比较常用的python HTTP 库，是爬虫必备的第三方扩展库。下面是Requests库的一些基本的用法">
+<meta name="keywords" content="爬虫">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python Requests库 基本用法">
+<meta property="og:url" content="http://www.liuin.cn/2016/10/29/python-Requests库-基本用法/index.html">
+<meta property="og:site_name" content="Sixzeroo的个人博客">
+<meta property="og:description" content="Requests 是一个比较常用的python HTTP 库，是爬虫必备的第三方扩展库。下面是Requests库的一些基本的用法">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-03-13T18:03:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python Requests库 基本用法">
+<meta name="twitter:description" content="Requests 是一个比较常用的python HTTP 库，是爬虫必备的第三方扩展库。下面是Requests库的一些基本的用法">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.liuin.cn/2016/10/29/python-Requests库-基本用法/"/>
+
+
+
+
+
+  <title>python Requests库 基本用法 | Sixzeroo的个人博客</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?eb51bd4c48350fa08cbc200aead6109f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sixzeroo的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.liuin.cn/2016/10/29/python-Requests库-基本用法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sixzeroo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://oeziv5rwi.bkt.clouddn.com/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sixzeroo的个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">python Requests库 基本用法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-29T15:40:33+08:00">
+                2016-10-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python扩展库/" itemprop="url" rel="index">
+                    <span itemprop="name">python扩展库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2016/10/29/python-Requests库-基本用法/" class="leancloud_visitors" data-flag-title="python Requests库 基本用法">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Requests 是一个比较常用的python HTTP 库，是爬虫必备的第三方扩展库。下面是Requests库的一些基本的用法</p>
+<a id="more"></a>
+<h3 id="连接"><a href="#连接" class="headerlink" title="连接"></a>连接</h3><h4 id="发送请求"><a href="#发送请求" class="headerlink" title="发送请求"></a>发送请求</h4><p>导入requests库，通过get（或者其他请求类型）得到一个requests对象<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> requests</div><div class="line"></div><div class="line">r=requests.get(<span class="string">"https://www.baidu.com/"</span>)</div><div class="line">r=requests.post(<span class="string">"https://www.baidu.com/"</span>)</div></pre></td></tr></table></figure></p>
+<h4 id="传递URL参数"><a href="#传递URL参数" class="headerlink" title="传递URL参数"></a>传递URL参数</h4><p>手工构建的URL（如abc.com/get?key=value）转化为params参数，以一个字典的形式来提供这些参数。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">import requests</div><div class="line"></div><div class="line">payload=&#123;'kay1':'value1','key2':'value2'&#125;</div><div class="line">r=requests.get("https://www.baidu.com",params=payload)</div><div class="line">print(r.url)</div><div class="line"></div><div class="line">&gt;&gt;https://www.baidu.com/?kay1=value1&amp;key2=value2</div><div class="line">``` </div><div class="line"></div><div class="line">## 响应内容</div><div class="line"></div><div class="line">我们可以通过text属性来获得响应内容</div><div class="line">``` python</div><div class="line"></div><div class="line">import requests</div><div class="line"></div><div class="line">r=requests.get("https://github.com/timeline.json")</div><div class="line">print(r.text)</div><div class="line"></div><div class="line">&gt;&gt;&#123;"message":"Hello there, wayfaring stranger. If you’re reading this then you probably didn’t see ...</div></pre></td></tr></table></figure>
+<p>Requests 会自动解码获取的内容（通过HTTP的头部对编码进行推测），当然你也可以用encoding属性来改变它：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"> r.encoding</div><div class="line"><span class="string">'utf-8'</span></div><div class="line"> r.encoding = <span class="string">'ISO-8859-1'</span></div></pre></td></tr></table></figure>
+<h4 id="二进制响应内容"><a href="#二进制响应内容" class="headerlink" title="二进制响应内容"></a>二进制响应内容</h4><p>对于非文本请求（如二进制内容请求）,Requests 会自动为你解码gzip和deflate传输编码的响应数据，对受到请求以后进行处理就行了：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</div><div class="line"><span class="keyword">from</span> io <span class="keyword">import</span> BytesIO</div><div class="line"></div><div class="line">i = Image.open(BytesIO(r.content))</div></pre></td></tr></table></figure></p>
+<h4 id="JSON-响应内容"><a href="#JSON-响应内容" class="headerlink" title="JSON 响应内容"></a>JSON 响应内容</h4><p>Requests内置json解码器，对返回对象调用json()方法即可</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> requests</div><div class="line">r=requests.get(<span class="string">'https://github.com/timeline.json'</span>)</div><div class="line">r.json()</div></pre></td></tr></table></figure>
+<h4 id="原始响应内容"><a href="#原始响应内容" class="headerlink" title="原始响应内容"></a>原始响应内容</h4><p>获取服务器的原始套接字响应，可以访问r.raw（这样就要在请求中设置参数stream=True）<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>r = requests.get(<span class="string">'https://github.com/timeline.json'</span>, stream=<span class="keyword">True</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>r.raw</div><div class="line">&lt;requests.packages.urllib3.response.HTTPResponse object at <span class="number">0x101194810</span>&gt;</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>r.raw.read(<span class="number">10</span>)</div><div class="line"><span class="string">'\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\x03'</span></div></pre></td></tr></table></figure></p>
+<p>获取原始内容以后，你可以使用这种方法将文本流保存到文件<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">with</span> open(filename, <span class="string">'wb'</span>) <span class="keyword">as</span> fd:</div><div class="line">    <span class="keyword">for</span> chunk <span class="keyword">in</span> r.iter_content(chunk_size):</div><div class="line">        fd.write(chunk)</div></pre></td></tr></table></figure></p>
+<p>使用 Response.iter_content 将会处理大量你直接使用 Response.raw 不得不处理的。 当流下载时，上面是优先推荐的获取内容方式。</p>
+<h3 id="请求头"><a href="#请求头" class="headerlink" title="请求头"></a>请求头</h3><p>添加HTTP头部信息，只要传递一个dict给headers参数就可以了<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>url = <span class="string">'https://api.github.com/some/endpoint'</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>headers = &#123;<span class="string">'user-agent'</span>: <span class="string">'my-app/0.0.1'</span>&#125;</div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>r = requests.get(url, headers=headers)</div></pre></td></tr></table></figure></p>
+<p>注意：<br>Requests 不会基于定制 header 的具体情况改变自己的行为。只不过在最后的请求中，所有的 header 信息都会被传递进去。</p>
+<h4 id="POST请求"><a href="#POST请求" class="headerlink" title="POST请求"></a>POST请求</h4><p>可以通过传递一个dict给data参数来发送像表单内容一样的数据<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>payload = &#123;<span class="string">'key1'</span>: <span class="string">'value1'</span>, <span class="string">'key2'</span>: <span class="string">'value2'</span>&#125;</div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>r = requests.post(<span class="string">"http://httpbin.org/post"</span>, data=payload)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(r.text)</div><div class="line">&#123;</div><div class="line">  ...</div><div class="line">  <span class="string">"form"</span>: &#123;</div><div class="line">    <span class="string">"key2"</span>: <span class="string">"value2"</span>,</div><div class="line">    <span class="string">"key1"</span>: <span class="string">"value1"</span></div><div class="line">  &#125;,</div><div class="line">  ...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="状态响应码"><a href="#状态响应码" class="headerlink" title="状态响应码"></a>状态响应码</h3><p>通过status_code来获得状态信息<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>r = requests.get(<span class="string">'http://httpbin.org/get'</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>r.status_code</div><div class="line"><span class="number">200</span></div></pre></td></tr></table></figure></p>
+<h3 id="响应头"><a href="#响应头" class="headerlink" title="响应头"></a>响应头</h3><p>通过headers属性来获得服务器的响应头：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>r.headers</div><div class="line">&#123;</div><div class="line">    <span class="string">'content-encoding'</span>: <span class="string">'gzip'</span>,</div><div class="line">    <span class="string">'transfer-encoding'</span>: <span class="string">'chunked'</span>,</div><div class="line">    <span class="string">'connection'</span>: <span class="string">'close'</span>,</div><div class="line">    <span class="string">'server'</span>: <span class="string">'nginx/1.0.4'</span>,</div><div class="line">    <span class="string">'x-runtime'</span>: <span class="string">'148ms'</span>,</div><div class="line">    <span class="string">'etag'</span>: <span class="string">'"e1ca502697e5c9317743dc078f67693f"'</span>,</div><div class="line">    <span class="string">'content-type'</span>: <span class="string">'application/json'</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>HTTP 头部对大小写不敏感</p>
+<h3 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h3><p>获得cookie，使用cookies属性；发送你的cookie到服务器，使用cookie参数：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>url = <span class="string">'http://example.com/some/cookie/setting/url'</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>r = requests.get(url)</div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>r.cookies[<span class="string">'example_cookie_name'</span>]</div><div class="line"><span class="string">'example_cookie_value'</span></div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>url = <span class="string">'http://httpbin.org/cookies'</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>cookies = dict(cookies_are=<span class="string">'working'</span>)</div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>r = requests.get(url, cookies=cookies)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>r.text</div><div class="line"><span class="string">'&#123;"cookies": &#123;"cookies_are": "working"&#125;&#125;'</span></div></pre></td></tr></table></figure></p>
+<h3 id="重定向和请求历史"><a href="#重定向和请求历史" class="headerlink" title="重定向和请求历史"></a>重定向和请求历史</h3><p>使用对象的history属性返回Response对象列表：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>r = requests.get(<span class="string">'http://github.com'</span>)</div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>r.url</div><div class="line"><span class="string">'https://github.com/'</span></div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>r.status_code</div><div class="line"><span class="number">200</span></div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>r.history</div><div class="line">[&lt;Response [<span class="number">301</span>]&gt;]</div></pre></td></tr></table></figure></p>
+<p>使用allow_redirects参数来禁用重定向处理：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>r = requests.get(<span class="string">'http://github.com'</span>, allow_redirects=<span class="keyword">False</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>r.status_code</div><div class="line"><span class="number">301</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>r.history</div><div class="line">[]</div></pre></td></tr></table></figure></p>
+<p><a href="http://cn.python-requests.org/zh_CN/latest/index.html" target="_blank" rel="external">中文官方文档</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/爬虫/" rel="tag"># 爬虫</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/22/开启ACM之路/" rel="next" title="开启ACM之路">
+                <i class="fa fa-chevron-left"></i> 开启ACM之路
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/31/WOX-快捷启动器/" rel="prev" title="WOX 快捷启动器">
+                WOX 快捷启动器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://oeziv5rwi.bkt.clouddn.com/avatar.png"
+               alt="Sixzeroo" />
+          <p class="site-author-name" itemprop="name">Sixzeroo</p>
+           
+              <p class="site-description motion-element" itemprop="description">Do it better !</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#连接"><span class="nav-number">1.</span> <span class="nav-text">连接</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#发送请求"><span class="nav-number">1.1.</span> <span class="nav-text">发送请求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#传递URL参数"><span class="nav-number">1.2.</span> <span class="nav-text">传递URL参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二进制响应内容"><span class="nav-number">1.3.</span> <span class="nav-text">二进制响应内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JSON-响应内容"><span class="nav-number">1.4.</span> <span class="nav-text">JSON 响应内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#原始响应内容"><span class="nav-number">1.5.</span> <span class="nav-text">原始响应内容</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#请求头"><span class="nav-number">2.</span> <span class="nav-text">请求头</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#POST请求"><span class="nav-number">2.1.</span> <span class="nav-text">POST请求</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态响应码"><span class="nav-number">3.</span> <span class="nav-text">状态响应码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#响应头"><span class="nav-number">4.</span> <span class="nav-text">响应头</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cookie"><span class="nav-number">5.</span> <span class="nav-text">Cookie</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重定向和请求历史"><span class="nav-number">6.</span> <span class="nav-text">重定向和请求历史</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sixzeroo</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("3YyBK9PnKj86xfGt1vr8ps6Q-gzGzoHsz", "Sf6vsslcm0nwqrxAcm1MMwRM");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

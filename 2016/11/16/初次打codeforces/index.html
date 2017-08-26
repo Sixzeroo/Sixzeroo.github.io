@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="贪心,点滴," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="今天凌晨开始了的第一把CF（并不是TC的CF），第一次做全英文的题目，第一次在国外的的平台上比赛，还是有一些鸡冻的。昨天大致的看了看codeforces，感觉确实比国内的一些平台做得好（在比赛中的体验也确实是这样），特别是看到传说中的tourist大神，看到他的rating曲线，感觉好牛逼啊。。。。。。">
+<meta name="keywords" content="贪心,点滴">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初次打codeforces">
+<meta property="og:url" content="http://www.liuin.cn/2016/11/16/初次打codeforces/index.html">
+<meta property="og:site_name" content="Sixzeroo的个人博客">
+<meta property="og:description" content="今天凌晨开始了的第一把CF（并不是TC的CF），第一次做全英文的题目，第一次在国外的的平台上比赛，还是有一些鸡冻的。昨天大致的看了看codeforces，感觉确实比国内的一些平台做得好（在比赛中的体验也确实是这样），特别是看到传说中的tourist大神，看到他的rating曲线，感觉好牛逼啊。。。。。。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://oeziv5rwi.bkt.clouddn.com/2016/11/16/001.PNG">
+<meta property="og:image" content="http://oeziv5rwi.bkt.clouddn.com/2016/11/16/002.PNG">
+<meta property="og:image" content="http://oeziv5rwi.bkt.clouddn.com/2016/11/16/003.PNG">
+<meta property="og:updated_time" content="2017-03-30T11:24:21.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="初次打codeforces">
+<meta name="twitter:description" content="今天凌晨开始了的第一把CF（并不是TC的CF），第一次做全英文的题目，第一次在国外的的平台上比赛，还是有一些鸡冻的。昨天大致的看了看codeforces，感觉确实比国内的一些平台做得好（在比赛中的体验也确实是这样），特别是看到传说中的tourist大神，看到他的rating曲线，感觉好牛逼啊。。。。。。">
+<meta name="twitter:image" content="http://oeziv5rwi.bkt.clouddn.com/2016/11/16/001.PNG">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.liuin.cn/2016/11/16/初次打codeforces/"/>
+
+
+
+
+
+  <title>初次打codeforces | Sixzeroo的个人博客</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?eb51bd4c48350fa08cbc200aead6109f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sixzeroo的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.liuin.cn/2016/11/16/初次打codeforces/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sixzeroo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://oeziv5rwi.bkt.clouddn.com/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sixzeroo的个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">初次打codeforces</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-16T19:01:39+08:00">
+                2016-11-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2016/11/16/初次打codeforces/" class="leancloud_visitors" data-flag-title="初次打codeforces">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>今天凌晨开始了的第一把CF（并不是TC的CF），第一次做全英文的题目，第一次在国外的的平台上比赛，还是有一些鸡冻的。昨天大致的看了看codeforces，感觉确实比国内的一些平台做得好（在比赛中的体验也确实是这样），特别是看到传说中的tourist大神，看到他的rating曲线，感觉好牛逼啊。。。。。。<br><a id="more"></a><br><img src="http://oeziv5rwi.bkt.clouddn.com/2016/11/16/001.PNG" alt=""><br>看了看题目，前面两道题的确是大水题，注意数据范围基本上可以一次性AC。<br><img src="http://oeziv5rwi.bkt.clouddn.com/2016/11/16/002.PNG" alt=""><br>因为是全英文的理解题意还是需要一段时间的（原谅我这个英语渣渣），前面两道题花了40分钟，感觉应该再快一点的（第一次打这个比赛总是小心翼翼的）。<br>到了第三题，光看懂题目的意思我就花了二十多分钟差不多半个小时，看懂题目以后觉得是一个贪心题，然后找各种优化，但是总是超时，然后继续找办法优化，然后就一直一直卡在这里了（当我意识可以看看后面有没有题可以的时候，就只有十分钟左右了），就这样我的第一次CF就这样结束了。。。。。</p>
+<hr>
+<p>只A了两题，第一次比赛以后我的状态是这样的<br><img src="http://oeziv5rwi.bkt.clouddn.com/2016/11/16/003.PNG" alt=""><br>今天早上起来看了看官方的题解，发现昨天的C题我的思路是对的，但是我忽视了一个两个单词：<strong>not decreasing</strong> 他还特别设置为粗体，但是我就是没看到，求英语不好的我心理阴影面积有多大。。。<br>下面贴上我C题的题解吧：</p>
+<h3 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h3><p>安东正在玩一个非常有趣的电脑游戏，但现在他被困在一个级别。要传递到下一个级别，他必须准备n药水。</p>
+<p>安东有一个特殊的水壶，可以在x秒内准备一瓶药水。此外，他知道两种类型的法术，可以更快的准备药水的过程。</p>
+<ul>
+<li>这种类型的法术加速了一个药水的准备时间。有这种类型的m个咒语，其中的第i个成本bi manapoints和改变每个药水的准备时间为ai而不是x。</li>
+<li>这种类型的法术会立即准备一些魔药。有这样的法术，第i个成本di manapoints和立即创建ci药剂。</li>
+</ul>
+<p>安东可以使用不超过一个第一类型的法术，不超过一个第二类型的法术，并且使用的manapoint的总数不应超过s。考虑到所有的法术都在瞬间使用，在安东开始准备魔药之前。</p>
+<h3 id="输入"><a href="#输入" class="headerlink" title="输入"></a>输入</h3><p>输入的第一行包含三个整数n，m，k（1≤n≤2·109，1≤m，k≤2·105） -  Anton必须生成的药剂数量，第一类型和第二类型的法术的数量。</p>
+<p>输入的第二行包含两个整数x和s（2≤x≤2·109,1≤s≤2·109） - 准备一个部分所需的初始秒数和Anton可以使用的manapoint数。</p>
+<p>第三行包含m个整数ai（1≤ai&lt;x） - 如果使用第一类型的第i个法术，则准备一个药剂所需的秒数。</p>
+<p>第四行包含m个整数bi（1≤bi≤2·109） - 使用第一类型第i个咒语的manapoints数量。</p>
+<p>在第五行中有k个整数ci（1≤ci≤n） - 如果使用第二类型的第i个咒语，将立即创建的药剂数。保证ci不减小，即如果i &lt;j，则ci≤cj。</p>
+<p>第六行包含k个整数di（1≤di≤2·109） - 使用第二个类型的第i个咒语所需的manapoint数量。保证di不减小，即如果i &lt;j，则di≤dj。</p>
+<h3 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h3><p>打印一个整数 - 为了准备n个药水，花费的最少时间。</p>
+<h3 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h3><ul>
+<li>因为后面给的第二种类型的法术是递增的（包括获得的药水数量和消耗的体力），这样我们就可以使用二分查找（upper_bound函数）找到，进行第一种类型的法术选择以后的第二种的最优策略，这样时间复杂度就是O(m*logk)了</li>
+</ul>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;queue&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;utility&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> MAXSIZE 200005</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> in(a) scanf(<span class="meta-string">"%d"</span>,&amp;a)</span></div><div class="line"></div><div class="line"><span class="keyword">long</span> <span class="keyword">long</span> n,m,k,x,s;</div><div class="line"><span class="keyword">long</span> <span class="keyword">long</span> a[MAXSIZE],b[MAXSIZE],c[MAXSIZE],d[MAXSIZE];</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">long</span> <span class="keyword">long</span> i;</div><div class="line">    <span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;n&gt;&gt;m&gt;&gt;k)</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">cin</span>&gt;&gt;x&gt;&gt;s;  <span class="comment">//数据输入</span></div><div class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;m;i++)</div><div class="line">            <span class="built_in">cin</span>&gt;&gt;a[i];</div><div class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;m;i++)</div><div class="line">            <span class="built_in">cin</span>&gt;&gt;b[i];</div><div class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;k;i++)</div><div class="line">            <span class="built_in">cin</span>&gt;&gt;c[i];</div><div class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;k;i++)</div><div class="line">            <span class="built_in">cin</span>&gt;&gt;d[i];</div><div class="line"></div><div class="line">        a[m]=x;</div><div class="line">        b[m]=<span class="number">0</span>;</div><div class="line">        <span class="keyword">long</span> <span class="keyword">long</span> imin,o,e;</div><div class="line">        imin=n*x;</div><div class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;=m;i++)</div><div class="line">        &#123;</div><div class="line">            o=s-b[i];</div><div class="line">            <span class="keyword">if</span>(o&lt;<span class="number">0</span>)</div><div class="line">                <span class="keyword">continue</span>;</div><div class="line">            e=upper_bound(d,d+k,o)-d;</div><div class="line">            <span class="keyword">if</span>(e)</div><div class="line">                imin=min(a[i]*(n-c[e<span class="number">-1</span>]),imin);    </div><div class="line">            <span class="keyword">else</span>     <span class="comment">//注意不进行第二次选择的情况</span></div><div class="line">                imin=min(a[i]*n,imin);</div><div class="line">        &#125;</div><div class="line">        <span class="built_in">cout</span>&lt;&lt;imin&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    solve();</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="吐槽"><a href="#吐槽" class="headerlink" title="吐槽"></a>吐槽</h3><ul>
+<li>在cf的比赛中，比赛时提交的程序只进行一部分测试点的测试，比赛结束以后重新验证测试点会多好多</li>
+<li>初始rating积分是1500，我竟然少了几十分。。。。听说这个积分的计算用到的是一个叫<em>Elo rating system</em>的东西，看起来好高大上的样子。（<a href="https://en.wikipedia.org/wiki/Elo_rating_system" target="_blank" rel="external">维基的解释</a>）</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/贪心/" rel="tag"># 贪心</a>
+          
+            <a href="/tags/点滴/" rel="tag"># 点滴</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/09/POJ-3253-Fence-Repair-题解/" rel="next" title="POJ 3253 Fence Repair 题解">
+                <i class="fa fa-chevron-left"></i> POJ 3253 Fence Repair 题解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/25/Codeforces-381（Div-2）题解/" rel="prev" title="Codeforces #381（Div.2）题解">
+                Codeforces #381（Div.2）题解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://oeziv5rwi.bkt.clouddn.com/avatar.png"
+               alt="Sixzeroo" />
+          <p class="site-author-name" itemprop="name">Sixzeroo</p>
+           
+              <p class="site-description motion-element" itemprop="description">Do it better !</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目大意"><span class="nav-number">1.</span> <span class="nav-text">题目大意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#输入"><span class="nav-number">2.</span> <span class="nav-text">输入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#输出"><span class="nav-number">3.</span> <span class="nav-text">输出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题思路"><span class="nav-number">4.</span> <span class="nav-text">解题思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码"><span class="nav-number">5.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#吐槽"><span class="nav-number">6.</span> <span class="nav-text">吐槽</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sixzeroo</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("3YyBK9PnKj86xfGt1vr8ps6Q-gzGzoHsz", "Sf6vsslcm0nwqrxAcm1MMwRM");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
