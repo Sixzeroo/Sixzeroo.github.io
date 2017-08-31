@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.liuin.cn/"/>
-  <updated>2017-08-31T12:15:12.000Z</updated>
+  <updated>2017-08-31T12:28:43.000Z</updated>
   <id>http://www.liuin.cn/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Python实现进度条显示ls</title>
-    <link href="http://www.liuin.cn/2017/08/31/Python%E5%AE%9E%E7%8E%B0%E8%BF%9B%E5%BA%A6%E6%9D%A1%E6%98%BE%E7%A4%BAls/"/>
-    <id>http://www.liuin.cn/2017/08/31/Python实现进度条显示ls/</id>
+    <title>Python实现进度条显示</title>
+    <link href="http://www.liuin.cn/2017/08/31/Python%E5%AE%9E%E7%8E%B0%E8%BF%9B%E5%BA%A6%E6%9D%A1%E6%98%BE%E7%A4%BA/"/>
+    <id>http://www.liuin.cn/2017/08/31/Python实现进度条显示/</id>
     <published>2017-08-31T12:11:33.000Z</published>
-    <updated>2017-08-31T12:15:12.000Z</updated>
+    <updated>2017-08-31T12:28:43.000Z</updated>
     
     <content type="html"><![CDATA[<p>运行程序的时候，即不想看那些快速飘过的日志信息，又不想只让光标在那闪，怎么办呢？加个进度条吧</p>
 <a id="more"></a>
