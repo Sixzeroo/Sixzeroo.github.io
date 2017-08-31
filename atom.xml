@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.liuin.cn/"/>
-  <updated>2017-08-31T11:46:46.000Z</updated>
+  <updated>2017-08-31T12:15:12.000Z</updated>
   <id>http://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,69 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Python实现进度条显示ls</title>
+    <link href="http://www.liuin.cn/2017/08/31/Python%E5%AE%9E%E7%8E%B0%E8%BF%9B%E5%BA%A6%E6%9D%A1%E6%98%BE%E7%A4%BAls/"/>
+    <id>http://www.liuin.cn/2017/08/31/Python实现进度条显示ls/</id>
+    <published>2017-08-31T12:11:33.000Z</published>
+    <updated>2017-08-31T12:15:12.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>运行程序的时候，即不想看那些快速飘过的日志信息，又不想只让光标在那闪，怎么办呢？加个进度条吧</p>
+<a id="more"></a>
+<h2 id="tqdm"><a href="#tqdm" class="headerlink" title="tqdm"></a>tqdm</h2><p>tqdm是Python的一个进度条库，使用起来非常方便，上手十分容易</p>
+<p><img src="http://ot40h275y.bkt.clouddn.com/story-writer/2017_7_31_1501480765636.jpg" alt="运行效果"></p>
+<p>最简单的方式是使用tqdm包裹一个迭代器，迭代器现在所处的进度就是后面显示的进度。</p>
+<h2 id="基于迭代的使用"><a href="#基于迭代的使用" class="headerlink" title="基于迭代的使用"></a>基于迭代的使用</h2><p>tqdm可以包裹任何迭代器，显示的进度就是当前迭代的进度<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">text = <span class="string">""</span></div><div class="line"><span class="keyword">for</span> char <span class="keyword">in</span> tqdm([<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>]):</div><div class="line">    text = text + char</div></pre></td></tr></table></figure></p>
+<h2 id="手动操作"><a href="#手动操作" class="headerlink" title="手动操作"></a>手动操作</h2><p>通过with来控制tqdm()的更新：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">with</span> tqdm(total=<span class="number">100</span>) <span class="keyword">as</span> pbar:</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):</div><div class="line">        pbar.update(<span class="number">10</span>)</div></pre></td></tr></table></figure></p>
+<p>或者不使用with，使用一个变量来表示，但是最后不要忘了撤销close()<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">pbar = tqdm(total=<span class="number">100</span>)</div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):</div><div class="line">    pbar.update(<span class="number">10</span>)</div><div class="line">pbar.close()</div></pre></td></tr></table></figure></p>
+<h2 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h2><p>tqdm还可以使用在shell的管道命令中，在标准输入和标准输出中添加<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">$ time find . -name <span class="string">'*.py'</span> -exec cat \&#123;&#125; \; | wc <span class="_">-l</span></div><div class="line">857365</div><div class="line"></div><div class="line">real    0m3.458s</div><div class="line">user    0m0.274s</div><div class="line">sys     0m3.325s</div><div class="line"></div><div class="line">$ time find . -name <span class="string">'*.py'</span> -exec cat \&#123;&#125; \; | tqdm | wc <span class="_">-l</span></div><div class="line">857366it [00:03, 246471.31it/s]</div><div class="line">857365</div><div class="line"></div><div class="line">real    0m3.585s</div><div class="line">user    0m0.862s</div><div class="line">sys     0m3.358s</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;运行程序的时候，即不想看那些快速飘过的日志信息，又不想只让光标在那闪，怎么办呢？加个进度条吧&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="python" scheme="http://www.liuin.cn/categories/python/"/>
+    
+    
+      <category term="python" scheme="http://www.liuin.cn/tags/python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux中查找目录下的文件是否含有某个字符串</title>
+    <link href="http://www.liuin.cn/2017/08/31/Linux%E4%B8%AD%E6%9F%A5%E6%89%BE%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E6%96%87%E4%BB%B6%E6%98%AF%E5%90%A6%E5%90%AB%E6%9C%89%E6%9F%90%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2/"/>
+    <id>http://www.liuin.cn/2017/08/31/Linux中查找目录下的文件是否含有某个字符串/</id>
+    <published>2017-08-31T11:51:16.000Z</published>
+    <updated>2017-08-31T11:59:52.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>在日常开发中，我们常常有这样的需求：想要在一个都是文本文件的文件夹中查找文件中含有某些字符串的文件。这篇文章给出了一种解决方案：通过find、xargs和grep三个命令实现。</p>
+<a id="more"></a>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>查找目录下的所有文件中是否含有某个字符串”Ali”<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">find .|xargs grep -ri &quot;Ali&quot;</div></pre></td></tr></table></figure></p>
+<p>查找目录下的所有文件中是否含有某个字符串,并且只打印出文件名<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">find .|xargs grep -ri &quot;Ali&quot; -l</div></pre></td></tr></table></figure></p>
+<h2 id="find"><a href="#find" class="headerlink" title="find"></a>find</h2><p>find 是一个利用正则表达式查找当前目录下的文件及子目录中文件的命令，查找的根据可以是文件名，也可以是文件从属关系等等<br>同时结合-exec选项和其他命令结合使用<br>在这里find的作用是将查找范围定在当前的目录下的所有文本展现出来通过xargs 提供给grep 作为参数</p>
+<p>参考：<a href="http://man.linuxde.net/find" target="_blank" rel="external">http://man.linuxde.net/find</a></p>
+<h2 id="xargs"><a href="#xargs" class="headerlink" title="xargs"></a>xargs</h2><p>xargs 是一个给其他命令传递参数的一个过滤器，它擅长将标准输入数据转换成命令行参数，xargs能够处理管道或者stdin并将其转换成特定命令的命令参数。<br>在这里xargs 为后面的grep 提供查找的内容</p>
+<p>参考：<a href="http://man.linuxde.net/xargs" target="_blank" rel="external">http://man.linuxde.net/xargs</a></p>
+<h2 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h2><p>grep 是一种强大的文本搜索工具。grep 也是一个管道命令，接受standard output 作为查找的文本。不作为管道命令的时候后面接文件名作为参数。<br>这里使用到了三个选项：-r 递归搜索   -i 忽略大小写   -l  仅显示文件名</p>
+<p>参考：<a href="http://man.linuxde.net/grep" target="_blank" rel="external">http://man.linuxde.net/grep</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在日常开发中，我们常常有这样的需求：想要在一个都是文本文件的文件夹中查找文件中含有某些字符串的文件。这篇文章给出了一种解决方案：通过find、xargs和grep三个命令实现。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Linux系统" scheme="http://www.liuin.cn/categories/Linux%E7%B3%BB%E7%BB%9F/"/>
+    
+    
+      <category term="Linux" scheme="http://www.liuin.cn/tags/Linux/"/>
+    
+  </entry>
   
   <entry>
     <title>Linux 中的语言设置问题</title>
@@ -598,80 +661,6 @@
     <summary type="html">
     
       &lt;p&gt;题目链接：&lt;a href=&quot;http://poj.org/problem?id=2407&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://poj.org/problem?id=2407&lt;/a&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="算法" scheme="http://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
-    
-    
-      <category term="数学专题" scheme="http://www.liuin.cn/tags/%E6%95%B0%E5%AD%A6%E4%B8%93%E9%A2%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Codeforces Round #411 (Div. 2) 题解</title>
-    <link href="http://www.liuin.cn/2017/05/05/Codeforces-Round-411-Div-2-%E9%A2%98%E8%A7%A3/"/>
-    <id>http://www.liuin.cn/2017/05/05/Codeforces-Round-411-Div-2-题解/</id>
-    <published>2017-05-04T16:56:40.000Z</published>
-    <updated>2017-05-13T07:56:53.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>比赛链接：<a href="http://codeforces.com/contest/805" target="_blank" rel="external">http://codeforces.com/contest/805</a></p>
-<a id="more"></a>
-<h2 id="A-Fake-NP"><a href="#A-Fake-NP" class="headerlink" title="A Fake NP"></a>A Fake NP</h2><h3 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h3><p>给出一个范围[l,r]，对于所有的从l到r的数的因子数中出现最多的因子数</p>
-<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>可以发现除了范围内只有一个数，其他情况2都是出现次数最多的因子数</p>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> l,r;</div><div class="line">	<span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;l&gt;&gt;r)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">if</span>(l==r)</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;l&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">		<span class="keyword">else</span></div><div class="line">			<span class="built_in">cout</span>&lt;&lt;<span class="string">"2"</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="B-3-palindrome"><a href="#B-3-palindrome" class="headerlink" title="B 3-palindrome"></a>B 3-palindrome</h2><h3 id="题意-1"><a href="#题意-1" class="headerlink" title="题意"></a>题意</h3><p>要求你创建一个仅含有a、b、c三个字符的长度为n的序列，要求序列中不含有长度为3的回文串,，并且要求含有c字符的数目尽可能少。</p>
-<h3 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h3><p>“aabb”这样的字符创不断循环就不会含有长度为3的回文串</p>
-<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">olve()</div><div class="line">&#123;</div><div class="line">	<span class="built_in">string</span> st=<span class="string">"aabb"</span>;</div><div class="line">	<span class="keyword">int</span> n;</div><div class="line">	<span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;n)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">int</span> d=n/<span class="number">4</span>;</div><div class="line">		n%=<span class="number">4</span>;</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;d;i++)</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;st;</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;st[i];</div><div class="line">		<span class="built_in">cout</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="C-Find-Amir"><a href="#C-Find-Amir" class="headerlink" title="C Find Amir"></a>C Find Amir</h2><h3 id="题意-2"><a href="#题意-2" class="headerlink" title="题意"></a>题意</h3><p>给出编号为1到n的n个点，规定两点(i,j)之间的权值为(i+j)mod(n+1)，求将所有点连接起来的最小代价</p>
-<h3 id="题解-2"><a href="#题解-2" class="headerlink" title="题解"></a>题解</h3><ul>
-<li>最小生成树问题，用贪心思想，发现将第1小的点和第1大的点配对，第2小的点和第2大的点配对，。。。（以此类推可以配对n/2条边）,这样的每次配对的代价都是0</li>
-<li>这样两两结对以后（奇数情况下会多出一个点），再将第i大点和第i+1小的点配对，这种配对的每次代价为1。这样就可以生成一棵最小生成树，总体的代价就是后面的配对产生的代价：偶数时候为(n/2-1)，奇数的时候是n/2</li>
-</ul>
-<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> n;</div><div class="line">	<span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;n)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">if</span>(n%<span class="number">2</span>)</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;n/<span class="number">2</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">		<span class="keyword">else</span></div><div class="line">			<span class="built_in">cout</span>&lt;&lt;n/<span class="number">2</span><span class="number">-1</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="D-Minimum-number-of-steps"><a href="#D-Minimum-number-of-steps" class="headerlink" title="D Minimum number of steps"></a>D Minimum number of steps</h2><h3 id="题意-3"><a href="#题意-3" class="headerlink" title="题意"></a>题意</h3><p>给出一个只含有字符a、b的字符串，规定一次操作为将原字符串的一个’ab’子串转换成’bba’，求转换成最终无法转换的状态要进行的操作次数（对10^9+7取模）</p>
-<h3 id="题解-3"><a href="#题解-3" class="headerlink" title="题解"></a>题解</h3><ul>
-<li>操作完的最终状态应该是所有的字符a都换到了字符串的最后，同时每次操作我们可以看成a向后移动一位的过程，这样的话我们可以计算每个字符a到字符串最后全是a的部分的距离来对于这个a要进行的操作次数。</li>
-<li>但是每次a向后移动一位对前面的a是有影响的————每向后移动一位对于前面的a相当于增加了一个b，也就是增加了前面的a到字符串最后的距离。这样我们可以从后往前进行考虑来统一这种影响。</li>
-<li>从后往前扫描，用tmp记录中间b的个数，遇到a时累加到ans中同时对tmp加倍（相当于已经将当前的a转移到了最后，这样对于前面的a来说就是增加了tmp个b）。最后的答案就是所有操作的代价ans</li>
-</ul>
-<h3 id="代码-3"><a href="#代码-3" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="built_in">string</span> a;</div><div class="line">	<span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;a)</div><div class="line">	&#123;</div><div class="line">		ll tmp=<span class="number">0</span>,ans=<span class="number">0</span>,num=<span class="number">0</span>;</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=a.size()<span class="number">-1</span>;i&gt;=<span class="number">0</span>;i--)</div><div class="line">		&#123;</div><div class="line">			<span class="keyword">if</span>(a[i]==<span class="string">'a'</span>)</div><div class="line">			&#123;</div><div class="line">				ans=(ans+tmp)%MOD;</div><div class="line">				tmp=(<span class="number">2</span>*tmp)%MOD;</div><div class="line">			&#125;</div><div class="line">			<span class="keyword">else</span></div><div class="line">				tmp++;</div><div class="line">		&#125;</div><div class="line">		<span class="built_in">cout</span>&lt;&lt;ans&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><ul>
-<li>看清题意再敲代码，B题就是因为误以为是长度&gt;=3的回文子串而导致错了两发</li>
-<li>提高debug水平，D题思路一直对但是因为else分支里面的一个错误导致迟迟没有AC</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;比赛链接：&lt;a href=&quot;http://codeforces.com/contest/805&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://codeforces.com/contest/805&lt;/a&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="算法" scheme="http://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
-    
-    
-      <category term="Codeforces" scheme="http://www.liuin.cn/tags/Codeforces/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>HDU 5686 斐波那契数+大数</title>
-    <link href="http://www.liuin.cn/2017/05/04/HDU-5686-%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E6%95%B0-%E5%A4%A7%E6%95%B0/"/>
-    <id>http://www.liuin.cn/2017/05/04/HDU-5686-斐波那契数-大数/</id>
-    <published>2017-05-04T03:16:20.000Z</published>
-    <updated>2017-05-04T03:25:00.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>题目链接：<a href="http://acm.hdu.edu.cn/showproblem.php?pid=5686" target="_blank" rel="external">http://acm.hdu.edu.cn/showproblem.php?pid=5686</a></p>
-<a id="more"></a>
-<h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>有一个全部是1组成的序列，可以合并相邻的两个1，变成一个新的序列。问总共可以构成多少种不同的序列。序列长度范围为200</p>
-<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>这道题其实列出前几个数的答案可以观察得到是一个斐波那契数，当然也可以按照下面这种方式进行理解：<br>一个序列的组合方式可以分成两种情况：第一种情况是最后一个数不考虑那么相当于前面的n-1个数的排列种树；第二种情况将最后两个数合并这样就相当于前面n-2个数的排列情况<br>斐波那契数到达200个数，要使用大数模板，套上用就行了。</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> INF 0x3f3f3f3f</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</div><div class="line"></div><div class="line"><span class="keyword">struct</span> BigInt</div><div class="line">&#123;</div><div class="line">    <span class="keyword">const</span> <span class="keyword">static</span> <span class="keyword">int</span> nlen=<span class="number">4</span>;  <span class="comment">//控制数组中的每一个数字的长度，为了乘法运算不溢出设定为4</span></div><div class="line">    <span class="keyword">const</span> <span class="keyword">static</span> <span class="keyword">int</span> mod=<span class="number">10000</span>;    <span class="comment">//每个数字大小设定</span></div><div class="line">    <span class="keyword">short</span> n[<span class="number">1000</span>],len;  <span class="comment">//存放数字的数组以及数组的长度</span></div><div class="line">    BigInt()<span class="comment">//没有赋值时初始化为0</span></div><div class="line">    &#123;</div><div class="line">        <span class="built_in">memset</span>(n,<span class="number">0</span>,<span class="keyword">sizeof</span>(n));</div><div class="line">        len=<span class="number">1</span>;</div><div class="line">    &#125;</div><div class="line">    BigInt(<span class="keyword">int</span> num)<span class="comment">//数字为其赋值时，将数字4位4位存放在数组当中</span></div><div class="line">    &#123;</div><div class="line">        len=<span class="number">0</span>;</div><div class="line">        <span class="keyword">while</span>(num&gt;<span class="number">0</span>)</div><div class="line">        &#123;</div><div class="line">            n[len++]=num%mod;</div><div class="line">            num/=mod;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    BigInt(<span class="keyword">const</span> <span class="keyword">char</span> *s)  <span class="comment">//字符串赋值时</span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">int</span> l=<span class="built_in">strlen</span>(s);</div><div class="line">        len=l%nlen==<span class="number">0</span>?l/nlen:l/nlen+<span class="number">1</span>;<span class="comment">//确定数组长度</span></div><div class="line">        <span class="keyword">int</span> index=<span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=l<span class="number">-1</span>;i&gt;=<span class="number">0</span>;i-=nlen)<span class="comment">//每次处理数组中的一位</span></div><div class="line">        &#123;</div><div class="line">            <span class="keyword">int</span> tmp=<span class="number">0</span>;</div><div class="line">            <span class="keyword">int</span> j=i-nlen+<span class="number">1</span>;</div><div class="line">            <span class="keyword">if</span>(j&lt;<span class="number">0</span>) j=<span class="number">0</span>;<span class="comment">//最后面数字的处理</span></div><div class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> k=j;k&lt;=i;k++)</div><div class="line">                tmp=tmp*<span class="number">10</span>+s[k]-<span class="string">'0'</span>;</div><div class="line">            n[index++]=tmp;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    BigInt <span class="keyword">operator</span>+(<span class="keyword">const</span> BigInt &amp;b)<span class="keyword">const</span> <span class="comment">//加法操作</span></div><div class="line">    &#123;</div><div class="line">        BigInt res;</div><div class="line">        res.len=max(len,b.len);  <span class="comment">//确定位数</span></div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;res.len;i++)</div><div class="line">        &#123;</div><div class="line">            res.n[i]+=(i&lt;len?n[i]:<span class="number">0</span>)+(i&lt;b.len?b.n[i]:<span class="number">0</span>); <span class="comment">//对象位置相加</span></div><div class="line">            res.n[i+<span class="number">1</span>]+=res.n[i]/mod; <span class="comment">//进位处理</span></div><div class="line">            res.n[i]=res.n[i]%mod;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span>(res.n[res.len]&gt;<span class="number">0</span>)res.len++;  <span class="comment">//最后的结果多出一位时</span></div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">    BigInt <span class="keyword">operator</span>*(<span class="keyword">const</span> BigInt &amp;b)<span class="keyword">const</span>  <span class="comment">//乘法操作</span></div><div class="line">    &#123;</div><div class="line">        BigInt res;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;len;i++)  <span class="comment">//模拟过程</span></div><div class="line">        &#123;</div><div class="line">            <span class="keyword">int</span> up=<span class="number">0</span>;  <span class="comment">//进位存储</span></div><div class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;b.len;j++)</div><div class="line">            &#123;</div><div class="line">                <span class="keyword">int</span> tmp=n[i]*b.n[i]+up+res.n[i+j];</div><div class="line">                res.n[i+j]=tmp%mod;</div><div class="line">                up=tmp/mod;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span>(up!=<span class="number">0</span>)  <span class="comment">//处理一遍以后还有进位</span></div><div class="line">                res.n[i+b.len]=up;</div><div class="line">        &#125;</div><div class="line">        res.len=len+b.len;  <span class="comment">//先取到位数可能最大的值</span></div><div class="line">        <span class="keyword">while</span>(res.n[res.len<span class="number">-1</span>]==<span class="number">0</span>&amp;&amp;res.len&gt;<span class="number">1</span>)res.len--;</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">show</span><span class="params">()</span> <span class="keyword">const</span>  <span class="comment">//输出时的逆序输出</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"%d"</span>,n[len<span class="number">-1</span>]);</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=len<span class="number">-2</span>;i&gt;=<span class="number">0</span>;i--)</div><div class="line">            <span class="built_in">printf</span>(<span class="string">"%04d"</span>,n[i]);   <span class="comment">//注意一定要加04,确保输出四位</span></div><div class="line">        <span class="built_in">printf</span>(<span class="string">"\n"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    BigInt a[<span class="number">210</span>];</div><div class="line">    a[<span class="number">1</span>]=<span class="number">1</span>;</div><div class="line">    a[<span class="number">2</span>]=<span class="number">2</span>;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">3</span>;i&lt;<span class="number">201</span>;i++)</div><div class="line">        a[i]=a[i<span class="number">-1</span>]+a[i<span class="number">-2</span>];</div><div class="line">    <span class="keyword">int</span> n;</div><div class="line">    <span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n)!=EOF)</div><div class="line">        a[n].show();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;题目链接：&lt;a href=&quot;http://acm.hdu.edu.cn/showproblem.php?pid=5686&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://acm.hdu.edu.cn/showproblem.php?pid=5686&lt;/a&gt;&lt;/p&gt;
     
     </summary>
     
