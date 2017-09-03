@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.liuin.cn/"/>
-  <updated>2017-09-03T08:15:51.000Z</updated>
+  <updated>2017-09-03T08:21:50.000Z</updated>
   <id>http://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,47 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>PyCharm 使用技巧汇总</title>
+    <link href="http://www.liuin.cn/2017/09/03/PyCharm-%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7%E6%B1%87%E6%80%BB/"/>
+    <id>http://www.liuin.cn/2017/09/03/PyCharm-使用技巧汇总/</id>
+    <published>2017-09-03T08:19:38.000Z</published>
+    <updated>2017-09-03T08:21:50.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>俗话说的好，磨刀不误砍柴工，写代码也一样，在工具上面花的时间是非常值得的。对于Python语言的编程而言，Pycharm是一个非常好用的集成开发环境，虽然Vim能够做到轻巧，但是功能始终是做不到IDE那么强大，所以对于Python代码的编程后期还是主要以Pycharm为工具，今天在这里收集一些Pycharm的使用技巧，有一些来源于网上，有一些也来源本身Pycharm的教程。（以下技巧适用于macOS系统）</p>
+<a id="more"></a>
+<h2 id="教程中的快捷键"><a href="#教程中的快捷键" class="headerlink" title="教程中的快捷键"></a>教程中的快捷键</h2><ul>
+<li>“⇧⌘O ”能够快速查找相关文件和类</li>
+<li>Command+B 跳转到原码，看到里面的类和方法</li>
+<li>Command+Option+L  一键实现PEP8规范</li>
+<li>Command + Shift + O  查找文件、类和方法</li>
+<li>Command + Option + Shift + [     光标放在函数的前面快速选中这个函数中的所有内容</li>
+<li>Command + J   快速插入常用代码</li>
+<li>Command + Shift + -    展开收缩你的代码块</li>
+<li>Command+P  显示当前函数需要的参数</li>
+<li>F1     可以调出光标处函数文档</li>
+</ul>
+<h2 id="使用注意"><a href="#使用注意" class="headerlink" title="使用注意"></a>使用注意</h2><ul>
+<li>能够在下面的状态栏中看到当前使用换行符情况（是”\r\n”  “\n”  还是”\r”），多选文件在File | Line Separators 中选择适当的换行符就可以切换了</li>
+<li>在Preference -&gt; Editor -&gt; File and Code Template 中设置代码模板</li>
+</ul>
+<h2 id="分屏操作"><a href="#分屏操作" class="headerlink" title="分屏操作"></a>分屏操作</h2><p>鼠标放到当前导航处的文件名，然后右键 Split Vertically 或者 Split Horizontally 就可以啦</p>
+<h2 id="添加Vim插件"><a href="#添加Vim插件" class="headerlink" title="添加Vim插件"></a>添加Vim插件</h2><p>在偏好设置里面Plugins中添加新的Plugin插件，搜索IdeaVIm添加就可以了</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;俗话说的好，磨刀不误砍柴工，写代码也一样，在工具上面花的时间是非常值得的。对于Python语言的编程而言，Pycharm是一个非常好用的集成开发环境，虽然Vim能够做到轻巧，但是功能始终是做不到IDE那么强大，所以对于Python代码的编程后期还是主要以Pycharm为工具，今天在这里收集一些Pycharm的使用技巧，有一些来源于网上，有一些也来源本身Pycharm的教程。（以下技巧适用于macOS系统）&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="软件使用" scheme="http://www.liuin.cn/categories/%E8%BD%AF%E4%BB%B6%E4%BD%BF%E7%94%A8/"/>
+    
+    
+      <category term="工具" scheme="http://www.liuin.cn/tags/%E5%B7%A5%E5%85%B7/"/>
+    
+  </entry>
   
   <entry>
     <title>SQLAchemy 学习(2)</title>
@@ -679,33 +720,6 @@
     <summary type="html">
     
       &lt;p&gt;题目链接：&lt;a href=&quot;http://poj.org/problem?id=3273&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://poj.org/problem?id=3273&lt;/a&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="算法" scheme="http://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
-    
-    
-      <category term="其他-二分" scheme="http://www.liuin.cn/tags/%E5%85%B6%E4%BB%96-%E4%BA%8C%E5%88%86/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>POJ 3258 River Hopscotch 二分</title>
-    <link href="http://www.liuin.cn/2017/05/09/POJ-3258-River-Hopscotch-%E4%BA%8C%E5%88%86/"/>
-    <id>http://www.liuin.cn/2017/05/09/POJ-3258-River-Hopscotch-二分/</id>
-    <published>2017-05-09T15:59:35.000Z</published>
-    <updated>2017-05-09T16:10:24.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>题目链接：<a href="http://poj.org/problem?id=3258" target="_blank" rel="external">http://poj.org/problem?id=3258</a></p>
-<a id="more"></a>
-<h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>给出一条河对岸中n个石子的坐标（加上起点和终点），现在移走m个石子，要求两个石子间的最小值最大，这个最大的最小值</p>
-<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>这个一道经典的二分题目，最大化最小值问题。在查找过程中判断一个数是否满足条件的时候，我们可以转化成判断满足这个最小值需要移走的石子数，通过跟给定的石子数进行比较来判断这个数是否满足条件。</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> INF 0x3f3f3f3f</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</div><div class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxn=<span class="number">50005</span>;</div><div class="line"><span class="keyword">int</span> l,n,m;</div><div class="line"><span class="keyword">int</span> d[maxn];</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">judge</span><span class="params">(<span class="keyword">int</span> s)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> j=<span class="number">0</span>,num=<span class="number">0</span>;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;n;i++)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">if</span>(d[i]-d[j]&lt;s) num++;</div><div class="line">		<span class="keyword">else</span> j=i;</div><div class="line">	&#125;</div><div class="line">	<span class="comment">//cout&lt;&lt;"s:"&lt;&lt;s&lt;&lt;"num:"&lt;&lt;num&lt;&lt;"m:"&lt;&lt;m&lt;&lt;endl;</span></div><div class="line">	<span class="keyword">return</span> num&lt;=m;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fun</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> ll=<span class="number">0</span>,rr=l+<span class="number">1</span>;</div><div class="line">	<span class="keyword">int</span> mid;</div><div class="line">	<span class="keyword">while</span>(ll+<span class="number">1</span>&lt;rr)</div><div class="line">	&#123;</div><div class="line">		mid=(ll+rr)&gt;&gt;<span class="number">1</span>;</div><div class="line">		<span class="comment">//cout&lt;&lt;ll&lt;&lt;" "&lt;&lt;rr&lt;&lt;" "&lt;&lt;mid&lt;&lt;endl;</span></div><div class="line">		<span class="keyword">if</span>(judge(mid))</div><div class="line">			ll=mid;</div><div class="line">		<span class="keyword">else</span></div><div class="line">			rr=mid;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> ll;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%d %d %d"</span>,&amp;l,&amp;n,&amp;m)!=EOF)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++)</div><div class="line">			<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;d[i]);</div><div class="line">        d[<span class="number">0</span>]=<span class="number">0</span>;</div><div class="line">		d[n+<span class="number">1</span>]=l;</div><div class="line">		n+=<span class="number">2</span>;</div><div class="line">		sort(d,d+n);</div><div class="line">		<span class="keyword">int</span> ans=fun();</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,ans);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;题目链接：&lt;a href=&quot;http://poj.org/problem?id=3258&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://poj.org/problem?id=3258&lt;/a&gt;&lt;/p&gt;
     
     </summary>
     
