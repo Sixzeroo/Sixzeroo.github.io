@@ -79,7 +79,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="计算机," />
+  <meta name="keywords" content="python," />
 
 
 
@@ -97,22 +97,21 @@
 
 
 
-<meta name="description" content="最近在给工作室的电脑重装系统，也了解了一些计算机启动的相关知识，在网上觉得这篇博客写得不错。虽然自己现在只是大二，有些地方看起来还是有一些吃力，但是还是收获到了很多的知识。">
-<meta name="keywords" content="计算机">
+<meta name="description" content="SQLAchemy 是Python操纵数据库的一个常用的第三方ORM框架，我将通过几篇文章总结一下对SQLAlchemy的学习。">
+<meta name="keywords" content="python">
 <meta property="og:type" content="article">
-<meta property="og:title" content="计算机的启动[转]">
-<meta property="og:url" content="http://www.liuin.cn/2016/10/19/计算机的启动-转/index.html">
+<meta property="og:title" content="SQLAchemy 学习(1)">
+<meta property="og:url" content="http://www.liuin.cn/2017/08/17/SQLAchemy-学习-1/index.html">
 <meta property="og:site_name" content="Sixzeroo的个人博客">
-<meta property="og:description" content="最近在给工作室的电脑重装系统，也了解了一些计算机启动的相关知识，在网上觉得这篇博客写得不错。虽然自己现在只是大二，有些地方看起来还是有一些吃力，但是还是收获到了很多的知识。">
+<meta property="og:description" content="SQLAchemy 是Python操纵数据库的一个常用的第三方ORM框架，我将通过几篇文章总结一下对SQLAlchemy的学习。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oeziv5rwi.bkt.clouddn.com/2016/10/19/001.png">
-<meta property="og:image" content="http://oeziv5rwi.bkt.clouddn.com/2016/10/19/002.jpg">
-<meta property="og:image" content="http://oeziv5rwi.bkt.clouddn.com/2016/10/19/003.png">
-<meta property="og:updated_time" content="2017-03-13T18:03:48.000Z">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2017_7_27_1501156105658.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2017_7_27_1501156198516.jpg">
+<meta property="og:updated_time" content="2017-09-03T08:16:00.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="计算机的启动[转]">
-<meta name="twitter:description" content="最近在给工作室的电脑重装系统，也了解了一些计算机启动的相关知识，在网上觉得这篇博客写得不错。虽然自己现在只是大二，有些地方看起来还是有一些吃力，但是还是收获到了很多的知识。">
-<meta name="twitter:image" content="http://oeziv5rwi.bkt.clouddn.com/2016/10/19/001.png">
+<meta name="twitter:title" content="SQLAchemy 学习(1)">
+<meta name="twitter:description" content="SQLAchemy 是Python操纵数据库的一个常用的第三方ORM框架，我将通过几篇文章总结一下对SQLAlchemy的学习。">
+<meta name="twitter:image" content="https://data2.liuin.cn/story-writer/2017_7_27_1501156105658.jpg">
 
 
 
@@ -142,13 +141,13 @@
 
 
 
-  <link rel="canonical" href="http://www.liuin.cn/2016/10/19/计算机的启动-转/"/>
+  <link rel="canonical" href="http://www.liuin.cn/2017/08/17/SQLAchemy-学习-1/"/>
 
 
 
 
 
-  <title>计算机的启动[转] | Sixzeroo的个人博客</title>
+  <title>SQLAchemy 学习(1) | Sixzeroo的个人博客</title>
   
 
 
@@ -315,7 +314,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.liuin.cn/2016/10/19/计算机的启动-转/">
+    <link itemprop="mainEntityOfPage" href="http://www.liuin.cn/2017/08/17/SQLAchemy-学习-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Sixzeroo">
@@ -332,7 +331,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">计算机的启动[转]</h1>
+          <h1 class="post-title" itemprop="name headline">SQLAchemy 学习(1)</h1>
         
 
         <div class="post-meta">
@@ -344,8 +343,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-19T19:14:38+08:00">
-                2016-10-19
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-17T16:04:48+08:00">
+                2017-08-17
               </time>
             
 
@@ -367,8 +366,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/操作系统/" itemprop="url" rel="index">
-                    <span itemprop="name">操作系统</span>
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
                   </a>
                 </span>
 
@@ -384,7 +383,7 @@
 
           
           
-             <span id="/2016/10/19/计算机的启动-转/" class="leancloud_visitors" data-flag-title="计算机的启动[转]">
+             <span id="/2017/08/17/SQLAchemy-学习-1/" class="leancloud_visitors" data-flag-title="SQLAchemy 学习(1)">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -415,65 +414,23 @@
       
 
       
-        <p>最近在给工作室的电脑重装系统，也了解了一些计算机启动的相关知识，在网上觉得这篇<a href="http://www.ruanyifeng.com/blog/2013/02/booting.html" target="_blank" rel="external">博客</a>写得不错。虽然自己现在只是大二，有些地方看起来还是有一些吃力，但是还是收获到了很多的知识。</p>
+        <p>SQLAchemy 是Python操纵数据库的一个常用的第三方ORM框架，我将通过几篇文章总结一下对SQLAlchemy的学习。</p>
 <a id="more"></a>
-<h2 id="零、boot的含义"><a href="#零、boot的含义" class="headerlink" title="零、boot的含义"></a>零、boot的含义</h2><p>先问一个问题，”启动”用英语怎么说？</p>
-<p>回答是boot。可是，boot原来的意思是靴子，”启动”与靴子有什么关系呢？ 原来，这里的boot是bootstrap（鞋带）的缩写，它来自一句谚语：</p>
-<blockquote>
-<p>“pull oneself up by one’s bootstraps”</p>
-</blockquote>
-<p>字面意思是”拽着鞋带把自己拉起来”，这当然是不可能的事情。最早的时候，工程师们用它来比喻，计算机启动是一个很矛盾的过程：必须先运行程序，然后计算机才能启动，但是计算机不启动就无法运行程序！</p>
-<p>早期真的是这样，必须想尽各种办法，把一小段程序装进内存，然后计算机才能正常运行。所以，工程师们把这个过程叫做”拉鞋带”，久而久之就简称为boot了。</p>
-<p>计算机的整个启动过程分成四个阶段。</p>
-<h2 id="第一阶段：BIOS"><a href="#第一阶段：BIOS" class="headerlink" title="第一阶段：BIOS"></a>第一阶段：BIOS</h2><p>上个世纪70年代初，”只读内存”（read-only memory，缩写为ROM）发明，开机程序被刷入ROM芯片，计算机通电后，第一件事就是读取它。</p>
-<p><img src="http://oeziv5rwi.bkt.clouddn.com/2016/10/19/001.png" alt=""></p>
-<p>这块芯片里的程序叫做”基本輸出輸入系統”（Basic Input/Output System），简称为BIOS。</p>
-<h3 id="硬件自检"><a href="#硬件自检" class="headerlink" title="硬件自检"></a>硬件自检</h3><p>BIOS中主要存放的程序包括：自诊断程序（通过读取CMOS RAM中的内容识别硬件配置，并对其进行自检和初始化）、CMOS设置程序（引导过程中，通过特殊热键启动，进行设置后，存入CMOS RAM中）、系统自动装载程序（在系统自检成功后，将磁盘相对0道0扇区上的引导程序装入内存使其运行）和主要I/O驱动程序和中断服务（BIOS和硬件直接打交道，需要加载I/O驱动程序）。</p>
-<p>BIOS程序首先检查，计算机硬件能否满足运行的基本条件，这叫做”硬件自检”（Power-On Self-Test），缩写为POST。</p>
-<p>如果硬件出现问题，主板会发出不同含义的蜂鸣，启动中止。如果没有问题，屏幕就会显示出CPU、内存、硬盘等信息。</p>
-<h3 id="启动顺序"><a href="#启动顺序" class="headerlink" title="启动顺序"></a>启动顺序</h3><p>硬件自检完成后，BIOS把控制权转交给下一阶段的启动程序。</p>
-<p>这时，BIOS需要知道，”下一阶段的启动程序”具体存放在哪一个设备。也就是说，BIOS需要有一个外部储存设备的排序，排在前面的设备就是优先转交控制权的设备。这种排序叫做”启动顺序”（Boot Sequence）。</p>
-<p>打开BIOS的操作界面，里面有一项就是”设定启动顺序”。</p>
-<p>BIOS Sequence</p>
-<p><img src="http://oeziv5rwi.bkt.clouddn.com/2016/10/19/002.jpg" alt=""></p>
-<p>常见项有：</p>
-<ul>
-<li>Floppy 软盘</li>
-<li>HDD－0 硬盘（第一块硬盘）</li>
-<li>CDROM 光驱</li>
-<li>USB－CDROM USB光驱</li>
-<li>USB－HDD 移动硬盘</li>
-<li>LAN 网络启动</li>
+<h2 id="ORM"><a href="#ORM" class="headerlink" title="ORM"></a>ORM</h2><p>ORM全称是Object-relational mapping，他将关系数据库中表中的记录映射成为对象，以对象的形式展现，程序员可以把对数据库的操作转化为对对象的操作。<br>它的作用是在关系型数据库和业务实体对象之间作一个映射，这样，我们在具体的操作业务对象的时候，就不需要再去和复杂的SQL语句打交道，只要像平时操作对象一样操作它就可以了。<br>因此ORM的目的是为了方便开发人员以面向对象的思想来实现对数据库的操作。</p>
+<p>python中最流行的ORM库就是SQLAlchemy</p>
+<h2 id="SQLAchemy-架构"><a href="#SQLAchemy-架构" class="headerlink" title="SQLAchemy 架构"></a>SQLAchemy 架构</h2><p>SQLAcheemy两个层次的关系图<br><img src="https://data2.liuin.cn/story-writer/2017_7_27_1501156105658.jpg" alt=""><br>SQLAchemy方言系统核心类的关系图<br><img src="https://data2.liuin.cn/story-writer/2017_7_27_1501156198516.jpg" alt=""></p>
+<h2 id="Connecting"><a href="#Connecting" class="headerlink" title="Connecting"></a>Connecting</h2><p>通过create_engine()方法创建一个Engine对象实现连接：<code>engine = create_engine(&quot;mysql://scott:tiger@hostname/dbname&quot;,encoding=&#39;latin1&#39;, echo=True)</code><br>数据库URL的格式为：dialect[+driver]://user:password@host/dbname[?key=value..]，其中dialect为使用的数据库名字，driver为驱动器（比如说mysql的pymysql或者psycopg2）</p>
+<h2 id="Declare-a-Mapping（声明映射）"><a href="#Declare-a-Mapping（声明映射）" class="headerlink" title="Declare a Mapping（声明映射）"></a>Declare a Mapping（声明映射）</h2><p>我们要定义关系类的时候要依据一个基类，这个基类是维系类和数据表关系的目录，我们使用<strong>declarative_base()</strong>函数创建基类，<br>如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sqlalchemy.ext.declarative <span class="keyword">import</span> declarative_base</div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>Base = declarative_base()</div></pre></td></tr></table></figure></p>
+<p>后面所有定义的映射的类将继承这个类进行创建</p>
+<h2 id="Create-a-Schema（创建模式）"><a href="#Create-a-Schema（创建模式）" class="headerlink" title="Create a Schema（创建模式）"></a>Create a Schema（创建模式）</h2><p>我们可以通过定义映射类类来创建相关的模式（ORM的特点），比如：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span><span class="params">(Base)</span>:</span></div><div class="line">    __tablename__ = <span class="string">'users'</span></div><div class="line">    id = Column(Integer, Sequence(<span class="string">'user_id_seq'</span>), primary_key=<span class="keyword">True</span>)</div><div class="line">    name = Column(String(<span class="number">50</span>))</div><div class="line">    fullname = Column(String(<span class="number">50</span>))</div><div class="line">    password = Column(String(<span class="number">12</span>))</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__repr__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">return</span> <span class="string">"&lt;User(name='%s', fullname='%s', password='%s')&gt;"</span> % (</div><div class="line">                                self.name, self.fullname, self.password)</div></pre></td></tr></table></figure></p>
+<h2 id="Create-an-Instance-of-the-Mapped-Class"><a href="#Create-an-Instance-of-the-Mapped-Class" class="headerlink" title="Create an Instance of the Mapped Class"></a>Create an Instance of the Mapped Class</h2><p>实例化一个映射类，同样也支持使用<strong><strong>init</strong>()</strong>方法进行构造<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>ed_user = User(name=<span class="string">'ed'</span>, fullname=<span class="string">'Ed Jones'</span>, password=<span class="string">'edspassword'</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>ed_user.name</div><div class="line"><span class="string">'ed'</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>ed_user.password</div><div class="line"><span class="string">'edspassword'</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>str(ed_user.id)</div><div class="line"><span class="string">'None'</span></div></pre></td></tr></table></figure></p>
+<h2 id="Adding-and-Updating-Objects"><a href="#Adding-and-Updating-Objects" class="headerlink" title="Adding and Updating Objects"></a>Adding and Updating Objects</h2><p>通过Session和数据库进行对话，通过<strong>sessionmaker()</strong> 利用之前创建的Engine上创建一个会话类，每次进行修改的时候都要由这个类生成一个实例：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sqlalchemy.orm <span class="keyword">import</span> sessionmaker</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>Session = sessionmaker(bind=engine)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>session = Session()</div></pre></td></tr></table></figure></p>
+<p>我们对对象进行修改以后，通过创建的这个session实例对象来进行提交<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>ed_user = User(name=<span class="string">'ed'</span>, fullname=<span class="string">'Ed Jones'</span>, password=<span class="string">'edspassword'</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>session.add(ed_user)</div></pre></td></tr></table></figure></p>
+<h2 id="Querying"><a href="#Querying" class="headerlink" title="Querying"></a>Querying</h2><p>Query通过Session中的query()方法：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> instance <span class="keyword">in</span> session.query(User).order_by(User.id):</div><div class="line"><span class="meta">... </span>    print(instance.name, instance.fullname)</div><div class="line">ed Ed Jones</div><div class="line">wendy Wendy Williams</div><div class="line">mary Mary Contrary</div><div class="line">fred Fred Flinstone</div></pre></td></tr></table></figure></p>
+<p>Query提供多种筛选filter操作，在数据库中的相关基本运算</p>
+<h2 id="常用的一些方法"><a href="#常用的一些方法" class="headerlink" title="常用的一些方法"></a>常用的一些方法</h2><ul>
+<li>Base.metadata.create_all(engine) 常用于正常使用的时候创建表，自动建立表结构。优点是省时；缺点是风险高，只有在内测环境且数据量已经备份的前提下方可使用。是一种修改表结构的方法，但是风险比较高。还可以使用其他的库（如openstack/sqlalchemy-migrate)</li>
 </ul>
-<h2 id="第二阶段：主引导记录"><a href="#第二阶段：主引导记录" class="headerlink" title="第二阶段：主引导记录"></a>第二阶段：主引导记录</h2><p>BIOS按照”启动顺序”，把控制权转交给排在第一位的储存设备。即根据用户指定的引导顺序从软盘、硬盘或是可移动设备中读取启动设备的MBR，并放入指定的位置（0x7c000）内存中。</p>
-<p>这时，计算机读取该设备的第一个扇区，也就是读取最前面的512个字节。如果这512个字节的最后两个字节是0x55和0xAA，表明这个设备可以用于启动；如果不是，表明设备不能用于启动，控制权于是被转交给”启动顺序”中的下一个设备。</p>
-<p>这最前面的512个字节，就叫做”主引导记录”（Master boot record，缩写为MBR）。</p>
-<h3 id="主引导记录的结构"><a href="#主引导记录的结构" class="headerlink" title="主引导记录的结构"></a>主引导记录的结构</h3><p>“主引导记录”只有512个字节，放不了太多东西。它的主要作用是，告诉计算机到硬盘的哪一个位置去找操作系统。</p>
-<p>主引导记录由三个部分组成：</p>
-<p>（1） 第1-446字节：调用操作系统的机器码。<br>（2） 第447-510字节：分区表（Partition table）。<br>（3） 第511-512字节：主引导记录签名（0x55和0xAA）。<br>其中，第二部分”分区表”的作用，是将硬盘分成若干个区。</p>
-<h3 id="分区表"><a href="#分区表" class="headerlink" title="分区表"></a>分区表</h3><p>硬盘分区有很多好处。考虑到每个区可以安装不同的操作系统，”主引导记录”因此必须知道将控制权转交给哪个区。</p>
-<p>分区表的长度只有64个字节，里面又分成四项，每项16个字节。所以，一个硬盘最多只能分四个一级分区，又叫做”主分区”。</p>
-<p>每个主分区的16个字节，由6个部分组成：</p>
-<p>（1） 第1个字节：如果为0x80，就表示该主分区是激活分区，控制权要转交给这个分区。四个主分区里面只能有一个是激活的。<br>（2） 第2-4个字节：主分区第一个扇区的物理位置（柱面、磁头、扇区号等等）。<br>（3） 第5个字节：主分区类型。<br>（4） 第6-8个字节：主分区最后一个扇区的物理位置。<br>（5） 第9-12字节：该主分区第一个扇区的逻辑地址。<br>（6） 第13-16字节：主分区的扇区总数。<br>最后的四个字节（”主分区的扇区总数”），决定了这个主分区的长度。也就是说，一个主分区的扇区总数最多不超过2的32次方。</p>
-<p>如果每个扇区为512个字节，就意味着单个分区最大不超过2TB。再考虑到扇区的逻辑地址也是32位，所以单个硬盘可利用的空间最大也不超过2TB。如果想使用更大的硬盘，只有2个方法：一是提高每个扇区的字节数，二是增加扇区总数。</p>
-<h2 id="第三阶段：硬盘启动"><a href="#第三阶段：硬盘启动" class="headerlink" title="第三阶段：硬盘启动"></a>第三阶段：硬盘启动</h2><p>这时，计算机的控制权就要转交给硬盘的某个分区了，这里又分成三种情况。</p>
-<h3 id="情况A：卷引导记录"><a href="#情况A：卷引导记录" class="headerlink" title="情况A：卷引导记录"></a>情况A：卷引导记录</h3><p>上一节提到，四个主分区里面，只有一个是激活的。计算机会读取激活分区的第一个扇区，叫做”卷引导记录”（Volume boot record，缩写为VBR）。</p>
-<p>“卷引导记录”的主要作用是，告诉计算机，操作系统在这个分区里的位置。然后，计算机就会加载操作系统了。</p>
-<h3 id="情况B：扩展分区和逻辑分区"><a href="#情况B：扩展分区和逻辑分区" class="headerlink" title="情况B：扩展分区和逻辑分区"></a>情况B：扩展分区和逻辑分区</h3><p>随着硬盘越来越大，四个主分区已经不够了，需要更多的分区。但是，分区表只有四项，因此规定有且仅有一个区可以被定义成”扩展分区”（Extended partition）。</p>
-<p>所谓”扩展分区”，就是指这个区里面又分成多个区。这种分区里面的分区，就叫做”逻辑分区”（logical partition）。</p>
-<p>计算机先读取扩展分区的第一个扇区，叫做”扩展引导记录”（Extended boot record，缩写为EBR）。它里面也包含一张64字节的分区表，但是最多只有两项（也就是两个逻辑分区）。</p>
-<p>计算机接着读取第二个逻辑分区的第一个扇区，再从里面的分区表中找到第三个逻辑分区的位置，以此类推，直到某个逻辑分区的分区表只包含它自身为止（即只有一个分区项）。因此，扩展分区可以包含无数个逻辑分区。</p>
-<p>但是，似乎很少通过这种方式启动操作系统。如果操作系统确实安装在扩展分区，一般采用下一种方式启动。</p>
-<h3 id="情况C：启动管理器"><a href="#情况C：启动管理器" class="headerlink" title="情况C：启动管理器"></a>情况C：启动管理器</h3><p>在这种情况下，计算机读取”主引导记录”前面446字节的机器码之后，不再把控制权转交给某一个分区，而是运行事先安装的”启动管理器”（boot loader），由用户选择启动哪一个操作系统。</p>
-<p>Linux环境中，目前最流行的启动管理器是Grub。</p>
-<p><img src="http://oeziv5rwi.bkt.clouddn.com/2016/10/19/003.png" alt=""></p>
-<p>Grub</p>
-<p>对于grub而言，在MBR中的446字节的引导程序属于GRUB的开始执行程序，通过这段程序，进一步执行stage1.5或是stage2的执行程序，将在下面详细介绍执行过程。</p>
-<p>其中stage1.5或是stage2便属于阶段2引导的过程了，stage2过程也是作为GRUB kernel的核心代码出现。Stage1.5过程（对于GRUB而言存在stage1.5，GRUB2则不存在）的功能很单一，主要就是为了引导stage2过程服务。由于stage2过程的代码存放在文件系统下的boot分区目录中，因此stage1.5过程就是需要提供一个文件系统的环境，而该文件系统环境需要保证系统可以找到stage2过程的文件，那么stage1.5阶段提供的文件系统需要是boot文件系统所对应的，这个在执行grub install过程中就已经确定了。stage2过程中，主要会把系统切换到保护模式，设置好C运行时环境，找到config文件（事实上就是menulist文件），如果没有找到就执行一个shell，等待用户的执行。然后的工作就变成了输入命令-&gt;解析命令-&gt;执行命令的循环中。当然该阶段引导的最终状态就是执行boot命令，将内核和initrd镜像加载进入内存中，进而将控制权转交给内核。</p>
-<h2 id="第四阶段：操作系统"><a href="#第四阶段：操作系统" class="headerlink" title="第四阶段：操作系统"></a>第四阶段：操作系统</h2><p>控制权转交给操作系统后，操作系统的内核首先被载入内存。</p>
-<p>以Linux系统为例，先载入/boot目录下面的kernel。内核加载成功后，第一个运行的程序是/sbin/init。它根据配置文件（Debian系统是/etc/initab）产生init进程。这是Linux启动后的第一个进程，pid进程编号为1，其他进程都是它的后代。</p>
-<p>然后，init线程加载系统的各个模块，比如窗口程序和网络程序，直至执行/bin/login程序，跳出登录界面，等待用户输入用户名和密码。</p>
-<p>至此，全部启动过程完成。</p>
 
       
     </div>
@@ -523,7 +480,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://www.liuin.cn/2016/10/19/计算机的启动-转/" title="计算机的启动[转]">http://www.liuin.cn/2016/10/19/计算机的启动-转/</a>
+    <a href="http://www.liuin.cn/2017/08/17/SQLAchemy-学习-1/" title="SQLAchemy 学习(1)">http://www.liuin.cn/2017/08/17/SQLAchemy-学习-1/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -538,7 +495,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/计算机/" rel="tag"># 计算机</a>
+            <a href="/tags/python/" rel="tag"># python</a>
           
         </div>
       
@@ -551,8 +508,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/10/13/重装系统/" rel="next" title="重装系统">
-                <i class="fa fa-chevron-left"></i> 重装系统
+              <a href="/2017/08/08/初识Scrapy-爬虫框架/" rel="next" title="初识Scrapy 爬虫框架">
+                <i class="fa fa-chevron-left"></i> 初识Scrapy 爬虫框架
               </a>
             
           </div>
@@ -561,8 +518,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/10/22/开启ACM之路/" rel="prev" title="开启ACM之路">
-                开启ACM之路 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/08/30/SQLAchemy-学习-2/" rel="prev" title="SQLAchemy 学习(2)">
+                SQLAchemy 学习(2) <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -730,7 +687,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#零、boot的含义"><span class="nav-number">1.</span> <span class="nav-text">零、boot的含义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第一阶段：BIOS"><span class="nav-number">2.</span> <span class="nav-text">第一阶段：BIOS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#硬件自检"><span class="nav-number">2.1.</span> <span class="nav-text">硬件自检</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动顺序"><span class="nav-number">2.2.</span> <span class="nav-text">启动顺序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二阶段：主引导记录"><span class="nav-number">3.</span> <span class="nav-text">第二阶段：主引导记录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主引导记录的结构"><span class="nav-number">3.1.</span> <span class="nav-text">主引导记录的结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分区表"><span class="nav-number">3.2.</span> <span class="nav-text">分区表</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三阶段：硬盘启动"><span class="nav-number">4.</span> <span class="nav-text">第三阶段：硬盘启动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#情况A：卷引导记录"><span class="nav-number">4.1.</span> <span class="nav-text">情况A：卷引导记录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#情况B：扩展分区和逻辑分区"><span class="nav-number">4.2.</span> <span class="nav-text">情况B：扩展分区和逻辑分区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#情况C：启动管理器"><span class="nav-number">4.3.</span> <span class="nav-text">情况C：启动管理器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四阶段：操作系统"><span class="nav-number">5.</span> <span class="nav-text">第四阶段：操作系统</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ORM"><span class="nav-number">1.</span> <span class="nav-text">ORM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SQLAchemy-架构"><span class="nav-number">2.</span> <span class="nav-text">SQLAchemy 架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Connecting"><span class="nav-number">3.</span> <span class="nav-text">Connecting</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Declare-a-Mapping（声明映射）"><span class="nav-number">4.</span> <span class="nav-text">Declare a Mapping（声明映射）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Create-a-Schema（创建模式）"><span class="nav-number">5.</span> <span class="nav-text">Create a Schema（创建模式）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Create-an-Instance-of-the-Mapped-Class"><span class="nav-number">6.</span> <span class="nav-text">Create an Instance of the Mapped Class</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Adding-and-Updating-Objects"><span class="nav-number">7.</span> <span class="nav-text">Adding and Updating Objects</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Querying"><span class="nav-number">8.</span> <span class="nav-text">Querying</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用的一些方法"><span class="nav-number">9.</span> <span class="nav-text">常用的一些方法</span></a></li></ol></div>
             
 
           </div>
