@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.liuin.cn/"/>
-  <updated>2017-09-03T08:21:50.000Z</updated>
+  <updated>2017-09-07T08:53:53.000Z</updated>
   <id>http://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,40 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>台湾，我来了</title>
+    <link href="http://www.liuin.cn/2017/09/07/%E5%8F%B0%E6%B9%BE%EF%BC%8C%E6%88%91%E6%9D%A5%E4%BA%86/"/>
+    <id>http://www.liuin.cn/2017/09/07/台湾，我来了/</id>
+    <published>2017-09-07T08:46:33.000Z</published>
+    <updated>2017-09-07T08:53:53.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>期待了许久，终于等到了去台湾的日子。9.5从上海出发，乘坐吉祥航空飞台北。正式开始我131天的台湾交换之旅。</p>
+<a id="more"></a>
+<h2 id="台湾初感受"><a href="#台湾初感受" class="headerlink" title="台湾初感受"></a>台湾初感受</h2><p>飞机刚降落，开了数据流量以后马上用Google 随便搜了点东西，直连谷歌，哈哈，肉身翻墙就是爽。<br>抵达桃园机场后，找到了台科大接机的同学把我们送到了台科大。然后我们就去找我们租房子的地方了，我们租房子的地方位于新北市，但是学校是在台北市，中间隔着一条河，坐公交应该是20分钟左右。看来在宣区从寝室到教室5分钟搞定的事情成了一种奢望。<br>在找租房子的地址的时候，感觉台湾各种小巷子太多了、红路灯太多了、机车太多了、便利店太多了。</p>
+<p>从地图可以出道路基本上都是这种小巷子:</p>
+<p><img src="https://data2.liuin.cn/story-writer/2017_9_7_1504772211813.jpg" alt="从地图可以出道路基本上都是这种小巷子"></p>
+<p>之前一直听说台湾这边的人非常热情，来到这里以后真的是深刻体会到了。在路上问路他们一定会说得非常详细，居委会的阿姨看到我们来了以后跟我们说了一大堆东西，这种感觉真好。</p>
+<p>大陆和台湾的一些用词习惯是不一样的，比如我们的网络他们叫网路，计算机专业他们一般叫资讯工程。有几次去便利店买东西，店员听了我说的东西以后都是一脸懵逼，要我详细解释这个东西是用来干什么的，他们才清楚。看来还得慢慢适应。</p>
+<h2 id="机车"><a href="#机车" class="headerlink" title="机车"></a>机车</h2><p>台湾这边的机车就是一般大陆说的摩托车，说真的这边的机车真的不要太多。过红绿灯的时候，机车引擎的声音那叫一个大呀，特别是在刚刚转绿灯的时候堪比赛车比赛开始的场面。</p>
+<p>台湾的机车为什么这么多呢？原因应该是多方面的，人口多、道路窄是一个方面的原因。在台北，骑机车的大多是在市区周围上班族（就像我住的地方一样），把机车作为一种通勤工具，相比地铁公交的拥挤，开车要找车位开销大，骑机车成为了这些人的首选。当然还有一个更重要的原因就是台湾这边不禁摩，如果北上广深也不禁摩，可能机车的规模比台北还要多。</p>
+<p>台湾街头的机车大军:</p>
+<p><img src="https://data2.liuin.cn/story-writer/2017_9_7_1504773955984.jpg" alt="台湾街头的机车大军"></p>
+<h2 id="next"><a href="#next" class="headerlink" title="next"></a>next</h2><p>接下来希望自己能够好好把握好台湾交换的时间，博客中的台湾游记系列也要定时进行更新。加油吧！</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;期待了许久，终于等到了去台湾的日子。9.5从上海出发，乘坐吉祥航空飞台北。正式开始我131天的台湾交换之旅。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="台湾" scheme="http://www.liuin.cn/categories/%E5%8F%B0%E6%B9%BE/"/>
+    
+    
+      <category term="游记" scheme="http://www.liuin.cn/tags/%E6%B8%B8%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>PyCharm 使用技巧汇总</title>
@@ -697,36 +731,6 @@
     
     
       <category term="STL" scheme="http://www.liuin.cn/tags/STL/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>POJ 3273 Monthly Expense 二分</title>
-    <link href="http://www.liuin.cn/2017/05/10/POJ-3273-Monthly-Expense-%E4%BA%8C%E5%88%86/"/>
-    <id>http://www.liuin.cn/2017/05/10/POJ-3273-Monthly-Expense-二分/</id>
-    <published>2017-05-10T01:00:40.000Z</published>
-    <updated>2017-05-10T01:11:34.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>题目链接：<a href="http://poj.org/problem?id=3273" target="_blank" rel="external">http://poj.org/problem?id=3273</a></p>
-<a id="more"></a>
-<h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>给出包含n个元素的数组，将这n个元素分成最多m段，问各种分法中每段和的最大值得最小值是多少</p>
-<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>最小化最大值问题，使用二分进行求解，需要注意的是，在不断二分的时候边界更新的时候，当中间值不满足条件的时候，新的区间应该是[mid+1,r]，满足条件的时候新的区间应该是[l,mic].即要排除掉不满足条件的数</p>
-<h2 id="代码-ing-namespace-std"><a href="#代码-ing-namespace-std" class="headerlink" title="代码                                                                            ing namespace std;"></a>代码                                                                            ing namespace std;</h2><p>#define INF 0x3f3f3f3f<br>typedef long long ll;<br>const int maxn=100010;<br>int n,m;<br>int d[maxn];</p>
-<p>bool judge(int s)<br>{<br>    int num=0,tmp=0;<br>    for(int i=0;i&lt;n;i++)<br>    {<br>        if(tmp+d[i]&lt;=s) tmp+=d[i];<br>        else<br>        {<br>            //cout&lt;&lt;tmp&lt;&lt;” “;<br>            tmp=d[i];<br>            num++;<br>        }<br>    }<br>    if(tmp) num++;<br>    //cout&lt;&lt;num&lt;&lt;endl;<br>    return num&lt;=m;<br>}</p>
-<p>int fun(int maxv,int sum)<br>{<br>    int l=maxv,r=sum,mid;<br>    while(l<r) {="" mid="l+((r-l)">&gt;1);<br>        mid=(l+r)/2;<br>        //cout&lt;&lt;l&lt;&lt;” “&lt;&lt;r&lt;&lt;” “&lt;&lt;mid&lt;&lt;endl;<br>        if(judge(mid)) r=mid;<br>        else l=mid+1;<br>    }<br>    return l;<br>}</r)></p>
-<p>void solve()<br>{<br>    while(scanf(“%d %d”,&amp;n,&amp;m)!=EOF)<br>    {<br>        int sum=0,maxv=0;<br>        for(int i=0;i&lt;n;i++)<br>        {<br>            scanf(“%d”,&amp;d[i]);<br>            sum+=d[i];<br>            maxv=max(maxv,d[i]);<br>        }<br>        printf(“%d\n”,fun(maxv,sum));<br>    }<br>}</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;题目链接：&lt;a href=&quot;http://poj.org/problem?id=3273&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://poj.org/problem?id=3273&lt;/a&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="算法" scheme="http://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
-    
-    
-      <category term="其他-二分" scheme="http://www.liuin.cn/tags/%E5%85%B6%E4%BB%96-%E4%BA%8C%E5%88%86/"/>
     
   </entry>
   
