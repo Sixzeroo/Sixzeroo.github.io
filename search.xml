@@ -3,6 +3,46 @@
   
     
     <entry>
+      <title><![CDATA[Bandit 通关题解]]></title>
+      <url>/2017/11/01/Bandit-%E9%80%9A%E5%85%B3%E9%A2%98%E8%A7%A3/</url>
+      <content type="html"><![CDATA[<p>Bandit 是一个适合学习Linux指令的游戏吧，规则是每一关利用提供的hostname:port和上一关的password（第一关提供password）通过ssh进入到给定的环境中，按照题目要求拿到指定的Key作为下一关的password。挺好玩的，目前尚未通关，在此挖个坑</p>
+<a id="more"></a>
+<p>通过<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh bandit0@bandit.labs.overthewire.org -p 2220</div></pre></td></tr></table></figure></p>
+<p>开玩吧！</p>
+<h2 id="Level-0-→-Level-1"><a href="#Level-0-→-Level-1" class="headerlink" title="Level 0 → Level 1"></a>Level 0 → Level 1</h2><h3 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cat readme</div></pre></td></tr></table></figure>
+<h3 id="Key"><a href="#Key" class="headerlink" title="Key"></a>Key</h3><p>boJ9jbbUNNfktd78OOpsqOltutMc3MY1</p>
+<h2 id="Level-1-→-Level-2"><a href="#Level-1-→-Level-2" class="headerlink" title="Level 1 → Level 2"></a>Level 1 → Level 2</h2><h3 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h3><p>在Linux中含有特殊字符的文件名可能和shell的一些语法向冲突，比如这一道题目中的“-”，shell就认定其之后的内容为参数。所以我们要通过./-表示文件来消除这种歧义。</p>
+<h3 id="Code-1"><a href="#Code-1" class="headerlink" title="Code"></a>Code</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cat ./-</div></pre></td></tr></table></figure>
+<h3 id="Key-1"><a href="#Key-1" class="headerlink" title="Key"></a>Key</h3><p>CV1DtqXWVFXTvM2F0k09SHz0YwRINYA9</p>
+<h2 id="Level-2-→-Level-3"><a href="#Level-2-→-Level-3" class="headerlink" title="Level 2 → Level 3"></a>Level 2 → Level 3</h2><h3 id="Solution-1"><a href="#Solution-1" class="headerlink" title="Solution"></a>Solution</h3><p>文件名中含有空格可以用反斜杠+空格表示</p>
+<h3 id="Code-2"><a href="#Code-2" class="headerlink" title="Code"></a>Code</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cat spaces\ in\ this\ filename</div></pre></td></tr></table></figure>
+<h3 id="Key-2"><a href="#Key-2" class="headerlink" title="Key"></a>Key</h3><p>UmHadQclWmgdLOKQ3YNgjWxGoRMb5luK</p>
+<h2 id="Level-3-→-Level-4"><a href="#Level-3-→-Level-4" class="headerlink" title="Level 3 → Level 4"></a>Level 3 → Level 4</h2><h3 id="Code-3"><a href="#Code-3" class="headerlink" title="Code"></a>Code</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cat inhere/.inhere</div></pre></td></tr></table></figure>
+<h3 id="Key-3"><a href="#Key-3" class="headerlink" title="Key"></a>Key</h3><p>pIwrPrtPN36QITSp3EQaw936yaFoFgAB</p>
+<h2 id="Level-4-→-Level-5"><a href="#Level-4-→-Level-5" class="headerlink" title="Level 4 → Level 5"></a>Level 4 → Level 5</h2><h3 id="Solution-2"><a href="#Solution-2" class="headerlink" title="Solution"></a>Solution</h3><p>通过file 列出文件属性来查看那些文件是ASCII编码（人类可读的）</p>
+<h3 id="Code-4"><a href="#Code-4" class="headerlink" title="Code"></a>Code</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">cd inhere/</div><div class="line">file ./*</div><div class="line"></div><div class="line">./-file00: data</div><div class="line">./-file01: data</div><div class="line">./-file02: data</div><div class="line">./-file03: data</div><div class="line">./-file04: data</div><div class="line">./-file05: data</div><div class="line">./-file06: data</div><div class="line">./-file07: ASCII text</div><div class="line">./-file08: data</div><div class="line">./-file09: data</div><div class="line"></div><div class="line">cat ./-file07</div></pre></td></tr></table></figure>
+<h3 id="Key-4"><a href="#Key-4" class="headerlink" title="Key"></a>Key</h3><p>koReBOKuIDDepwhWk7jZC0RTdopnAYKh</p>
+<h2 id="Level-5-→-Level-6"><a href="#Level-5-→-Level-6" class="headerlink" title="Level 5 → Level 6"></a>Level 5 → Level 6</h2><h3 id="Solution-3"><a href="#Solution-3" class="headerlink" title="Solution"></a>Solution</h3><p>和上一题一样通过文件属性进行查找，用到find指令，只需要通过文件大小就能够确定文件位置了</p>
+<h3 id="Code-5"><a href="#Code-5" class="headerlink" title="Code"></a>Code</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">cd inhere/</div><div class="line">find . -size 1033c</div><div class="line"></div><div class="line">./maybehere07/.file2</div><div class="line"></div><div class="line">cat ./maybehere07/.file2</div></pre></td></tr></table></figure>
+<h3 id="Key-5"><a href="#Key-5" class="headerlink" title="Key"></a>Key</h3><p>DXjZPULLxYr17uwoI01bNLQbtFemEgo7</p>
+<h2 id="Level-6-→-Level-7"><a href="#Level-6-→-Level-7" class="headerlink" title="Level 6 → Level 7"></a>Level 6 → Level 7</h2><h3 id="Solution-4"><a href="#Solution-4" class="headerlink" title="Solution"></a>Solution</h3><h3 id="Code-6"><a href="#Code-6" class="headerlink" title="Code"></a>Code</h3><h3 id="Key-6"><a href="#Key-6" class="headerlink" title="Key"></a>Key</h3>]]></content>
+      
+        <categories>
+            
+            <category> 运维 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Linux </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[Linux中 ps 配合 kill 的操作]]></title>
       <url>/2017/10/25/Linux%E4%B8%AD-ps-%E9%85%8D%E5%90%88-kill-%E7%9A%84%E6%93%8D%E4%BD%9C/</url>
       <content type="html"><![CDATA[<p>有的时候我们想要关掉一些程序的一系列进程，又不想一个一个通过ps找到pid，再一个一个kill这些进程，这个时候用ps配合kill就是最好的选择了。</p>

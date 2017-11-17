@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2017-11-15T05:10:16.000Z</updated>
+  <updated>2017-11-16T02:02:16.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,48 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Bandit 通关题解</title>
+    <link href="https://www.liuin.cn/2017/11/01/Bandit-%E9%80%9A%E5%85%B3%E9%A2%98%E8%A7%A3/"/>
+    <id>https://www.liuin.cn/2017/11/01/Bandit-通关题解/</id>
+    <published>2017-11-01T14:20:54.000Z</published>
+    <updated>2017-11-16T02:02:16.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Bandit 是一个适合学习Linux指令的游戏吧，规则是每一关利用提供的hostname:port和上一关的password（第一关提供password）通过ssh进入到给定的环境中，按照题目要求拿到指定的Key作为下一关的password。挺好玩的，目前尚未通关，在此挖个坑</p>
+<a id="more"></a>
+<p>通过<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh bandit0@bandit.labs.overthewire.org -p 2220</div></pre></td></tr></table></figure></p>
+<p>开玩吧！</p>
+<h2 id="Level-0-→-Level-1"><a href="#Level-0-→-Level-1" class="headerlink" title="Level 0 → Level 1"></a>Level 0 → Level 1</h2><h3 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cat readme</div></pre></td></tr></table></figure>
+<h3 id="Key"><a href="#Key" class="headerlink" title="Key"></a>Key</h3><p>boJ9jbbUNNfktd78OOpsqOltutMc3MY1</p>
+<h2 id="Level-1-→-Level-2"><a href="#Level-1-→-Level-2" class="headerlink" title="Level 1 → Level 2"></a>Level 1 → Level 2</h2><h3 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h3><p>在Linux中含有特殊字符的文件名可能和shell的一些语法向冲突，比如这一道题目中的“-”，shell就认定其之后的内容为参数。所以我们要通过./-表示文件来消除这种歧义。</p>
+<h3 id="Code-1"><a href="#Code-1" class="headerlink" title="Code"></a>Code</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cat ./-</div></pre></td></tr></table></figure>
+<h3 id="Key-1"><a href="#Key-1" class="headerlink" title="Key"></a>Key</h3><p>CV1DtqXWVFXTvM2F0k09SHz0YwRINYA9</p>
+<h2 id="Level-2-→-Level-3"><a href="#Level-2-→-Level-3" class="headerlink" title="Level 2 → Level 3"></a>Level 2 → Level 3</h2><h3 id="Solution-1"><a href="#Solution-1" class="headerlink" title="Solution"></a>Solution</h3><p>文件名中含有空格可以用反斜杠+空格表示</p>
+<h3 id="Code-2"><a href="#Code-2" class="headerlink" title="Code"></a>Code</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cat spaces\ in\ this\ filename</div></pre></td></tr></table></figure>
+<h3 id="Key-2"><a href="#Key-2" class="headerlink" title="Key"></a>Key</h3><p>UmHadQclWmgdLOKQ3YNgjWxGoRMb5luK</p>
+<h2 id="Level-3-→-Level-4"><a href="#Level-3-→-Level-4" class="headerlink" title="Level 3 → Level 4"></a>Level 3 → Level 4</h2><h3 id="Code-3"><a href="#Code-3" class="headerlink" title="Code"></a>Code</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cat inhere/.inhere</div></pre></td></tr></table></figure>
+<h3 id="Key-3"><a href="#Key-3" class="headerlink" title="Key"></a>Key</h3><p>pIwrPrtPN36QITSp3EQaw936yaFoFgAB</p>
+<h2 id="Level-4-→-Level-5"><a href="#Level-4-→-Level-5" class="headerlink" title="Level 4 → Level 5"></a>Level 4 → Level 5</h2><h3 id="Solution-2"><a href="#Solution-2" class="headerlink" title="Solution"></a>Solution</h3><p>通过file 列出文件属性来查看那些文件是ASCII编码（人类可读的）</p>
+<h3 id="Code-4"><a href="#Code-4" class="headerlink" title="Code"></a>Code</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">cd inhere/</div><div class="line">file ./*</div><div class="line"></div><div class="line">./-file00: data</div><div class="line">./-file01: data</div><div class="line">./-file02: data</div><div class="line">./-file03: data</div><div class="line">./-file04: data</div><div class="line">./-file05: data</div><div class="line">./-file06: data</div><div class="line">./-file07: ASCII text</div><div class="line">./-file08: data</div><div class="line">./-file09: data</div><div class="line"></div><div class="line">cat ./-file07</div></pre></td></tr></table></figure>
+<h3 id="Key-4"><a href="#Key-4" class="headerlink" title="Key"></a>Key</h3><p>koReBOKuIDDepwhWk7jZC0RTdopnAYKh</p>
+<h2 id="Level-5-→-Level-6"><a href="#Level-5-→-Level-6" class="headerlink" title="Level 5 → Level 6"></a>Level 5 → Level 6</h2><h3 id="Solution-3"><a href="#Solution-3" class="headerlink" title="Solution"></a>Solution</h3><p>和上一题一样通过文件属性进行查找，用到find指令，只需要通过文件大小就能够确定文件位置了</p>
+<h3 id="Code-5"><a href="#Code-5" class="headerlink" title="Code"></a>Code</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">cd inhere/</div><div class="line">find . -size 1033c</div><div class="line"></div><div class="line">./maybehere07/.file2</div><div class="line"></div><div class="line">cat ./maybehere07/.file2</div></pre></td></tr></table></figure>
+<h3 id="Key-5"><a href="#Key-5" class="headerlink" title="Key"></a>Key</h3><p>DXjZPULLxYr17uwoI01bNLQbtFemEgo7</p>
+<h2 id="Level-6-→-Level-7"><a href="#Level-6-→-Level-7" class="headerlink" title="Level 6 → Level 7"></a>Level 6 → Level 7</h2><h3 id="Solution-4"><a href="#Solution-4" class="headerlink" title="Solution"></a>Solution</h3><h3 id="Code-6"><a href="#Code-6" class="headerlink" title="Code"></a>Code</h3><h3 id="Key-6"><a href="#Key-6" class="headerlink" title="Key"></a>Key</h3>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Bandit 是一个适合学习Linux指令的游戏吧，规则是每一关利用提供的hostname:port和上一关的password（第一关提供password）通过ssh进入到给定的环境中，按照题目要求拿到指定的Key作为下一关的password。挺好玩的，目前尚未通关，在此挖个坑&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="运维" scheme="https://www.liuin.cn/categories/%E8%BF%90%E7%BB%B4/"/>
+    
+    
+      <category term="Linux" scheme="https://www.liuin.cn/tags/Linux/"/>
+    
+  </entry>
   
   <entry>
     <title>Linux中 ps 配合 kill 的操作</title>
@@ -811,32 +853,6 @@
     
     
       <category term="图论-二分图" scheme="https://www.liuin.cn/tags/%E5%9B%BE%E8%AE%BA-%E4%BA%8C%E5%88%86%E5%9B%BE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>HDU 1162 Eddy&#39;s picture 最小生成树 Prim模板</title>
-    <link href="https://www.liuin.cn/2017/05/15/HDU-1162-Eddy-s-picture-%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91-Prim%E6%A8%A1%E6%9D%BF/"/>
-    <id>https://www.liuin.cn/2017/05/15/HDU-1162-Eddy-s-picture-最小生成树-Prim模板/</id>
-    <published>2017-05-15T01:42:20.000Z</published>
-    <updated>2017-05-15T01:44:25.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>算法链接：<a href="http://acm.hdu.edu.cn/showproblem.php?pid=1162" target="_blank" rel="external">http://acm.hdu.edu.cn/showproblem.php?pid=1162</a></p>
-<a id="more"></a>
-<h2 id="题意-amp-题解"><a href="#题意-amp-题解" class="headerlink" title="题意&amp;题解"></a>题意&amp;题解</h2><p>裸的最小生成树，先计算出各个点的距离，跑一遍Prime。以此题记录Prime算法模板</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdlib&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cmath&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;ctime&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;queue&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> INF 0x3f3f3f3f</span></div><div class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxn=<span class="number">205</span>;</div><div class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxm=<span class="number">2005</span>;</div><div class="line"></div><div class="line"><span class="keyword">double</span> cost[maxn][maxn];</div><div class="line"><span class="keyword">double</span> mincost[maxn];  <span class="comment">//到已经确定的点的最短距离</span></div><div class="line"><span class="keyword">bool</span> used[maxn];</div><div class="line"><span class="keyword">int</span> V;</div><div class="line"><span class="keyword">double</span> xx[maxn],yy[maxn];</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">double</span> <span class="title">get_dist</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">return</span> <span class="built_in">sqrt</span>((xx[a]-xx[b])*(xx[a]-xx[b])+(yy[a]-yy[b])*(yy[a]-yy[b]));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">build</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=V;i++)</div><div class="line">		<span class="built_in">scanf</span>(<span class="string">"%lf %lf"</span>,&amp;xx[i],&amp;yy[i]);</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=V;i++)</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=V;j++)</div><div class="line">		&#123;</div><div class="line">			cost[i][j]=cost[j][i]=get_dist(i,j);</div><div class="line">		&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">double</span> <span class="title">prim</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    fill(mincost,mincost+V+<span class="number">1</span>,INF);  <span class="comment">//注意建图方式</span></div><div class="line">    fill(used,used+V+<span class="number">1</span>,<span class="literal">false</span>);   <span class="comment">//注意建图方式</span></div><div class="line">    mincost[<span class="number">1</span>]=<span class="number">0</span>;        <span class="comment">//注意建图方式</span></div><div class="line">    <span class="comment">//used[0]=true;     不在这里初始初始化</span></div><div class="line"></div><div class="line">    <span class="keyword">double</span> res=<span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="keyword">while</span>(<span class="literal">true</span>)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">int</span> v=<span class="number">-1</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=V;i++) <span class="comment">//注意建图组织方式</span></div><div class="line">        &#123;</div><div class="line">            <span class="comment">//在这里对收录一号元素，因为要遍历一号元素的相邻结点</span></div><div class="line">            <span class="keyword">if</span>(!used[i]&amp;&amp;((v==<span class="number">-1</span>)||mincost[i]&lt;mincost[v]))v=i;   </div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span>(v==<span class="number">-1</span>)</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        used[v]=<span class="literal">true</span>;</div><div class="line">        res+=mincost[v];</div><div class="line">		<span class="comment">//cout&lt;&lt;v&lt;&lt;" "&lt;&lt;res&lt;&lt;endl;</span></div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=V;i++)    <span class="comment">//注意建图方式</span></div><div class="line">            mincost[i]=min(mincost[i],cost[v][i]);  <span class="comment">//不判断是否相邻</span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> res;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;V)!=EOF)</div><div class="line">	&#123;</div><div class="line">		build();</div><div class="line">		<span class="keyword">double</span> ans=prim();</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"%.2lf\n"</span>,ans);</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	freopen(<span class="string">"input.txt"</span>,<span class="string">"r"</span>,<span class="built_in">stdin</span>);</div><div class="line">	solve();</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;算法链接：&lt;a href=&quot;http://acm.hdu.edu.cn/showproblem.php?pid=1162&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://acm.hdu.edu.cn/showproblem.php?pid=1162&lt;/a&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="算法" scheme="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
-    
-    
-      <category term="图论-最小生成树" scheme="https://www.liuin.cn/tags/%E5%9B%BE%E8%AE%BA-%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/"/>
     
   </entry>
   
