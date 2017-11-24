@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2017-11-24T17:47:38.000Z</updated>
+  <updated>2017-11-24T17:51:23.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -17,10 +17,10 @@
   
   <entry>
     <title>Git 停止追踪文件</title>
-    <link href="https://www.liuin.cn/2017/11/10/Git-%E5%81%9C%E6%AD%A2%E8%BF%BD%E8%B8%AA%E6%96%87%E4%BB%B6/"/>
-    <id>https://www.liuin.cn/2017/11/10/Git-停止追踪文件/</id>
-    <published>2017-11-10T14:18:23.000Z</published>
-    <updated>2017-11-24T17:47:38.000Z</updated>
+    <link href="https://www.liuin.cn/2017/11/16/Git-%E5%81%9C%E6%AD%A2%E8%BF%BD%E8%B8%AA%E6%96%87%E4%BB%B6/"/>
+    <id>https://www.liuin.cn/2017/11/16/Git-停止追踪文件/</id>
+    <published>2017-11-16T14:18:23.000Z</published>
+    <updated>2017-11-24T17:51:23.000Z</updated>
     
     <content type="html"><![CDATA[<p>平时在使用Git的时候，大多会有这种情况：因为在初始化git的时候没有考虑周全导致有些不需要的文件已经被被追踪，或者想不让在某次提交以后一些文件不被追踪（比如说一些涉及隐私的配置文件）。这里提供一些解决方案</p>
 <a id="more"></a>

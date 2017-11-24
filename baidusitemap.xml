@@ -4,14 +4,14 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2017/11/09/Hexo-%E7%BB%93%E6%9E%84%E8%A7%A3%E6%9E%90/</loc>
-    <lastmod>2017-11-24T17:49:26.000Z</lastmod>
+    <loc>https://www.liuin.cn/2017/11/16/Git-%E5%81%9C%E6%AD%A2%E8%BF%BD%E8%B8%AA%E6%96%87%E4%BB%B6/</loc>
+    <lastmod>2017-11-24T17:51:23.000Z</lastmod>
     <data>
         <display>
-        <title>Hexo 结构解析</title>
-        <pubTime>2017-11-09T08:19:57.000Z</pubTime>
+        <title>Git 停止追踪文件</title>
+        <pubTime>2017-11-16T14:18:23.000Z</pubTime>
         
-        <tag>Hexo</tag>
+        <tag>Git</tag>
          
          
            
@@ -24,14 +24,14 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2017/11/10/Git-%E5%81%9C%E6%AD%A2%E8%BF%BD%E8%B8%AA%E6%96%87%E4%BB%B6/</loc>
-    <lastmod>2017-11-24T17:47:38.000Z</lastmod>
+    <loc>https://www.liuin.cn/2017/11/09/Hexo-%E7%BB%93%E6%9E%84%E8%A7%A3%E6%9E%90/</loc>
+    <lastmod>2017-11-24T17:49:26.000Z</lastmod>
     <data>
         <display>
-        <title>Git 停止追踪文件</title>
-        <pubTime>2017-11-10T14:18:23.000Z</pubTime>
+        <title>Hexo 结构解析</title>
+        <pubTime>2017-11-09T08:19:57.000Z</pubTime>
         
-        <tag>Git</tag>
+        <tag>Hexo</tag>
          
          
            

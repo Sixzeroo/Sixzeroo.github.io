@@ -4,7 +4,7 @@
     
     <entry>
       <title><![CDATA[Git 停止追踪文件]]></title>
-      <url>/2017/11/10/Git-%E5%81%9C%E6%AD%A2%E8%BF%BD%E8%B8%AA%E6%96%87%E4%BB%B6/</url>
+      <url>/2017/11/16/Git-%E5%81%9C%E6%AD%A2%E8%BF%BD%E8%B8%AA%E6%96%87%E4%BB%B6/</url>
       <content type="html"><![CDATA[<p>平时在使用Git的时候，大多会有这种情况：因为在初始化git的时候没有考虑周全导致有些不需要的文件已经被被追踪，或者想不让在某次提交以后一些文件不被追踪（比如说一些涉及隐私的配置文件）。这里提供一些解决方案</p>
 <a id="more"></a>
 <h2 id="Git中忽略某些文件"><a href="#Git中忽略某些文件" class="headerlink" title="Git中忽略某些文件"></a>Git中忽略某些文件</h2><h3 id="gitignore"><a href="#gitignore" class="headerlink" title=".gitignore"></a>.gitignore</h3><p>在一开始git进行初始化的时候我们可以通过修改配置文件.gitignore来指定哪些文件是不需要被追踪的。<br>文件 .gitignore 的格式规范如下：</p>
