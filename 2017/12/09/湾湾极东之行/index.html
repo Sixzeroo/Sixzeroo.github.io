@@ -81,7 +81,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="图论," />
+  <meta name="keywords" content="游记," />
 
 
 
@@ -99,18 +99,24 @@
 
 
 
-<meta name="description" content="首先是凸包的定义，假设平面内有一些点，这些点中的一部分组成一个多边形，将其他的点都包含起来，当这个多边形是凸多边形的时候，我们就把他当成是一个凸包。解决凸包问题有很多种算法，比较常见的有O(n^3)的暴力穷举算法以及O(nlogn)d的分治算法，这里讲的是一个时间复杂度为O(nlogn)的Graham扫描法。">
-<meta name="keywords" content="图论">
+<meta name="description" content="这个周末台科大台陆会说了一个月的活动终于举办了，福隆骑行，打卡台湾极东点，过一把骑行的瘾。">
+<meta name="keywords" content="游记">
 <meta property="og:type" content="article">
-<meta property="og:title" content="凸包问题">
-<meta property="og:url" content="https://www.liuin.cn/2017/04/17/凸包问题/index.html">
+<meta property="og:title" content="湾湾极东之行">
+<meta property="og:url" content="https://www.liuin.cn/2017/12/09/湾湾极东之行/index.html">
 <meta property="og:site_name" content="Sixzeroo">
-<meta property="og:description" content="首先是凸包的定义，假设平面内有一些点，这些点中的一部分组成一个多边形，将其他的点都包含起来，当这个多边形是凸多边形的时候，我们就把他当成是一个凸包。解决凸包问题有很多种算法，比较常见的有O(n^3)的暴力穷举算法以及O(nlogn)d的分治算法，这里讲的是一个时间复杂度为O(nlogn)的Graham扫描法。">
+<meta property="og:description" content="这个周末台科大台陆会说了一个月的活动终于举办了，福隆骑行，打卡台湾极东点，过一把骑行的瘾。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-04-17T02:41:02.000Z">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2017_12_9_IMG_20171209_171226.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2017_12_9_mmexport1512829886925.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2017_12_9_IMG_20171209_203930.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2017_12_9_IMG_20171209_204012.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2017_12_9_Screenshot_2017-12-09-16-57-48-223_com.xiaomi.hm.health.png">
+<meta property="og:updated_time" content="2017-12-09T14:39:38.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="凸包问题">
-<meta name="twitter:description" content="首先是凸包的定义，假设平面内有一些点，这些点中的一部分组成一个多边形，将其他的点都包含起来，当这个多边形是凸多边形的时候，我们就把他当成是一个凸包。解决凸包问题有很多种算法，比较常见的有O(n^3)的暴力穷举算法以及O(nlogn)d的分治算法，这里讲的是一个时间复杂度为O(nlogn)的Graham扫描法。">
+<meta name="twitter:title" content="湾湾极东之行">
+<meta name="twitter:description" content="这个周末台科大台陆会说了一个月的活动终于举办了，福隆骑行，打卡台湾极东点，过一把骑行的瘾。">
+<meta name="twitter:image" content="https://data2.liuin.cn/story-writer/2017_12_9_IMG_20171209_171226.jpg">
 
 
 
@@ -140,13 +146,13 @@
 
 
 
-  <link rel="canonical" href="https://www.liuin.cn/2017/04/17/凸包问题/"/>
+  <link rel="canonical" href="https://www.liuin.cn/2017/12/09/湾湾极东之行/"/>
 
 
 
 
 
-  <title>凸包问题 | Sixzeroo</title>
+  <title>湾湾极东之行 | Sixzeroo</title>
   
 
 
@@ -337,7 +343,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2017/04/17/凸包问题/">
+    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2017/12/09/湾湾极东之行/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Sixzeroo">
@@ -354,7 +360,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">凸包问题</h1>
+          <h1 class="post-title" itemprop="name headline">湾湾极东之行</h1>
         
 
         <div class="post-meta">
@@ -366,8 +372,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-17T09:54:47+08:00">
-                2017-04-17
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-09T22:39:01+08:00">
+                2017-12-09
               </time>
             
 
@@ -389,8 +395,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
+                  <a href="/categories/台湾/" itemprop="url" rel="index">
+                    <span itemprop="name">台湾</span>
                   </a>
                 </span>
 
@@ -406,7 +412,7 @@
 
           
           
-             <span id="/2017/04/17/凸包问题/" class="leancloud_visitors" data-flag-title="凸包问题">
+             <span id="/2017/12/09/湾湾极东之行/" class="leancloud_visitors" data-flag-title="湾湾极东之行">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -431,7 +437,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  621 字
+                  579 字
                 </span>
               
 
@@ -456,11 +462,20 @@
       
 
       
-        <p>首先是凸包的定义，假设平面内有一些点，这些点中的一部分组成一个多边形，将其他的点都包含起来，当这个多边形是凸多边形的时候，我们就把他当成是一个凸包。<br>解决凸包问题有很多种算法，比较常见的有O(n^3)的暴力穷举算法以及O(nlogn)d的分治算法，这里讲的是一个时间复杂度为O(nlogn)的Graham扫描法。</p>
+        <p>这个周末台科大台陆会说了一个月的活动终于举办了，福隆骑行，打卡台湾极东点，过一把骑行的瘾。</p>
 <a id="more"></a>
-<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><h3 id="图中点的编号排序"><a href="#图中点的编号排序" class="headerlink" title="图中点的编号排序"></a>图中点的编号排序</h3><p>首先建立一个极坐标系，选取所有点中最左下的点作为极点，将所有的点按照逆时针方向进行排序，角度相同的点，距离极点小的点排在前面。</p>
-<h3 id="依次寻找凸包上面的点"><a href="#依次寻找凸包上面的点" class="headerlink" title="依次寻找凸包上面的点"></a>依次寻找凸包上面的点</h3><p>用栈来存储凸包的点（因为我们要读取栈顶的两个点，所以不用STL中的queue，而是用数组建栈)，依次考察排序好的点,判断是否弹出栈顶元素。考察规则：从栈中取出栈顶的两个点，两点连接成一条直线，然后判断当前考虑的点在再这条直线的左边还是右边（利用叉乘进行判断），在左边表示这个点在凸包上，入栈；在右边表示当前栈顶元素不是凸包上的点，将这个点出栈，然后继续取出栈顶的两个点进行考虑，直到可以将这个点加入栈中。</p>
-<h2 id="模板"><a href="#模板" class="headerlink" title="模板"></a>模板</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> point</div><div class="line">&#123;</div><div class="line">	<span class="keyword">double</span> x,y;</div><div class="line">&#125;p[maxn],t[maxn];</div><div class="line"><span class="keyword">int</span> n;    <span class="comment">//点的个数</span></div><div class="line"></div><div class="line"><span class="comment">//得到相应的叉乘</span></div><div class="line"><span class="function"><span class="keyword">double</span> <span class="title">get_X</span><span class="params">(point a,point b,point c)</span>        <span class="comment">//ab到ac的叉乘计算</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">return</span> (b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">double</span> <span class="title">len</span><span class="params">(point a,point b)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">return</span> <span class="built_in">sqrt</span>((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">cmp</span><span class="params">(point &amp;a,point &amp;b)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">double</span> pp=get_X(p[<span class="number">0</span>],a,b);</div><div class="line">	<span class="keyword">if</span>(pp&gt;<span class="number">0</span>) <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">	<span class="keyword">if</span>(pp&lt;<span class="number">0</span>) <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">	<span class="keyword">return</span> len(p[<span class="number">0</span>],a)&lt;len(p[<span class="number">0</span>],b);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">Graham</span><span class="params">()</span>     <span class="comment">//返回凸包所含有的点的个数</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">if</span>(n&lt;=<span class="number">2</span>) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">	<span class="keyword">else</span></div><div class="line">	&#123;</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;n;i++)     <span class="comment">//找到起始点</span></div><div class="line">		&#123;</div><div class="line">			<span class="keyword">if</span>(p[i].x&lt;p[<span class="number">0</span>].x) swap(p[i],p[<span class="number">0</span>]);</div><div class="line">			<span class="keyword">else</span> <span class="keyword">if</span>(p[i].x==p[<span class="number">0</span>].x &amp;&amp; p[i].y&lt;p[<span class="number">0</span>].y) swap(p[i],p[<span class="number">0</span>]);</div><div class="line">		&#125;</div><div class="line">		sort(p+<span class="number">1</span>,p+n,cmp);</div><div class="line">		t[<span class="number">0</span>]=p[<span class="number">0</span>];</div><div class="line">		t[<span class="number">1</span>]=p[<span class="number">1</span>];</div><div class="line">		<span class="keyword">int</span> top=<span class="number">1</span>;    <span class="comment">//栈顶位置</span></div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;n;i++)</div><div class="line">		&#123;</div><div class="line">			<span class="keyword">while</span>(t&gt;<span class="number">0</span> &amp;&amp; get_X(t[top<span class="number">-1</span>],t[top],p[i])&lt;=<span class="number">0</span>) top--;    <span class="comment">//考虑的点在右侧的时候将栈顶的点弹出</span></div><div class="line">			top++;</div><div class="line">			t[top]=p[i];</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">return</span> top;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="线路"><a href="#线路" class="headerlink" title="线路"></a>线路</h2><p>台北出发，坐一个半小时的区间车到福隆车站，买便当、借车，沿着小路骑到旧草岭隧道，然后骑过旧草岭隧道。过了旧草岭隧道就能远眺龟山岛了，然后沿着环岛一号线骑行到台湾极东点——三貂角灯塔，最后再沿着环岛一号线骑行回到福隆车站，还车坐区间车回台北。</p>
+<p>区间车来回150TWD，福隆便当60TWD，借车100TWD，共计花费才310TWD。超赞的物美价廉的周末出游路线！</p>
+<h2 id="旧草岭隧道"><a href="#旧草岭隧道" class="headerlink" title="旧草岭隧道"></a>旧草岭隧道</h2><p>旧草岭隧道在日治大正10~13年建造（西元1921~1924年），工程费时三年，是当时台湾最长的隧道。隧道的工程质量不得不说还是蛮好的，差不多有百年历史，隧道里面还是没有漏水什么的。因为是单线铁路，后面在旁边建了一个新的双线铁路这条隧道就废弃了，改成一个供观光客骑行的景点。<br>一排路灯照着不是很黑，地下铺了铁轨形状的瓷砖。路上碰到大妈团让我们带路😂</p>
+<p><img src="https://data2.liuin.cn/story-writer/2017_12_9_IMG_20171209_171226.jpg" alt=" " title="旧草岭隧道 入口"></p>
+<p><img src="https://data2.liuin.cn/story-writer/2017_12_9_mmexport1512829886925.jpg" alt=" " title="隧道内景"></p>
+<h2 id="三貂角灯塔"><a href="#三貂角灯塔" class="headerlink" title="三貂角灯塔"></a>三貂角灯塔</h2><p>三貂角灯塔就是台湾的极东点了，经度东经120度，刚好是太平洋和东海分界的地方。公元1929年及1931年，日本船舶抚顺丸及华南丸，先后于三貂角附近海域遭遇海难沉没，台湾总督府因此于此地筹建此灯塔。</p>
+<p>向东眺望就是广袤的太平洋了，美不胜收！</p>
+<p><img src="https://data2.liuin.cn/story-writer/2017_12_9_IMG_20171209_203930.jpg" alt=" " title="三貂角灯塔"></p>
+<p><img src="https://data2.liuin.cn/story-writer/2017_12_9_IMG_20171209_204012.jpg" alt=" " title="台湾极东点观景台"></p>
+<h2 id="骑行感受"><a href="#骑行感受" class="headerlink" title="骑行感受"></a>骑行感受</h2><p>今天一共骑行应该是20公里左右，因为团队里面有小伙伴体能不是很好，所以骑行的速度不是很快，平均速度大概在10km/h。这条线路的总体感受应该是非常好的，依山傍水，左边高山，右边太平洋。</p>
+<p>环岛一号线上大部分道路都是有自行车专用道，不用太担心安全的问题。周末没事花个一天半天的时间来玩玩挺好的。</p>
+<p>骑行照片<br><img src="https://data2.liuin.cn/story-writer/2017_12_9_Screenshot_2017-12-09-16-57-48-223_com.xiaomi.hm.health.png" alt=" " title="骑行轨迹"></p>
 
       
     </div>
@@ -510,15 +525,15 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://www.liuin.cn/2017/04/17/凸包问题/" title="凸包问题">https://www.liuin.cn/2017/04/17/凸包问题/</a>
+    <a href="https://www.liuin.cn/2017/12/09/湾湾极东之行/" title="湾湾极东之行">https://www.liuin.cn/2017/12/09/湾湾极东之行/</a>
   </li>
   <li class="post-copyright-author">
 	<strong>发布时间: </strong>
-	2017年4月17日 - 09时04分
+	2017年12月9日 - 22时12分
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2017年4月17日 - 10时04分
+	2017年12月9日 - 22时12分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -533,7 +548,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/图论/" rel="tag"># 图论</a>
+            <a href="/tags/游记/" rel="tag"># 游记</a>
           
         </div>
       
@@ -546,8 +561,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/04/15/最大团问题/" rel="next" title="最大团问题">
-                <i class="fa fa-chevron-left"></i> 最大团问题
+              <a href="/2017/12/09/从台大Compiler的学习中看自己在台湾学习的局限性/" rel="next" title="从台大Compiler的学习中看自己在台湾学习的局限性">
+                <i class="fa fa-chevron-left"></i> 从台大Compiler的学习中看自己在台湾学习的局限性
               </a>
             
           </div>
@@ -555,10 +570,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/04/21/UVA-1471-Defense-Lines-扫描-二分/" rel="prev" title="UVA-1471 Defense Lines 扫描+二分">
-                UVA-1471 Defense Lines 扫描+二分 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -727,7 +738,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#算法"><span class="nav-number">1.</span> <span class="nav-text">算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#图中点的编号排序"><span class="nav-number">1.1.</span> <span class="nav-text">图中点的编号排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#依次寻找凸包上面的点"><span class="nav-number">1.2.</span> <span class="nav-text">依次寻找凸包上面的点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模板"><span class="nav-number">2.</span> <span class="nav-text">模板</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#线路"><span class="nav-number">1.</span> <span class="nav-text">线路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#旧草岭隧道"><span class="nav-number">2.</span> <span class="nav-text">旧草岭隧道</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三貂角灯塔"><span class="nav-number">3.</span> <span class="nav-text">三貂角灯塔</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#骑行感受"><span class="nav-number">4.</span> <span class="nav-text">骑行感受</span></a></li></ol></div>
             
 
           </div>
