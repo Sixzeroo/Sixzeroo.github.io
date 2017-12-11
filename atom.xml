@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2017-12-09T14:59:52.000Z</updated>
+  <updated>2017-12-10T13:08:52.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,177 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>使用Dockerfile定制Docker镜像</title>
+    <link href="https://www.liuin.cn/2017/12/10/%E4%BD%BF%E7%94%A8Dockerfile%E5%AE%9A%E5%88%B6Docker%E9%95%9C%E5%83%8F/"/>
+    <id>https://www.liuin.cn/2017/12/10/使用Dockerfile定制Docker镜像/</id>
+    <published>2017-12-10T13:07:08.000Z</published>
+    <updated>2017-12-10T13:08:52.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文讲解了使用Dockerfile 构建Docker镜像的一些常用指令和注意事项</p>
+<a id="more"></a>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>镜像的定制实际上就是定制每一层所添加的配置、文件。如果我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，那么很多无法重复的问题、镜像构建透明性的问题、体积的问题就能够轻松得到解决。</p>
+<h2 id="构建镜像"><a href="#构建镜像" class="headerlink" title="构建镜像"></a>构建镜像</h2><p>构建镜像命令的格式为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker build [选项] &lt;上下文路径/URL/-&gt;</div></pre></td></tr></table></figure></p>
+<h3 id="上下文概念"><a href="#上下文概念" class="headerlink" title="上下文概念"></a>上下文概念</h3><p>Docker 在运行时分为 Docker 引擎（也就是服务端守护进程）和客户端工具。Docker 的引擎提供了一组 REST API，被称为 Docker Remote API，而如 docker 命令这样的客户端工具，则是通过这组 API 与 Docker 引擎交互，从而完成各种功能。因此，虽然表面上我们好像是在本机执行各种 docker 功能，但实际上，一切都是使用的远程调用形式在服务端（Docker 引擎）完成。也因为这种 C/S 设计，让我们操作远程服务器的 Docker 引擎变得轻而易举。</p>
+<p>当构建的时候，用户会指定构建镜像上下文的路径，docker build 命令得知这个路径后，会将路径下的所有内容打包，然后上传给 Docker 引擎。这样 Docker 引擎收到这个上下文包后，展开就会获得构建镜像所需的一切文件。</p>
+<h3 id="规范做法"><a href="#规范做法" class="headerlink" title="规范做法"></a>规范做法</h3><p>一般来说，应该会将 Dockerfile 置于一个空目录下，或者项目根目录下。如果该目录下没有所需文件，那么应该把所需文件复制一份过来。如果目录下有些东西确实不希望构建时传给 Docker 引擎，那么可以用 .gitignore 一样的语法写一个 .dockerignore，该文件是用于剔除不需要作为上下文传递给 Docker 引擎的。</p>
+<p>在默认情况下，如果不额外指定 Dockerfile 的话，会将上下文目录下的名为 Dockerfile 的文件作为 Dockerfile。</p>
+<p>这只是默认行为，实际上 Dockerfile 的文件名并不要求必须为 Dockerfile，而且并不要求必须位于上下文目录中，比如可以用 -f ../Dockerfile.php 参数指定某个文件作为 Dockerfile。</p>
+<p>当然，一般大家习惯性的会使用默认的文件名 Dockerfile，以及会将其置于镜像构建上下文目录中。</p>
+<h2 id="指令"><a href="#指令" class="headerlink" title="指令"></a>指令</h2><p>Dockerfile 中每一个指令都会建立一层，因此尽量将指令融合在一起（特别注意的是RUN指令）</p>
+<h3 id="FROM-指定基础镜像"><a href="#FROM-指定基础镜像" class="headerlink" title="FROM 指定基础镜像"></a>FROM 指定基础镜像</h3><p>以一个镜像为基础，在其之上进行定制。</p>
+<p>语法格式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">FROM &lt;image&gt;:&lt;tag&gt; 或者</div><div class="line">FROM &lt;image&gt;@&lt;digest&gt;</div></pre></td></tr></table></figure></p>
+<p>除了选择现有镜像为基础镜像外，Docker 还存在一个特殊的镜像，名为 scratch。这个镜像是虚拟的概念，并不实际存在，它表示一个空白的镜像。如果你以 scratch 为基础镜像的话，意味着你不以任何镜像为基础，接下来所写的指令将作为镜像第一层开始存在。</p>
+<h3 id="RUN-执行命令"><a href="#RUN-执行命令" class="headerlink" title="RUN 执行命令"></a>RUN 执行命令</h3><p>用来执行命令行命令的。由于命令行的强大能力，RUN 指令在定制镜像时是最常用的指令之一。其格式有两种：</p>
+<ul>
+<li><code>shell</code>格式：<code>RUN &lt;命令&gt;</code>，就像直接在命令行中输入的命令一样。</li>
+<li><code>exec</code>格式：<code>RUN [&quot;可执行文件&quot;, &quot;参数1&quot;, &quot;参数2&quot;]</code>，这更像是函数调用中的格式。</li>
+</ul>
+<h3 id="CMD-容器启动命令"><a href="#CMD-容器启动命令" class="headerlink" title="CMD 容器启动命令"></a>CMD 容器启动命令</h3><p>CMD 指令就是用于指定默认的容器主进程的启动命令的。也是两种格式：</p>
+<ul>
+<li>shell 格式：CMD &lt;命令&gt;</li>
+<li>exec 格式：CMD [“可执行文件”, “参数1”, “参数2”…]</li>
+<li>参数列表格式：CMD [“参数1”, “参数2”…]。在指定了 ENTRYPOINT 指令后，用 CMD 指定具体的参数。</li>
+</ul>
+<p>在指令格式上，一般推荐使用 exec 格式，这类格式在解析时会被解析为 JSON 数组，因此一定要使用双引号 “，而不要使用单引号。如果使用 shell 格式的话，实际的命令会被包装为 sh -c 的参数的形式进行执行。</p>
+<p>提到 CMD 就不得不提容器中应用在前台执行和后台执行的问题。这是初学者常出现的一个混淆。<br>Docker 不是虚拟机，容器中的应用都应该以前台执行，而不是像虚拟机、物理机里面那样，用 upstart/systemd 去启动后台服务，容器内没有后台服务的概念。所以<code>systemctl</code>和<code>service</code> 这些命令就不起作用了。<br>对于容器而言，其启动程序就是容器应用进程，容器就是为了主进程而存在的，主进程退出，容器就失去了存在的意义，从而退出，其它辅助进程不是它需要关心的东西。</p>
+<h3 id="ENTRYPOINT-入口点"><a href="#ENTRYPOINT-入口点" class="headerlink" title="ENTRYPOINT 入口点"></a>ENTRYPOINT 入口点</h3><p>ENTRYPOINT 的格式和 RUN 指令格式一样，分为 exec 格式和 shell 格式。</p>
+<p>ENTRYPOINT 的目的和 CMD 一样，都是在指定容器启动程序及参数。ENTRYPOINT 在运行时也可以替代，不过比 CMD 要略显繁琐，需要通过 docker run 的参数 –entrypoint 来指定。</p>
+<p>当指定了 ENTRYPOINT 后，CMD 的含义就发生了改变，不再是直接的运行其命令，而是将 CMD 的内容作为参数传给 ENTRYPOINT 指令</p>
+<h3 id="ENV-设置环境变量"><a href="#ENV-设置环境变量" class="headerlink" title="ENV 设置环境变量"></a>ENV 设置环境变量</h3><p>两种格式：</p>
+<ul>
+<li><code>ENV &lt;key&gt; &lt;value&gt;</code></li>
+<li><code>ENV &lt;key1&gt;=&lt;value1&gt; &lt;key2&gt;=&lt;value2&gt;...</code></li>
+</ul>
+<p>对于如何换行，以及对含有空格的值用双引号括起来的办法，这和 Shell 下的行为是一致的，比如说<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ENV VERSION=1.0 DEBUG=on \</div><div class="line">    NAME=&quot;Happy Feet&quot;</div></pre></td></tr></table></figure></p>
+<h3 id="ARG-构建参数"><a href="#ARG-构建参数" class="headerlink" title="ARG 构建参数"></a>ARG 构建参数</h3><p>格式： <code>ARG &lt;参数名&gt;[=&lt;默认值&gt;]</code></p>
+<p>构建参数和 ENV 的效果一样，都是设置环境变量。所不同的是，ARG 所设置的构建环境的环境变量，在将来容器运行时是不会存在这些环境变量的。但是不要因此就使用 ARG 保存密码之类的信息，因为 docker history 还是可以看到所有值的。</p>
+<h3 id="COPY-复制文件"><a href="#COPY-复制文件" class="headerlink" title="COPY 复制文件"></a>COPY 复制文件</h3><p>格式：</p>
+<ul>
+<li><code>COPY &lt;源路径&gt;... &lt;目标路径&gt;</code></li>
+<li><code>COPY [&quot;&lt;源路径1&gt;&quot;,... &quot;&lt;目标路径&gt;&quot;]</code></li>
+</ul>
+<p>&lt;源路径&gt; 可以是多个，甚至可以是通配符，其通配符规则要满足 Go 的 <a href="https://golang.org/pkg/path/filepath/#Match" target="_blank" rel="external">filepath.Match</a> 规则</p>
+<p>&lt;目标路径&gt; 可以是容器内的绝对路径，也可以是相对于工作目录的相对路径（工作目录可以用 WORKDIR 指令来指定）。目标路径不需要事先创建，如果目录不存在会在复制文件前先行创建缺失目录。</p>
+<p>此外，还需要注意一点，使用 COPY 指令，源文件的各种元数据都会保留。比如读、写、执行权限、文件变更时间等。这个特性对于镜像定制很有用。特别是构建相关文件都在使用 Git 进行管理的时候。</p>
+<h3 id="ADD-更高级的复制文件"><a href="#ADD-更高级的复制文件" class="headerlink" title="ADD 更高级的复制文件"></a>ADD 更高级的复制文件</h3><p>ADD 指令和 COPY 的格式和性质基本一致。但是在 COPY 基础上增加了一些功能。给出的源路径可以是一个URL地址Docker 引擎会试图去下载这个链接的文件放到 &lt;目标路径&gt; 去。</p>
+<p>另外需要注意的是，ADD 指令会令镜像构建缓存失效，从而可能会令镜像构建变得比较缓慢。</p>
+<p>因此在 COPY 和 ADD 指令中选择的时候，可以遵循这样的原则，所有的文件复制均使用 COPY 指令，仅在需要自动解压缩的场合使用 ADD。</p>
+<h3 id="VOLUME-定义匿名卷"><a href="#VOLUME-定义匿名卷" class="headerlink" title="VOLUME 定义匿名卷"></a>VOLUME 定义匿名卷</h3><p>两种格式：</p>
+<ul>
+<li><code>VOLUME [&quot;&lt;路径1&gt;&quot;, &quot;&lt;路径2&gt;&quot;...]</code></li>
+<li><code>VOLUME &lt;路径&gt;</code></li>
+</ul>
+<p>容器运行时应该尽量保持容器存储层不发生写操作，对于数据库类需要保存动态数据的应用，其数据库文件应该保存于卷(volume)中。为了防止运行时用户忘记将动态文件所保存目录挂载为卷，在 Dockerfile 中，我们可以事先指定某些目录挂载为匿名卷，这样在运行时如果用户不指定挂载，其应用也可以正常运行，不会向容器存储层写入大量数据。</p>
+<h3 id="EXPOSE-声明端口"><a href="#EXPOSE-声明端口" class="headerlink" title="EXPOSE 声明端口"></a>EXPOSE 声明端口</h3><p>格式：<code>EXPOSE &lt;端口1&gt; [&lt;端口2&gt;...]</code></p>
+<p>声明运行时容器提供服务端口，这只是一个声明，在运行时并不会因为这个声明应用就会开启这个端口的服务。在 Dockerfile 中写入这样的声明有两个好处，一个是帮助镜像使用者理解这个镜像服务的守护端口，以方便配置映射；另一个用处则是在运行时使用随机端口映射时，也就是 docker run -P 时，会自动随机映射 EXPOSE 的端口。</p>
+<h3 id="WORKDIR-指定工作目录"><a href="#WORKDIR-指定工作目录" class="headerlink" title="WORKDIR 指定工作目录"></a>WORKDIR 指定工作目录</h3><p>格式： <code>WORKDIR &lt;工作目录路径&gt;</code></p>
+<p>使用 WORKDIR 指令可以来指定工作目录（或者称为当前目录），以后各层的当前目录就被改为指定的目录，如该目录不存在，WORKDIR 会帮你建立目录。</p>
+<h3 id="USER-指定当前用户"><a href="#USER-指定当前用户" class="headerlink" title="USER 指定当前用户"></a>USER 指定当前用户</h3><p>格式： <code>USER &lt;用户名&gt;</code></p>
+<p>USER 指令和 WORKDIR 相似，都是改变环境状态并影响以后的层。WORKDIR 是改变工作目录，USER 则是改变之后层的执行 RUN, CMD 以及 ENTRYPOINT 这类命令的身份。</p>
+<p>当然，和 WORKDIR 一样，USER 只是帮助你切换到指定用户而已，这个用户必须是事先建立好的，否则无法切换。</p>
+<h3 id="HEALTHCHECK-健康检查"><a href="#HEALTHCHECK-健康检查" class="headerlink" title="HEALTHCHECK 健康检查"></a>HEALTHCHECK 健康检查</h3><p>两种格式：</p>
+<ul>
+<li>HEALTHCHECK [选项] CMD &lt;命令&gt;：设置检查容器健康状况的命令</li>
+<li>HEALTHCHECK NONE：如果基础镜像有健康检查指令，使用这行可以屏蔽掉其健康检查指令</li>
+</ul>
+<p>HEALTHCHECK 指令是告诉 Docker 应该如何进行判断容器的状态是否正常，这是 Docker 1.12 引入的新指令。</p>
+<p>具体使用可参考<a href="https://docs.docker.com/engine/reference/builder/#healthcheck" target="_blank" rel="external">这里</a></p>
+<h3 id="ONBUILD-定义触发器"><a href="#ONBUILD-定义触发器" class="headerlink" title="ONBUILD 定义触发器"></a>ONBUILD 定义触发器</h3><p>格式：<code>ONBUILD &lt;其它指令&gt;</code></p>
+<p>ONBUILD 是一个特殊的指令，它后面跟的是其它指令，比如 RUN, COPY 等，而这些指令，在当前镜像构建时并不会被执行。只有当以当前镜像为基础镜像，去构建下一级镜像的时候才会被执行。</p>
+<h3 id="MAINTAINER-提供信息"><a href="#MAINTAINER-提供信息" class="headerlink" title="MAINTAINER 提供信息"></a>MAINTAINER 提供信息</h3><p>格式：<code>MAINTAINER &lt;author&#39;s detail&gt;</code></p>
+<p>用于提供信息的指令，用于让作者提供本人的信息；不限制其出现的位置，但建议跟在FROM之后。</p>
+<p>参考：<br><a href="https://docs.docker.com/engine/reference/builder/" target="_blank" rel="external">https://docs.docker.com/engine/reference/builder/</a><br><a href="https://www.gitbook.com/book/yeasy/docker_practice/details?spm=5176.100239.blogcont40494.64.FKbhBf" target="_blank" rel="external">电子书</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文讲解了使用Dockerfile 构建Docker镜像的一些常用指令和注意事项&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="运维" scheme="https://www.liuin.cn/categories/%E8%BF%90%E7%BB%B4/"/>
+    
+    
+      <category term="Docker" scheme="https://www.liuin.cn/tags/Docker/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>初识Docker</title>
+    <link href="https://www.liuin.cn/2017/12/10/%E5%88%9D%E8%AF%86Docker/"/>
+    <id>https://www.liuin.cn/2017/12/10/初识Docker/</id>
+    <published>2017-12-10T12:10:47.000Z</published>
+    <updated>2017-12-10T12:21:53.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文是我初步了解Docker技术的笔记<br><img src="https://data2.liuin.cn/story-writer/2017_12_10_2333.png" alt=""></p>
+<a id="more"></a>
+<h2 id="什么是Docker？"><a href="#什么是Docker？" class="headerlink" title="什么是Docker？"></a>什么是Docker？</h2><p>Docker 是能够对进程进行封装隔离，属于操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其它的隔离的进程，因此也称其为容器。传统虚拟机技术是虚拟出一套硬件后，在其上运行一个完整操作系统，在该系统上再运行所需应用进程；而容器内的应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。因此容器要比传统虚拟机更为轻便。</p>
+<p><img src="https://data2.liuin.cn/story-writer/2017_12_10_1512908235159.jpg" alt="enter description here" title="传统虚拟机"></p>
+<p><img src="https://data2.liuin.cn/story-writer/2017_12_10_1512908269821.jpg" alt="enter description here" title="Docker"></p>
+<p>相比传统的虚拟化技术Docker有许多的优点：更高效的利用系统资源；更快速的启动时间；一致的运行环境；持续交付和部署；更轻松的迁移；更轻松的维护和扩展</p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><h3 id="镜像-Image"><a href="#镜像-Image" class="headerlink" title="镜像(Image)"></a>镜像(Image)</h3><p>Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。</p>
+<p>镜像是分层存储的，构建时，会一层层构建，前一层是后一层的基础。每一层构建完就不会再发生改变，后一层上的任何改变只发生在自己这一层。这样使得镜像的复用、定制变的更为容易。甚至可以用之前构建好的镜像作为基础层，然后进一步添加新的层，以定制自己所需的内容，构建新的镜像。</p>
+<h3 id="容器-Container"><a href="#容器-Container" class="headerlink" title="容器(Container)"></a>容器(Container)</h3><p>镜像（Image）和容器（Container）的关系，就像是面向对象程序设计中的 类 和 实例 一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。</p>
+<p>容器的实质是进程，但与直接在宿主执行的进程不同，容器进程运行于属于自己的独立的 命名空间。容器内的进程是运行在一个隔离的环境里，使用起来，就好像是在一个独立于宿主的系统下操作一样。这种特性使得容器封装的应用比直接在宿主运行更加安全。</p>
+<p>前面讲过镜像使用的是分层存储，容器也是如此。每一个容器运行时，是以镜像为基础层，在其上创建一个当前容器的存储层，我们可以称这个为容器运行时读写而准备的存储层为容器存储层。</p>
+<p>按照 Docker 最佳实践的要求，容器不应该向其存储层内写入任何数据，容器存储层要保持无状态化。所有的文件写入操作，都应该使用 数据卷（Volume）、或者绑定宿主目录，在这些位置的读写会跳过容器存储层，直接对宿主（或网络存储）发生读写，其性能和稳定性更高。</p>
+<h3 id="仓库-Repository"><a href="#仓库-Repository" class="headerlink" title="仓库(Repository)"></a>仓库(Repository)</h3><p>和GitHub中的仓库类似，Docker中的仓库也是展现不同版本的镜像的地方。一个仓库包含一个软件（或者开发环境）的不同版本的镜像，标签就是对应着这些镜像的版本号。我们可以通过 &lt;仓库名&gt;:&lt;标签&gt; 的格式来指定具体是这个软件哪个版本的镜像。</p>
+<p>与Github这种代码托管平台一样，仓库我们可以放在公共的Docker Registry中（最常用的是 Docker Hub，国内有许多高质量的镜像服务），也可以放在私有的Docker Registry中。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>官方安装指南在<a href="https://docs.docker.com/engine/installation/#prior-releases" target="_blank" rel="external">这里</a></p>
+<h3 id="Ubuntu"><a href="#Ubuntu" class="headerlink" title="Ubuntu"></a>Ubuntu</h3><h4 id="加载可选模块"><a href="#加载可选模块" class="headerlink" title="加载可选模块"></a>加载可选模块</h4><p>从 Ubuntu 14.04 开始，一部分内核模块移到了可选内核模块包。AUFS 内核驱动属于可选内核模块的一部分，作为推荐的 Docker 存储层驱动，一般建议安装可选内核模块包以使用 AUFS。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">sudo apt-get update</div><div class="line"></div><div class="line">sudo apt-get install \</div><div class="line">    linux-image-extra-$(uname -r) \</div><div class="line">    linux-image-extra-virtual</div></pre></td></tr></table></figure>
+<h4 id="向APT中添加源"><a href="#向APT中添加源" class="headerlink" title="向APT中添加源"></a>向APT中添加源</h4><p>添加使用 HTTPS 传输的软件包以及 CA 证书:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install \</div><div class="line">    apt-transport-https \</div><div class="line">    ca-certificates \</div><div class="line">    curl \</div><div class="line">    software-properties-common</div></pre></td></tr></table></figure></p>
+<p>添加软件源的 GPG 密钥（因为国内的网络问题，可以使用国内的源）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">curl -fsSL https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu/gpg | sudo apt-key add -</div><div class="line"></div><div class="line"># 官方源</div><div class="line"># curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -</div></pre></td></tr></table></figure></p>
+<p>向<code>source.list</code>中加入Docker软件源</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ sudo add-apt-repository \</div><div class="line">    &quot;deb [arch=amd64] https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu \</div><div class="line">    $(lsb_release -cs) \</div><div class="line">    stable&quot;</div><div class="line"></div><div class="line"></div><div class="line"># 官方源</div><div class="line"># $ sudo add-apt-repository \</div><div class="line">#    &quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu \</div><div class="line">#    $(lsb_release -cs) \</div><div class="line">#    stable&quot;</div></pre></td></tr></table></figure>
+<h4 id="安装Docker-CE"><a href="#安装Docker-CE" class="headerlink" title="安装Docker CE"></a>安装Docker CE</h4><p>更新apt，并安装`Docker CE’:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ sudo apt-get update</div><div class="line"></div><div class="line">$ sudo apt-get install docker-ce</div></pre></td></tr></table></figure>
+<h3 id="使用脚本自动安装"><a href="#使用脚本自动安装" class="headerlink" title="使用脚本自动安装"></a>使用脚本自动安装</h3><p>官方版：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -sSL https://get.docker.com/ | sh</div></pre></td></tr></table></figure></p>
+<p>阿里云安装脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -sSL http://acs-public-mirror.oss-cn-hangzhou.aliyuncs.com/docker-engine/internet | sh -</div></pre></td></tr></table></figure></p>
+<p>DaoCloud安装脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -sSL https://get.daocloud.io/docker | sh</div></pre></td></tr></table></figure></p>
+<h3 id="镜像加速器"><a href="#镜像加速器" class="headerlink" title="镜像加速器"></a>镜像加速器</h3><p><a href="https://cloud.tencent.com/document/product/457/9113?!preview=true&amp;lang=zh" target="_blank" rel="external">腾讯云</a>官方给出的配置方法：<br>修改 Docker 配置文件 <code>/etc/default/docker</code>，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">DOCKER_OPTS=&quot;--registry-mirror=https://mirror.ccs.tencentyun.com&quot;</div></pre></td></tr></table></figure></p>
+<p>更高效的配置：</p>
+<p>通过修改daemon配置文件<code>/etc/docker/daemon.json</code>来使用加速器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">sudo mkdir -p /etc/docker</div><div class="line">sudo tee /etc/docker/daemon.json &lt;&lt;-&apos;EOF&apos;</div><div class="line">&#123;</div><div class="line">  &quot;registry-mirrors&quot;: [&quot;https://mirror.ccs.tencentyun.com&quot;]</div><div class="line">&#125;</div><div class="line">EOF</div><div class="line">sudo systemctl daemon-reload</div><div class="line">sudo systemctl restart docker</div></pre></td></tr></table></figure></p>
+<p>用<code>docker info</code>测试是否配置好，查看是否有以下的信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Registry Mirrors:</div><div class="line"> https://mirror.ccs.tencentyun.com</div></pre></td></tr></table></figure></p>
+<h2 id="镜像操作"><a href="#镜像操作" class="headerlink" title="镜像操作"></a>镜像操作</h2><h3 id="获取镜像"><a href="#获取镜像" class="headerlink" title="获取镜像"></a>获取镜像</h3><p>获取镜像的格式是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker pull [选项] [Docker Registry 地址[:端口号]/]仓库名[:标签]</div></pre></td></tr></table></figure></p>
+<p>具体的帮助文档可以通过<code>docker pull --help</code>查看<br>参数解释：</p>
+<ul>
+<li>Docker 镜像仓库地址：地址的格式一般是 &lt;域名/IP&gt;[:端口号]。默认地址是 Docker Hub。</li>
+<li>仓库名：如之前所说，这里的仓库名是两段式名称，即 &lt;用户名&gt;/&lt;软件名&gt;。对于 Docker Hub，如果不给出用户名，则默认为 library，也就是官方镜像。</li>
+</ul>
+<p>运行测试：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo docker run -it --rm ubuntu:16.04 bash</div></pre></td></tr></table></figure></p>
+<p>参数解释：</p>
+<ul>
+<li>-it：这是两个参数，一个是 -i：交互式操作，一个是 -t 终端。我们这里打算进入 bash 执行一些命令并查看返回结果，因此我们需要交互式终端。</li>
+<li>–rm：这个参数是说容器退出后随之将其删除。默认情况下，为了排障需求，退出的容器并不会立即删除，除非手动 docker rm。我们这里只是随便执行个命令，看看结果，不需要排障和保留结果，因此使用 –rm 可以避免浪费空间。</li>
+<li>ubuntu:16.04：这是指用 ubuntu:16.04 镜像为基础来启动容器。</li>
+<li>bash：放在镜像名后的是命令，这里我们希望有个交互式 Shell，因此用的是 bash。</li>
+</ul>
+<h3 id="列出镜像"><a href="#列出镜像" class="headerlink" title="列出镜像"></a>列出镜像</h3><p>一般使用的使用的是<code>docker image ls</code>或者<code>docker images</code> 指令<br>可以使用相应的<code>--help</code>查看帮助</p>
+<h3 id="制作镜像"><a href="#制作镜像" class="headerlink" title="制作镜像"></a>制作镜像</h3><p>当我们运行一个容器的时候（如果不使用卷的话），我们做的任何文件修改都会被记录于容器存储层里。而 Docker 提供了一个 docker commit 命令，可以将容器的存储层保存下来成为镜像。换句话说，就是在原有镜像的基础上，再叠加上容器的存储层，并构成新的镜像。以后我们运行这个新镜像的时候，就会拥有原有容器最后的文件变化。</p>
+<p><code>docker commit</code>语法格式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">docker commit [选项] &lt;容器ID或容器名&gt; [&lt;仓库名&gt;[:&lt;标签&gt;]]</div><div class="line"></div><div class="line"># 例子</div><div class="line">$ docker commit \</div><div class="line">    --author &quot;Tao Wang &lt;twang2218@gmail.com&gt;&quot; \</div><div class="line">    --message &quot;修改了默认网页&quot; \</div><div class="line">    webserver \</div><div class="line">    nginx:v2</div></pre></td></tr></table></figure></p>
+<p>可以搭配<code>docker diff</code>查看容器当前的修改和<code>docker history</code>查看镜像的相关历史记录</p>
+<p>注意：慎用<code>docker commit</code>操作：</p>
+<blockquote>
+<p>使用 docker commit 意味着所有对镜像的操作都是黑箱操作，生成的镜像也被称为黑箱镜像，换句话说，就是除了制作镜像的人知道执行过什么命令、怎么生成的镜像，别人根本无从得知。而且，即使是这个制作镜像的人，过一段时间后也无法记清具体在操作的。虽然 docker diff 或许可以告诉得到一些线索，但是远远不到可以确保生成一致镜像的地步。这种黑箱镜像的维护工作是非常痛苦的。</p>
+</blockquote>
+<p>参考：<br><a href="http://aleonchen.com/2017/02/07/qcloud-docker/" target="_blank" rel="external">博客1</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文是我初步了解Docker技术的笔记&lt;br&gt;&lt;img src=&quot;https://data2.liuin.cn/story-writer/2017_12_10_2333.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="运维" scheme="https://www.liuin.cn/categories/%E8%BF%90%E7%BB%B4/"/>
+    
+    
+      <category term="Docker" scheme="https://www.liuin.cn/tags/Docker/"/>
+    
+  </entry>
   
   <entry>
     <title>湾湾极东之行</title>
@@ -74,7 +245,7 @@ function doDecrypt(pwd, onError) {
    document.getElementById("enc_passwd").style.display = "none";
 }
 </script>
-<div id="enc_content" style="display:none">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</div><div id="enc_passwd"> <input id="enc_pwd_input" type="password" style="border-radius: 5px;border-style: groove;height: 30px;width: 50%;cursor: auto;font-size: 102%;color: currentColor;outline: none;text-overflow: initial;padding-left: 5px;" onkeydown="if (event.keyCode == 13) { decrypt(); return false;}"> <input type="submit" value="解&nbsp;密" onclick="decrypt()" style="width: 58px;height: 34px;border-radius: 5px;background-color: white;border-style: solid;color: currentColor;"><div id="enc_error" style="display: inline-block;color: #d84527;margin-left: 10px"></div>
+<div id="enc_content" style="display:none">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</div><div id="enc_passwd"> <input id="enc_pwd_input" type="password" style="border-radius: 5px;border-style: groove;height: 30px;width: 50%;cursor: auto;font-size: 102%;color: currentColor;outline: none;text-overflow: initial;padding-left: 5px;" onkeydown="if (event.keyCode == 13) { decrypt(); return false;}"> <input type="submit" value="解&nbsp;密" onclick="decrypt()" style="width: 58px;height: 34px;border-radius: 5px;background-color: white;border-style: solid;color: currentColor;"><div id="enc_error" style="display: inline-block;color: #d84527;margin-left: 10px"></div>
 <script>
 var onError = function(error) {
 	document.getElementById("enc_error").innerHTML = "password error!"
@@ -905,89 +1076,6 @@ doDecrypt(passwd, onError);
     <summary type="html">
     
       &lt;p&gt;台北101是台湾的第一高楼，也曾经有五年多的时间是世界第一高楼，旁边紧邻着台北市政府。现在是世界第十高楼（七年时间从第一变成第十），也是很多有名的跨国公司（比如说Google）的在台湾地区的办公地。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="台湾" scheme="https://www.liuin.cn/categories/%E5%8F%B0%E6%B9%BE/"/>
-    
-    
-      <category term="游记" scheme="https://www.liuin.cn/tags/%E6%B8%B8%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>淡水 一日游</title>
-    <link href="https://www.liuin.cn/2017/09/11/%E6%B7%A1%E6%B0%B4-%E4%B8%80%E6%97%A5%E6%B8%B8/"/>
-    <id>https://www.liuin.cn/2017/09/11/淡水-一日游/</id>
-    <published>2017-09-11T12:03:46.000Z</published>
-    <updated>2017-09-17T05:51:40.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>淡水是台湾北部比较有名的一个景点，被称为<a href="https://zh.wikipedia.org/wiki/%E5%8F%B0%E7%81%A3%E5%85%AB%E6%99%AF" target="_blank" rel="external">台湾八景</a>。在历史上曾经是台湾第一大港，也是西方文明在台湾北部散播的起点。</p>
-<a id="more"></a>
-<h2 id="淡水老街"><a href="#淡水老街" class="headerlink" title="淡水老街"></a>淡水老街</h2><p>从淡水捷运站出来以后走不久就是淡水老街了，这里集美食、小吃、老街为一身，近年来更因不少古董店及民艺品店进驻，营造出更浓郁的民俗色彩与怀旧风味。邻近淡水捷运站，应该是游客到这里来必游的景点，人比较多。</p>
-<p>在淡水老街上尝了一些小吃：鐵蛋、酸梅湯，鐵蛋很硬，酸梅汤很正宗</p>
-<p>淡水街头</p>
-<p><img src="https://data2.liuin.cn/story-writer/2017_9_11_QQ20170911-0.jpg" alt=""></p>
-<h2 id="阿给"><a href="#阿给" class="headerlink" title="阿给"></a>阿给</h2><p>阿给可以说是淡水最有名的小吃了。为什么叫“阿给”呢？其实它是日本语“油炸豆腐皮”的音译简称。阿给的做法是将油豆腐的中间挖空，然后填充炒过的冬粉（有些店家使用的是没有炒过的冬粉）、浸泡过卤汁，以鱼浆封口，加以蒸熟，食用前淋上甜辣酱或其他特殊酱汁。</p>
-<p>我们逛到阿给的小吃店的时候刚好是中午午餐的时候，还是蛮好吃的，唯一不足的地方就是中午的气温有点高吃起来非常热。</p>
-<p>网上的阿给图片</p>
-<p><img src="https://data2.liuin.cn/story-writer/2017_9_11_1024px-Agei.JPG" alt=""></p>
-<h2 id="淡江中学"><a href="#淡江中学" class="headerlink" title="淡江中学"></a>淡江中学</h2><p>淡水中学中学是周杰伦还有前台湾地区领导人李登辉的母校，也因为周杰伦的《不能说的秘密》，而被众人所知（怪不得同行的女生听到淡水中学这么兴奋）。这所学校全名私立淡江高级中学，是台湾省比较著名的中学，已经有近100年的历史了。台湾这边公立的中学叫国民高中（国中），旁边的淡水国中就是的。门口贴着不允许参观的标志，但是可能是我们来的时候是周末，门卫放我们进去了。进去以后看到台湾这边的高三学生也补课（按理说他们读大学的压力比大陆小很多），看来高三逃脱不了补课的命运。</p>
-<p>淡水中学历史比较久，所以里面的建筑还是很有特色的。</p>
-<p>淡江高级中学埔顶钟声</p>
-<p><img src="https://data2.liuin.cn/story-writer/2017_9_11_QQ20170911-0-1.jpg" alt=""></p>
-<h2 id="真理大学"><a href="#真理大学" class="headerlink" title="真理大学"></a>真理大学</h2><p>真理大学为北部台湾基督长老教会所创办之大学，是一所历史渊远的私立大学。以“追求真理、爱与服务”为校务发展宗旨。源自1872年3月9日加拿大基督长老教会宣教师马偕登陆淡水，选定现址（今真理大学淡水校区）兴建校舍以作传道、教育及医疗之用。</p>
-<p>校园里面游客比较多，建筑比较有特色的就是旁边的大礼拜堂。校园风景非常优美，建筑物主要以红色为主。刚进去的时候能够看到许多的鸽子，它们不怎么怕游客，可能是习惯了吧。也有很多游客给一些事物给他们吃。</p>
-<p>真理大学大门</p>
-<p><img src="https://data2.liuin.cn/story-writer/2017_9_11_QQ20170911-0-2.jpg" alt=""></p>
-<h2 id="红毛城"><a href="#红毛城" class="headerlink" title="红毛城"></a>红毛城</h2><p>红毛城，西班牙人1692年建造，荷兰人打败西班牙人占领此城。为啥叫红毛城呢，以前咱管俄国人叫“老毛子、白毛”，称荷兰人为“红毛”，因此得名。里面的东西感觉也没什么特点就是一些那个时候办公用的东西。</p>
-<p>不过这里要说的是台湾在景点上面对学生的优惠力度还是很大的，一般的景点只要你凭学生证就不要门票，在淡水两个景点要收费，小白宫和这个红毛城，一个地方80新台币，想想赚了160新台币心里还是美滋滋的。</p>
-<p>红毛城照片</p>
-<p><img src="https://data2.liuin.cn/story-writer/2017_9_11_QQ20170911-0-3.jpg" alt=""></p>
-<h2 id="渔人码头-情人桥"><a href="#渔人码头-情人桥" class="headerlink" title="渔人码头/情人桥"></a>渔人码头/情人桥</h2><p>淡水的最后一个景点就是渔人码头了，位于淡水河出海口右岸。《命中注定我爱你》陈欣怡和纪存希生日那天，纪存希陪陈欣怡买船回姜母岛吃姜军包，纪念品号停靠那个码头哦，就是渔人码头，后面就是情人桥。</p>
-<p>传说情人桥暗藏“玄机”，恋人来此，如果没有走过情人桥，可能很快就会分手，如果只走过了奇数，而不是偶数，也会分手。由于那天太阳比较大，所以情人桥也没有待太久，不然真的会被热化的。</p>
-<p>情人桥（同学的照片）：</p>
-<p><img src="https://data2.liuin.cn/story-writer/2017_9_11_QQ20170911-0-4.jpg" alt=""></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>淡水还是一个景色优美，有好吃的好玩的，能看海的好去处。趁手里还在台湾而且有学生证，赶紧多玩几个景点。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;淡水是台湾北部比较有名的一个景点，被称为&lt;a href=&quot;https://zh.wikipedia.org/wiki/%E5%8F%B0%E7%81%A3%E5%85%AB%E6%99%AF&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;台湾八景&lt;/a&gt;。在历史上曾经是台湾第一大港，也是西方文明在台湾北部散播的起点。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="台湾" scheme="https://www.liuin.cn/categories/%E5%8F%B0%E6%B9%BE/"/>
-    
-    
-      <category term="游记" scheme="https://www.liuin.cn/tags/%E6%B8%B8%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>台湾，我来了</title>
-    <link href="https://www.liuin.cn/2017/09/07/%E5%8F%B0%E6%B9%BE%EF%BC%8C%E6%88%91%E6%9D%A5%E4%BA%86/"/>
-    <id>https://www.liuin.cn/2017/09/07/台湾，我来了/</id>
-    <published>2017-09-07T08:46:33.000Z</published>
-    <updated>2017-09-07T08:53:53.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>期待了许久，终于等到了去台湾的日子。9.5从上海出发，乘坐吉祥航空飞台北。正式开始我131天的台湾交换之旅。</p>
-<a id="more"></a>
-<h2 id="台湾初感受"><a href="#台湾初感受" class="headerlink" title="台湾初感受"></a>台湾初感受</h2><p>飞机刚降落，开了数据流量以后马上用Google 随便搜了点东西，直连谷歌，哈哈，肉身翻墙就是爽。<br>抵达桃园机场后，找到了台科大接机的同学把我们送到了台科大。然后我们就去找我们租房子的地方了，我们租房子的地方位于新北市，但是学校是在台北市，中间隔着一条河，坐公交应该是20分钟左右。看来在宣区从寝室到教室5分钟搞定的事情成了一种奢望。<br>在找租房子的地址的时候，感觉台湾各种小巷子太多了、红路灯太多了、机车太多了、便利店太多了。</p>
-<p>从地图可以出道路基本上都是这种小巷子:</p>
-<p><img src="https://data2.liuin.cn/story-writer/2017_9_7_1504772211813.jpg" alt="从地图可以出道路基本上都是这种小巷子"></p>
-<p>之前一直听说台湾这边的人非常热情，来到这里以后真的是深刻体会到了。在路上问路他们一定会说得非常详细，居委会的阿姨看到我们来了以后跟我们说了一大堆东西，这种感觉真好。</p>
-<p>大陆和台湾的一些用词习惯是不一样的，比如我们的网络他们叫网路，计算机专业他们一般叫资讯工程。有几次去便利店买东西，店员听了我说的东西以后都是一脸懵逼，要我详细解释这个东西是用来干什么的，他们才清楚。看来还得慢慢适应。</p>
-<h2 id="机车"><a href="#机车" class="headerlink" title="机车"></a>机车</h2><p>台湾这边的机车就是一般大陆说的摩托车，说真的这边的机车真的不要太多。过红绿灯的时候，机车引擎的声音那叫一个大呀，特别是在刚刚转绿灯的时候堪比赛车比赛开始的场面。</p>
-<p>台湾的机车为什么这么多呢？原因应该是多方面的，人口多、道路窄是一个方面的原因。在台北，骑机车的大多是在市区周围上班族（就像我住的地方一样），把机车作为一种通勤工具，相比地铁公交的拥挤，开车要找车位开销大，骑机车成为了这些人的首选。当然还有一个更重要的原因就是台湾这边不禁摩，如果北上广深也不禁摩，可能机车的规模比台北还要多。</p>
-<p>台湾街头的机车大军:</p>
-<p><img src="https://data2.liuin.cn/story-writer/2017_9_7_1504773955984.jpg" alt="台湾街头的机车大军"></p>
-<h2 id="next"><a href="#next" class="headerlink" title="next"></a>next</h2><p>接下来希望自己能够好好把握好台湾交换的时间，博客中的台湾游记系列也要定时进行更新。加油吧！</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;期待了许久，终于等到了去台湾的日子。9.5从上海出发，乘坐吉祥航空飞台北。正式开始我131天的台湾交换之旅。&lt;/p&gt;
     
     </summary>
     
