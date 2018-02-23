@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="unDM_uE8uu2mZxh8kTTsrR_tk8grv9nQAz6QQoaIOcU" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Git," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sixzeroo" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="https://data1.liuin.cn/bitbug_favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="《Pro Git》读书笔记">
+<meta name="keywords" content="Git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git 工具">
+<meta property="og:url" content="https://www.liuin.cn/2018/02/08/Git-工具/index.html">
+<meta property="og:site_name" content="Sixzeroo">
+<meta property="og:description" content="《Pro Git》读书笔记">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_7_1518003024258.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_7_1518007500384.jpg">
+<meta property="og:updated_time" content="2018-02-23T04:05:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Git 工具">
+<meta name="twitter:description" content="《Pro Git》读书笔记">
+<meta name="twitter:image" content="https://data2.liuin.cn/story-writer/2018_2_7_1518003024258.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.liuin.cn/2018/02/08/Git-工具/"/>
+
+
+
+
+
+  <title>Git 工具 | Sixzeroo</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?eb51bd4c48350fa08cbc200aead6109f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+	
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sixzeroo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-taiwan">
+          <a href="/categories/台湾" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+            
+            台湾
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2018/02/08/Git-工具/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sixzeroo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://data1.liuin.cn/ava.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sixzeroo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Git 工具</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-08T20:05:51+08:00">
+                2018-02-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/02/08/Git-工具/" class="leancloud_visitors" data-flag-title="Git 工具">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  5,757 字
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>《Pro Git》读书笔记</p>
+<a id="more"></a>
+<h2 id="选择修改版本"><a href="#选择修改版本" class="headerlink" title="选择修改版本"></a>选择修改版本</h2><p>Git 允许你通过几种方法来指明特定的或者一定范围内的提交。</p>
+<h3 id="单个修订版本"><a href="#单个修订版本" class="headerlink" title="单个修订版本"></a>单个修订版本</h3><p>Git 十分智能，你只需要提供 SHA-1 的前几个字符就可以获得对应的那次提交，当然你提供的 SHA-1 字符数量不得少于 4 个，并且没有歧义</p>
+<blockquote>
+<p>分支引用</p>
+</blockquote>
+<p>指明一次提交最直接的方法是有一个指向它的分支引用。这样你就可以在任意一个 Git 命令中使用这个分支名来代替对应的提交对象或者 SHA-1 值。</p>
+<blockquote>
+<p>引用日志</p>
+</blockquote>
+<p>当你在工作时， Git 会在后台保存一个引用日志(reflog)，引用日志记录了最近几个月你的 HEAD 和分支引用所指向的历史。</p>
+<p>你可以使用 git reflog 来查看引用日志</p>
+<p>详情可以查看<a href="https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E9%80%89%E6%8B%A9%E4%BF%AE%E8%AE%A2%E7%89%88%E6%9C%AC" target="_blank" rel="external">这里</a></p>
+<blockquote>
+<p>祖先引用</p>
+</blockquote>
+<p>祖先引用是另一种指明一个提交的方式。如果你在引用的尾部加上一个 ^， Git 会将其解析为该引用的上一个提交。</p>
+<p>另一种指明祖先提交的方法是 ~。同样是指向第一父提交，因此 HEAD~ 和 HEAD^ 是等价的</p>
+<h3 id="提交区间"><a href="#提交区间" class="headerlink" title="提交区间"></a>提交区间</h3><p>最常用的指明提交区间语法是<strong>双点</strong>。这种语法可以让 Git 选出在一个分支中而不在另一个分支中的提交。</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_2_7_1518003024258.jpg" alt="enter description here"></p>
+<p>你想要查看 experiment 分支中还有哪些提交尚未被合并入 master 分支。你可以使用 master..experiment来让 Git 显示这些提交。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git log master..experiment</div></pre></td></tr></table></figure></p>
+<p>双点语法很好用，但有时候你可能需要两个以上的分支才能确定你所需要的修订，比如查看哪些提交是被包含在某些分支中的一个，但是不在你当前的分支上。你想查所有被refA 或 refB 包含的但是不被 refC 包含的提交，你可以输入下面中的任意一个命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git log refA refB ^refC</div><div class="line">$ git log refA refB --not refC</div></pre></td></tr></table></figure></p>
+<h2 id="交互式暂存"><a href="#交互式暂存" class="headerlink" title="交互式暂存"></a>交互式暂存</h2><p>本节的几个互交命令可以帮助你将文件的特定部分组合成提交。当你修改一组文件后，希望这些改动能放到若干提交而不是混杂在一起成为一个提交时，这几个工具会非常有用。</p>
+<p>通过这种方式，可以确保提交是逻辑上独立的变更集，同时也会使其他开发者在与你工作时很容易地审核。如果运行 git add 时使用 -i 或者 –interactive 选项，Git 将会进入一个交互式终端模式</p>
+<h2 id="储藏与清理"><a href="#储藏与清理" class="headerlink" title="储藏与清理"></a>储藏与清理</h2><p>有时，当你在项目的一部分上已经工作一段时间后，所有东西都进入了混乱的状态，而这时你想要切换到另一个分支做一点别的事情。问题是，你不想仅仅因为过会儿回到这一点而为做了一半的工作创建一次提交。针对这个问题的答案是 git stash 命令。</p>
+<h3 id="储藏工作"><a href="#储藏工作" class="headerlink" title="储藏工作"></a>储藏工作</h3><ul>
+<li>将新的储藏推送栈上：<code>git stash</code> 或者<code>git stash save</code></li>
+<li>查看栈上的储藏：<code>git stash list</code></li>
+<li>将栈顶的储藏应用：<code>git stash apply</code></li>
+<li>丢弃指定储藏 <code>git stash drop {name}</code></li>
+<li>应用栈顶储藏并弹出 <code>git stash pop</code></li>
+</ul>
+<h3 id="创造性储藏"><a href="#创造性储藏" class="headerlink" title="创造性储藏"></a>创造性储藏</h3><p>有几个储藏的变种可能也很有用。第一个非常流行的选项是 <code>stash save</code>命令的 <code>--keep-index</code> 选项。它告诉Git 不要储藏任何你通过 git add 命令已暂存的东西。</p>
+<p>另一个经常使用储藏来做的事情是像储藏跟踪文件一样储藏未跟踪文件。默认情况下，git stash 只会储藏已经在索引中的文件。如果指定 <code>--include-untracked</code> 或 -u 标记，Git 也会储藏任何创建的未跟踪文件。</p>
+<h3 id="从储藏创建一个分支"><a href="#从储藏创建一个分支" class="headerlink" title="从储藏创建一个分支"></a>从储藏创建一个分支</h3><p>如果储藏了一些工作，将它留在那儿了一会儿，然后继续在储藏的分支上工作，在重新应用工作时可能会有问题。如果应用尝试修改刚刚修改的文件，你会得到一个合并冲突并不得不解决它。如果想要一个轻松的方式来再次测试储藏的改动，可以运行 <code>git stash branch</code> 创建一个新分支，检出储藏工作时所在的提交，重新在那应用工作，然后在应用成功后扔掉储藏</p>
+<h3 id="清理工作目录"><a href="#清理工作目录" class="headerlink" title="清理工作目录"></a>清理工作目录</h3><p>对于工作目录中一些工作或文件，你想做的也许不是储藏而是移除。git clean 命令会帮你做这些事</p>
+<h2 id="签署工作"><a href="#签署工作" class="headerlink" title="签署工作"></a>签署工作</h2><p>Git 虽然是密码级安全的，但它不是万无一失的。如果你从因特网上的其他人那里拿取工作，并且想要验证提交是不是真正地来自于可信来源，Git 提供了几种通过 GPG 来签署和验证工作的方式。</p>
+<h2 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h2><p>无论仓库里的代码量有多少，你经常需要查找一个函数是在哪里调用或者定义的，或者一个方法的变更历史。Git 提供了两个有用的工具来快速地从它的数据库中浏览代码和提交。</p>
+<h3 id="Git-Grep"><a href="#Git-Grep" class="headerlink" title="Git Grep"></a>Git Grep</h3><p>Git 提供了一个 grep 命令，你可以很方便地从提交历史或者工作目录中查找一个字符串或者正则表达式。</p>
+<p>默认情况下 Git 会查找你工作目录的文件。你可以传入 -n 参数来输出 Git 所找到的匹配行行号。你可以使用 –count 选项来使 Git 输出概述的信息，仅仅包括哪些文件包含匹配以及每个文件包含了多少个匹配。如果你想看匹配的行是属于哪一个方法或者函数，你可以传入 -p 选项</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">$ git grep -n gmtime_r</div><div class="line">compat/gmtime.c:3:#undef gmtime_r</div><div class="line">compat/gmtime.c:8: return git_gmtime_r(timep, &amp;result);</div><div class="line">compat/gmtime.c:11:struct tm *git_gmtime_r(const time_t *timep, struct tm</div><div class="line">*result)</div><div class="line">compat/gmtime.c:16: ret = gmtime_r(timep, result);</div><div class="line">compat/mingw.c:606:struct tm *gmtime_r(const time_t *timep, struct tm</div><div class="line">*result)</div><div class="line">compat/mingw.h:162:struct tm *gmtime_r(const time_t *timep, struct tm</div><div class="line">*result);</div><div class="line">date.c:429: if (gmtime_r(&amp;now, &amp;now_tm))</div><div class="line">date.c:492: if (gmtime_r(&amp;time, tm)) &#123;</div><div class="line">    git-compat-util.h:721:struct tm *git_gmtime_r(const time_t *, struct tm</div><div class="line">    *);</div><div class="line">    git-compat-util.h:723:#define gmtime_r git_gmtime_r</div></pre></td></tr></table></figure>
+<h3 id="Git-日志搜索"><a href="#Git-日志搜索" class="headerlink" title="Git 日志搜索"></a>Git 日志搜索</h3><p>或许你不想知道某一项在 哪里 ，而是想知道是什么 时候 存在或者引入的。git log 命令有许多强大的工具可以通过提交信息甚至是 diff 的内容来找到某个特定的提交。</p>
+<p>例如，如果我们想找到 ZLIB_BUF_MAX 常量是什么时候引入的，我们可以使用 -S 选项来显示新增和删除该字符串的提交。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ git log -SZLIB_BUF_MAX --oneline</div><div class="line">e01503b zlib: allow feeding more than 4GB in one go</div><div class="line">ef49a7a zlib: zlib can only process 4GB at a time</div></pre></td></tr></table></figure></p>
+<h2 id="重写历史"><a href="#重写历史" class="headerlink" title="重写历史"></a>重写历史</h2><p>许多时候，在使用 Git 时，可能会因为某些原因想要修正提交历史。Git 很棒的一点是它允许你在最后时刻做决定。你可以在将暂存区内容提交前决定哪些文件进入提交，可以通过 stash 命令来决定不与某些内容工作，也可以重写已经发生的提交就像它们以另一种方式发生的一样。</p>
+<h3 id="修改最后一次提交"><a href="#修改最后一次提交" class="headerlink" title="修改最后一次提交"></a>修改最后一次提交</h3><p>修改你最近一次提交可能是所有修改历史提交的操作中最常见的一个。对于你的最近一次提交，你往往想做两件事情：修改提交信息，或者修改你添加、修改和移除的文件的快照。</p>
+<p>如果，你只是想修改最近一次提交的提交信息，那么很简单：<code>git commit --amend</code></p>
+<h3 id="修改多个提交信息"><a href="#修改多个提交信息" class="headerlink" title="修改多个提交信息"></a>修改多个提交信息</h3><p>Git 没有一个改变历史工具，但是可以使用变基工具来变基一系列提交，基于它们原来的 HEAD 而不是将其移动到另一个新的上面。可以通过给 git rebase 增加 -i选项来交互式地运行变基。<code>git rebase -i HEAD~3</code></p>
+<blockquote>
+<p>重新排序提交</p>
+</blockquote>
+<p>修改交互式变基中的各个提交的顺序即可</p>
+<blockquote>
+<p>压缩提交</p>
+</blockquote>
+<p>通过交互式变基工具，也可以将一连串提交压缩成一个单独的提交。在变基信息中脚本给出了有用的指令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"># Commands:</div><div class="line"># p, pick = use commit</div><div class="line"># r, reword = use commit, but edit the commit message</div><div class="line"># e, edit = use commit, but stop for amending</div><div class="line"># s, squash = use commit, but meld into previous commit</div><div class="line"># f, fixup = like &quot;squash&quot;, but discard this commit&apos;s log message</div><div class="line"># x, exec = run command (the rest of the line) using shell</div></pre></td></tr></table></figure></p>
+<h3 id="核武器级选项：filter-branch"><a href="#核武器级选项：filter-branch" class="headerlink" title="核武器级选项：filter-branch"></a>核武器级选项：filter-branch</h3><p>有另一个历史改写的选项，如果想要通过脚本的方式改写大量提交的话可以使用它 - 例如，全局修改你的邮箱地址或从每一个提交中移除一个文件。这个命令是 filter-branch，它可以改写历史中大量的提交，<strong>除非你的项目还没有公开并且其他人没有基于要改写的工作的提交做的工作，你不应当使用它</strong>。</p>
+<blockquote>
+<p>从每一个提交移除一个文件</p>
+</blockquote>
+<p>这经常发生。有人粗心地通过 git add . 提交了一个巨大的二进制文件，你想要从所有地方删除它。然而你想要开源项目。filter-branch 是一个可能会用来擦洗整个提交历史的工具。为了从整个提交历史中移除一个叫做 passwords.txt 的文件，可以使用 –tree-filter 选项给filter-branch：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git filter-branch --tree-filter &apos;rm -f passwords.txt&apos; HEAD</div></pre></td></tr></table></figure></p>
+<p><code>--tree-filter</code> 选项在检出项目的每一个提交后运行指定的命令然后重新提交结果。</p>
+<blockquote>
+<p>使一个子目录做为新的根目录</p>
+</blockquote>
+<p>假设已经从另一个源代码控制系统中导入，并且有几个没意义的子目录（trunk、tags 等等）。如果想要让trunk 子目录作为每一个提交的新的项目根目录，filter-branch 也可以帮助你那么做：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git filter-branch --subdirectory-filter trunk HEAD</div></pre></td></tr></table></figure></p>
+<h2 id="重置揭秘"><a href="#重置揭秘" class="headerlink" title="重置揭秘"></a>重置揭秘</h2><p>这里将讨论reset与checkout</p>
+<h3 id="三棵树"><a href="#三棵树" class="headerlink" title="三棵树"></a>三棵树</h3><p>理解 reset 和 checkout 的最简方法，就是以 Git 的思维框架（将其作为内容管理器）来管理三棵不同的树。“树” 在我们这里的实际意思是 “文件的集合”，而不是指特定的数据结构</p>
+<p>Git 作为一个系统，是以它的一般操作来管理并操纵这三棵树的：<br>| 树 | 用途 |<br>| – | – |<br>| HEAD | 上一次提交的快照，下一次提交的父结点|<br>| Index| 预期的下一次提交的快照|<br>|Working Directory| 沙盒|</p>
+<blockquote>
+<p>HEAD</p>
+</blockquote>
+<p>HEAD 是当前分支引用的指针，它总是指向该分支上的最后一次提交。这表示 HEAD 将是下一次提交的父结点。通常，理解 HEAD 的最简方式，就是将它看做 <strong>你的上一次提交</strong> 的快照。</p>
+<blockquote>
+<p>Index</p>
+</blockquote>
+<p>索引是你的 <strong>预期的下一次提交</strong>。我们也会将这个概念引用为 Git 的 “暂存区域”，这就是当你运行 git commit 时 Git 看起来的样子。</p>
+<blockquote>
+<p>工作流程</p>
+</blockquote>
+<p>参考<a href="https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E9%87%8D%E7%BD%AE%E6%8F%AD%E5%AF%86" target="_blank" rel="external">这里</a></p>
+<h3 id="重置的作用（reset）"><a href="#重置的作用（reset）" class="headerlink" title="重置的作用（reset）"></a>重置的作用（reset）</h3><ul>
+<li>第一步：移动HEAD</li>
+<li>第二步：更新索引（–mixed）</li>
+<li>第三步：更新工作目录（–hard）</li>
+</ul>
+<p>reset 命令会以特定的顺序重写这三棵树，在你指定以下选项时停止：</p>
+<ol>
+<li>移动 HEAD 分支的指向 （若指定了 –soft，则到此停止）</li>
+<li>使索引看起来像 HEAD   （默认执行到这一步）</li>
+<li>使工作目录看起来像索引  （指定了 –hard ，才执行这一步）</li>
+</ol>
+<blockquote>
+<p>通过路径来重置</p>
+</blockquote>
+<p>若指定了一个路径，reset 将会跳过第 1 步，并且将它的作用范围限定为指定的文件或文件集合。</p>
+<blockquote>
+<p>压缩</p>
+</blockquote>
+<p>我们来看看如何利用这种新的功能来做一些有趣的事情 - 压缩提交</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git reset --soft HEAD~2</div><div class="line"> git commit</div></pre></td></tr></table></figure>
+<h3 id="检出（checkout）"><a href="#检出（checkout）" class="headerlink" title="检出（checkout）"></a>检出（checkout）</h3><pre><code>运行 `git checkout [branch] `与运行` git reset --hard [branch] `非常相似，它会更新所有三棵树使其看起来像 \[branch\]，不过有两点重要的区别。
+
+ 首先不同于 reset --hard，checkout 对工作目录是安全的，它会通过检查来确保不会将已更改的文件吹走。其实它还更聪明一些。它会在工作目录中先试着简单合并一下，这样所有_还未修改过的_文件都会被更新。而 reset --hard 则会不做检查就全面地替换所有东西。
+
+ 第二个重要的区别是如何更新 HEAD。reset 会移动 HEAD 分支的指向，而 checkout 只会移动 HEAD 自身来指向另一个分支。
+
+ &gt; 带路径情况
+
+ 运行 checkout 的另一种方式就是指定一个文件路径，这会像 reset 一样不会移动 HEAD。它就像是 `git reset --hard [branch] file`（如果 reset 允许你这样运行的话）- 这样对工作目录并不安全，它也不会移动 HEAD。
+</code></pre><h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p><img src="https://data2.liuin.cn/story-writer/2018_2_7_1518007500384.jpg" alt="enter description here"></p>
+<h2 id="高级合并"><a href="#高级合并" class="headerlink" title="高级合并"></a>高级合并</h2><p>Git 并不会尝试过于聪明的合并冲突解决方案。Git的哲学是聪明地决定无歧义的合并方案，但是如果有冲突，它不会尝试智能地自动解决它。</p>
+<h3 id="合并冲突"><a href="#合并冲突" class="headerlink" title="合并冲突"></a>合并冲突</h3><p>首先，在做一次可能有冲突的合并前尽可能保证工作目录是干净的。</p>
+<p>在遇到冲突的时候，你可以有以下几种解决方案：</p>
+<blockquote>
+<p>中断一次合并</p>
+</blockquote>
+<p>你可能不想处理冲突这种情况，完全可以通过 <code>git merge --abort</code> 来简单地退出合并。他会会尝试恢复到你运行合并前的状态。但当运行命令前，在工作目录中有未储藏、未提交的修改时它不能完美处理，除此之外它都工作地很好。</p>
+<blockquote>
+<p>忽略空白</p>
+</blockquote>
+<p>如果你看到在一次合并中有大量的空白问题，你可以简单地中止它并重做一次，这次使用<code>-Xignore-all-space</code>或 <code>-Xignore-space-change</code>选项。第一个选项忽略任意 数量 的已有空白的修改，第二个选项忽略所有空白修改。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git merge -Xignore-space-change whitespace</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p>手动文件再合并</p>
+</blockquote>
+<p>首先，我们进入到了合并冲突状态。然后我们想要我的版本的文件，他们的版本的文件（从我们将要合并入的分支）和共同的版本的文件（从分支叉开时的位置）的拷贝。</p>
+<p>然后我们想要修复任何一边的文件，并且为这个单独的文件重试一次合并。获得这三个文件版本实际上相当容易。Git 在索引中存储了所有这些版本，在 “stages” 下每一个都有一个数字与它们关联。Stage 1 是它们共同的祖先版本，stage 2 是你的版本，stage 3 来自于 MERGE_HEAD，即你将要合并入的版本（“theirs”）</p>
+<p>如果你想要在最终提交前看一下我们这边与另一边之间实际的修改，你可以使用 <code>git diff</code></p>
+<p>要在合并前比较结果与在你的分支上的内容，换一句话说，看看合并引入了什么，可以运行 <code>git diff --ours</code> ； 如果我们想要查看合并的结果与他们那边有什么不同，可以运行 <code>git diff --theirs</code></p>
+<h3 id="子树合并"><a href="#子树合并" class="headerlink" title="子树合并"></a>子树合并</h3><p>子树合并的思想是你有两个项目，并且其中一个映射到另一个项目的一个子目录，或者反过来也行。</p>
+<p>我们希望将 Rack 项目拉到 master 项目中作为一个子目录。我们可以在 Git 中执行 <code>git read-tree</code> 来实现。它会读取一个分支的根目录树到当前的暂存区和工作目录里。先切回你的 master 分支，将 rack_back 分支拉取到我们项目的 master 分支中的 rack 子目录。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git read-tree --prefix=rack/ -u rack_branch</div></pre></td></tr></table></figure></p>
+<p>当 Rack 项目有更新时，我们可以切换到那个分支来拉取上游的变更。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git checkout rack_branch</div><div class="line">git pull</div></pre></td></tr></table></figure></p>
+<p>接着，我们可以将这些变更合并回我们的 master 分支。使用 –squash 选项和使用 -Xsubtree 选项（它采用递归合并策略），都可以用来可以拉取变更并且预填充提交信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git checkout master</div><div class="line">git merge --squash -s recursive -Xsubtree=rack rack_branch</div></pre></td></tr></table></figure></p>
+<h2 id="Rerere"><a href="#Rerere" class="headerlink" title="Rerere"></a>Rerere</h2><p>git rerere 功能是一个隐藏的功能。正如它的名字 “reuse recorded resolution” 所指，它允许你<strong>让 Git 记住解决一个块冲突的方法，这样在下一次看到相同冲突时，Git 可以为你自动地解决它</strong>。</p>
+<p>有几种情形下这个功能会非常有用。在文档中提到的一个例子是如果你想要保证一个长期分支会干净地合并，但是又不想要一串中间的合并提交。将 rerere 功能打开后偶尔合并，解决冲突，然后返回到合并前。如果你持续这样做，那么最终的合并会很容易，因为 rerere 可以为你自动做所有的事情。</p>
+<p>可以将同样的策略用在维持一个变基的分支时，这样就不用每次解决同样的变基冲突了。或者你将一个分支合并并修复了一堆冲突后想要用变基来替代合并 - 你可能并不想要再次解决相同的冲突。</p>
+<p>另一个情形是当你偶尔将一堆正在改进的特性分支合并到一个可测试的头时，就像 Git 项目自身经常做的。如果测试失败，你可以倒回合并之前然后在去除导致测试失败的那个特性分支后重做合并，而不用再次重新解决所有的冲突。</p>
+<p>启用rerere功能的方法：</p>
+<ol>
+<li><code>git config --global rerere.enabled true</code></li>
+<li>在特定的仓库中创建<code>.git/rr-cache</code>目录</li>
+</ol>
+<p>更多使用方法可以查看<a href="https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-Rerere" target="_blank" rel="external">这里</a></p>
+<h2 id="Git-调试"><a href="#Git-调试" class="headerlink" title="Git 调试"></a>Git 调试</h2><p>Git 提供两个工具来辅助你调试项目中的问题</p>
+<h3 id="文件标注"><a href="#文件标注" class="headerlink" title="文件标注"></a>文件标注</h3><p><strong>如果你在追踪代码中的一个 bug，并且想知道是什么时候以及为何会引入，文件标注通常是最好用的工具。它</strong>展示了文件中每一行最后一次修改的提交。所以，如果你在代码中看到一个有问题的方法，你可以使用 gitblame 标注这个文件，查看这个方法每一行的最后修改时间以及是被谁修改的。这个例子使用 -L 选项来限制输出范围在第12至22行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git blame -L 12,22 simplegit.rb</div></pre></td></tr></table></figure>
+<h3 id="二分查找"><a href="#二分查找" class="headerlink" title="二分查找"></a>二分查找</h3><p>当你知道问题是在哪里引入的情况下文件标注可以帮助你查找问题。如果你不知道哪里出了问题，并且自从上次可以正常运行到现在已经有数十个或者上百个提交，这个时候你可以使用 git bisect 来帮助查找。bisect命令会<strong>对你的提交历史进行二分查找来帮助你尽快找到是哪一个提交引入了问题</strong>。</p>
+<p>首先执行 <code>git bisect start</code> 来启动，接着执行<code>git bisect bad</code>来告诉系统当前你所在的提交是有问题的。然后你必须告诉 bisect 已知的最后一次正常状态是哪次提交，使用<code>git bisect good [good_commit]</code></p>
+<p>在测试过程中可以通过 <code>git bisect good</code> 来告诉 Git 当前的提交没有问题，通过<code>git bisect bad</code>来告诉Git当前的提交有问题</p>
+<h2 id="子模块"><a href="#子模块" class="headerlink" title="子模块"></a>子模块</h2><p>子模块允许你将一个 Git 仓库作为另一个 Git 仓库的子目录。它能让你将另一个仓库克隆到自己的项目中，同时还保持提交的独立。</p>
+<h3 id="开始使用子模块"><a href="#开始使用子模块" class="headerlink" title="开始使用子模块"></a>开始使用子模块</h3><p>你可以通过在 git submodule add 命令后面加上想要跟踪的项目 URL 来添加新的子模块。在本例中，我们将会添加一个名为 “DbConnector” 的库。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git submodule add https://github.com/chaconinc/DbConnector</div></pre></td></tr></table></figure></p>
+<p>Git首先会生成新的 <code>.gitmodules</code>文件。该置文件保存了项目 URL 与已经拉取的本地目录之间的映射。如果有多个子模块，该文件中就会有多条记录。要重点注意的是，该文件也像 .gitignore 文件一样受到（通过）版本控制。它会和该项目的其他部分一同被拉取推送。</p>
+<h3 id="克隆含有子模块的项目"><a href="#克隆含有子模块的项目" class="headerlink" title="克隆含有子模块的项目"></a>克隆含有子模块的项目</h3><p>你必须运行两个命令：<code>git submodule init</code>用来初始化本地配置文件，而 <code>git submodule update</code> 则从该项目中抓取所有数据并检出父项目中列出的合适的提交。</p>
+<p>如果给 git clone 命令传递 –recursive 选项，它就会自动初始化并更新仓库中的每一个子模块。</p>
+<h3 id="在包含子模块的项目上工作"><a href="#在包含子模块的项目上工作" class="headerlink" title="在包含子模块的项目上工作"></a>在包含子模块的项目上工作</h3><p>在项目中使用子模块的最简模型，就是只使用子项目并不时地获取更新，而并不在你的检出中进行任何更改。</p>
+<p>当我们运行 git submodule update 从子模块仓库中抓取修改时，Git 将会获得这些改动并更新子目录中的文件，但是会将子仓库留在一个称作 “游离的 HEAD” 的状态。</p>
+<h2 id="打包"><a href="#打包" class="headerlink" title="打包"></a>打包</h2><p>Git 可以将它的数据 “打包” 到一个文件中。这在许多场景中都很有用。有可能你的网络中断了，但你又希望将你的提交传给你的合作者们。可能你不在办公网中并且出于安全考虑没有给你接入内网的权限。</p>
+<p>bundle 命令会<strong>将 git push 命令所传输的所有内容打包成一个二进制文件</strong>，你可以将这个文件通过邮件或者闪存传给其他人，然后解包到其他的仓库中。</p>
+<p>如果你想把这个仓库发送给其他人但你没有其他仓库的权限，或者就是懒得新建一个仓库，你就可以用 gitbundle create 命令来打包<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git bundle create repo.bundle HEAD master</div></pre></td></tr></table></figure></p>
+<p>然后你就会有一个名为 repo.bundle 的文件，该文件包含了所有重建该仓库 master 分支所需的数据。</p>
+<p>假设别人传给你一个 repo.bundle 文件并希望你在这个项目上工作。你可以从这个二进制文件中克隆出一个目录，就像从一个 URL 克隆一样。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone repo.bundle repo</div></pre></td></tr></table></figure></p>
+<h2 id="替换"><a href="#替换" class="headerlink" title="替换"></a>替换</h2><p>Git 对象是不可改变的，但它提供一种有趣的方式来用其他对象假装替换数据库中的 Git 对象。</p>
+<p><code>replace</code>命令可以让你在 Git 中指定一个对象并可以声称“每次你遇到这个 Git 对象时，假装它是其他的东西”。在你用一个不同的提交替换历史中的一个提交时，这会非常有用。</p>
+<p><a href="https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E6%9B%BF%E6%8D%A2" target="_blank" rel="external">详情</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://data1.liuin.cn/wechat_pay.png" alt="Sixzeroo WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="https://data1.liuin.cn/alipay.jpg" alt="Sixzeroo Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Sixzeroo
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.liuin.cn/2018/02/08/Git-工具/" title="Git 工具">https://www.liuin.cn/2018/02/08/Git-工具/</a>
+  </li>
+  <li class="post-copyright-author">
+	<strong>发布时间: </strong>
+	2018年2月8日 - 20时02分
+  </li>
+  <li class="post-copyright-author">
+	<strong>最后更新: </strong>
+	2018年2月23日 - 12时02分
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Git/" rel="tag"># Git</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/07/服务器上的Git-分布式Git/" rel="next" title="服务器上的Git && 分布式Git">
+                <i class="fa fa-chevron-left"></i> 服务器上的Git && 分布式Git
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/10/自定义-Git/" rel="prev" title="自定义 Git">
+                自定义 Git <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMTYzMi84MTk2"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://data1.liuin.cn/ava.jpeg"
+               alt="Sixzeroo" />
+          <p class="site-author-name" itemprop="name">Sixzeroo</p>
+           
+              <p class="site-description motion-element" itemprop="description">Do it better !</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">121</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">42</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Sixzeroo" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="tencent://message/?menu=yes&uin=1790798600&websitename=im.qq.com" target="_blank" title="QQ">
+                  
+                    <i class="fa fa-fw fa-qq"></i>
+                  
+                    
+                      QQ
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#选择修改版本"><span class="nav-number">1.</span> <span class="nav-text">选择修改版本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#单个修订版本"><span class="nav-number">1.1.</span> <span class="nav-text">单个修订版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提交区间"><span class="nav-number">1.2.</span> <span class="nav-text">提交区间</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#交互式暂存"><span class="nav-number">2.</span> <span class="nav-text">交互式暂存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#储藏与清理"><span class="nav-number">3.</span> <span class="nav-text">储藏与清理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#储藏工作"><span class="nav-number">3.1.</span> <span class="nav-text">储藏工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创造性储藏"><span class="nav-number">3.2.</span> <span class="nav-text">创造性储藏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从储藏创建一个分支"><span class="nav-number">3.3.</span> <span class="nav-text">从储藏创建一个分支</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#清理工作目录"><span class="nav-number">3.4.</span> <span class="nav-text">清理工作目录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#签署工作"><span class="nav-number">4.</span> <span class="nav-text">签署工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搜索"><span class="nav-number">5.</span> <span class="nav-text">搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Git-Grep"><span class="nav-number">5.1.</span> <span class="nav-text">Git Grep</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Git-日志搜索"><span class="nav-number">5.2.</span> <span class="nav-text">Git 日志搜索</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重写历史"><span class="nav-number">6.</span> <span class="nav-text">重写历史</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#修改最后一次提交"><span class="nav-number">6.1.</span> <span class="nav-text">修改最后一次提交</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改多个提交信息"><span class="nav-number">6.2.</span> <span class="nav-text">修改多个提交信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#核武器级选项：filter-branch"><span class="nav-number">6.3.</span> <span class="nav-text">核武器级选项：filter-branch</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重置揭秘"><span class="nav-number">7.</span> <span class="nav-text">重置揭秘</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#三棵树"><span class="nav-number">7.1.</span> <span class="nav-text">三棵树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重置的作用（reset）"><span class="nav-number">7.2.</span> <span class="nav-text">重置的作用（reset）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#检出（checkout）"><span class="nav-number">7.3.</span> <span class="nav-text">检出（checkout）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小结"><span class="nav-number">7.4.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高级合并"><span class="nav-number">8.</span> <span class="nav-text">高级合并</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#合并冲突"><span class="nav-number">8.1.</span> <span class="nav-text">合并冲突</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#子树合并"><span class="nav-number">8.2.</span> <span class="nav-text">子树合并</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rerere"><span class="nav-number">9.</span> <span class="nav-text">Rerere</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Git-调试"><span class="nav-number">10.</span> <span class="nav-text">Git 调试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文件标注"><span class="nav-number">10.1.</span> <span class="nav-text">文件标注</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二分查找"><span class="nav-number">10.2.</span> <span class="nav-text">二分查找</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#子模块"><span class="nav-number">11.</span> <span class="nav-text">子模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#开始使用子模块"><span class="nav-number">11.1.</span> <span class="nav-text">开始使用子模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#克隆含有子模块的项目"><span class="nav-number">11.2.</span> <span class="nav-text">克隆含有子模块的项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在包含子模块的项目上工作"><span class="nav-number">11.3.</span> <span class="nav-text">在包含子模块的项目上工作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#打包"><span class="nav-number">12.</span> <span class="nav-text">打包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#替换"><span class="nav-number">13.</span> <span class="nav-text">替换</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sixzeroo</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">共</span>
+    
+    <span title="Site words total count">
+      173.1k 字
+    </span>
+  
+
+  <span> | </span>
+  <span id="showDays"></span>
+</div>
+
+
+
+  <div class="powered-by">皖ICP备17000842号</div>
+  <span class="post-meta-divider">|</span>                    
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+<script>
+	var birthDay = new Date('09/1/2016');
+	var now = new Date();
+	var duration = now.getTime() - birthDay.getTime();
+	var total= Math.floor(duration / (1000 * 60 * 60 * 24));
+	document.getElementById('showDays').innerHTML='本站已运行' + total + '天';
+</script>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("3YyBK9PnKj86xfGt1vr8ps6Q-gzGzoHsz", "Sf6vsslcm0nwqrxAcm1MMwRM");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
