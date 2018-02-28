@@ -117,7 +117,7 @@
 <meta property="og:image" content="https://data2.liuin.cn/story-writer/2017_12_10_2333.png">
 <meta property="og:image" content="https://data2.liuin.cn/story-writer/2017_12_10_1512908235159.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/story-writer/2017_12_10_1512908269821.jpg">
-<meta property="og:updated_time" content="2018-01-18T02:14:53.000Z">
+<meta property="og:updated_time" content="2018-02-28T05:55:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="初识Docker">
 <meta name="twitter:description" content="本文是我初步了解Docker技术的笔记">
@@ -444,7 +444,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2,225 字
+                  2,346 字
                 </span>
               
 
@@ -524,6 +524,10 @@
 <blockquote>
 <p>使用 docker commit 意味着所有对镜像的操作都是黑箱操作，生成的镜像也被称为黑箱镜像，换句话说，就是除了制作镜像的人知道执行过什么命令、怎么生成的镜像，别人根本无从得知。而且，即使是这个制作镜像的人，过一段时间后也无法记清具体在操作的。虽然 docker diff 或许可以告诉得到一些线索，但是远远不到可以确保生成一致镜像的地步。这种黑箱镜像的维护工作是非常痛苦的。</p>
 </blockquote>
+<h3 id="推送镜像"><a href="#推送镜像" class="headerlink" title="推送镜像"></a>推送镜像</h3><p>当你需要把本地制作的镜像推送到远端仓库中，你就可以使用<code>docker push</code>命令，这个命令默认推送到的是Docker的官方镜像仓库：Docker Hub。</p>
+<p>在推送之前，你需要在Docker Hub中创建好相应的image并登录：<code>docker login [OPTIONS] [SERVER]</code></p>
+<p>然后使用<code>push</code>命令推送：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker push [OPTIONS] NAME[:TAG]</div></pre></td></tr></table></figure></p>
+<p>例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ docker commit c16378f943fe rhel-httpd</div><div class="line"></div><div class="line">$ docker tag rhel-httpd registry-host:5000/myadmin/rhel-httpd</div><div class="line"></div><div class="line">$ docker push registry-host:5000/myadmin/rhel-httpd</div></pre></td></tr></table></figure></p>
 <p>参考：<br><a href="http://aleonchen.com/2017/02/07/qcloud-docker/" target="_blank" rel="external">博客1</a></p>
 
       
@@ -582,7 +586,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年1月18日 - 10时01分
+	2018年2月28日 - 13时02分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -703,7 +707,7 @@
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">121</span>
+                <span class="site-state-item-count">122</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -791,7 +795,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是Docker？"><span class="nav-number">1.</span> <span class="nav-text">什么是Docker？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">2.</span> <span class="nav-text">概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#镜像-Image"><span class="nav-number">2.1.</span> <span class="nav-text">镜像(Image)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#容器-Container"><span class="nav-number">2.2.</span> <span class="nav-text">容器(Container)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#仓库-Repository"><span class="nav-number">2.3.</span> <span class="nav-text">仓库(Repository)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">3.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Ubuntu"><span class="nav-number">3.1.</span> <span class="nav-text">Ubuntu</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#加载可选模块"><span class="nav-number">3.1.1.</span> <span class="nav-text">加载可选模块</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#向APT中添加源"><span class="nav-number">3.1.2.</span> <span class="nav-text">向APT中添加源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装Docker-CE"><span class="nav-number">3.1.3.</span> <span class="nav-text">安装Docker CE</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用脚本自动安装"><span class="nav-number">3.2.</span> <span class="nav-text">使用脚本自动安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#镜像加速器"><span class="nav-number">3.3.</span> <span class="nav-text">镜像加速器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-compose-安装"><span class="nav-number">3.4.</span> <span class="nav-text">Docker-compose 安装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像操作"><span class="nav-number">4.</span> <span class="nav-text">镜像操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#获取镜像"><span class="nav-number">4.1.</span> <span class="nav-text">获取镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列出镜像"><span class="nav-number">4.2.</span> <span class="nav-text">列出镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#制作镜像"><span class="nav-number">4.3.</span> <span class="nav-text">制作镜像</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是Docker？"><span class="nav-number">1.</span> <span class="nav-text">什么是Docker？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">2.</span> <span class="nav-text">概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#镜像-Image"><span class="nav-number">2.1.</span> <span class="nav-text">镜像(Image)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#容器-Container"><span class="nav-number">2.2.</span> <span class="nav-text">容器(Container)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#仓库-Repository"><span class="nav-number">2.3.</span> <span class="nav-text">仓库(Repository)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">3.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Ubuntu"><span class="nav-number">3.1.</span> <span class="nav-text">Ubuntu</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#加载可选模块"><span class="nav-number">3.1.1.</span> <span class="nav-text">加载可选模块</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#向APT中添加源"><span class="nav-number">3.1.2.</span> <span class="nav-text">向APT中添加源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装Docker-CE"><span class="nav-number">3.1.3.</span> <span class="nav-text">安装Docker CE</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用脚本自动安装"><span class="nav-number">3.2.</span> <span class="nav-text">使用脚本自动安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#镜像加速器"><span class="nav-number">3.3.</span> <span class="nav-text">镜像加速器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-compose-安装"><span class="nav-number">3.4.</span> <span class="nav-text">Docker-compose 安装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像操作"><span class="nav-number">4.</span> <span class="nav-text">镜像操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#获取镜像"><span class="nav-number">4.1.</span> <span class="nav-text">获取镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列出镜像"><span class="nav-number">4.2.</span> <span class="nav-text">列出镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#制作镜像"><span class="nav-number">4.3.</span> <span class="nav-text">制作镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#推送镜像"><span class="nav-number">4.4.</span> <span class="nav-text">推送镜像</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -829,7 +833,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      173.2k 字
+      175.1k 字
     </span>
   
 
