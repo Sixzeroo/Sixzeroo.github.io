@@ -144,6 +144,43 @@
   </entry>
   
   <entry>
+    <title>LeetCode Next Permutation 题解</title>
+    <link href="https://www.liuin.cn/2018/02/25/LeetCode-Next-Permutation-%E9%A2%98%E8%A7%A3/"/>
+    <id>https://www.liuin.cn/2018/02/25/LeetCode-Next-Permutation-题解/</id>
+    <published>2018-02-25T01:27:43.000Z</published>
+    <updated>2018-03-02T13:47:01.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>LeetCode Next Permutation 题解</p>
+<a id="more"></a>
+<h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>题目的意思就是求给定序列的下一个字典序</p>
+<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>首先我们要了解什么是字典序，这里参考wiki的解释：</p>
+<blockquote>
+<p>设想一本英语字典里的单词，何者在前何者在后？</p>
+<p>显然的做法是先按照第一个字母、以 a、b、c……z 的顺序排列；如果第一个字母一样，那么比较第二个、第三个乃至后面的字母。如果比到最后两个单词不一样长（比如，sigh 和 sight），那么把短者排在前。</p>
+<p>通过这种方法，我们可以给本来不相关的单词强行规定出一个顺序。“单词”可以看作是“字母”的字符串，而把这一点推而广之就可以认为是给对应位置元素所属集合分别相同的各个有序多元组规定顺序</p>
+</blockquote>
+<p>我的理解是：<strong>把一组数的所有排列情况按照字母顺序进行一次排序得到的就是一个字典序</strong></p>
+<p>在这道题中要求给定排列的下一个字典序，可以知道把一个大一点的数往前移动这个序列的字典序一定会变大，那么就要从后往前找到第一个能变大的数（变大指和它后面的某个数互换以后），找到这个数以后把他和比他大的“第一个”数互换获得最小的增量，然后把这个数后面的数字按照从小到大的顺序重新排列。</p>
+<p>举个例子：</p>
+<p><img src="" alt="enter description here"><a href="https://leetcode.com/media/original_images/31_Next_Permutation.gif" target="_blank" rel="external">https://leetcode.com/media/original_images/31_Next_Permutation.gif</a></p>
+<h2 id="代码-C"><a href="#代码-C" class="headerlink" title="代码(C++)"></a>代码(C++)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">class Solution &#123;</div><div class="line">public:</div><div class="line">    void nextPermutation(vector&lt;int&gt;&amp; nums) &#123;</div><div class="line">        int first = nums.size(), len = nums.size();</div><div class="line">        // 倒序查找第一个升序数</div><div class="line">        for(int i=len-1; i&gt;0;--i)</div><div class="line">        &#123;</div><div class="line">            if(nums[i] &gt; nums[i-1])</div><div class="line">            &#123;</div><div class="line">                first = i-1;</div><div class="line">                break;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        if(first == len)</div><div class="line">            reverse(nums.begin(), nums.end());</div><div class="line">        else</div><div class="line">        &#123;</div><div class="line">            int second = len-1;</div><div class="line">            // 在后面找一个刚好比这个数大一点的数和其互换</div><div class="line">            for(int i=first + 1;i&lt;len;++i)</div><div class="line">            &#123;</div><div class="line">                if(nums[i]&lt;=nums[first])</div><div class="line">                &#123;</div><div class="line">                    second = i-1;</div><div class="line">                    break;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            swap(nums[first], nums[second]);</div><div class="line">            // 反转后面的部分</div><div class="line">            reverse(nums.begin()+first+1, nums.end());</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>更多LeetCode题解，欢迎查看我的<a href="https://github.com/Sixzeroo/LeetCode" target="_blank" rel="external">GitHub项目</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;LeetCode Next Permutation 题解&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="算法" scheme="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="LeetCode" scheme="https://www.liuin.cn/tags/LeetCode/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Docker Machine 简介</title>
     <link href="https://www.liuin.cn/2018/02/16/Docker-Machine-%E7%AE%80%E4%BB%8B/"/>
     <id>https://www.liuin.cn/2018/02/16/Docker-Machine-简介/</id>
@@ -2258,117 +2295,6 @@
     
     
       <category term="LeetCode" scheme="https://www.liuin.cn/tags/LeetCode/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CSAPP 存储器层次结构</title>
-    <link href="https://www.liuin.cn/2018/01/28/CSAPP%20%E5%AD%98%E5%82%A8%E5%99%A8%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/"/>
-    <id>https://www.liuin.cn/2018/01/28/CSAPP 存储器层次结构/</id>
-    <published>2018-01-28T09:47:19.000Z</published>
-    <updated>2018-02-23T04:05:57.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>《深入理解计算机系统》第6章笔记</p>
-<a id="more"></a>
-<p>存储器系统(memory system)是一个具有不同容量、成本和访问时间的存储设备的层次结构。CPU 寄存器保存着最常用的数据。靠近 CPU 的晓得、快速的高速缓存存储器(cache memory)作为一部分存储在相对慢速的主存储器(main memory)中的数据和指令的缓冲区域。主存暂时存放在容量较大的、慢速磁盘上的数据，而这些磁盘常常又作为存储在通过网络连接的其他机器的磁盘或磁带上的区域的缓冲区域。</p>
-<p>具有良好局部性的程序倾向于一次又一次地访问相同的数据项集合，或者是倾向于访问邻近的数据项集合</p>
-<h2 id="存储技术"><a href="#存储技术" class="headerlink" title="存储技术"></a>存储技术</h2><h3 id="随机访问存储器"><a href="#随机访问存储器" class="headerlink" title="随机访问存储器"></a>随机访问存储器</h3><p>随机访问存储器 (Random-Access Memory, RAM)分为两类：静态的和动态的。SRAM 比 DRAM 更快，但也贵得多。SRAM 用来作为高速缓存存储器，既可以在 CPU 芯片上，也可以在片下。DRAM 用来作为主存以及图形系统的帧缓冲区。</p>
-<h3 id="磁盘存储"><a href="#磁盘存储" class="headerlink" title="磁盘存储"></a>磁盘存储</h3><p>磁盘构造</p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_1_28_1517109327779.jpg" alt="enter description here"></p>
-<p>磁盘容量：一个磁盘能够存储的最大位数，由以下因素决定：</p>
-<ul>
-<li>记录密度（recoding density），磁道一英寸的段可以放入的位数</li>
-<li>磁道密度</li>
-<li>面密度</li>
-</ul>
-<p>磁盘操作：用一个连接到传动臂的读写头来读写存储在磁性表面的位</p>
-<p>对扇区的访问时间由三个部分组成：寻道时间（seek time）、旋转时间（rotational latency）、传送时间（transfer time）</p>
-<h3 id="固态硬盘（Solid-State-Disks）"><a href="#固态硬盘（Solid-State-Disks）" class="headerlink" title="固态硬盘（Solid State Disks）"></a>固态硬盘（Solid State Disks）</h3><p>基于闪存（flash memory）的存储技术</p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_1_28_1517110224118.jpg" alt="enter description here"></p>
-<h3 id="存储技术趋势"><a href="#存储技术趋势" class="headerlink" title="存储技术趋势"></a>存储技术趋势</h3><ul>
-<li>不同的存储技术有不同的价格和性能的折中</li>
-<li>不同存储技术的价格和性能属性以截然不同的速率变化着</li>
-<li>DRAM和磁盘访问的时间滞后于CPU时钟周期时间</li>
-</ul>
-<h2 id="局部性"><a href="#局部性" class="headerlink" title="局部性"></a>局部性</h2><p>一个编写良好的计算机程序常常具有良好的局部性(locality)。也就是说，它们倾向于引用临近于其他最近引用过的数据项的数据项，或者最近引用过的数据项本身。这种倾向性，被称为局部性原理(principle of locality)，是一个持久的概念，对硬件和软件系统的设计和性能都有着极大的影响。</p>
-<p>局部性通常有两种不同的形式：时间局部性(temporal locality)和空间局部性(spatial locality)。有良好局部性的程序比局部性差的程序运行得更快。</p>
-<ul>
-<li>重复引用同一个变量的程序有良好的时间局部性</li>
-<li>对于具有步长为 k 的引用模式的程序，步长越小，空间局部性越好</li>
-<li>对于取指令来说，循环有好的时间和空间局部性。循环体越小，循环迭代次数越多，局部性越好</li>
-</ul>
-<h2 id="存储器层次结构"><a href="#存储器层次结构" class="headerlink" title="存储器层次结构"></a>存储器层次结构</h2><p><img src="https://data2.liuin.cn/story-writer/2018_1_28_1517110431384.jpg" alt="enter description here"></p>
-<h3 id="在存储器层次结构中的缓存"><a href="#在存储器层次结构中的缓存" class="headerlink" title="在存储器层次结构中的缓存"></a>在存储器层次结构中的缓存</h3><p>一般而言，高速缓存(cache)是一个小而快速的存储设备。使用高速缓存的过程称为缓存(caching)。</p>
-<p>存储器层次结构的中心思想是，对于每个 k，位于 k 层的更快更小的存储设备作为位于 k+1 层的更大更慢的存储设备的缓存。换句话说，层次结构中的每一次都缓存来自较低一层的数据对象。</p>
-<p>数据总是以块大小为传送单元(transfer unit)在第 k 层和第 k+1 层之间来回拷贝的。虽然在层次结构中任何一对相邻的层次之间块大小是固定的，但是其他的层次对之间可以用不同的块大小。一般而言，层次结构较低的层(离 CPU 较远)的设备访问时间较长，因此为了补偿这些较长的访问时间，倾向于使用较大的块。</p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_1_28_1517110523087.jpg" alt="enter description here"></p>
-<p>缓存命中： 当程序需要第 k+1 层的某个数据对象 d 时，它首先在当前存储的第 k 层的一个块中查找 d。如果 d 刚好缓存在第 k 层中，那么就是<strong>缓存命中</strong>(cache hit)。</p>
-<p>缓存不命中：如果第 k 层中没有缓存数据对象 d，那么就是缓存不命中(cache miss)。当发生 cache miss 时，会从下一次取出包含 d 的那个块，如果第 k 层的缓存已经满了的话，可能就会覆盖现存的一个块。</p>
-<p>覆盖一个现存的块的过程称为替换(replacing)或驱逐(evicting)。被驱逐的看这个块有时也称为牺牲块(victim block)。决定该替换那个块是由缓存的替换策略(replacement policy)来控制的。(LRU, LFU 等等替换策略在这里可以使用)</p>
-<p>缓存不命中的种类： 一个空的缓存有时称为冷缓存(cold cache)，此类不命中称为compulsory miss 或 cold miss。</p>
-<h3 id="存储器层次结构概念小结"><a href="#存储器层次结构概念小结" class="headerlink" title="存储器层次结构概念小结"></a>存储器层次结构概念小结</h3><p>存储器层次结构行之有效，因为较慢的设备比较快的设备更便宜，还因为程序偏向于展示局部性：</p>
-<ul>
-<li>利用时间局部性，同一数据对象可能会被多次使用</li>
-<li>利用空间局部性，块通常包含有多个数据对象</li>
-</ul>
-<p><img src="https://data2.liuin.cn/story-writer/2018_1_28_1517110831456.jpg" alt="enter description here"></p>
-<h2 id="高速缓存存储器"><a href="#高速缓存存储器" class="headerlink" title="高速缓存存储器"></a>高速缓存存储器</h2><p>早期计算机系统的存储器结构只有三层：CPU 寄存器、DRAM 主存储器和磁盘存储。不过，由于 CPU 和主存之间逐渐增大的差距，系统设计者被迫在 CPU 寄存器文件和主存之间插入了一个小的 SRAM 高速缓存存储器，称为 L1 高速缓存。之后又插入了一个更大的高速缓存，称为 L2 高速缓存，之后还有 L3 高速缓存。周期数：L1(2~4), L2(~10), L3(~30~40)</p>
-<h3 id="通用的高速缓存存储结构"><a href="#通用的高速缓存存储结构" class="headerlink" title="通用的高速缓存存储结构"></a>通用的高速缓存存储结构</h3><p><img src="https://data2.liuin.cn/story-writer/2018_1_28_1517111205440.jpg" alt="enter description here"></p>
-<h3 id="直接映射高速缓存"><a href="#直接映射高速缓存" class="headerlink" title="直接映射高速缓存"></a>直接映射高速缓存</h3><p>每个组只有一行（E=1）的高速缓存被称为直接映射高速缓存</p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_1_28_1517111234451.jpg" alt="enter description here"></p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_1_28_1517111247641.jpg" alt="enter description here"></p>
-<h3 id="组相联高速缓存"><a href="#组相联高速缓存" class="headerlink" title="组相联高速缓存"></a>组相联高速缓存</h3><p>直接映射高速缓存中冲突不命中造成的问题是源于每一个组只有一行，组相联高速缓存（set associative cache）放松了这条限制，所以每个组都保存了有多于一行的高速缓存</p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_1_28_1517111425945.jpg" alt="enter description here"></p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_1_28_1517111461520.jpg" alt="enter description here"></p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_1_28_1517111477325.jpg" alt="enter description here"></p>
-<h3 id="全相联高速缓存"><a href="#全相联高速缓存" class="headerlink" title="全相联高速缓存"></a>全相联高速缓存</h3><p>由一个包含所有高速缓存行的组（E =  C/B）组成</p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_1_28_1517111577074.jpg" alt="enter description here"></p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_1_28_1517111592957.jpg" alt="enter description here"></p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_1_28_1517111605869.jpg" alt="enter description here"></p>
-<h3 id="有关写的问题"><a href="#有关写的问题" class="headerlink" title="有关写的问题"></a>有关写的问题</h3><p>更新写命中的缓存的方法：</p>
-<ol>
-<li>直写（write-throuth），立即将w的高速缓存块写回到存储器中，优点是简单，缺点是每条存储指令都会引起总线上面的一个写事务</li>
-<li>写回（write-back），尽可能推迟存储器的更新，只有当替换算法要驱逐已更新块时，才写入存储器中，优点是能够显著减少总线事务的数量，缺点是增加复杂性，需要额外维护一个修改位（dirty bit）</li>
-</ol>
-<p>处理写不命中的方法：</p>
-<ol>
-<li>写分配（write-allocate），加载相应的存储器块到高速缓存中，然后更新这个高速缓存块</li>
-<li>非写分配（not-write-allocate），避开高速缓存，直接把字写到存储器中</li>
-</ol>
-<h3 id="指令高速缓存和统一高速缓存"><a href="#指令高速缓存和统一高速缓存" class="headerlink" title="指令高速缓存和统一高速缓存"></a>指令高速缓存和统一高速缓存</h3><p>只保存指令的高速缓存成为i-cache，只保存程序数据的高速缓存称为d-cache，即保存指令又保存程序数据的高速缓存称为统一的高速缓存（unified cache）</p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_1_28_1517112120679.jpg" alt="enter description here"></p>
-<h3 id="高速缓存参数的性能影响"><a href="#高速缓存参数的性能影响" class="headerlink" title="高速缓存参数的性能影响"></a>高速缓存参数的性能影响</h3><p>衡量性能的指标：</p>
-<ul>
-<li>不命中率</li>
-<li>命中率</li>
-<li>命中时间</li>
-<li>不命中处罚</li>
-</ul>
-<p>影响：</p>
-<ol>
-<li>高速缓存大小</li>
-<li>块大小</li>
-<li>相联度</li>
-<li>写策略</li>
-</ol>
-<h2 id="编写高速缓存友好的代码"><a href="#编写高速缓存友好的代码" class="headerlink" title="编写高速缓存友好的代码"></a>编写高速缓存友好的代码</h2><ol>
-<li>让最常见的情况运行得快</li>
-<li>在每个循环内部使缓存不命中数量小</li>
-</ol>
-<h2 id="综合：高速缓存对程序性能的影响"><a href="#综合：高速缓存对程序性能的影响" class="headerlink" title="综合：高速缓存对程序性能的影响"></a>综合：高速缓存对程序性能的影响</h2><p>存储器山（memory mountain）<br><img src="https://data2.liuin.cn/story-writer/2018_1_28_1517112396218.jpg" alt="enter description here"></p>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>程序员可以通过编写有良好空间和时间局部性的程序来显著地改进程序的运行时间。利用基于 SRAM 的高速缓存存储器特别重要。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;《深入理解计算机系统》第6章笔记&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="CSAPP" scheme="https://www.liuin.cn/tags/CSAPP/"/>
     
   </entry>
   
