@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="unDM_uE8uu2mZxh8kTTsrR_tk8grv9nQAz6QQoaIOcU" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="C/C++," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sixzeroo" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="https://data1.liuin.cn/bitbug_favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="《C++ Primer》笔记 C++基础部分">
+<meta name="keywords" content="C&#x2F;C++">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《C++ Primer》笔记 C++标准库部分">
+<meta property="og:url" content="https://www.liuin.cn/2018/03/04/《C-Primer》笔记-C-标准库部分/index.html">
+<meta property="og:site_name" content="Sixzeroo">
+<meta property="og:description" content="《C++ Primer》笔记 C++基础部分">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_15_1518671687211.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_15_1518672433805.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_15_1518672783415.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_15_1518672886373.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_15_1518672976516.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_15_1518676701978.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_16_1518790789624.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_16_1518793115931.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_16_1518794438240.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_17_1518833554118.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_17_1518833711199.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_17_1518834076074.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_17_1518834143966.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_17_1518861676844.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_17_1518861736953.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_17_1518861803653.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_17_1518861836971.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_17_1518861942715.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_17_1518862439794.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_17_1518862492187.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_17_1518862504010.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_18_1518953656030.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_18_1518954256455.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_18_1518954580235.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_1_1519893284405.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_1_1519894770101.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_1_1519894916626.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_1_1519895023511.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_1_1519895035177.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_2_1519989186109.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_2_1519990637584.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_2_1519991091913.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_2_1519992027517.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_2_1519992536522.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_2_1519992521248.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_2_1519992604789.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_2_1519992681370.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_4_1520129716802.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_4_1520129795731.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_4_1520130371151.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_4_1520130502646.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_4_1520130696044.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_4_1520132049585.jpg">
+<meta property="og:updated_time" content="2018-03-04T03:01:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《C++ Primer》笔记 C++标准库部分">
+<meta name="twitter:description" content="《C++ Primer》笔记 C++基础部分">
+<meta name="twitter:image" content="https://data2.liuin.cn/story-writer/2018_2_15_1518671687211.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.liuin.cn/2018/03/04/《C-Primer》笔记-C-标准库部分/"/>
+
+
+
+
+
+  <title>《C++ Primer》笔记 C++标准库部分 | Sixzeroo</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?eb51bd4c48350fa08cbc200aead6109f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+	
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sixzeroo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-taiwan">
+          <a href="/categories/台湾" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+            
+            台湾
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2018/03/04/《C-Primer》笔记-C-标准库部分/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sixzeroo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://data1.liuin.cn/ava.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sixzeroo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">《C++ Primer》笔记 C++标准库部分</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-04T10:58:33+08:00">
+                2018-03-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/03/04/《C-Primer》笔记-C-标准库部分/" class="leancloud_visitors" data-flag-title="《C++ Primer》笔记 C++标准库部分">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  14,317 字
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>《C++ Primer》笔记 C++基础部分</p>
+<a id="more"></a>
+<h1 id="IO库"><a href="#IO库" class="headerlink" title="IO库"></a>IO库</h1><p>大部分的I/O库设施：</p>
+<ul>
+<li>istream(输入流)类型,提供输入操作。</li>
+<li>ostream(输出流)类型,提供输出操作。</li>
+<li>cin，一个 istream对象,从标准输入读取数据。</li>
+<li>cout,一个 ostream对象,向标准输出写入数据。</li>
+<li>cerr,一个 ostream对象,通常用于输出程序错误消息,写入到标准错误・</li>
+<li><blockquote>
+<blockquote>
+<p>运算符,用来从一个istream对象读取输入数据。</p>
+</blockquote>
+</blockquote>
+</li>
+<li>&lt;&lt;运算符,用来向一个ostream对象写入输出数据。</li>
+<li>getline函数,从一个给定的 istream读取一行数据,存入一个给定的 string对象中。</li>
+</ul>
+<h2 id="IO类"><a href="#IO类" class="headerlink" title="IO类"></a>IO类</h2><p>我们已经使用过的IO类型和对象都是操纵char数据的。默认情况下,这些对象都是关联到用户的控制台窗口的。</p>
+<p>为了支持这些不同种类的IO处理操作,在 istream和ostream之外,标准库还定义了其他一些IO类型:</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_2_15_1518671687211.jpg" alt="enter description here"></p>
+<p>为了支持宽字符的语言，标准库定义了一组类型和对象来操纵wchat_t类型的数据。宽字符版本的类型和函数的名字以一个w开始。</p>
+<blockquote>
+<p>IO类型之间的关系</p>
+</blockquote>
+<p>标准库使我们能忽略这些不同类型的流之间的差异,这是通过<strong>继承机制</strong>( inheritance)实现的。利用模板,我们可以使用具有继承关系的类,而不必了解继承机制如何工作的细节。简单地说,继承机制使我们可以声明一个特定的类继承自另一个类。我们通常可以将一个派生类(继承类)对象当作其基类(所继承的类)对象来使用</p>
+<h3 id="IO对象无拷贝或赋值"><a href="#IO对象无拷贝或赋值" class="headerlink" title="IO对象无拷贝或赋值"></a>IO对象无拷贝或赋值</h3><p>我们不能拷贝或者对IO对象赋值，由于不能拷贝IO对象，因此我们也不能将形参或者函数返回类型设置为流类型。进行IO操作的函数通常以引用的方式传递和返回流。</p>
+<p>读取或者返回一个IO对象会改变其状态，因此传递和引用不能是const的</p>
+<h3 id="条件状态"><a href="#条件状态" class="headerlink" title="条件状态"></a>条件状态</h3><blockquote>
+<p>查询流状态</p>
+</blockquote>
+<p>IO库定义了一个与机器无关的 iostate类型,它提供了表达流状态的完整功能。这个类型应作为一个位集合来使用</p>
+<blockquote>
+<p>管理条件状态</p>
+</blockquote>
+<p>流对象的 rdstate 成员返回一个iostate值,对应流的当前状态。 setstate操作将给定条件位置位,表示发生了对应错误。clear成员是一个重載的成员:它有一个不接受参数的版本,而另一个版本接受一个 iostate类型型的参数。</p>
+<h3 id="管理输出缓存"><a href="#管理输出缓存" class="headerlink" title="管理输出缓存"></a>管理输出缓存</h3><p>每一个输出流都管理一个缓冲区，用来保存程序读写的数据。</p>
+<p>文本串可能立即打印出来,但也有可能被操作系统保存在缓冲区中,随后再打印。有了缓冲机制,操作系统就可以将程序的多个输出操作组合成单一的系统级写操作。由于设备的写操作可能很耗时,<strong>允许操作系统将多个输出操作组合为单一的设备写操作可以带来很大的性能提升</strong>。</p>
+<p>导致缓冲刷新(即,数据真正写到输出设备或文件)的原因有很多：</p>
+<ul>
+<li>程序正常结束,作为main函数的 return操作的一部分,缓冲冲刷新被执行。</li>
+<li>缓冲区满时,需要刷新缓冲,而后新的数据才能继续写入缓冲区。</li>
+<li>我们可以使用操纵符如endl来显式刷新缓冲区。</li>
+<li>在每个输出操作之后,我们可以用操纵符unitbuf设置流的内部状态,来清空缓冲区。</li>
+<li>一个输出流可能被关联到另一个流。在这种情况下,当读写被关联的流时,关联到的流的缓冲区会被刷新。</li>
+</ul>
+<blockquote>
+<p>刷新输出缓冲区</p>
+</blockquote>
+<p>我们已经使用过操纵符endl,它完成换行并刷新缓冲区的工作。IO库中还有两个类似的操纵符:flush和ends。flush刷新缓冲区,但不输出任何额外的字符;ends向缓冲区插入一个空字符,然后刷新缓冲区</p>
+<blockquote>
+<p>uintbuf操作符</p>
+</blockquote>
+<p>如果想在每次输出操作后都刷新缓冲区,我们可以使用 unitbuf操纵符。它告诉流在接下来的每次写操作之后都进行一次=flush操作。而 nounitbuf操纵符则重置流,使其恢复使用正常的系统管理的缓冲区刷新机制:</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_2_15_1518672433805.jpg" alt="enter description here"></p>
+<h2 id="文件的输入输出"><a href="#文件的输入输出" class="headerlink" title="文件的输入输出"></a>文件的输入输出</h2><p>头文件 fstream定义了三个类型来支持文件IO: ifstream从一个给定文件读取数据,ofstream向一个给定文件写入数据,以及 fstream可以读写给定文件。</p>
+<p>除了继承自 iostream类型的行为之外, fstream中定义的类型还增加了一些新的成员来管理与流关联的文件</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_2_15_1518672783415.jpg" alt="enter description here"></p>
+<h3 id="使用文件流对象"><a href="#使用文件流对象" class="headerlink" title="使用文件流对象"></a>使用文件流对象</h3><p>当我们想要读写一个文件时,可以定义一个文件流对象,并将对象与文件关联起来。每个文件流类都定义了一个名为open的成员函数,它完成一些系统相关的操作,来定位给定的文件,并视情况打开为读或写模式。</p>
+<blockquote>
+<p>成员函数open和close</p>
+</blockquote>
+<p>如果我们定义一个空文件流对象，随后我们可以调用open来将它与文件关联起来。</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_2_15_1518672886373.jpg" alt="enter description here"></p>
+<p>如果调用open失败, failbit会被置位。因为调用open可能失败,进行open是否成功的检测通常是一个好习惯</p>
+<h3 id="文件模式"><a href="#文件模式" class="headerlink" title="文件模式"></a>文件模式</h3><p>每一个流都有一个关联的<strong>文件模式</strong>（file mode），用来指出如何使用文件。</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_2_15_1518672976516.jpg" alt="enter description here"></p>
+<p>无论用哪种方式打开文件,我们都可以指定文件模式,调用open打开文件时可以,用一个文件名初始化流来隐式打开文件时也可以。</p>
+<blockquote>
+<p>以out模式打开文件会丢弃</p>
+</blockquote>
+<p>已有数据默认情况下,当我们打开一个 ofstream时,文件的内容会被丢弃。阻止一个ofstream清空给定文件内容的方法是同时指定aap模式:</p>
+<h2 id="string流"><a href="#string流" class="headerlink" title="string流"></a>string流</h2><p>sstream头文件定义了三个类型来支持内存IO,这些类型可以向 string写入数据,从string读取数据,就像string是一个IO流一样。</p>
+<p>istringstream从 string读取数据，ostringstream向 string写入数据,而头文件 stringstream既可从 string读数据也可向 string写数据。与fstream类型类似,头文件 sstream中定义的类型都继承自我们已经使用过的 iostream头文件中定义的类型。除了继承得来的操作, sstream中定义的类型还增加了一些成员来管理与流相关联的string。</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_2_15_1518676701978.jpg" alt="enter description here"></p>
+<h3 id="使用istringstream"><a href="#使用istringstream" class="headerlink" title="使用istringstream"></a>使用istringstream</h3><p>当我们的某些工作室对整行的文本进行处理，而其他的一些工作是处理行内的单个单词时，通常可以使用istringstream</p>
+<h3 id="使用ostringstream"><a href="#使用ostringstream" class="headerlink" title="使用ostringstream"></a>使用ostringstream</h3><p>当我们逐步构造输出，希望最后一起打印时，ostringstream是很有用的。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>C++使用标准库类来处理面向流的输入和输出:</p>
+<ol>
+<li>iostream处理控制台</li>
+<li>fstream处理命名文件</li>
+<li>stringstream完成内存string的IO</li>
+</ol>
+<hr>
+<h1 id="顺序容器"><a href="#顺序容器" class="headerlink" title="顺序容器"></a>顺序容器</h1><p>一个容器就是一些特定类型对象的集合。<strong>顺序容器</strong>( sequential container)为程序员提供了<strong>控制元素存储和访问顺序的能力</strong>。这种顺序<strong>不依赖于元素的值,而是与元素加入容器时的位置相对应</strong>。与之相对的,我们将在第11章介绍的有序和无序关联容器,则根据关键字的值来存储元素。</p>
+<h2 id="顺序容器概述"><a href="#顺序容器概述" class="headerlink" title="顺序容器概述"></a>顺序容器概述</h2><p><img src="https://data2.liuin.cn/story-writer/2018_2_16_1518790789624.jpg" alt="enter description here"></p>
+<p>以上就是标准库中的顺序容器了，所有顺序容器提供快速顺序访问元素的能力。但是，这些容器在以下方面都有不同的性能折中：</p>
+<ul>
+<li>向容器添加或从容器中删除元素的代价</li>
+<li>非顺序访问容器中元素的代价</li>
+</ul>
+<p>除了固定大小的的 array外,其他容器都提供高效、灵活的内存管理。</p>
+<p>list和 forward_list 两个容器的设计目的是<strong>令容器任何位置的添加和删除操作都很快速</strong>。作为代价,这两个容器不支持元素的随机访问:为了访问一个元素,我们只能遍历整个容器。而且,与 vector、 deque和 array相比,这两个容器的额外内存开销也很大。</p>
+<p>deque是一个更为复杂的数据结构。与string和 vector类似, deque支持快速的随机访问。与 string和 vector一样,在 deque的中间位置添加或删除元素的代价(可能)很高。但是,<strong>在 deque的两端添加或删除元素都是很快的</strong>,与list或forward_list添加删除元素的速度相当。</p>
+<p>以下是选择容器的基本原则：</p>
+<ul>
+<li>除非你有很好的理由选择其他容器,否则应使用 vector。</li>
+<li>如果你的程序有很多小的的元素,且空间的额外开销很重要,则不要使用list或forward_list。</li>
+<li>如果程序要求随机访问元素,应使用 vector或 deque如果程序要求在容器的中间插入或删除元素,应使用list或forward_list。</li>
+<li>如果程序需要在头尾位置插入或删除元素,但不会在中间位置进行插入或删除操作,则使用 deque</li>
+<li>如果程序只有在读取输入时才需要在容器中间位置插入元素,随后需要随机访问元素,则：首先，确定是否真的需要在容器中间添加元素；如果必须在中间位置插入元素，考虑在输入阶段使用list，一旦输入完成，将list中的额内容拷贝到一个vector 中</li>
+</ul>
+<h2 id="容器库概览"><a href="#容器库概览" class="headerlink" title="容器库概览"></a>容器库概览</h2><p>容器类型上形成了一种层次：</p>
+<ul>
+<li>某些操作是所有容器类型都提供的</li>
+<li>另外一些操作仅针对顺序容器、关联容器或无序容器</li>
+<li>还有一些操作只适用于一小部分容器</li>
+</ul>
+<p>本节我们介绍所有容器都适用的操作</p>
+<p>一般来说，每个容器都定义在一个头文件中，文件名与类型名相同；顺序容器几乎可以保存任意类型的元素。</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_2_16_1518793115931.jpg" alt="enter description here"></p>
+<h3 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h3><p>与容器一样,迭代器有着公共的接口:如果一个迭代器提供某个操作,那么所有提供相同操作的迭代器对这个操作的实现方式都是相同的。</p>
+<p>一个迭代器范围( iterator range)由一对迭代器表示,两个迭代器分别指向同一个容器中的元素或者是<strong>尾元素之后的位置</strong>( one past the last element)。这两个迭代器通常被称为 begin和end,或者者是 first和laste(可能有些误导),它们标记了容器中元素的个范围</p>
+<p>这种元素范围被称为<strong>左闭合区间</strong>( left-inclusive interval),其标准数学描述为<code>[begin, end)</code></p>
+<h3 id="容器类型成员"><a href="#容器类型成员" class="headerlink" title="容器类型成员"></a>容器类型成员</h3><p>反向迭代器就是一种反向遍历容器的迭代器,与正向迭代器相比,各种操作的含义也都发生了颠倒</p>
+<p>,通过类型别名,我们可以在不了解容器中元素类型的情况下使用它。如果需要元素类型,可以使用容器的value_type。如果需要元素类型的一个引用,可以使用 reference或 const_reference。这些元素相关的类型别名在泛型编程中非常有用</p>
+<h3 id="begin-和-end成员"><a href="#begin-和-end成员" class="headerlink" title="begin 和 end成员"></a>begin 和 end成员</h3><p>begin和end操作生成指向容器中第一个元素和尾元素之后位置的迭代器。这两个迭代器最常见的用途是形成一个包含容器中所有元素的迭代器范围</p>
+<h3 id="容器定义和初始化"><a href="#容器定义和初始化" class="headerlink" title="容器定义和初始化"></a>容器定义和初始化</h3><p>每个容器类型都定义了一个默认构造函数。除 array之外,其他容器的默认构造函数都会创建一个指定类型的空容器,且都可以接受指定容器大小和元素初始值的参数。</p>
+<blockquote>
+<p>将一个容器初始化为另一个容器的拷贝</p>
+</blockquote>
+<p>将一个新容器创建为另一个容器的拷贝的方法有两种:可以直接拷贝整个容器,或者( array除外)拷贝由一个迭代器对指定的元素范围。为了创建一个容器为另一个容器的拷贝,两个容器的类型及其元素类型必须匹配。不过,当传递迭代器参数来拷贝一个范围时,就不要求容器类型是相同的了。而且,新容器和原容器中的元素类型也可以不同,只要能将要拷贝的元素转换</p>
+<blockquote>
+<p>与顺序容器大小相关的构造函数</p>
+</blockquote>
+<p>除了与关联容器相同的构造函数外,顺序容器( array除外)还提供另一个构造函数,它接受一个容器大小和一个(可选的)元素初始值。</p>
+<h3 id="赋值与swap"><a href="#赋值与swap" class="headerlink" title="赋值与swap"></a>赋值与swap</h3><p>赋值运算符将其左边容器中的全部元素替换为右边容器中元素的拷贝。</p>
+<blockquote>
+<p>使用assign</p>
+</blockquote>
+<p>顺序容器( array除外)还定义了一个名为 assign的成员,允许我们从一个不同但相容的类型赋值,或者从容器的一个子序列赋值。assign操作用参数所指定的元素(的拷贝)替换左边容器中的所有元素。例如,我们可以用 assign实现将一个 vector中的一段char*值赋予一个list中的 string：<br><img src="https://data2.liuin.cn/story-writer/2018_2_16_1518794438240.jpg" alt="enter description here"></p>
+<blockquote>
+<p>使用swap</p>
+</blockquote>
+<p>除 array外,交换两个容器内容的操作保证会很快——元素本身并未交换,swap只是交換了两个容器的内部数据结构。</p>
+<p>元素不会被移动的事实意味着,除string外,指向容器的迭代器、引用和指针在swap操作之后都不会失效。它们仍指向swap操作之前所指向的那些元素。但是,在swap之后,这些元素已经属于不同的容器了。</p>
+<p>与其他容器不同,swap两个 array会真正交换它们的元素。因此,交換两个 array所需的时间与 array中元素的数目成正比。</p>
+<h3 id="容器大小操作"><a href="#容器大小操作" class="headerlink" title="容器大小操作"></a>容器大小操作</h3><p>除了一个例外,每个容器类型都有三个与大小相关的操作：</p>
+<ul>
+<li>成员函数size，返回容器中元素的数目; </li>
+<li>empty当size为0时返回布尔值true,否则返回回false</li>
+<li>max_size返回一个大于或等于该类型容器所能容纳的最大元素数的值。</li>
+</ul>
+<h3 id="关系运算符"><a href="#关系运算符" class="headerlink" title="关系运算符"></a>关系运算符</h3><p>关系运算符左右两边的运算对象必须是相同类型的容器,且必须保存相同类型的元素。</p>
+<p>比较两个容器实际上是进行元素的逐对比较。这些运算符的工作方式与string的关系运算类似:</p>
+<ul>
+<li>如果两个容器具有相同大小且所有元素都两两对应相等,则这两个容器相等;否则两个容器不等</li>
+<li>如果两个容器大小不同,但较小容器中每个元素都等于较大容器中的对应元素,则则较小容器小于较大容器。</li>
+<li>如果两个容器都不是另一个容器的前缀子序列,则它们的比较结果取決于第一个不相等的元素的比较结果。</li>
+</ul>
+<h2 id="顺序容器操作"><a href="#顺序容器操作" class="headerlink" title="顺序容器操作"></a>顺序容器操作</h2><h3 id="向顺序容器添加元素"><a href="#向顺序容器添加元素" class="headerlink" title="向顺序容器添加元素"></a>向顺序容器添加元素</h3><p>除 array外,所有标准库容器都提供灵活的内存管理。在运行时可以动态添加或刑除元素来改变容器大小。</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_2_17_1518833554118.jpg" alt="enter description here"></p>
+<p>在一个 vector或 string的尾部之外的任何位置,或是一个 deque的首尾之外的任何位置添加元素,都需要移动元素。而且,向一个 vector或 string添加元素可能引起整个对象存储空间的重新分配。重新分配一个对象的存储空间需要分配新的内存,并将元素从旧的空间移动到新的空间中。</p>
+<h3 id="访问元素"><a href="#访问元素" class="headerlink" title="访问元素"></a>访问元素</h3><p>包括 array在内的每个顺序容器都有一个 front成员函数,而除 forward_list之外的所有顺序容器都有一个back成员函数。这两个操作分别返回首元素和尾元素的引用</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_2_17_1518833711199.jpg" alt="enter description here"></p>
+<blockquote>
+<p>下标操作和安全的随机访问</p>
+</blockquote>
+<p>提供快速随机访问的容器( string、 vector、 deque和 array)也都提供下标运算符。就像我们已经看到的那样,下标运算符接受一个下标参数,返回容器中该位置的元素的引用。<strong>给定下标必须“在范围内”</strong>(即,大于等于0,且小于容器的大小)。保证下标有效是程序员的责任,下标运算符并不检査下标是否在合法范围内。<strong>使用越界的下标是一种严重的程序设计错误</strong>,而且编译器并不检査这种错误。</p>
+<p>如果我们希望确保下标是合法的,可以使用at成员函数。at成员函数类似下标运算,但如果下标越界,at会地出一个out of range异常:</p>
+<h3 id="删除元素"><a href="#删除元素" class="headerlink" title="删除元素"></a>删除元素</h3><p><img src="https://data2.liuin.cn/story-writer/2018_2_17_1518834076074.jpg" alt="enter description here"></p>
+<h3 id="特殊的forward-list操作"><a href="#特殊的forward-list操作" class="headerlink" title="特殊的forward_list操作"></a>特殊的forward_list操作</h3><p>在一个单向链表中,没有简单的方法来获取一个元素的前驱。出于这个原因,在一个 forward_list中添加或删除元素的操作是通过改变给定元素之后的元素来完成的</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_2_17_1518834143966.jpg" alt="enter description here"></p>
+<h3 id="改变容器大小"><a href="#改变容器大小" class="headerlink" title="改变容器大小"></a>改变容器大小</h3><p>我们可以用rsize来增大或缩小容器・与往常一样, array不支持 resize。如果当前大小大于所要求的大小,容器后部的元素会被別除:如果当前大小小于新大小,会将新元素添加到容器后部:</p>
+<h3 id="容器操作可能使迭代器失效"><a href="#容器操作可能使迭代器失效" class="headerlink" title="容器操作可能使迭代器失效"></a>容器操作可能使迭代器失效</h3><p>向容器中添加元素和从容器中删除元素的操作可能会使指向容器元素的指针、引用或迭代器失效。一个失效的指针、引用或迭代器将不再表示任何元素。使用失效的指针、引用或迭代器是一种严重的程序设计错误,很可能引起与使用未初始化指针一样的问题</p>
+<p>当你使用迭代器(或指向容器元素的引用或指针)时,最小化要求迭代器必须保持有效的程序片段是一个好的方法。</p>
+<p>程序必须保证每个循环中都更新迭代器、引用或指针</p>
+<blockquote>
+<p>不要保存end返回的迭代器</p>
+</blockquote>
+<p>当我们添加删除 vector或 string的元素后,或在 deque中首元素之外任何位置添加删除元素后,原来end返回的迭代器总是会失效。因此,<strong>添加或删除元素的循环程序必须反复调用end,而不能在循环之前保存end返回的迭代器</strong>,一直当作容器末尾使用。通常C++标准库的实现中end()操作都很快,部分就是因为这个原因。</p>
+<h2 id="vector对象是如何增长的"><a href="#vector对象是如何增长的" class="headerlink" title="vector对象是如何增长的"></a>vector对象是如何增长的</h2><p>为了支持快速随机访问，vector将元素连续存储——每个元素紧挨着前一个元素存储。</p>
+<p>假定容器中元素是连续存储的,且容器的大小是可变的,考虑向 vector或string中添加元素会发生什么:如果没有空间容纳新元素,容器不可能简单地将它添加到内存中其他位置一一因为元素必须连续存储。容器必须分配新的内存空间来保存已有元素和新元素,将已有元素从旧位置移动到新空间中,然后添加新元素,释放旧存储空间。如如果我们每添加一个新元素, vector就执行一次这样的内存分配和释放操作,性能会慢到不可</p>
+<p>为了避免这种代价,标准库实现者采用了可以减少容器空间重新分配次数的策略。当不得不获取新的内存空间时, vector和 string的实现通常会分配比新的空间需求更大的内存空间。容器预留这些空间作为备用,可用来保存更多的新元素。</p>
+<p>vector 在每次重新分配内存的时候都要移动所有元素</p>
+<blockquote>
+<p>管理容量的成员函数</p>
+</blockquote>
+<p> capacity操作告诉我们容器在不扩张内存空间的情况下可以容纳多少个元素。 reserve操作允许我们通知容器它应该准备保存多少个元素。</p>
+<blockquote>
+<p>capacity和size</p>
+</blockquote>
+<p>理解 capacity和size的区别非常重要。容器的size是指它已经保存的元素的数目;而 capacity则是在不分配新的内存空间的前提下它最多可以保存多少元素。</p>
+<h2 id="额外的string操作"><a href="#额外的string操作" class="headerlink" title="额外的string操作"></a>额外的string操作</h2><h3 id="构造string的其他方法"><a href="#构造string的其他方法" class="headerlink" title="构造string的其他方法"></a>构造string的其他方法</h3><p><img src="https://data2.liuin.cn/story-writer/2018_2_17_1518861676844.jpg" alt="enter description here"></p>
+<blockquote>
+<p>substr操作</p>
+</blockquote>
+<p>substr操作返回一个str1ng,它是原始 string的一部分或全部的拷贝。可以传递给 substr一个可选的开始位置和计数值:</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_2_17_1518861736953.jpg" alt="enter description here"></p>
+<h3 id="改变string的其他方法"><a href="#改变string的其他方法" class="headerlink" title="改变string的其他方法"></a>改变string的其他方法</h3><p><img src="https://data2.liuin.cn/story-writer/2018_2_17_1518861803653.jpg" alt="enter description here"></p>
+<h3 id="string搜索操作"><a href="#string搜索操作" class="headerlink" title="string搜索操作"></a>string搜索操作</h3><p><img src="https://data2.liuin.cn/story-writer/2018_2_17_1518861836971.jpg" alt="enter description here"></p>
+<h3 id="compare函数"><a href="#compare函数" class="headerlink" title="compare函数"></a>compare函数</h3><p>除了关系运算符外,标准准库str1ng类型还提供了一组compare函数,这些函数与C标准库的 strcmp函数很相似。类似 strcmp,据据s是等于、大于还是小于参数指定的字符串,s. compare返回回0、正数或负数。</p>
+<h3 id="数值转换"><a href="#数值转换" class="headerlink" title="数值转换"></a>数值转换</h3><p><img src="https://data2.liuin.cn/story-writer/2018_2_17_1518861942715.jpg" alt="enter description here"></p>
+<h2 id="容器适配器"><a href="#容器适配器" class="headerlink" title="容器适配器"></a>容器适配器</h2><p>除了顺序容器外,标准库还定义了三个顺序容器适配器: stack、 queue和priority_queue。<strong>适配器</strong>( adaptor)是标准库中的一个通用概念。容器、迭代器和函数都有适配器。本质上,<strong>一个适配器是一种机制,能使某种事物的行为看起来像另外一种事物一样</strong>。一个容器适配器接受一种已有的容器类型,使其行为看起来像一种不同的类型。</p>
+<blockquote>
+<p>定义一个适配器</p>
+</blockquote>
+<p>每个适配器都定义两个构造函数:默认构造函数创建一个空对象,接受一个容器的构造函数拷贝该容器来初始化适配器。</p>
+<p>默认情况下, stack和 queue是基于 deque实现的,priority_queue是在 vector之上实现的。我们可以在创建一个适配器时将一个命名的顺序容器作为第三个类型参数,来重载默认容器类型。</p>
+<p>对于一个给定的适配器,可以使用哪些容器是有限制的。所有适配器都要求容器具有添加和删除元素的能力。因此,适配器不能构造在aray之上。类似的,我们也不能用forward_list来构造适配器,因为所有适配器都要求容器具有添加、删除以及访间尾元素的能力。 stack只要求 push_back、 pop_back和back操作,因此可以使用除 array</p>
+<blockquote>
+<p>栈适配器<br><img src="https://data2.liuin.cn/story-writer/2018_2_17_1518862439794.jpg" alt="enter description here"></p>
+</blockquote>
+<p>每个容器适配器都基于底层容器类型的操作定义了自己的特殊操作。我们只可以使用适配器操作,而不能使用底层容器类型的操作。</p>
+<blockquote>
+<p>队列适配器</p>
+</blockquote>
+<p><img src="https://data2.liuin.cn/story-writer/2018_2_17_1518862492187.jpg" alt="enter description here"></p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_2_17_1518862504010.jpg" alt="enter description here"></p>
+<p>标准库queue使用一种先进先出（first-in，first-out，FIFO）的存储和访问策略</p>
+<p>priority_queue 允许我们为队列中的元素建立优先级，新加入的元素会排在所有优先级比它低的已有元素之前。</p>
+<hr>
+<h1 id="泛型算法"><a href="#泛型算法" class="headerlink" title="泛型算法"></a>泛型算法</h1><p>标准库容器定义的操作集合惊人得小。标准库并未给每个容器添加大量功能,而是提供了一组算法,这些算法中的大多数都独立于任何特定的容器。这些算法是通用的( generic,或称泛型的):它们可用于不同类型的容器和不同类型的元素。</p>
+<p>顺序容器只定义了很少的一些操作，我们可以想象用户可能还希望做其他很多有用的操作:查找特定元素、替換或別除二个特定值、重排元素顺序等。</p>
+<p>标准库并未给每个容器都定义成员函数来实现这些操作,而是定义了一组<strong>泛型算法</strong>( generic algorithm):称它们为“算法”,是因为它们实现了一些经典算法的公共接接口,如排序和搜索;称它们是“泛型的”,是因为它们可以用于不同类型的元素和多种容器类型</p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>一般情况下,泛型算法并不直接操作容器,而是遍历由两个迭代器指定的一个元素范围来进行操作。</p>
+<p><strong>迭代器令算法不依赖于容器，但是算法依赖于容器的操作类型</strong>。虽然迭代器的使用令算法不依赖于容器类型,但大多数算法都使用了一个(或多个)元素类型上的操作。</p>
+<p>泛型算法本身不会执行容器的操作，它们只会运行于迭代器上，执行迭代器的操作。</p>
+<h2 id="初始泛型算法"><a href="#初始泛型算法" class="headerlink" title="初始泛型算法"></a>初始泛型算法</h2><h3 id="只读算法"><a href="#只读算法" class="headerlink" title="只读算法"></a>只读算法</h3><p>一些算法只会读取其输入范围内的元素,而从不改变元素。find就是这样一种算法</p>
+<p>另一个只读算法是 accumulate,它定义在头文件 numeric i中。 accumulate函数接受三个参数,前两个指出了需要求和的元素的范围,第三个参数是和的初值。accumulate将第三个参数作为求和起点,这蕴含着一个编程假定:将元素类型加到和的类型上的操作必须是可行的。即,序列中元素的类型必须与第三个参数匹配,或者能够转换为第三个参数的类型。</p>
+<p>另一个只读算法是equal，用于确定两个序列是否保存相同的值。</p>
+<h3 id="写容器元素的算法"><a href="#写容器元素的算法" class="headerlink" title="写容器元素的算法"></a>写容器元素的算法</h3><p>一些算法将新值赋予序列中的元素。当我们使用这类算法时,必须注意<strong>确保序列原大小至少不小于我们要求算法写入的元素数目</strong>。记住,<strong>算法不会执行容器操作,因此它们身不可能改变容器的大小</strong>。</p>
+<p>一些算法接受一个迭代器来指出一个单独的目的位置。这些算法将新值赋予一个序列中的元素,该序列从目的位置迭代器指向的元素开始。</p>
+<blockquote>
+<p>介绍back_inserter</p>
+</blockquote>
+<p>一种保证算法有足够元素空间来容纳输出数据的方法是使用<strong>插入迭代器</strong>( InsertIterator)。插入送代器是一种向容器中添加元素的迭代器。通常情况,当我们通过一个送代器向容器元素赋值时,值被赋予迭代器指向的元素。而当我们通过一个插入迭代器赋值时,一个与赋值号右側值相等的元素被添加到容器中。</p>
+<p>back_inserter接受一个指向容器的引用,返回一个与该容器绑定的插入迭代器当我们通过此迭代器赋值时,赋值运算符会调用 push_back将一个具有给定值的元素添加到容器中</p>
+<blockquote>
+<p>拷贝算法</p>
+</blockquote>
+<p>拷贝(copy)算法是另一个向目的位置迭代器指向的输出序列中的元素写入数据的算法。此算法接受三个迭代器,前两个表示一个输入范围,第三个表示目的序列的起始位置。此算法将输入范围中的元素拷贝到目的序列中。</p>
+<h3 id="重排容器元素的算法"><a href="#重排容器元素的算法" class="headerlink" title="重排容器元素的算法"></a>重排容器元素的算法</h3><p>某些算法会重排容器中元素的顺序,一个明显的例子是sort。调用sort会重排输入序列中的元素,使之有序,它是利用元素类型的运算符来实现排序的</p>
+<blockquote>
+<p>清除重复单词</p>
+</blockquote>
+<p>我们就可以使用另一个称为unique的标准库算法来重排ⅴector,使得不重复的元素出现在ⅴector的开始部分。由于算法不能执行容器的操作,我们将使用 vector的 erase成员来完成真正的删除操作</p>
+<h2 id="定制操作"><a href="#定制操作" class="headerlink" title="定制操作"></a>定制操作</h2><p>很多算法都会比较输入序列中的元素。默认情况下,这类算法使用元素类型的&lt;或=运算符完成比较。标准库还为这些算法定义了额外的版本,允许<strong>我们提供自己定义的操作来代替默认运算符</strong>。</p>
+<h3 id="向算法传递参数"><a href="#向算法传递参数" class="headerlink" title="向算法传递参数"></a>向算法传递参数</h3><blockquote>
+<p>谓词</p>
+</blockquote>
+<p>谓词是一个可调用的表达式,其返回结果是一个能用作条件的值。标准库算法所使用的谓词分为两类:一元谓词( unary predicate,意味着它们只接受单一参数)和二元谓词binary predicate,,意味着它们有两个参数)。接受谓词参数的算法对输入序列中的元素调用谓词。因此,元素类型必须能转换为谓词的参数类型。接受一个二元谓词参数的sOrt版本用这个谓词代替&lt;来比较元素。</p>
+<h3 id="lambda表达式"><a href="#lambda表达式" class="headerlink" title="lambda表达式"></a>lambda表达式</h3><p>根据算法接受一元谓词还是二元谓词,我们传递给算法的谓词必须严格接受一个或两个参数。但是,有时我们希望进行的操作需要更多参数,超出了算法对谓词的限制。</p>
+<blockquote>
+<p>介绍lambda</p>
+</blockquote>
+<p>我们可以向一个算法传递任何类别的<strong>可调用对象</strong>( callable object)。对于一个对象或一个表达式,如果可以对其使用调用运算符,则称它为可调用的。即,如果e是一个可调用的表达式,则我们可以编写代码e(args),其中args是个逗号分隔的一个或多个参数的列表</p>
+<p>到目前为止,<strong>我们使用过的仅有的两种可调用对象是函数和函数指针</strong>。还有其他两种可调用对象:重载了函数调用运算符的类,,以及 lambda表达式( lambda expression)</p>
+<p>一个 lambda表达达式表示一个可调用的代码单元。我们们可以将其理解为一个未命名的内联函数。与任何函数类似似,一个 lambda具有一个返回类型、一个参数列表和一个函数体。但与函数不同, lambda可能定义在函数内部。一个 lambda表达式具有如下形式：</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_2_18_1518953656030.jpg" alt="enter description here"></p>
+<blockquote>
+<p>向lambda传递参数</p>
+</blockquote>
+<p>与一个普通函数调用类似,调用一个 lambda时给定的实参被用来初始化 lambda的形参。通常,实参和形参的类型必须匹配。但与普通函数不同, <strong>lambda不能有默认参数</strong>。因此,一个 lambda调用的实参数目永远与形参数目相等。</p>
+<blockquote>
+<p>使用捕获列表</p>
+</blockquote>
+<p>虽然一个 lambda可以出现在一个函数中,使用其局部变量,但它只能使用那些明确指明的变量。<strong>一个 lambda通过将局部变量包含在其捕获列表中来指出将会使用这些变量</strong>。捕获列表指引 lambda在其内部包含访问局部变量所需的信息。</p>
+<h3 id="lambda捕获和返回"><a href="#lambda捕获和返回" class="headerlink" title="lambda捕获和返回"></a>lambda捕获和返回</h3><p>当定义一个 lambda时,编译器生成一个与 lambda对应的新的(未命名的)类类型。目前,可以这样理解,当向个函数传递一个 lambda时,同时定义了一个新类型和该类型的一个对象:传递的参数就是此编译器生成的类类型的未命名对象。类似的,当使用auto定义一个用 lambda初始化的变量时,定义了一个从 lambda生成的类型的对象。</p>
+<p>默认情況下,从 lambda生成的类都包含一个对应该 lambda 所捕获的変量的数据成员。类似任何普通类的数据成员, lambda的数据成员也在 lambda对象创建时被初始化。</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_2_18_1518954256455.jpg" alt="enter description here"></p>
+<blockquote>
+<p>值捕获</p>
+</blockquote>
+<p>类似参数传递，变量的捕获方式也可以是值或引用。与传值参数类似,采用值捕获的前提是变量可以拷贝。与参数不同,被捕获的变量的值是在 lambda创建时拷贝,而不是调用时拷贝</p>
+<blockquote>
+<p>引用捕获</p>
+</blockquote>
+<p>一个以引用方式捕获的变量与其他任何类型的引用的行为类似。当我们在 lambda 函数体内使用此变量时,实际上使用用的是引用所绑定的对象。</p>
+<blockquote>
+<p>隐式捕获</p>
+</blockquote>
+<p>除了显式列出我们希望使用的来自所在函数的变量之外,还可以让编译器根据 lambda体中的代码来推断我们要使用哪些变量。为了指示编译器推断捕获列表,应在捕获列表中写一个&amp;或=。&amp;告诉编译器采用捕获引用方式,=则表示采用值捕获方式。</p>
+<p>当我们混合使用隐式捕获和显式捕获时,捕获列表中的第一个元素必须是一个&amp;或=。此符号指定了默认捕获方式为引用或值。</p>
+<p>当混合使用隐式捕获和显式捕获时,显式捕获的变量必须使用与隐式捕获不同的方式。即,如果隐式捕获是引用方式(使用了&amp;),则则显式捕获命名变量必须采用值方式,因此不能在其名字前使用&amp;。类似的,如如果隐式捕获采用的是值方式(使用了=),则显式捕获命名变量必须采用引用方式,即,在名字前使用&amp;。</p>
+<blockquote>
+<p>可变lambda</p>
+</blockquote>
+<p>默认情况下,对于一个值被拷贝的变量, lambda不会改变其值。如果我们希望能改变个被捕获的变量的值,就必须在参数列表首加上关键键字 mutale。</p>
+<blockquote>
+<p>指定的lambda返回类型</p>
+</blockquote>
+<p>默认情况下,如果一个 lambda体包含 return之外的任何语句,则编译器假定此 lambda返回void。与其他返回void的函数类似,被推断返回void的 lambda不能返回值。</p>
+<h3 id="参数绑定"><a href="#参数绑定" class="headerlink" title="参数绑定"></a>参数绑定</h3><p>对于那种只在一两个地方使用的简单操作, lambda表达式是最有用的。如果我们需要在很多地方使用相同的操作,通常应该定义一个函数,而不是多次编写相同的 lambda表达式。类似的,如果一个操作需要很多语句才能完成,通通常使用函数更好。</p>
+<p>如果lambda的捕获列表为空，通常可以用函数来替代它。</p>
+<p>但是,对于捕获局部变量的 lambda,用函数来替换它就不是那么容易了。</p>
+<blockquote>
+<p>标准bind函数</p>
+</blockquote>
+<p>我们可以解决向 check_size传递递一个长度参数的问题,方法是使用一个新的名为bind的标准库函数,它定义在头文件 functiona1中。可以将bind函数看作一个通用的函数适配记器,它接受一个可调用对象,生成一个新的可调用对象来“适应”原对象的参数列表</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_2_18_1518954580235.jpg" alt="enter description here"></p>
+<h2 id="再探迭代器"><a href="#再探迭代器" class="headerlink" title="再探迭代器"></a>再探迭代器</h2><p>除了为每个容器定义的迭代器之外,标准库还定义了额外几种迭代器。这些迭代器包括以下几种</p>
+<ul>
+<li>插入迭代器( Insert iterator):这些迭代器被绑定到一个容器上,可用来向容器插入元素</li>
+<li>流迭代器( stream Iterator):这些迭代器被绑定到输入或输出流上,可用来遍历所关联的IO流。</li>
+<li>反向迭代器( reverse Iterator):这些迭代器向后而不是向前移动。除了forward1ist之外的标准库容器都有反向迭代器。</li>
+<li>移动迭代器( move iterator):这些专用的迭代器不是拷贝其中的元素,而是移动它们。我们将在13.6.2节(第480页)介绍移动迭代器</li>
+</ul>
+<h3 id="插入迭代器"><a href="#插入迭代器" class="headerlink" title="插入迭代器"></a>插入迭代器</h3><p>插入器是一种迭代器适配器,它接受一个容器,生成一个迭代器,能实现向给定容器添加元素。</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_3_1_1519893284405.jpg" alt="enter description here"></p>
+<p>插入器有三种类型，其差异在于元素插入的位置：</p>
+<ul>
+<li>back_inserter创建一个使用 push_back的迭代器</li>
+<li>front_inserter创建一个使用 push_front的迭代器</li>
+<li>inserter创建一个使用 insert的迭代器。此函数接受第二个参数,这个参数必须是一个指向给定容器的迭代器。<strong>元素将被插入到给定迭代器所表示的元素之前</strong>。</li>
+</ul>
+<h3 id="iostream-迭代器"><a href="#iostream-迭代器" class="headerlink" title="iostream 迭代器"></a>iostream 迭代器</h3><p>虽然 iostream类型不是容器,但标准库定义了可以用于这些IO类型对象的迭代器。istream iterator读取输入流,ostream iterator向一个输出流写数据。<strong>这些迭代器将它们对应的流当作一个特定类型的元素序列来处理</strong>。通过使用流迭代器,我们可以用泛型算法从流对象读取数据以及向其写入数据。</p>
+<blockquote>
+<p>istream_iterator 允许使用懒惰求值</p>
+</blockquote>
+<p>当我们将一个 istream_iterator绑定到一个流时,标准库并不保证迭代器立即从流读取数据。具体实现可以推迟从流中读取数据,直到我们使用迭代器时才真正读取。标准库中的实现所保证的是,<strong>在我们第一次解引用迭代器之前,从流中读取数据的操作已经完成了</strong>。对于大多数程序来说,立即读取还是推迟读取没什么差别。</p>
+<h3 id="反向迭代器"><a href="#反向迭代器" class="headerlink" title="反向迭代器"></a>反向迭代器</h3><p>反向迭代器就是在容器中从尾元素向首元素反向移动的迭代器。对于反向迭代器,递增(以及递减)操作的含义会颠倒过来。递增一个反向迭代器(++it)会移动到前一个元素;递减一个迭代器(–it)会移动到下一个元素。</p>
+<p>除了 forwardlist之外,其他容器都支持反向迭代器。</p>
+<h2 id="泛型算法结构"><a href="#泛型算法结构" class="headerlink" title="泛型算法结构"></a>泛型算法结构</h2><p>任何算法的最基本的特性是它要求其迭代器提供哪些操作。算法所要求的迭代器操作可以分为5个迭代器类别( Iterator category)。每个算法都会对它的每个迭代器参数指明须提供哪类迭代器。</p>
+<p>算法还共享了一组参数传递规范和一组命名规范</p>
+<h3 id="5类迭代器"><a href="#5类迭代器" class="headerlink" title="5类迭代器"></a>5类迭代器</h3><p>类似容器,迭代器也定义了一组公共操作。一些操作所有迭代器都支持,另外一些只有特定类别的迭代器才支持。例如, ostream_iterator只支持递增、解引用和赋值。vector、 string和 deque的迭代器除了这些操作外,还支持递减、关系和算术运算。</p>
+<p>C++标准指明了泛型和数值算法的每个迭代器参数的最小类别。例如,find算法在一个序列上进行一遍扫描,对元素进行只读操作,因此至少需要输入迭代器。 </p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_3_1_1519894770101.jpg" alt="enter description here"></p>
+<h3 id="算法形参模式"><a href="#算法形参模式" class="headerlink" title="算法形参模式"></a>算法形参模式</h3><p>在任何其他算法分类之上,还有一组参数规范。理解这些参数规范对学习新算法很有帮助—通过理解参数的含义,你可以将注意力集中在算法所做的操作上。</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_3_1_1519894916626.jpg" alt="enter description here"></p>
+<h3 id="算法命名规范"><a href="#算法命名规范" class="headerlink" title="算法命名规范"></a>算法命名规范</h3><p>除了参数规范,算法还遵循一套命名和重载规范。这些规范处理诸如:如何提供一个操作代替默认的&lt;或==运算符以及算法是将输出数据写入输入序列还是一个分离的目的位置等问题。</p>
+<h2 id="特定容器算法"><a href="#特定容器算法" class="headerlink" title="特定容器算法"></a>特定容器算法</h2><p>与其他容器不同,链表类型list和forward_list定义了几个成员函数形式的算法。</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_3_1_1519895023511.jpg" alt="enter description here"></p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_3_1_1519895035177.jpg" alt="enter description here"></p>
+<hr>
+<h1 id="关联容器"><a href="#关联容器" class="headerlink" title="关联容器"></a>关联容器</h1><p>关联容器和顺序容器有着根本的不同:关联容器中的元素是按关键字来保存和访问的。与之相对,顺序容器中的元素是按它们在容器中的位置来顺序保存和访问的。</p>
+<p>关联容器支持高效的关键字查找和访问。两个主要的<strong>关联容器</strong>( associative container)类型是map和set。map中的元素是一些关键字-值( key-value)对:关键字起到索引的作用,值则表示与索引相关联的数据。set中每个元素只包含一个关键字;set支持高效的关键字查询操作——检查一个给定关键字是否在set中。</p>
+<p>标准库提供8个关联容器,。这8个容器间的不同体现在三个维度上:每个容器<br>(1)<strong>或者是一个set,或者是一个map</strong>;<br>(2)<strong>或者要求不重复的关键字,或者允许重复关键字</strong>;<br>(3)<strong>按顺序保存元素,或无序保存</strong></p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_3_2_1519989186109.jpg" alt="enter description here"></p>
+<h2 id="使用关联容器"><a href="#使用关联容器" class="headerlink" title="使用关联容器"></a>使用关联容器</h2><p>map是关键字值对的集合。例如,可以将一个人的名字作为关键字,将其电话号码作为值。我们称这样的数据结构为“将名字映射到电话号码”。map类型通常被称为关联数组( associative array)。关联数组与“正常”数组类似,不同之处在于其下标不必是整数。</p>
+<p>与之相对,set就是关键字的简单集合。当只是想知道一个值是否存在时,set是最有用的。</p>
+<h2 id="关联容器概述"><a href="#关联容器概述" class="headerlink" title="关联容器概述"></a>关联容器概述</h2><p>关联容器不支持顺序容器的位置相关的操作,例如 push_front或 push_back。原因是<strong>关联容器中元素是根据关键字存储的,这些操作对关联容器没有意义</strong>。而且,关联容器也<strong>不支持构造函数或插入操作这些接受一个元素值和一个数量值的操作</strong>。</p>
+<h3 id="定义关联容器"><a href="#定义关联容器" class="headerlink" title="定义关联容器"></a>定义关联容器</h3><p>当定义一个map时,必须既指明关键字类型又指明值类型;而定义一个set时,只需指明关键字类型,因为set中没有值。</p>
+<p>map的初始化：<br><img src="https://data2.liuin.cn/story-writer/2018_3_2_1519990637584.jpg" alt="enter description here"></p>
+<h3 id="关键字类型的要求"><a href="#关键字类型的要求" class="headerlink" title="关键字类型的要求"></a>关键字类型的要求</h3><p>对于有序容器—map、 multimap、set以及 multiset,<strong>关键字类型必须定义元素比较的方法</strong>。默认情况下,标准库使用关键字类型的&lt;运算符来比较两个关键字。</p>
+<blockquote>
+<p>有序容器的关键字类型</p>
+</blockquote>
+<p>可以向一个算法提供我们自己定义的比较操作,与之类似也可以提供自己定义的操作来代替关键字上的&lt;运算符。所提供的操作必须在关键字类型上定义一个<strong>严格弱序</strong>( strict weak ordering)。</p>
+<blockquote>
+<p>使用关键字类型的比较函数</p>
+</blockquote>
+<p>用来组织一个容器中元素的操作的类型也是该容器类型的一部分。<strong>为了指定使用自定义的操作,必须在定义关联容器类型时提供此操作的类型</strong>。如前所述,用尖括号指出要定义哪种类型的容器,自定义的操作类型必须在尖括号中紧跟着元素类型给出</p>
+<p>此处,我们使用 decltype来指出自定义操作的类型。记住,当用 decltype来获得一个函数指针类型时,必须加上一个*来指出我们要使用一个给定函数类型的指针</p>
+<h3 id="pair类型"><a href="#pair类型" class="headerlink" title="pair类型"></a>pair类型</h3><p>在介绍关联容器操作之前,我们需要了解名为pair的标准库类型,它定义在头文件utility中。</p>
+<p>一个pair保存两个数据成员。类似容器,pair是一个用来生成特定类型的模板当创建一个pair时,我们必须提供两个类型名,pa1r的数据成员将具有对应的类型。两个类型不要求一样:</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_3_2_1519991091913.jpg" alt="enter description here"></p>
+<p>与其他标准库类型不同,pair的数据成员是public的。两个成员分别命名为 first和 second。我们用普通的成员访问符号来访问它们</p>
+<h2 id="关联容器操作"><a href="#关联容器操作" class="headerlink" title="关联容器操作"></a>关联容器操作</h2><p>关联容器还定义了一些表示容器关键字和值的类型</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_3_2_1519992027517.jpg" alt="enter description here"></p>
+<h3 id="关联容器迭代器"><a href="#关联容器迭代器" class="headerlink" title="关联容器迭代器"></a>关联容器迭代器</h3><p>当解引用一个关联容器迭代器时,我们会得到一个类型为容器的value_type的值的引用。对map而言,value_type是一个pair类型,其 first成员保存 const的关键字, second成员保存值</p>
+<blockquote>
+<p>set 的迭代器是const的</p>
+</blockquote>
+<p>虽然set类型同时定义了 iterator和 const_iterator类型,但两种类型都只允许只读访问set中的元素。与不能改变一个map元素的关键字一样,一个set中的关键字也是 const的。可以用一个set迭代器来读取元素的值,但不能修改:</p>
+<blockquote>
+<p>遍历关联容器</p>
+</blockquote>
+<p>map和set类型都支持 begin和end操作。与往常一样我们可以用这些函数获取迭代器,然后用迭代器来遍历容器。</p>
+<blockquote>
+<p>关联容器和算法</p>
+</blockquote>
+<p>我们通常不对关联容器使用泛型算法。关键字是 const这一特性意味着<strong>不能将关联容器传递给修改或重排容器元素的算法</strong>,因为这类算法需要向元素写入值,而set类型中的元素是cnst的,map中的元素是pair,其第一个成员是 const的。</p>
+<p>关联容器可用于只读取元素的算法。</p>
+<h3 id="添加元素"><a href="#添加元素" class="headerlink" title="添加元素"></a>添加元素</h3><p>关联容器的 insert成员向容器中添加一个元素或一个元素范围。由于map和set(以及对应的无序类型)包含不重复的关键字,因此插入一个已存在的元素对容器没有任何影响</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_3_2_1519992536522.jpg" alt="enter description here"></p>
+<blockquote>
+<p>向map添加元素</p>
+</blockquote>
+<p>对一个map进行 insert操作时,必须记住元素类型是pair。通常,对于想要插入的数据,并没有一个现成的pair对象。可以在 insert的参数列表中创建一个pair</p>
+<blockquote>
+<p>检测insert的返回值</p>
+</blockquote>
+<p>insert(或emplace)返回的值依赖于容器类型和参数。对于不包含重复关键字的容器,添加单一元素的 insert和 emplace版本返回一个pair,告诉我们插入操作是否成功。pair的 first成员是一个迭代器,指向具有给定关键字的元素; second成员是一个bool值,指出元素是插入成功还是已经存在于容器中。如果关键字已在容器中</p>
+<h3 id="删除元素-1"><a href="#删除元素-1" class="headerlink" title="删除元素"></a>删除元素</h3><p><img src="https://data2.liuin.cn/story-writer/2018_3_2_1519992521248.jpg" alt="enter description here"></p>
+<h3 id="map的下标操作"><a href="#map的下标操作" class="headerlink" title="map的下标操作"></a>map的下标操作</h3><p>map和 unordered_map容器提供了下标运算符和一个对应的at函数。set类型不支持下标,因为set中没有与关键字相关联的“值”。元素本身就是关键字,因此“获取与一个关键字相关联的值”的操作就没有意义了。</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_3_2_1519992604789.jpg" alt="enter description here"></p>
+<h3 id="访问元素-1"><a href="#访问元素-1" class="headerlink" title="访问元素"></a>访问元素</h3><p>关联容器提供多种查找一个指定元素的方法</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_3_2_1519992681370.jpg" alt="enter description here"></p>
+<blockquote>
+<p>对map使用find代替下标操作</p>
+</blockquote>
+<p>对map和 unordered map类型,下标运算符提供了最简单的提取元素的方法。但是如我们所见,使用下标操作有一个严重的副作用:如果关键字还未在map中,下标操作会插入一个具有给定关键字的元素。这种行为是否正确完全依赖于我们的预期是什么。</p>
+<h2 id="无序容器"><a href="#无序容器" class="headerlink" title="无序容器"></a>无序容器</h2><p>新标准定义了4个<strong>无序关联容器</strong>( unordered associative container)。这些容器不是使用比较运算符来组织元素,而是使用一个哈希函数( hash function)和关键字类型==运算符。在关键字类型的元素没有明显的序关系的情况下,无序容器是非常有用的。</p>
+<blockquote>
+<p>使用无序容器</p>
+</blockquote>
+<p>除了哈希管理操作之外,无序容器还提供了与有序容器相同的操作(find、 insert）</p>
+<blockquote>
+<p>管理桶</p>
+</blockquote>
+<p>无序容器在存储上组织为一组桶,每个桶保存零个或多个元素。无序容器使用一个哈希函数将元素映射到桶。为了访问一个元素,容器首先计算元素的哈希值,它指出应该搜索哪个桶。容器将具有一个特定哈希值的所有元素都保存在相同的桶中。如果容器允许重复关键字,所有具有相同关键字的元素也都会在同一个桶中。因此,无序容器的性能依赖于哈希函数的质量和桶的数量和大小。</p>
+<hr>
+<h1 id="动态内存"><a href="#动态内存" class="headerlink" title="动态内存"></a>动态内存</h1><p>动态对象的正确释放被证明是编程中极其容易出错的地方。为了更安全地使用动态对象,标准库定义了两个智能指针类型来管理动态分配的对象。<strong>当一个对象应该被释放时,指向它的智能指针可以确保自动地释放它</strong>。</p>
+<p>除了静态内存和栈内存,每个程序还拥有一个内存池。这部分内存被称作<strong>自由空间</strong>( free store)或<strong>堆</strong>(heap)。程序用堆来存储动态分配( dynamically allocate)的对象——即那些在程序运行时分配的对象。</p>
+<h2 id="动态内存和智能指针"><a href="#动态内存和智能指针" class="headerlink" title="动态内存和智能指针"></a>动态内存和智能指针</h2><p>在++中,动态内存的管理是通过一对运算符来完成的:new,在动态内存中为对象分配空间并返回一个指向该对象的指针,我们可以选择对对象进行初始化; delete,接受一个动态对象的指针,销毁该对象,并释放与之关联的内存</p>
+<p>为了更容易(同时也更安全)地使用动态内存,新的标准库提供了两种智能指针( smartpointer.)类型来管理动态对象。智能指针的行为类似常规指针,重要的区别是它<strong>负责自动释放所指向的对象</strong>。新标准库提供的这两种智能指针的区别在于管理底层指针的方式shared_ptr允许多个指针指向同一个对于象; unique_ptr则“独占”所指向的对象。标准库还定义了一个名为 weak_ptr的伴随类,它是一种弱引用,指向 shared_ptr所管理的对象。这三种类型都定义在 memory头文件中。</p>
+<h3 id="share-ptr类"><a href="#share-ptr类" class="headerlink" title="share_ptr类"></a>share_ptr类</h3><p>类似 vector,智能指针也是模板。因此,当我们创建一个智能指针十时,必须提供额外的信息—指针可以指向的类型。智能指针的使用方式与普通指针类似。解引用一个智能指针返回它指向的对象。</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_3_4_1520129716802.jpg" alt="enter description here"></p>
+<blockquote>
+<p>make_shared 函数</p>
+</blockquote>
+<p>最安全的分配和使用动态内存的方法是调用一个名为 make_shared的标准库函数。此函数在动态内存中分配一个对象并初始化它,返回指向此对象的 shared_ptr。</p>
+<p>当要用 make_shared时,必须指定想要创建的对象的类型。定义方式与模板类相同在函数名之后跟一个尖括号,在其中给出类型</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_3_4_1520129795731.jpg" alt="enter description here"></p>
+<blockquote>
+<p>shared_ptr 的拷贝和赋值</p>
+</blockquote>
+<p>我们可以认为每个 shared_ptr都有一个关联的计数器,通常称其为<strong>引用计数</strong>( reference count)。无论何时我们拷贝一个 shared_ptr,计数器都会递增。一旦一个 shared_ptr的计数器变为0,它就会自动释放自己所管理的对象</p>
+<blockquote>
+<p>shared_ptr 自动销毁所管理的对象</p>
+</blockquote>
+<p>当指向一个对象的最后一个 shared_ptr被销毁时, shared_ptr类会自动销毁此对象。它是通过另一个特殊的成员函数——析构函数( destructor)完成销毁工作的。</p>
+<blockquote>
+<p>使用动态生存期的资源的类</p>
+</blockquote>
+<p>程序使用动态内存出于以下三种原因之一：</p>
+<ul>
+<li>程序不知道自己需要使用多少对象</li>
+<li>程序不知道所需对象的准确类型</li>
+<li>程序需要在多个资源之间共享数据</li>
+</ul>
+<h3 id="直接管理内存"><a href="#直接管理内存" class="headerlink" title="直接管理内存"></a>直接管理内存</h3><p>C++语言定义了两个运算符来分配和释放动态内存。运算符new分配内存, delete释放new分配的内存。</p>
+<blockquote>
+<p>使用new动态分配和初始化对象</p>
+</blockquote>
+<p>在自由空间分配的内存是无名的,因此new无法为其分配的对象命名,而是返回一个指向该对象的指针。</p>
+<p>默认情况下,动态分配的对象是默认初始化的,这意味着内置类型或组合类型的对象的值将是未定义的,而类类型对象将用默认构造函数进行初始化</p>
+<blockquote>
+<p>内存耗尽</p>
+</blockquote>
+<p>一旦一个程序用光了它所有可用的内在,new表达式就会失败。默认情况下,加果new不能分配所要求的内存空间,它会抛出一个类型为bad_alloc的异常。我们可以改变使用new的方式来阻止它抛出异常:</p>
+<p>动态内存管理的时候非常容易出错：</p>
+<ol>
+<li>忘记delete内存</li>
+<li>使用已经释放掉的对象</li>
+<li>同一块内存释放两次</li>
+</ol>
+<blockquote>
+<p>delete 之后重置指针</p>
+</blockquote>
+<p>当我们 delete一个指针后,指针值就变为无效了。虽然指针已经无效,但在很多机器上指针仍然保存着(已经释放了的)动态内存的地址。在 delete之后,指针就变成了人们所说的<strong>空悬指针</strong>( dangling pointer),即<strong>指向一块曾经保存数据对象但现在已经无效的内存的指针</strong>。</p>
+<p>未初始化指针的所有缺点空悬指针也都有。有一种方法可以避免空悬指针的问题:在指针即将要离开其作用域之前释放掉它所关联的内存。</p>
+<h3 id="share-ptr和new结合使用"><a href="#share-ptr和new结合使用" class="headerlink" title="share_ptr和new结合使用"></a>share_ptr和new结合使用</h3><p>如果我们不初始化一个智能指针，那么这个指针就会被初始化为一个空指针。</p>
+<p>接受指针参数的智能指针构造函数是explicit的（禁止隐式转换）。因此,我们不能将一个内置指针隐式转换为一个智能指针,必须使用直接初始化形式</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_3_4_1520130371151.jpg" alt="enter description here"></p>
+<h3 id="智能指针和异常"><a href="#智能指针和异常" class="headerlink" title="智能指针和异常"></a>智能指针和异常</h3><p>如果使用智能指针,即使程序块过早结束,智能指针类也能确保在内存不再需要时将其释放</p>
+<h3 id="unique-ptr"><a href="#unique-ptr" class="headerlink" title="unique_ptr"></a>unique_ptr</h3><p>个 unique_ptr“拥有”它所指向的对象。与 shared_ptr不同,某个时刻只能有一个 unique_ptr指向一个给定对象。当 unique_ptr被销毁时,它所指向的对象也被销毁。</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_3_4_1520130502646.jpg" alt="enter description here"></p>
+<h3 id="weak-ptr"><a href="#weak-ptr" class="headerlink" title="weak_ptr"></a>weak_ptr</h3><p>weak_ptr是一种不控制所指向对象生存期的智能指针,它指向由一个shared_ptr管理的对象。将一个 weak_ptr绑定到一个 shared_ptr不会改变shared_ptr的引用计数。</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_3_4_1520130696044.jpg" alt="enter description here"></p>
+<h2 id="动态数组"><a href="#动态数组" class="headerlink" title="动态数组"></a>动态数组</h2><p>new和 delete运算符一次分配释放一个对象,但某些应用需要一次为很多对象分配内存的功能。</p>
+<p>为了支持这种需求,C++语言和标准库提供了两种一次分配一个对象数组的方法。C+语言定义了另一种new表达式语法,可以分配并初始化一个对象数组。标准库中包含个名为allocator的类,允许我们们将分配和初始化分离。使用allocator通常会提供更好的性能和更灵活的内存管理能力</p>
+<h3 id="new和数组"><a href="#new和数组" class="headerlink" title="new和数组"></a>new和数组</h3><p>为了让new分配一个对象数组,我们要在类型名之后跟一对方括号,在其中指明要分配的对象的数目。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> *pia = <span class="keyword">new</span> <span class="keyword">int</span> [get_size()]; <span class="comment">// pia指向第一个int</span></div></pre></td></tr></table></figure>
+<p>虽然我们]通常称newT[]分配的内存为“动态数组”,但这种叫法某种程度上有些误导。当用new分配一个数组时,我们并未得到一个数组类型的对象,而是得到一个数组元素类型的指针。不能对动态数组调用begin和end。</p>
+<blockquote>
+<p>释放动态数组</p>
+</blockquote>
+<p>为了释放动态数组,我们使用一种特殊形式的 delete—在指针前加上一个空方括号对:</p>
+<blockquote>
+<p>智能指针和动态数组</p>
+</blockquote>
+<p>标准库提供了一个可以管理new分配的数组的 unique_ptr版本。为了用一个unique_ptr管理动态数组,我们必须在对象类型后面跟一对空方括号:</p>
+<p><img src="https://data2.liuin.cn/story-writer/2018_3_4_1520132049585.jpg" alt="enter description here"></p>
+<h3 id="allocator类"><a href="#allocator类" class="headerlink" title="allocator类"></a>allocator类</h3><p>new有一些灵活性上的局限,其中一方面表现在它将内存分配和对象构造组合在了起。类似的, delete将对象析构和内存释放组合在了一起。我们分配单个对象时,通常希望将内存分配和对象初始化组合在一起。因为在这种情况下,我们几乎肯定知道对象应有什么值。</p>
+<p>标准库allocator类定义在头文件 memory中,它帮助我们将内存分配和对象构造分离开来。它提供一种类型感知的内存分配方法,它分配的内存是原始的、未构造的。allocator是一个模板。</p>
+<blockquote>
+<p>allocator 分配未构造的内存</p>
+</blockquote>
+<p>allocator分配的内存是未构造的( unconstructed)。我们按需要在此内存中构造对象。在新标准库中, construct成员函数接受一个指针和零个或多个额外参数,在给定位置构造一个元素。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://data1.liuin.cn/wechat_pay.png" alt="Sixzeroo WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="https://data1.liuin.cn/alipay.jpg" alt="Sixzeroo Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Sixzeroo
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.liuin.cn/2018/03/04/《C-Primer》笔记-C-标准库部分/" title="《C++ Primer》笔记 C++标准库部分">https://www.liuin.cn/2018/03/04/《C-Primer》笔记-C-标准库部分/</a>
+  </li>
+  <li class="post-copyright-author">
+	<strong>发布时间: </strong>
+	2018年3月4日 - 10时03分
+  </li>
+  <li class="post-copyright-author">
+	<strong>最后更新: </strong>
+	2018年3月4日 - 11时03分
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C-C/" rel="tag"># C/C++</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/02/使用Docker部署Hexo博客/" rel="next" title="使用Docker部署Hexo博客">
+                <i class="fa fa-chevron-left"></i> 使用Docker部署Hexo博客
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMTYzMi84MTk2"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://data1.liuin.cn/ava.jpeg"
+               alt="Sixzeroo" />
+          <p class="site-author-name" itemprop="name">Sixzeroo</p>
+           
+              <p class="site-description motion-element" itemprop="description">Do it better !</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">125</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">42</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Sixzeroo" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="tencent://message/?menu=yes&uin=1790798600&websitename=im.qq.com" target="_blank" title="QQ">
+                  
+                    <i class="fa fa-fw fa-qq"></i>
+                  
+                    
+                      QQ
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#IO库"><span class="nav-number">1.</span> <span class="nav-text">IO库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IO类"><span class="nav-number">1.1.</span> <span class="nav-text">IO类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IO对象无拷贝或赋值"><span class="nav-number">1.1.1.</span> <span class="nav-text">IO对象无拷贝或赋值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#条件状态"><span class="nav-number">1.1.2.</span> <span class="nav-text">条件状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#管理输出缓存"><span class="nav-number">1.1.3.</span> <span class="nav-text">管理输出缓存</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件的输入输出"><span class="nav-number">1.2.</span> <span class="nav-text">文件的输入输出</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用文件流对象"><span class="nav-number">1.2.1.</span> <span class="nav-text">使用文件流对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件模式"><span class="nav-number">1.2.2.</span> <span class="nav-text">文件模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#string流"><span class="nav-number">1.3.</span> <span class="nav-text">string流</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用istringstream"><span class="nav-number">1.3.1.</span> <span class="nav-text">使用istringstream</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用ostringstream"><span class="nav-number">1.3.2.</span> <span class="nav-text">使用ostringstream</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">1.4.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#顺序容器"><span class="nav-number">2.</span> <span class="nav-text">顺序容器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#顺序容器概述"><span class="nav-number">2.1.</span> <span class="nav-text">顺序容器概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器库概览"><span class="nav-number">2.2.</span> <span class="nav-text">容器库概览</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#迭代器"><span class="nav-number">2.2.1.</span> <span class="nav-text">迭代器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#容器类型成员"><span class="nav-number">2.2.2.</span> <span class="nav-text">容器类型成员</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#begin-和-end成员"><span class="nav-number">2.2.3.</span> <span class="nav-text">begin 和 end成员</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#容器定义和初始化"><span class="nav-number">2.2.4.</span> <span class="nav-text">容器定义和初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#赋值与swap"><span class="nav-number">2.2.5.</span> <span class="nav-text">赋值与swap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#容器大小操作"><span class="nav-number">2.2.6.</span> <span class="nav-text">容器大小操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关系运算符"><span class="nav-number">2.2.7.</span> <span class="nav-text">关系运算符</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#顺序容器操作"><span class="nav-number">2.3.</span> <span class="nav-text">顺序容器操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#向顺序容器添加元素"><span class="nav-number">2.3.1.</span> <span class="nav-text">向顺序容器添加元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#访问元素"><span class="nav-number">2.3.2.</span> <span class="nav-text">访问元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除元素"><span class="nav-number">2.3.3.</span> <span class="nav-text">删除元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特殊的forward-list操作"><span class="nav-number">2.3.4.</span> <span class="nav-text">特殊的forward_list操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改变容器大小"><span class="nav-number">2.3.5.</span> <span class="nav-text">改变容器大小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#容器操作可能使迭代器失效"><span class="nav-number">2.3.6.</span> <span class="nav-text">容器操作可能使迭代器失效</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vector对象是如何增长的"><span class="nav-number">2.4.</span> <span class="nav-text">vector对象是如何增长的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#额外的string操作"><span class="nav-number">2.5.</span> <span class="nav-text">额外的string操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#构造string的其他方法"><span class="nav-number">2.5.1.</span> <span class="nav-text">构造string的其他方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改变string的其他方法"><span class="nav-number">2.5.2.</span> <span class="nav-text">改变string的其他方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#string搜索操作"><span class="nav-number">2.5.3.</span> <span class="nav-text">string搜索操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#compare函数"><span class="nav-number">2.5.4.</span> <span class="nav-text">compare函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数值转换"><span class="nav-number">2.5.5.</span> <span class="nav-text">数值转换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器适配器"><span class="nav-number">2.6.</span> <span class="nav-text">容器适配器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#泛型算法"><span class="nav-number">3.</span> <span class="nav-text">泛型算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">3.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初始泛型算法"><span class="nav-number">3.2.</span> <span class="nav-text">初始泛型算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#只读算法"><span class="nav-number">3.2.1.</span> <span class="nav-text">只读算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写容器元素的算法"><span class="nav-number">3.2.2.</span> <span class="nav-text">写容器元素的算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重排容器元素的算法"><span class="nav-number">3.2.3.</span> <span class="nav-text">重排容器元素的算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定制操作"><span class="nav-number">3.3.</span> <span class="nav-text">定制操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#向算法传递参数"><span class="nav-number">3.3.1.</span> <span class="nav-text">向算法传递参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lambda表达式"><span class="nav-number">3.3.2.</span> <span class="nav-text">lambda表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lambda捕获和返回"><span class="nav-number">3.3.3.</span> <span class="nav-text">lambda捕获和返回</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数绑定"><span class="nav-number">3.3.4.</span> <span class="nav-text">参数绑定</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#再探迭代器"><span class="nav-number">3.4.</span> <span class="nav-text">再探迭代器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#插入迭代器"><span class="nav-number">3.4.1.</span> <span class="nav-text">插入迭代器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iostream-迭代器"><span class="nav-number">3.4.2.</span> <span class="nav-text">iostream 迭代器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反向迭代器"><span class="nav-number">3.4.3.</span> <span class="nav-text">反向迭代器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#泛型算法结构"><span class="nav-number">3.5.</span> <span class="nav-text">泛型算法结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5类迭代器"><span class="nav-number">3.5.1.</span> <span class="nav-text">5类迭代器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法形参模式"><span class="nav-number">3.5.2.</span> <span class="nav-text">算法形参模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法命名规范"><span class="nav-number">3.5.3.</span> <span class="nav-text">算法命名规范</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特定容器算法"><span class="nav-number">3.6.</span> <span class="nav-text">特定容器算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关联容器"><span class="nav-number">4.</span> <span class="nav-text">关联容器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用关联容器"><span class="nav-number">4.1.</span> <span class="nav-text">使用关联容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关联容器概述"><span class="nav-number">4.2.</span> <span class="nav-text">关联容器概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义关联容器"><span class="nav-number">4.2.1.</span> <span class="nav-text">定义关联容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关键字类型的要求"><span class="nav-number">4.2.2.</span> <span class="nav-text">关键字类型的要求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pair类型"><span class="nav-number">4.2.3.</span> <span class="nav-text">pair类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关联容器操作"><span class="nav-number">4.3.</span> <span class="nav-text">关联容器操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关联容器迭代器"><span class="nav-number">4.3.1.</span> <span class="nav-text">关联容器迭代器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加元素"><span class="nav-number">4.3.2.</span> <span class="nav-text">添加元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除元素-1"><span class="nav-number">4.3.3.</span> <span class="nav-text">删除元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#map的下标操作"><span class="nav-number">4.3.4.</span> <span class="nav-text">map的下标操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#访问元素-1"><span class="nav-number">4.3.5.</span> <span class="nav-text">访问元素</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#无序容器"><span class="nav-number">4.4.</span> <span class="nav-text">无序容器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#动态内存"><span class="nav-number">5.</span> <span class="nav-text">动态内存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#动态内存和智能指针"><span class="nav-number">5.1.</span> <span class="nav-text">动态内存和智能指针</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#share-ptr类"><span class="nav-number">5.1.1.</span> <span class="nav-text">share_ptr类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#直接管理内存"><span class="nav-number">5.1.2.</span> <span class="nav-text">直接管理内存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#share-ptr和new结合使用"><span class="nav-number">5.1.3.</span> <span class="nav-text">share_ptr和new结合使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#智能指针和异常"><span class="nav-number">5.1.4.</span> <span class="nav-text">智能指针和异常</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unique-ptr"><span class="nav-number">5.1.5.</span> <span class="nav-text">unique_ptr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#weak-ptr"><span class="nav-number">5.1.6.</span> <span class="nav-text">weak_ptr</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态数组"><span class="nav-number">5.2.</span> <span class="nav-text">动态数组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#new和数组"><span class="nav-number">5.2.1.</span> <span class="nav-text">new和数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#allocator类"><span class="nav-number">5.2.2.</span> <span class="nav-text">allocator类</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sixzeroo</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">共</span>
+    
+    <span title="Site words total count">
+      190.7k 字
+    </span>
+  
+
+  <span> | </span>
+  <span id="showDays"></span>
+</div>
+
+
+
+  <div class="powered-by">皖ICP备17000842号</div>
+  <span class="post-meta-divider">|</span>                    
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+<script>
+	var birthDay = new Date('09/1/2016');
+	var now = new Date();
+	var duration = now.getTime() - birthDay.getTime();
+	var total= Math.floor(duration / (1000 * 60 * 60 * 24));
+	document.getElementById('showDays').innerHTML='本站已运行' + total + '天';
+</script>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("3YyBK9PnKj86xfGt1vr8ps6Q-gzGzoHsz", "Sf6vsslcm0nwqrxAcm1MMwRM");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
