@@ -4,14 +4,96 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2018/03/07/APUE-%E6%96%87%E4%BB%B6I-O/</loc>
-    <lastmod>2018-03-07T00:50:40.000Z</lastmod>
+    <loc>https://www.liuin.cn/2018/03/08/LeetCode-%E9%A2%98%E8%A7%A3%E2%80%94%E2%80%94Median-of-Two-Sorted-Arrays/</loc>
+    <lastmod>2018-03-08T07:03:48.000Z</lastmod>
     <data>
         <display>
-        <title>APUE 文件I/O</title>
-        <pubTime>2018-03-07T00:49:20.000Z</pubTime>
+        <title>LeetCode 题解——Median of Two Sorted Arrays</title>
+        <pubTime>2018-03-08T06:42:12.000Z</pubTime>
         
-        <tag>APUE</tag>
+        <tag>LeetCode</tag>
+         
+        <tag>二分</tag>
+         
+         
+           
+             
+              <breadCrumb title="算法" url="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://www.liuin.cn/2017/04/21/UVA-1471-Defense-Lines-%E6%89%AB%E6%8F%8F-%E4%BA%8C%E5%88%86/</loc>
+    <lastmod>2018-03-08T06:44:06.000Z</lastmod>
+    <data>
+        <display>
+        <title>UVA-1471 Defense Lines 扫描+二分</title>
+        <pubTime>2017-04-21T12:33:18.000Z</pubTime>
+        
+        <tag>二分</tag>
+         
+         
+           
+             
+              <breadCrumb title="算法" url="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://www.liuin.cn/2017/05/10/POJ-3273-Monthly-Expense-%E4%BA%8C%E5%88%86/</loc>
+    <lastmod>2018-03-08T06:43:55.000Z</lastmod>
+    <data>
+        <display>
+        <title>POJ 3273 Monthly Expense 二分</title>
+        <pubTime>2017-05-10T01:00:40.000Z</pubTime>
+        
+        <tag>二分</tag>
+         
+         
+           
+             
+              <breadCrumb title="算法" url="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://www.liuin.cn/2017/05/09/POJ-3258-River-Hopscotch-%E4%BA%8C%E5%88%86/</loc>
+    <lastmod>2018-03-08T06:43:42.000Z</lastmod>
+    <data>
+        <display>
+        <title>POJ 3258 River Hopscotch 二分</title>
+        <pubTime>2017-05-09T15:59:35.000Z</pubTime>
+        
+        <tag>二分</tag>
+         
+         
+           
+             
+              <breadCrumb title="算法" url="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://www.liuin.cn/2018/03/04/%E3%80%8AC-Primer%E3%80%8B%E7%AC%94%E8%AE%B0-C-%E6%A0%87%E5%87%86%E5%BA%93%E9%83%A8%E5%88%86/</loc>
+    <lastmod>2018-03-08T02:35:38.000Z</lastmod>
+    <data>
+        <display>
+        <title>《C++ Primer》笔记 C++标准库部分</title>
+        <pubTime>2018-03-04T02:58:33.000Z</pubTime>
+        
+        <tag>C/C++</tag>
          
          
            
@@ -24,14 +106,14 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2018/03/04/%E3%80%8AC-Primer%E3%80%8B%E7%AC%94%E8%AE%B0-C-%E6%A0%87%E5%87%86%E5%BA%93%E9%83%A8%E5%88%86/</loc>
-    <lastmod>2018-03-04T03:01:56.000Z</lastmod>
+    <loc>https://www.liuin.cn/2018/03/06/APUE-%E6%96%87%E4%BB%B6I-O/</loc>
+    <lastmod>2018-03-07T03:29:51.000Z</lastmod>
     <data>
         <display>
-        <title>《C++ Primer》笔记 C++标准库部分</title>
-        <pubTime>2018-03-04T02:58:33.000Z</pubTime>
+        <title>APUE 文件I/O</title>
+        <pubTime>2018-03-06T10:49:20.000Z</pubTime>
         
-        <tag>C/C++</tag>
+        <tag>APUE</tag>
          
          
            
@@ -146,66 +228,6 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2018/01/24/CSAPP-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/</loc>
-    <lastmod>2018-02-23T04:05:57.000Z</lastmod>
-    <data>
-        <display>
-        <title>CSAPP 信息的表示和处理</title>
-        <pubTime>2018-01-24T13:59:14.000Z</pubTime>
-        
-        <tag>CSAPP</tag>
-         
-         
-           
-             
-              <breadCrumb title="读书笔记" url="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://www.liuin.cn/2018/01/26/CSAPP-%E5%A4%84%E7%90%86%E5%99%A8%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/</loc>
-    <lastmod>2018-02-23T04:05:57.000Z</lastmod>
-    <data>
-        <display>
-        <title>CSAPP 处理器体系结构</title>
-        <pubTime>2018-01-26T13:49:11.000Z</pubTime>
-        
-        <tag>CSAPP</tag>
-         
-         
-           
-             
-              <breadCrumb title="读书笔记" url="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://www.liuin.cn/2018/02/03/CSAPP-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</loc>
-    <lastmod>2018-02-23T04:05:57.000Z</lastmod>
-    <data>
-        <display>
-        <title>CSAPP 并发编程</title>
-        <pubTime>2018-02-03T10:58:52.000Z</pubTime>
-        
-        <tag>CSAPP</tag>
-         
-         
-           
-             
-              <breadCrumb title="读书笔记" url="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>https://www.liuin.cn/2018/01/30/CSAPP-%E5%BC%82%E5%B8%B8%E6%8E%A7%E5%88%B6%E6%B5%81/</loc>
     <lastmod>2018-02-23T04:05:57.000Z</lastmod>
     <data>
@@ -246,12 +268,12 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2018/01/25/CSAPP-%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/</loc>
+    <loc>https://www.liuin.cn/2018/01/31/CSAPP-%E8%99%9A%E6%8B%9F%E5%AD%98%E5%82%A8%E5%99%A8/</loc>
     <lastmod>2018-02-23T04:05:57.000Z</lastmod>
     <data>
         <display>
-        <title>CSAPP 程序的机器级表示</title>
-        <pubTime>2018-01-25T14:10:07.000Z</pubTime>
+        <title>CSAPP 虚拟存储器</title>
+        <pubTime>2018-01-31T13:51:20.000Z</pubTime>
         
         <tag>CSAPP</tag>
          
@@ -259,6 +281,26 @@
            
              
               <breadCrumb title="读书笔记" url="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://www.liuin.cn/2017/05/14/Codeforce-391-%E9%A2%98%E8%A7%A3/</loc>
+    <lastmod>2018-02-23T04:05:57.000Z</lastmod>
+    <data>
+        <display>
+        <title>Codeforces 391 题解</title>
+        <pubTime>2017-05-14T07:25:45.000Z</pubTime>
+        
+        <tag>Codeforces</tag>
+         
+         
+           
+             
+              <breadCrumb title="算法" url="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
           
         </display>
     </data>
@@ -306,46 +348,6 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2017/05/14/Codeforce-391-%E9%A2%98%E8%A7%A3/</loc>
-    <lastmod>2018-02-23T04:05:57.000Z</lastmod>
-    <data>
-        <display>
-        <title>Codeforces 391 题解</title>
-        <pubTime>2017-05-14T07:25:45.000Z</pubTime>
-        
-        <tag>Codeforces</tag>
-         
-         
-           
-             
-              <breadCrumb title="算法" url="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://www.liuin.cn/2018/01/31/CSAPP-%E8%99%9A%E6%8B%9F%E5%AD%98%E5%82%A8%E5%99%A8/</loc>
-    <lastmod>2018-02-23T04:05:57.000Z</lastmod>
-    <data>
-        <display>
-        <title>CSAPP 虚拟存储器</title>
-        <pubTime>2018-01-31T13:51:20.000Z</pubTime>
-        
-        <tag>CSAPP</tag>
-         
-         
-           
-             
-              <breadCrumb title="读书笔记" url="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>https://www.liuin.cn/2017/05/13/Codeforces%20390%20%E9%A2%98%E8%A7%A3/</loc>
     <lastmod>2018-02-23T04:05:57.000Z</lastmod>
     <data>
@@ -366,34 +368,14 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2018/02/07/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84Git-%E5%88%86%E5%B8%83%E5%BC%8FGit/</loc>
+    <loc>https://www.liuin.cn/2018/01/28/CSAPP%20%E5%AD%98%E5%82%A8%E5%99%A8%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/</loc>
     <lastmod>2018-02-23T04:05:57.000Z</lastmod>
     <data>
         <display>
-        <title>服务器上的Git && 分布式Git</title>
-        <pubTime>2018-02-07T13:12:35.000Z</pubTime>
+        <title>CSAPP 存储器层次结构</title>
+        <pubTime>2018-01-28T09:47:19.000Z</pubTime>
         
-        <tag>Git</tag>
-         
-         
-           
-             
-              <breadCrumb title="读书笔记" url="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://www.liuin.cn/2018/02/06/APUE-Unix-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</loc>
-    <lastmod>2018-02-23T04:05:57.000Z</lastmod>
-    <data>
-        <display>
-        <title>APUE Unix 基础知识</title>
-        <pubTime>2018-02-06T13:26:58.000Z</pubTime>
-        
-        <tag>APUE</tag>
+        <tag>CSAPP</tag>
          
          
            
@@ -426,19 +408,59 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2018/02/05/%E3%80%8A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E2%80%94%E2%80%94%E8%87%AA%E9%A1%B6%E5%90%91%E4%B8%8B%E6%96%B9%E6%B3%95%E3%80%8B-%E7%AC%94%E8%AE%B0/</loc>
+    <loc>https://www.liuin.cn/2018/01/23/CSAPP%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%BC%AB%E6%B8%B8/</loc>
     <lastmod>2018-02-23T04:05:57.000Z</lastmod>
     <data>
         <display>
-        <title>《计算机网络——自顶向下方法》 笔记</title>
-        <pubTime>2018-02-05T02:38:09.000Z</pubTime>
+        <title>CSAPP 计算机系统漫游</title>
+        <pubTime>2018-01-23T09:47:19.000Z</pubTime>
         
-        <tag>Network</tag>
+        <tag>CSAPP</tag>
          
          
            
              
               <breadCrumb title="读书笔记" url="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://www.liuin.cn/2018/02/07/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84Git-%E5%88%86%E5%B8%83%E5%BC%8FGit/</loc>
+    <lastmod>2018-02-23T04:05:57.000Z</lastmod>
+    <data>
+        <display>
+        <title>服务器上的Git && 分布式Git</title>
+        <pubTime>2018-02-07T13:12:35.000Z</pubTime>
+        
+        <tag>Git</tag>
+         
+         
+           
+             
+              <breadCrumb title="读书笔记" url="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://www.liuin.cn/2018/01/07/%E7%94%A8-Docker-Compose-%E6%9E%84%E5%BB%BA%E5%A4%8D%E6%9D%82%E5%BA%94%E7%94%A8/</loc>
+    <lastmod>2018-02-23T04:05:57.000Z</lastmod>
+    <data>
+        <display>
+        <title>用 Docker Compose 构建复杂应用</title>
+        <pubTime>2018-01-07T12:55:18.000Z</pubTime>
+        
+        <tag>Docker</tag>
+         
+         
+           
+             
+              <breadCrumb title="运维" url="https://www.liuin.cn/categories/%E8%BF%90%E7%BB%B4/"/>
           
         </display>
     </data>
@@ -454,6 +476,26 @@
         <pubTime>2018-02-10T06:08:31.000Z</pubTime>
         
         <tag>Git</tag>
+         
+         
+           
+             
+              <breadCrumb title="读书笔记" url="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://www.liuin.cn/2018/01/24/CSAPP-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/</loc>
+    <lastmod>2018-02-23T04:05:57.000Z</lastmod>
+    <data>
+        <display>
+        <title>CSAPP 信息的表示和处理</title>
+        <pubTime>2018-01-24T13:59:14.000Z</pubTime>
+        
+        <tag>CSAPP</tag>
          
          
            
@@ -486,66 +528,6 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2018/01/23/CSAPP%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%BC%AB%E6%B8%B8/</loc>
-    <lastmod>2018-02-23T04:05:57.000Z</lastmod>
-    <data>
-        <display>
-        <title>CSAPP 计算机系统漫游</title>
-        <pubTime>2018-01-23T09:47:19.000Z</pubTime>
-        
-        <tag>CSAPP</tag>
-         
-         
-           
-             
-              <breadCrumb title="读书笔记" url="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://www.liuin.cn/2018/01/28/CSAPP%20%E5%AD%98%E5%82%A8%E5%99%A8%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/</loc>
-    <lastmod>2018-02-23T04:05:57.000Z</lastmod>
-    <data>
-        <display>
-        <title>CSAPP 存储器层次结构</title>
-        <pubTime>2018-01-28T09:47:19.000Z</pubTime>
-        
-        <tag>CSAPP</tag>
-         
-         
-           
-             
-              <breadCrumb title="读书笔记" url="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://www.liuin.cn/2018/01/15/%E5%8F%B0%E6%B9%BE%E4%BA%A4%E6%8D%A2%E6%80%BB%E7%BB%93/</loc>
-    <lastmod>2018-02-23T04:05:57.000Z</lastmod>
-    <data>
-        <display>
-        <title>台湾交换总结</title>
-        <pubTime>2018-01-15T03:11:04.000Z</pubTime>
-        
-        <tag>随笔</tag>
-         
-         
-           
-             
-              <breadCrumb title="台湾" url="https://www.liuin.cn/categories/%E5%8F%B0%E6%B9%BE/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>https://www.liuin.cn/2018/02/14/Nginx-%E9%85%8D%E7%BD%AE%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/</loc>
     <lastmod>2018-02-23T04:05:57.000Z</lastmod>
     <data>
@@ -568,19 +550,19 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2018/02/04/Git-%E5%88%86%E6%94%AF/</loc>
+    <loc>https://www.liuin.cn/2018/01/15/%E5%8F%B0%E6%B9%BE%E4%BA%A4%E6%8D%A2%E6%80%BB%E7%BB%93/</loc>
     <lastmod>2018-02-23T04:05:57.000Z</lastmod>
     <data>
         <display>
-        <title>Git 分支</title>
-        <pubTime>2018-02-04T13:06:54.000Z</pubTime>
+        <title>台湾交换总结</title>
+        <pubTime>2018-01-15T03:11:04.000Z</pubTime>
         
-        <tag>Git</tag>
+        <tag>随笔</tag>
          
          
            
              
-              <breadCrumb title="读书笔记" url="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+              <breadCrumb title="台湾" url="https://www.liuin.cn/categories/%E5%8F%B0%E6%B9%BE/"/>
           
         </display>
     </data>
@@ -628,21 +610,19 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2018/01/22/LeetCode-Reverse-Integer-Palindrome-Number-%E9%A2%98%E8%A7%A3/</loc>
+    <loc>https://www.liuin.cn/2018/02/04/Git-%E5%88%86%E6%94%AF/</loc>
     <lastmod>2018-02-23T04:05:57.000Z</lastmod>
     <data>
         <display>
-        <title>LeetCode Reverse Integer & Palindrome Number 题解</title>
-        <pubTime>2018-01-22T14:11:38.000Z</pubTime>
+        <title>Git 分支</title>
+        <pubTime>2018-02-04T13:06:54.000Z</pubTime>
         
-        <tag>LeetCode</tag>
-         
-        <tag>算法技巧</tag>
+        <tag>Git</tag>
          
          
            
              
-              <breadCrumb title="算法" url="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
+              <breadCrumb title="读书笔记" url="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
           
         </display>
     </data>
@@ -690,14 +670,36 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2018/01/28/LeetCode-3Sum-3Sum-Closest-%E9%A2%98%E8%A7%A3/</loc>
+    <loc>https://www.liuin.cn/2018/01/26/CSAPP-%E5%A4%84%E7%90%86%E5%99%A8%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/</loc>
     <lastmod>2018-02-23T04:05:57.000Z</lastmod>
     <data>
         <display>
-        <title>LeetCode 3Sum & 3Sum Closest 题解</title>
-        <pubTime>2018-01-28T11:08:45.000Z</pubTime>
+        <title>CSAPP 处理器体系结构</title>
+        <pubTime>2018-01-26T13:49:11.000Z</pubTime>
+        
+        <tag>CSAPP</tag>
+         
+         
+           
+             
+              <breadCrumb title="读书笔记" url="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://www.liuin.cn/2018/01/22/LeetCode-Reverse-Integer-Palindrome-Number-%E9%A2%98%E8%A7%A3/</loc>
+    <lastmod>2018-02-23T04:05:57.000Z</lastmod>
+    <data>
+        <display>
+        <title>LeetCode Reverse Integer & Palindrome Number 题解</title>
+        <pubTime>2018-01-22T14:11:38.000Z</pubTime>
         
         <tag>LeetCode</tag>
+         
+        <tag>算法技巧</tag>
          
          
            
@@ -710,19 +712,19 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2018/01/07/%E7%94%A8-Docker-Compose-%E6%9E%84%E5%BB%BA%E5%A4%8D%E6%9D%82%E5%BA%94%E7%94%A8/</loc>
+    <loc>https://www.liuin.cn/2018/02/05/%E3%80%8A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E2%80%94%E2%80%94%E8%87%AA%E9%A1%B6%E5%90%91%E4%B8%8B%E6%96%B9%E6%B3%95%E3%80%8B-%E7%AC%94%E8%AE%B0/</loc>
     <lastmod>2018-02-23T04:05:57.000Z</lastmod>
     <data>
         <display>
-        <title>用 Docker Compose 构建复杂应用</title>
-        <pubTime>2018-01-07T12:55:18.000Z</pubTime>
+        <title>《计算机网络——自顶向下方法》 笔记</title>
+        <pubTime>2018-02-05T02:38:09.000Z</pubTime>
         
-        <tag>Docker</tag>
+        <tag>Network</tag>
          
          
            
              
-              <breadCrumb title="运维" url="https://www.liuin.cn/categories/%E8%BF%90%E7%BB%B4/"/>
+              <breadCrumb title="读书笔记" url="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
           
         </display>
     </data>
@@ -730,19 +732,19 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2018/01/26/LeetCode%20Merge%20k%20Sorted%20Lists%20%E9%A2%98%E8%A7%A3/</loc>
+    <loc>https://www.liuin.cn/2018/02/03/CSAPP-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</loc>
     <lastmod>2018-02-23T04:05:57.000Z</lastmod>
     <data>
         <display>
-        <title>LeetCode Merge k Sorted Lists 题解</title>
-        <pubTime>2018-01-26T11:08:45.000Z</pubTime>
+        <title>CSAPP 并发编程</title>
+        <pubTime>2018-02-03T10:58:52.000Z</pubTime>
         
-        <tag>LeetCode</tag>
+        <tag>CSAPP</tag>
          
          
            
              
-              <breadCrumb title="算法" url="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
+              <breadCrumb title="读书笔记" url="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
           
         </display>
     </data>
@@ -763,6 +765,86 @@
            
              
               <breadCrumb title="开发随笔" url="https://www.liuin.cn/categories/%E5%BC%80%E5%8F%91%E9%9A%8F%E7%AC%94/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://www.liuin.cn/2018/02/06/APUE-Unix-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</loc>
+    <lastmod>2018-02-23T04:05:57.000Z</lastmod>
+    <data>
+        <display>
+        <title>APUE Unix 基础知识</title>
+        <pubTime>2018-02-06T13:26:58.000Z</pubTime>
+        
+        <tag>APUE</tag>
+         
+         
+           
+             
+              <breadCrumb title="读书笔记" url="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://www.liuin.cn/2018/01/25/CSAPP-%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/</loc>
+    <lastmod>2018-02-23T04:05:57.000Z</lastmod>
+    <data>
+        <display>
+        <title>CSAPP 程序的机器级表示</title>
+        <pubTime>2018-01-25T14:10:07.000Z</pubTime>
+        
+        <tag>CSAPP</tag>
+         
+         
+           
+             
+              <breadCrumb title="读书笔记" url="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://www.liuin.cn/2018/01/28/LeetCode-3Sum-3Sum-Closest-%E9%A2%98%E8%A7%A3/</loc>
+    <lastmod>2018-02-23T04:05:57.000Z</lastmod>
+    <data>
+        <display>
+        <title>LeetCode 3Sum & 3Sum Closest 题解</title>
+        <pubTime>2018-01-28T11:08:45.000Z</pubTime>
+        
+        <tag>LeetCode</tag>
+         
+         
+           
+             
+              <breadCrumb title="算法" url="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://www.liuin.cn/2018/01/26/LeetCode%20Merge%20k%20Sorted%20Lists%20%E9%A2%98%E8%A7%A3/</loc>
+    <lastmod>2018-02-23T04:05:57.000Z</lastmod>
+    <data>
+        <display>
+        <title>LeetCode Merge k Sorted Lists 题解</title>
+        <pubTime>2018-01-26T11:08:45.000Z</pubTime>
+        
+        <tag>LeetCode</tag>
+         
+         
+           
+             
+              <breadCrumb title="算法" url="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
           
         </display>
     </data>
@@ -1673,26 +1755,6 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2017/04/21/UVA-1471-Defense-Lines-%E6%89%AB%E6%8F%8F-%E4%BA%8C%E5%88%86/</loc>
-    <lastmod>2017-05-13T07:57:51.000Z</lastmod>
-    <data>
-        <display>
-        <title>UVA-1471 Defense Lines 扫描+二分</title>
-        <pubTime>2017-04-21T12:33:18.000Z</pubTime>
-        
-        <tag>其他-二分</tag>
-         
-         
-           
-             
-              <breadCrumb title="算法" url="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>https://www.liuin.cn/2017/05/05/Codeforces-Round-411-Div-2-%E9%A2%98%E8%A7%A3/</loc>
     <lastmod>2017-05-13T07:56:53.000Z</lastmod>
     <data>
@@ -1741,46 +1803,6 @@
         <pubTime>2017-05-13T07:47:25.000Z</pubTime>
         
         <tag>STL</tag>
-         
-         
-           
-             
-              <breadCrumb title="算法" url="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://www.liuin.cn/2017/05/10/POJ-3273-Monthly-Expense-%E4%BA%8C%E5%88%86/</loc>
-    <lastmod>2017-05-10T01:11:34.000Z</lastmod>
-    <data>
-        <display>
-        <title>POJ 3273 Monthly Expense 二分</title>
-        <pubTime>2017-05-10T01:00:40.000Z</pubTime>
-        
-        <tag>其他-二分</tag>
-         
-         
-           
-             
-              <breadCrumb title="算法" url="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://www.liuin.cn/2017/05/09/POJ-3258-River-Hopscotch-%E4%BA%8C%E5%88%86/</loc>
-    <lastmod>2017-05-09T16:10:24.000Z</lastmod>
-    <data>
-        <display>
-        <title>POJ 3258 River Hopscotch 二分</title>
-        <pubTime>2017-05-09T15:59:35.000Z</pubTime>
-        
-        <tag>其他-二分</tag>
          
          
            
@@ -2236,6 +2258,23 @@
 
     
   <url>
+    <loc>https://www.liuin.cn/2017/03/02/%E6%B5%85%E8%B0%88%E5%8F%AF%E6%8C%81%E7%BB%AD%E5%8C%96%E7%BA%BF%E6%AE%B5%E6%A0%91/</loc>
+    <lastmod>2017-03-13T18:03:48.000Z</lastmod>
+    <data>
+        <display>
+        <title>浅谈可持续化线段树</title>
+        <pubTime>2017-03-01T17:08:45.000Z</pubTime>
+        
+        <tag>数据结构</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://www.liuin.cn/2016/11/03/%E5%BF%83%E5%AE%89%E5%B0%B1%E6%98%AF%E5%BD%92%E5%A4%84/</loc>
     <lastmod>2017-03-13T18:03:48.000Z</lastmod>
     <data>
@@ -2249,6 +2288,48 @@
            
              
               <breadCrumb title="杂记" url="https://www.liuin.cn/categories/%E6%9D%82%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://www.liuin.cn/2016/11/09/POJ-3253-Fence-Repair-%E9%A2%98%E8%A7%A3/</loc>
+    <lastmod>2017-03-13T18:03:48.000Z</lastmod>
+    <data>
+        <display>
+        <title>POJ 3253 Fence Repair 题解</title>
+        <pubTime>2016-11-09T07:54:24.000Z</pubTime>
+        
+        <tag>贪心</tag>
+         
+        <tag>哈夫曼编码</tag>
+         
+         
+           
+             
+              <breadCrumb title="算法" url="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://www.liuin.cn/2016/10/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9A%84%E5%90%AF%E5%8A%A8-%E8%BD%AC/</loc>
+    <lastmod>2017-03-13T18:03:48.000Z</lastmod>
+    <data>
+        <display>
+        <title>计算机的启动[转]</title>
+        <pubTime>2016-10-19T11:14:38.000Z</pubTime>
+        
+        <tag>计算机</tag>
+         
+         
+           
+             
+              <breadCrumb title="操作系统" url="https://www.liuin.cn/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/"/>
           
         </display>
     </data>
@@ -2276,19 +2357,19 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2016/10/13/%E6%9C%A8%E6%9D%A1%E6%9F%93%E8%89%B2%E8%89%B2-%E9%A2%98%E8%A7%A3/</loc>
+    <loc>https://www.liuin.cn/2016/10/13/%E9%87%8D%E8%A3%85%E7%B3%BB%E7%BB%9F/</loc>
     <lastmod>2017-03-13T18:03:48.000Z</lastmod>
     <data>
         <display>
-        <title>木条染色_题解</title>
-        <pubTime>2016-10-13T13:42:39.000Z</pubTime>
+        <title>重装系统</title>
+        <pubTime>2016-10-13T13:58:55.000Z</pubTime>
         
-        <tag>区间覆盖</tag>
+        <tag>生活</tag>
          
          
            
              
-              <breadCrumb title="算法" url="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
+              <breadCrumb title="杂记" url="https://www.liuin.cn/categories/%E6%9D%82%E8%AE%B0/"/>
           
         </display>
     </data>
@@ -2336,19 +2417,19 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2016/10/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9A%84%E5%90%AF%E5%8A%A8-%E8%BD%AC/</loc>
+    <loc>https://www.liuin.cn/2016/11/08/poj-2386-Laking-Counting/</loc>
     <lastmod>2017-03-13T18:03:48.000Z</lastmod>
     <data>
         <display>
-        <title>计算机的启动[转]</title>
-        <pubTime>2016-10-19T11:14:38.000Z</pubTime>
+        <title>poj 2386 Laking Counting</title>
+        <pubTime>2016-11-08T12:14:21.000Z</pubTime>
         
-        <tag>计算机</tag>
+        <tag>深度优先搜索</tag>
          
          
            
              
-              <breadCrumb title="操作系统" url="https://www.liuin.cn/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/"/>
+              <breadCrumb title="算法" url="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
           
         </display>
     </data>
@@ -2356,14 +2437,14 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2016/10/09/%E8%83%8C%E5%8C%85%E4%B9%9D%E8%AE%B2%EF%BC%88%E8%BD%AC%EF%BC%89/</loc>
+    <loc>https://www.liuin.cn/2016/11/03/%E9%94%90%E9%9B%AF%E4%B8%8A%E5%8D%95%E4%B8%8D%E7%BB%99%E5%B0%B1%E9%80%81-%E9%A2%98%E8%A7%A3/</loc>
     <lastmod>2017-03-13T18:03:48.000Z</lastmod>
     <data>
         <display>
-        <title>背包九讲（转）</title>
-        <pubTime>2016-10-09T11:34:22.000Z</pubTime>
+        <title>锐雯上单不给就送——题解</title>
+        <pubTime>2016-11-03T12:34:22.000Z</pubTime>
         
-        <tag>动态规划</tag>
+        <tag>快速幂运算</tag>
          
          
            
@@ -2396,34 +2477,14 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2016/10/13/%E9%87%8D%E8%A3%85%E7%B3%BB%E7%BB%9F/</loc>
+    <loc>https://www.liuin.cn/2016/10/09/%E8%83%8C%E5%8C%85%E4%B9%9D%E8%AE%B2%EF%BC%88%E8%BD%AC%EF%BC%89/</loc>
     <lastmod>2017-03-13T18:03:48.000Z</lastmod>
     <data>
         <display>
-        <title>重装系统</title>
-        <pubTime>2016-10-13T13:58:55.000Z</pubTime>
+        <title>背包九讲（转）</title>
+        <pubTime>2016-10-09T11:34:22.000Z</pubTime>
         
-        <tag>生活</tag>
-         
-         
-           
-             
-              <breadCrumb title="杂记" url="https://www.liuin.cn/categories/%E6%9D%82%E8%AE%B0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://www.liuin.cn/2016/11/03/%E9%94%90%E9%9B%AF%E4%B8%8A%E5%8D%95%E4%B8%8D%E7%BB%99%E5%B0%B1%E9%80%81-%E9%A2%98%E8%A7%A3/</loc>
-    <lastmod>2017-03-13T18:03:48.000Z</lastmod>
-    <data>
-        <display>
-        <title>锐雯上单不给就送——题解</title>
-        <pubTime>2016-11-03T12:34:22.000Z</pubTime>
-        
-        <tag>快速幂运算</tag>
+        <tag>动态规划</tag>
          
          
            
@@ -2456,23 +2517,6 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2017/03/02/%E6%B5%85%E8%B0%88%E5%8F%AF%E6%8C%81%E7%BB%AD%E5%8C%96%E7%BA%BF%E6%AE%B5%E6%A0%91/</loc>
-    <lastmod>2017-03-13T18:03:48.000Z</lastmod>
-    <data>
-        <display>
-        <title>浅谈可持续化线段树</title>
-        <pubTime>2017-03-01T17:08:45.000Z</pubTime>
-        
-        <tag>数据结构</tag>
-         
-         
-           
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>https://www.liuin.cn/2016/09/25/%E5%BC%80%E5%90%AF%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2%E4%B9%8B%E6%97%85/</loc>
     <lastmod>2017-03-13T18:03:48.000Z</lastmod>
     <data>
@@ -2493,36 +2537,14 @@
 
     
   <url>
-    <loc>https://www.liuin.cn/2016/11/08/poj-2386-Laking-Counting/</loc>
+    <loc>https://www.liuin.cn/2016/10/13/%E6%9C%A8%E6%9D%A1%E6%9F%93%E8%89%B2%E8%89%B2-%E9%A2%98%E8%A7%A3/</loc>
     <lastmod>2017-03-13T18:03:48.000Z</lastmod>
     <data>
         <display>
-        <title>poj 2386 Laking Counting</title>
-        <pubTime>2016-11-08T12:14:21.000Z</pubTime>
+        <title>木条染色_题解</title>
+        <pubTime>2016-10-13T13:42:39.000Z</pubTime>
         
-        <tag>深度优先搜索</tag>
-         
-         
-           
-             
-              <breadCrumb title="算法" url="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://www.liuin.cn/2016/11/09/POJ-3253-Fence-Repair-%E9%A2%98%E8%A7%A3/</loc>
-    <lastmod>2017-03-13T18:03:48.000Z</lastmod>
-    <data>
-        <display>
-        <title>POJ 3253 Fence Repair 题解</title>
-        <pubTime>2016-11-09T07:54:24.000Z</pubTime>
-        
-        <tag>贪心</tag>
-         
-        <tag>哈夫曼编码</tag>
+        <tag>区间覆盖</tag>
          
          
            
