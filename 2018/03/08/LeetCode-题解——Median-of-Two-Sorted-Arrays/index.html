@@ -115,7 +115,7 @@
 <meta property="og:description" content="LeetCode 题解——Median of Two Sorted Arrays">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://data2.liuin.cn/2018-03-08-15204918440445.jpg">
-<meta property="og:updated_time" content="2018-03-08T07:03:48.000Z">
+<meta property="og:updated_time" content="2018-03-09T10:38:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LeetCode 题解——Median of Two Sorted Arrays">
 <meta name="twitter:description" content="LeetCode 题解——Median of Two Sorted Arrays">
@@ -442,7 +442,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  755 字
+                  769 字
                 </span>
               
 
@@ -486,6 +486,7 @@
 <li>最后的结果要对总数是奇数还是偶数进行讨论，如果是奇数的话，表示中位数是左边那一堆中的最大值；如果是偶数的话，中位数中左边一堆数的最大值和右边一堆书的最小值的平均值。</li>
 </ol>
 <h2 id="代码（C-）"><a href="#代码（C-）" class="headerlink" title="代码（C++）"></a>代码（C++）</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">double</span> <span class="title">findMedianSortedArrays</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums1, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums2)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> n = nums1.size(), m = nums2.size();</div><div class="line">        <span class="comment">// 对小的数组进行分割</span></div><div class="line">        <span class="keyword">if</span>(n &gt; m)</div><div class="line">        &#123;</div><div class="line">            swap(nums1, nums2);</div><div class="line">            swap(n,m);</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 二分法确定两个界限</span></div><div class="line">        <span class="keyword">int</span> i, j, iMin = <span class="number">0</span>, iMax = n;</div><div class="line">        <span class="keyword">while</span>(iMin &lt;= iMax)</div><div class="line">        &#123;</div><div class="line">            i = (iMin + iMax)/<span class="number">2</span> ;</div><div class="line">            j = (m+n+<span class="number">1</span>)/<span class="number">2</span> - i;</div><div class="line">            <span class="comment">// i的取值过大</span></div><div class="line">            <span class="keyword">if</span>(i &gt; iMin &amp;&amp; nums1[i<span class="number">-1</span>] &gt; nums2[j])</div><div class="line">            &#123;</div><div class="line">                iMax = i - <span class="number">1</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// i的取值过小的情况</span></div><div class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(i &lt; iMax &amp;&amp; nums1[i] &lt; nums2[j<span class="number">-1</span>]) </div><div class="line">            &#123;</div><div class="line">                iMin = i + <span class="number">1</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// 找到中位数</span></div><div class="line">            <span class="keyword">else</span>&#123;</div><div class="line">                <span class="keyword">int</span> left = <span class="number">0</span>;</div><div class="line">                <span class="keyword">if</span>(i == <span class="number">0</span>) left = nums2[j<span class="number">-1</span>];</div><div class="line">                <span class="keyword">else</span> <span class="keyword">if</span>(j == <span class="number">0</span>) left = nums1[i<span class="number">-1</span>];</div><div class="line">                <span class="keyword">else</span> left = max(nums1[i<span class="number">-1</span>], nums2[j<span class="number">-1</span>]);</div><div class="line">                <span class="comment">// 总数是奇数的时候</span></div><div class="line">                <span class="keyword">if</span> ( (m + n) % <span class="number">2</span>) <span class="keyword">return</span> left;</div><div class="line">                </div><div class="line">                <span class="keyword">int</span> right = <span class="number">0</span>;</div><div class="line">                <span class="keyword">if</span>(i == n) right = nums2[j];</div><div class="line">                <span class="keyword">else</span> <span class="keyword">if</span>(j == m) right = nums1[i];</div><div class="line">                <span class="keyword">else</span> right = min(nums1[i], nums2[j]);</div><div class="line">                <span class="keyword">return</span> (left + right)/<span class="number">2.0</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="number">0.0</span>;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>更多LeetCode题解，欢迎查看我的<a href="https://github.com/Sixzeroo/LeetCode" target="_blank" rel="external">GitHub项目</a></p>
 
       
     </div>
@@ -543,7 +544,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年3月8日 - 15时03分
+	2018年3月9日 - 18时03分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -666,7 +667,7 @@
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">128</span>
+                <span class="site-state-item-count">129</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -792,7 +793,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      195.4k 字
+      195.8k 字
     </span>
   
 

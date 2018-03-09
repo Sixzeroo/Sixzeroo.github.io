@@ -114,7 +114,7 @@
 <meta property="og:site_name" content="Sixzeroo">
 <meta property="og:description" content="LeetCode 题解——Regular Expression Matching">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-03-09T10:11:55.000Z">
+<meta property="og:updated_time" content="2018-03-09T10:38:47.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LeetCode 题解——Regular Expression Matching">
 <meta name="twitter:description" content="LeetCode 题解——Regular Expression Matching">
@@ -440,7 +440,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  481 字
+                  495 字
                 </span>
               
 
@@ -480,6 +480,7 @@
 <li>dp[i+1][j],非*模式，第一个字符匹配成功的情况</li>
 </ol>
 <p>DP代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isMatch</span><span class="params">(<span class="built_in">string</span> s, <span class="built_in">string</span> p)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> plen = p.length(), slen = s.length();</div><div class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; &gt; dp(slen + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; (plen + <span class="number">1</span>, <span class="literal">false</span>));</div><div class="line">        dp[slen][plen] = <span class="literal">true</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=slen ;i&gt;=<span class="number">0</span>;--i)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=plen<span class="number">-1</span>;j&gt;=<span class="number">0</span>;--j)</div><div class="line">            &#123;</div><div class="line">                <span class="comment">// 判断第一个是否匹配</span></div><div class="line">                <span class="keyword">bool</span> match = (i&lt;slen &amp;&amp; (s[i] == p[j] || p[j] == <span class="string">'.'</span>));</div><div class="line">                <span class="comment">// 是*模式，两种方案，匹配/不匹配</span></div><div class="line">                <span class="keyword">if</span>(j+<span class="number">1</span> &lt; plen &amp;&amp; p[j+<span class="number">1</span>] == <span class="string">'*'</span>)</div><div class="line">                    dp[i][j] = dp[i][j+<span class="number">2</span>] || (match &amp;&amp; dp[i+<span class="number">1</span>][j]);</div><div class="line">                <span class="comment">// 非*模式</span></div><div class="line">                <span class="keyword">else</span></div><div class="line">                    dp[i][j] = (match &amp;&amp; dp[i+<span class="number">1</span>][j+<span class="number">1</span>]);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> dp[<span class="number">0</span>][<span class="number">0</span>];</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>更多LeetCode题解，欢迎查看我的<a href="https://github.com/Sixzeroo/LeetCode" target="_blank" rel="external">GitHub项目</a></p>
 
       
     </div>
@@ -577,6 +578,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2018/03/09/LeetCode-题解——Container-With-Most-Water/" rel="prev" title="LeetCode 题解——Container With Most Water">
+                LeetCode 题解——Container With Most Water <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -656,7 +661,7 @@
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">128</span>
+                <span class="site-state-item-count">129</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -782,7 +787,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      195.4k 字
+      195.8k 字
     </span>
   
 

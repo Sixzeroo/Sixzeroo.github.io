@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-03-09T10:11:55.000Z</updated>
+  <updated>2018-03-09T10:53:03.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -16,11 +16,42 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>LeetCode 题解——Container With Most Water</title>
+    <link href="https://www.liuin.cn/2018/03/09/LeetCode-%E9%A2%98%E8%A7%A3%E2%80%94%E2%80%94Container-With-Most-Water/"/>
+    <id>https://www.liuin.cn/2018/03/09/LeetCode-题解——Container-With-Most-Water/</id>
+    <published>2018-03-09T10:37:07.000Z</published>
+    <updated>2018-03-09T10:53:03.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>LeetCode 题解——Container With Most Water</p>
+<a id="more"></a>
+<h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>题目首先给出一个数组b，数组中的每一个数可以确定平面直角坐标系上的一个点<code>(i,b[i])</code>，两个点可以确定一个容器：两个点分别向x轴引垂线形成的容器，求所有形成的容器中容积（面积）最大的那一个。</p>
+<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>首先想到的是暴力法，枚举所有的情况，这样的时间复杂度是O(n^2)，要优化这个算法的话，要么就优化成O(logn)或者O(n)，如果想要优化成O(n)的话就意味着扫描一遍即可。</p>
+<p>这样可以找到一个贪心的方法：用两个指针从两边向中间进行扫描，这样我们所求的面积的底在变小，要想扫描到更大的面积的情况只有更长的高才有可能找到，所以就在扫描过程中舍弃掉较小高度的点，让指针继续向中间靠拢。</p>
+<h2 id="代码（C-）"><a href="#代码（C-）" class="headerlink" title="代码（C++）"></a>代码（C++）</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxArea</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; height)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> i = <span class="number">0</span>, j = height.size()<span class="number">-1</span>;</div><div class="line">        <span class="keyword">int</span> res = min(height[i], height[j])*(j-i);</div><div class="line">        <span class="comment">// 从两边向中间扫描</span></div><div class="line">        <span class="keyword">while</span>(i&lt;j)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span>(height[i] &lt; height[j])</div><div class="line">                i++;</div><div class="line">            <span class="keyword">else</span></div><div class="line">                j--;</div><div class="line">            res = max(res, min(height[i], height[j])*(j-i));</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>更多LeetCode题解，欢迎查看我的<a href="https://github.com/Sixzeroo/LeetCode" target="_blank" rel="external">GitHub项目</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;LeetCode 题解——Container With Most Water&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="算法" scheme="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="LeetCode" scheme="https://www.liuin.cn/tags/LeetCode/"/>
+    
+      <category term="贪心" scheme="https://www.liuin.cn/tags/%E8%B4%AA%E5%BF%83/"/>
+    
+  </entry>
+  
+  <entry>
     <title>LeetCode 题解——Regular Expression Matching</title>
     <link href="https://www.liuin.cn/2018/03/09/LeetCode-%E9%A2%98%E8%A7%A3%E2%80%94%E2%80%94Regular-Expression-Matching/"/>
     <id>https://www.liuin.cn/2018/03/09/LeetCode-题解——Regular-Expression-Matching/</id>
     <published>2018-03-09T10:06:12.000Z</published>
-    <updated>2018-03-09T10:11:55.000Z</updated>
+    <updated>2018-03-09T10:38:47.000Z</updated>
     
     <content type="html"><![CDATA[<p>LeetCode 题解——Regular Expression Matching</p>
 <a id="more"></a>
@@ -37,6 +68,7 @@
 <li>dp[i+1][j],非*模式，第一个字符匹配成功的情况</li>
 </ol>
 <p>DP代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isMatch</span><span class="params">(<span class="built_in">string</span> s, <span class="built_in">string</span> p)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> plen = p.length(), slen = s.length();</div><div class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; &gt; dp(slen + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; (plen + <span class="number">1</span>, <span class="literal">false</span>));</div><div class="line">        dp[slen][plen] = <span class="literal">true</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=slen ;i&gt;=<span class="number">0</span>;--i)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=plen<span class="number">-1</span>;j&gt;=<span class="number">0</span>;--j)</div><div class="line">            &#123;</div><div class="line">                <span class="comment">// 判断第一个是否匹配</span></div><div class="line">                <span class="keyword">bool</span> match = (i&lt;slen &amp;&amp; (s[i] == p[j] || p[j] == <span class="string">'.'</span>));</div><div class="line">                <span class="comment">// 是*模式，两种方案，匹配/不匹配</span></div><div class="line">                <span class="keyword">if</span>(j+<span class="number">1</span> &lt; plen &amp;&amp; p[j+<span class="number">1</span>] == <span class="string">'*'</span>)</div><div class="line">                    dp[i][j] = dp[i][j+<span class="number">2</span>] || (match &amp;&amp; dp[i+<span class="number">1</span>][j]);</div><div class="line">                <span class="comment">// 非*模式</span></div><div class="line">                <span class="keyword">else</span></div><div class="line">                    dp[i][j] = (match &amp;&amp; dp[i+<span class="number">1</span>][j+<span class="number">1</span>]);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> dp[<span class="number">0</span>][<span class="number">0</span>];</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>更多LeetCode题解，欢迎查看我的<a href="https://github.com/Sixzeroo/LeetCode" target="_blank" rel="external">GitHub项目</a></p>
 ]]></content>
     
     <summary type="html">
@@ -59,7 +91,7 @@
     <link href="https://www.liuin.cn/2018/03/08/LeetCode-%E9%A2%98%E8%A7%A3%E2%80%94%E2%80%94Median-of-Two-Sorted-Arrays/"/>
     <id>https://www.liuin.cn/2018/03/08/LeetCode-题解——Median-of-Two-Sorted-Arrays/</id>
     <published>2018-03-08T06:42:12.000Z</published>
-    <updated>2018-03-08T07:03:48.000Z</updated>
+    <updated>2018-03-09T10:38:52.000Z</updated>
     
     <content type="html"><![CDATA[<p>LeetCode 题解——Median of Two Sorted Arrays</p>
 <a id="more"></a>
@@ -80,6 +112,7 @@
 <li>最后的结果要对总数是奇数还是偶数进行讨论，如果是奇数的话，表示中位数是左边那一堆中的最大值；如果是偶数的话，中位数中左边一堆数的最大值和右边一堆书的最小值的平均值。</li>
 </ol>
 <h2 id="代码（C-）"><a href="#代码（C-）" class="headerlink" title="代码（C++）"></a>代码（C++）</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">double</span> <span class="title">findMedianSortedArrays</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums1, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums2)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> n = nums1.size(), m = nums2.size();</div><div class="line">        <span class="comment">// 对小的数组进行分割</span></div><div class="line">        <span class="keyword">if</span>(n &gt; m)</div><div class="line">        &#123;</div><div class="line">            swap(nums1, nums2);</div><div class="line">            swap(n,m);</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 二分法确定两个界限</span></div><div class="line">        <span class="keyword">int</span> i, j, iMin = <span class="number">0</span>, iMax = n;</div><div class="line">        <span class="keyword">while</span>(iMin &lt;= iMax)</div><div class="line">        &#123;</div><div class="line">            i = (iMin + iMax)/<span class="number">2</span> ;</div><div class="line">            j = (m+n+<span class="number">1</span>)/<span class="number">2</span> - i;</div><div class="line">            <span class="comment">// i的取值过大</span></div><div class="line">            <span class="keyword">if</span>(i &gt; iMin &amp;&amp; nums1[i<span class="number">-1</span>] &gt; nums2[j])</div><div class="line">            &#123;</div><div class="line">                iMax = i - <span class="number">1</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// i的取值过小的情况</span></div><div class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(i &lt; iMax &amp;&amp; nums1[i] &lt; nums2[j<span class="number">-1</span>]) </div><div class="line">            &#123;</div><div class="line">                iMin = i + <span class="number">1</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// 找到中位数</span></div><div class="line">            <span class="keyword">else</span>&#123;</div><div class="line">                <span class="keyword">int</span> left = <span class="number">0</span>;</div><div class="line">                <span class="keyword">if</span>(i == <span class="number">0</span>) left = nums2[j<span class="number">-1</span>];</div><div class="line">                <span class="keyword">else</span> <span class="keyword">if</span>(j == <span class="number">0</span>) left = nums1[i<span class="number">-1</span>];</div><div class="line">                <span class="keyword">else</span> left = max(nums1[i<span class="number">-1</span>], nums2[j<span class="number">-1</span>]);</div><div class="line">                <span class="comment">// 总数是奇数的时候</span></div><div class="line">                <span class="keyword">if</span> ( (m + n) % <span class="number">2</span>) <span class="keyword">return</span> left;</div><div class="line">                </div><div class="line">                <span class="keyword">int</span> right = <span class="number">0</span>;</div><div class="line">                <span class="keyword">if</span>(i == n) right = nums2[j];</div><div class="line">                <span class="keyword">else</span> <span class="keyword">if</span>(j == m) right = nums1[i];</div><div class="line">                <span class="keyword">else</span> right = min(nums1[i], nums2[j]);</div><div class="line">                <span class="keyword">return</span> (left + right)/<span class="number">2.0</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="number">0.0</span>;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>更多LeetCode题解，欢迎查看我的<a href="https://github.com/Sixzeroo/LeetCode" target="_blank" rel="external">GitHub项目</a></p>
 ]]></content>
     
     <summary type="html">
@@ -2544,60 +2577,6 @@
     <summary type="html">
     
       &lt;p&gt;《深入理解计算机系统》第11章笔记&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="CSAPP" scheme="https://www.liuin.cn/tags/CSAPP/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CSAPP 系统级I/O</title>
-    <link href="https://www.liuin.cn/2018/02/01/CSAPP-%E7%B3%BB%E7%BB%9F%E7%BA%A7I-O/"/>
-    <id>https://www.liuin.cn/2018/02/01/CSAPP-系统级I-O/</id>
-    <published>2018-02-01T10:19:48.000Z</published>
-    <updated>2018-02-23T04:05:57.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>《深入理解计算机系统》第10章笔记</p>
-<a id="more"></a>
-<p>输入/输出（I/O）是在主存（memory）和外部设备之间拷贝数据的过程。输入数据是从I/O设备拷贝数据到主存，输出数据是从主存拷贝数据到I/O设备。</p>
-<h2 id="Unix-I-O"><a href="#Unix-I-O" class="headerlink" title="Unix I/O"></a>Unix I/O</h2><p>所有的的I/O设备都模型化为文件，而所有的输入和输出都当作相应文件的读和写来执行。</p>
-<p>所有的输入输出都以一种统一且一致的方式来执行：</p>
-<ul>
-<li>打开文件</li>
-<li>改变当前的文件位置</li>
-<li>读写文件</li>
-<li>关闭文件</li>
-</ul>
-<h2 id="打开和关闭文件"><a href="#打开和关闭文件" class="headerlink" title="打开和关闭文件"></a>打开和关闭文件</h2><p>open函数将filename转换为一个文件描述符，并且返回描述符数字。返回的描述符总是在进程中当前没有打开的最小描述符</p>
-<h2 id="读和写文件"><a href="#读和写文件" class="headerlink" title="读和写文件"></a>读和写文件</h2><p><img src="https://data2.liuin.cn/story-writer/2018_2_1_1517479720893.jpg" alt="enter description here"></p>
-<p><code>read</code>函数从描述符为fd的当前文件位置拷贝至多n个字节到存储器位置buf。</p>
-<p><code>write</code> 函数从存储器位置拷贝至多n个字节到描述符fd的当前文件位置</p>
-<p>通过调用<code>lseek</code>函数，应用程序能够显式地修改当前文件的位置</p>
-<h2 id="共享文件"><a href="#共享文件" class="headerlink" title="共享文件"></a>共享文件</h2><p>可以用许多不同的方式来共享 Unix 文件。内核用三个相关的数据结构来表示打开的文件：</p>
-<ul>
-<li><strong>描述符表</strong>(descriptor table)。每个进程都有它独立的描述符表，它的表项是由进程打开的文件描述符来索引的。每个打开的描述符表指向文件表中的一个表项。</li>
-<li><strong>文件表</strong>(file table)。打开文件的集合是由一张文件表来表示的，所有的进程共享这张表。每个文件表的表项包括当前的文件位置、引用计数(reference count)，以及一个指向 v-node 表中对应表项的指针。</li>
-<li><strong>v-node 表</strong>(v-node table)。同文件表一样，所有的进程共享这张表。每个表项包含 stat 结构中的大多数信息。</li>
-</ul>
-<p><img src="https://data2.liuin.cn/story-writer/2018_2_1_1517479945102.jpg" alt="典型的打开文件的内核数据结构"></p>
-<p>多个描述符也可以通过不同的文件表表项来引用同一个文件</p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_2_1_1517480013346.jpg" alt="enter description here"></p>
-<p>子进程继承父进程打开文件</p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_2_1_1517480058326.jpg" alt="enter description here"></p>
-<h2 id="I-O重定向"><a href="#I-O重定向" class="headerlink" title="I/O重定向"></a>I/O重定向</h2><p><img src="https://data2.liuin.cn/story-writer/2018_2_1_1517480099251.jpg" alt="enter description here"></p>
-<h2 id="我们该使用哪些I-O函数"><a href="#我们该使用哪些I-O函数" class="headerlink" title="我们该使用哪些I/O函数"></a>我们该使用哪些I/O函数</h2><p><img src="https://data2.liuin.cn/story-writer/2018_2_1_1517480139110.jpg" alt="enter description here"></p>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>Unix 提供了少量的系统级函数，它们允许应用程序打开、关闭、读和写文件，提取文件的元数据，以及执行 I/O 重定向。 Unix 的读和写操作会出现不足值，应用程序必须能正确地预计和处理这种情况。应用程序不应直接调用 Unix I/O 函数，而应该使用 RIO 包，RIO 包通过反复执行读写操作，直到传送完所有的请求数据，自动处理不足值。</p>
-<p>Unix 内核使用三个相关的数据结构来表示打开的文件。描述符表中的表项指向打开文件表中的表项，而打开文件表中的表项又指向 v-node 表中的表项。</p>
-<p>标准 I/O 库是基于 Unix I/O 实现的，并提供了一组强大的高级 I/O 例程。对于大多数应用程序而言，标准 I/O 更简单，是优于 Unix I/O 的选择。然而，因为对标准 I/O 和网络文件的一些相互不兼容的限制，Unix I/O 比标准 I/O 更适用于网络应用程序。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;《深入理解计算机系统》第10章笔记&lt;/p&gt;
     
     </summary>
     
