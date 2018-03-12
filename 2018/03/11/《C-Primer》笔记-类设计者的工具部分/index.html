@@ -88,7 +88,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="C/C++," />
 
 
 
@@ -106,16 +106,49 @@
 
 
 
-<meta name="description" content="Do it better !">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Sixzeroo">
-<meta property="og:url" content="https://www.liuin.cn/index.html">
+<meta name="description" content="拷贝控制当定义一个类时,我们显式地或隐式地指定在此类型的对象拷贝、移动、赋值和销毁时做什么。一个类通过定义五种特殊的成员函数来控制这些操作,包括:拷贝构造函数( copy constructor)、拷贝赋值运算符( copy-assignment operator)、移动构造函数(moveconstructor)、移动赋值运算符(move-assignment operator)和析构函数( d">
+<meta name="keywords" content="C&#x2F;C++">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《C++ Primer》笔记 类设计者的工具部分">
+<meta property="og:url" content="https://www.liuin.cn/2018/03/11/《C-Primer》笔记-类设计者的工具部分/index.html">
 <meta property="og:site_name" content="Sixzeroo">
-<meta property="og:description" content="Do it better !">
+<meta property="og:description" content="拷贝控制当定义一个类时,我们显式地或隐式地指定在此类型的对象拷贝、移动、赋值和销毁时做什么。一个类通过定义五种特殊的成员函数来控制这些操作,包括:拷贝构造函数( copy constructor)、拷贝赋值运算符( copy-assignment operator)、移动构造函数(moveconstructor)、移动赋值运算符(move-assignment operator)和析构函数( d">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-05-15202146959452.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-05-15202148530112.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-05-15202156946283.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-05-15202204986268.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-06-15202996380435.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-06-15202997181932.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-06-15203006569640.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-06-15203036806102.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-06-15203037487660.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-06-15203038781378.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-06-15203046723464.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-08-15204752450638.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-08-15204753653946.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-08-15204767757091.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-08-15204772352734.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-08-15204772841857.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-08-15204936697970.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-08-15205130777739.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-08-15205140838880.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-08-15205150138642.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-08-15205151324990.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-09-15205965427434.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-09-15205968035260.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-10-15206810494191.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-10-15206812431993.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-10-15206822514896.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-10-15206823729019.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-10-15206826958070.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208165159357.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208167547457.jpg">
+<meta property="og:updated_time" content="2018-03-12T01:21:48.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sixzeroo">
-<meta name="twitter:description" content="Do it better !">
+<meta name="twitter:title" content="《C++ Primer》笔记 类设计者的工具部分">
+<meta name="twitter:description" content="拷贝控制当定义一个类时,我们显式地或隐式地指定在此类型的对象拷贝、移动、赋值和销毁时做什么。一个类通过定义五种特殊的成员函数来控制这些操作,包括:拷贝构造函数( copy constructor)、拷贝赋值运算符( copy-assignment operator)、移动构造函数(moveconstructor)、移动赋值运算符(move-assignment operator)和析构函数( d">
+<meta name="twitter:image" content="https://data2.liuin.cn/2018-03-05-15202146959452.jpg">
 
 
 
@@ -145,13 +178,13 @@
 
 
 
-  <link rel="canonical" href="https://www.liuin.cn/"/>
+  <link rel="canonical" href="https://www.liuin.cn/2018/03/11/《C-Primer》笔记-类设计者的工具部分/"/>
 
 
 
 
 
-  <title>Sixzeroo</title>
+  <title>《C++ Primer》笔记 类设计者的工具部分 | Sixzeroo</title>
   
 
 
@@ -180,8 +213,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
 	
@@ -330,9 +362,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -362,9 +394,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/11/《C-Primer》笔记-类设计者的工具部分/" itemprop="url">《C++ Primer》笔记 类设计者的工具部分</a></h2>
+          <h2 class="post-title" itemprop="name headline">《C++ Primer》笔记 类设计者的工具部分</h2>
         
 
         <div class="post-meta">
@@ -466,9 +496,7 @@
       
 
       
-        
-          
-            <a id="more"></a>
+        <a id="more"></a>
 <h1 id="拷贝控制"><a href="#拷贝控制" class="headerlink" title="拷贝控制"></a>拷贝控制</h1><p>当定义一个类时,我们显式地或隐式地指定在此类型的对象拷贝、移动、赋值和销毁时做什么。一个类通过定义五种特殊的成员函数来控制这些操作,包括:拷贝构造函数( copy constructor)、拷贝赋值运算符( copy-assignment operator)、移动构造函数(moveconstructor)、移动赋值运算符(move-assignment operator)和析构函数( destructor)。</p>
 <h2 id="拷贝、赋值与销毁"><a href="#拷贝、赋值与销毁" class="headerlink" title="拷贝、赋值与销毁"></a>拷贝、赋值与销毁</h2><h3 id="拷贝构造函数"><a href="#拷贝构造函数" class="headerlink" title="拷贝构造函数"></a>拷贝构造函数</h3><p>如果一个构造函数的第一个参数是自身类类型的引用,且任何额外参数都有默认值,则此构造函数是拷贝构造函数。</p>
 <p>拷贝构造函数的第一个参数必须是一个引用类型,原因我们稍后解释。虽然我们可以定义个接受非 const引用的拷贝构造函数,但此参数几乎总是一个 const的引用。拷贝构造函数在几种情况下都会被隐式地使用。因此,拷贝构造函数通常不应该是 explicit的</p>
@@ -1065,8 +1093,6 @@
 </blockquote>
 <p><strong>一个类模板的实例化定义会实例化该模板的所有成员,包括内联的成员函数</strong>。当编译器遇到一个实例化定义时,它不了解程序使用哪些成员函数。因此,与处理类模板的普通实例化不同,编译器会实例化该类的所有成员。即使我们不使用某个成员,它也会被实例化。因此,我们用来显式实例化一个类模板的类型,必须能用于模板的所有成员</p>
 
-          
-        
       
     </div>
     
@@ -1076,371 +1102,96 @@
     
 
     
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>赏</span>
+  </button>
+  <div id="QR" style="display: none;">
 
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://data1.liuin.cn/wechat_pay.png" alt="Sixzeroo WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="https://data1.liuin.cn/alipay.jpg" alt="Sixzeroo Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Sixzeroo
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.liuin.cn/2018/03/11/《C-Primer》笔记-类设计者的工具部分/" title="《C++ Primer》笔记 类设计者的工具部分">https://www.liuin.cn/2018/03/11/《C-Primer》笔记-类设计者的工具部分/</a>
+  </li>
+  <li class="post-copyright-author">
+	<strong>发布时间: </strong>
+	2018年3月11日 - 19时03分
+  </li>
+  <li class="post-copyright-author">
+	<strong>最后更新: </strong>
+	2018年3月12日 - 09时03分
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
     
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2018/03/09/LeetCode-题解——Container-With-Most-Water/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Sixzeroo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://data1.liuin.cn/ava.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sixzeroo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/09/LeetCode-题解——Container-With-Most-Water/" itemprop="url">LeetCode 题解——Container With Most Water</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-09T18:37:07+08:00">
-                2018-03-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
+            <a href="/tags/C-C/" rel="tag"># C/C++</a>
           
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/03/09/LeetCode-题解——Container-With-Most-Water/" class="leancloud_visitors" data-flag-title="LeetCode 题解——Container With Most Water">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  333 字
-                </span>
-              
-
-              
-
-              
-            </div>
-          
-
-          
-
         </div>
-      </header>
-    
+      
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
+      
       
       
 
       
-        
-          <p>LeetCode 题解——Container With Most Water</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/03/09/LeetCode-题解——Container-With-Most-Water/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/09/LeetCode-题解——Container-With-Most-Water/" rel="next" title="LeetCode 题解——Container With Most Water">
+                <i class="fa fa-chevron-left"></i> LeetCode 题解——Container With Most Water
+              </a>
+            
           </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
 
-    
+          <span class="post-nav-divider"></span>
 
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2018/03/09/LeetCode-题解——Regular-Expression-Matching/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Sixzeroo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://data1.liuin.cn/ava.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sixzeroo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/09/LeetCode-题解——Regular-Expression-Matching/" itemprop="url">LeetCode 题解——Regular Expression Matching</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
+          <div class="post-nav-prev post-nav-item">
             
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-09T18:06:12+08:00">
-                2018-03-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/03/09/LeetCode-题解——Regular-Expression-Matching/" class="leancloud_visitors" data-flag-title="LeetCode 题解——Regular Expression Matching">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  495 字
-                </span>
-              
-
-              
-
-              
-            </div>
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          <p>LeetCode 题解——Regular Expression Matching</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/03/09/LeetCode-题解——Regular-Expression-Matching/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -1450,1246 +1201,11 @@
   </article>
 
 
-    
-      
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2018/03/08/LeetCode-题解——Median-of-Two-Sorted-Arrays/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Sixzeroo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://data1.liuin.cn/ava.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sixzeroo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/08/LeetCode-题解——Median-of-Two-Sorted-Arrays/" itemprop="url">LeetCode 题解——Median of Two Sorted Arrays</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-08T14:42:12+08:00">
-                2018-03-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/03/08/LeetCode-题解——Median-of-Two-Sorted-Arrays/" class="leancloud_visitors" data-flag-title="LeetCode 题解——Median of Two Sorted Arrays">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  769 字
-                </span>
-              
-
-              
-
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>LeetCode 题解——Median of Two Sorted Arrays</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/03/08/LeetCode-题解——Median-of-Two-Sorted-Arrays/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
+    <div class="post-spread">
       
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2018/03/06/APUE-文件I-O/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Sixzeroo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://data1.liuin.cn/ava.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sixzeroo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/06/APUE-文件I-O/" itemprop="url">APUE 文件I/O</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-06T18:49:20+08:00">
-                2018-03-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/03/06/APUE-文件I-O/" class="leancloud_visitors" data-flag-title="APUE 文件I/O">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  3,444 字
-                </span>
-              
-
-              
-
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>《UNIX环境高级编程》第2章 文件I/O 笔记</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/03/06/APUE-文件I-O/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2018/03/04/《C-Primer》笔记-C-标准库部分/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Sixzeroo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://data1.liuin.cn/ava.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sixzeroo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/04/《C-Primer》笔记-C-标准库部分/" itemprop="url">《C++ Primer》笔记 C++标准库部分</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-04T10:58:33+08:00">
-                2018-03-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/03/04/《C-Primer》笔记-C-标准库部分/" class="leancloud_visitors" data-flag-title="《C++ Primer》笔记 C++标准库部分">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  14,317 字
-                </span>
-              
-
-              
-
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>《C++ Primer》笔记 C++基础部分</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/03/04/《C-Primer》笔记-C-标准库部分/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2018/03/02/使用Docker部署Hexo博客/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Sixzeroo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://data1.liuin.cn/ava.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sixzeroo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/02/使用Docker部署Hexo博客/" itemprop="url">使用Docker部署Hexo博客</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-02T17:39:37+08:00">
-                2018-03-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/开发随笔/" itemprop="url" rel="index">
-                    <span itemprop="name">开发随笔</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/03/02/使用Docker部署Hexo博客/" class="leancloud_visitors" data-flag-title="使用Docker部署Hexo博客">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  597 字
-                </span>
-              
-
-              
-
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>本文展示使用Docker部署Hexo博客（当然也可以是其他的服务）在服务器上的一种方案，主要用到是webhook来触发git pull操作。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/03/02/使用Docker部署Hexo博客/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2018/02/28/Docker-Swarm-简介/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Sixzeroo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://data1.liuin.cn/ava.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sixzeroo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/02/28/Docker-Swarm-简介/" itemprop="url">Docker Swarm 简介</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-28T15:36:04+08:00">
-                2018-02-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/运维/" itemprop="url" rel="index">
-                    <span itemprop="name">运维</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/02/28/Docker-Swarm-简介/" class="leancloud_visitors" data-flag-title="Docker Swarm 简介">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  1,823 字
-                </span>
-              
-
-              
-
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>Docker Swarm 为Docker 提供容器集群服务，是 Docker 官 方对容器云生态进行支持的核心方案。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/02/28/Docker-Swarm-简介/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2018/02/25/LeetCode-Next-Permutation-题解/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Sixzeroo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://data1.liuin.cn/ava.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sixzeroo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/02/25/LeetCode-Next-Permutation-题解/" itemprop="url">LeetCode Next Permutation 题解</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-25T09:27:43+08:00">
-                2018-02-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/02/25/LeetCode-Next-Permutation-题解/" class="leancloud_visitors" data-flag-title="LeetCode Next Permutation 题解">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  533 字
-                </span>
-              
-
-              
-
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>LeetCode Next Permutation 题解</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/02/25/LeetCode-Next-Permutation-题解/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2018/02/16/Docker-Machine-简介/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Sixzeroo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://data1.liuin.cn/ava.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sixzeroo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/02/16/Docker-Machine-简介/" itemprop="url">Docker Machine 简介</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-16T19:08:04+08:00">
-                2018-02-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/运维/" itemprop="url" rel="index">
-                    <span itemprop="name">运维</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/02/16/Docker-Machine-简介/" class="leancloud_visitors" data-flag-title="Docker Machine 简介">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  2,209 字
-                </span>
-              
-
-              
-
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>Docker 继续探索</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/02/16/Docker-Machine-简介/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-  </section>
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
-  </nav>
-
 
 
           </div>
@@ -2697,6 +1213,12 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMTYzMi84MTk2"></div>
+    
+  </div>
+
 
         </div>
         
@@ -2717,8 +1239,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="https://data1.liuin.cn/ava.jpeg"
@@ -2813,6 +1344,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#拷贝控制"><span class="nav-number">1.</span> <span class="nav-text">拷贝控制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#拷贝、赋值与销毁"><span class="nav-number">1.1.</span> <span class="nav-text">拷贝、赋值与销毁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#拷贝构造函数"><span class="nav-number">1.1.1.</span> <span class="nav-text">拷贝构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拷贝赋值运算符"><span class="nav-number">1.1.2.</span> <span class="nav-text">拷贝赋值运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#析构函数"><span class="nav-number">1.1.3.</span> <span class="nav-text">析构函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三-五法则"><span class="nav-number">1.1.4.</span> <span class="nav-text">三/五法则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-default"><span class="nav-number">1.1.5.</span> <span class="nav-text">使用=default</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#阻止拷贝"><span class="nav-number">1.1.6.</span> <span class="nav-text">阻止拷贝</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拷贝控制和资源管理"><span class="nav-number">1.2.</span> <span class="nav-text">拷贝控制和资源管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#行为像值的类"><span class="nav-number">1.2.1.</span> <span class="nav-text">行为像值的类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定义行为像指针的类"><span class="nav-number">1.2.2.</span> <span class="nav-text">定义行为像指针的类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#交换操作"><span class="nav-number">1.3.</span> <span class="nav-text">交换操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态内存管理类"><span class="nav-number">1.4.</span> <span class="nav-text">动态内存管理类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对象移动"><span class="nav-number">1.5.</span> <span class="nav-text">对象移动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#右值引用"><span class="nav-number">1.5.1.</span> <span class="nav-text">右值引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#移动构造函数和移动赋值运算符"><span class="nav-number">1.5.2.</span> <span class="nav-text">移动构造函数和移动赋值运算符</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#操作重载和类型转换"><span class="nav-number">2.</span> <span class="nav-text">操作重载和类型转换</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">2.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输入和输出运算符"><span class="nav-number">2.2.</span> <span class="nav-text">输入和输出运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#重载输出运算符-lt-lt"><span class="nav-number">2.2.1.</span> <span class="nav-text">重载输出运算符<<</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重载输入运算符-gt-gt"><span class="nav-number">2.2.2.</span> <span class="nav-text">重载输入运算符>></span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算术和关系运算符"><span class="nav-number">2.3.</span> <span class="nav-text">算术和关系运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#相等运算符"><span class="nav-number">2.3.1.</span> <span class="nav-text">相等运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关系运算符"><span class="nav-number">2.3.2.</span> <span class="nav-text">关系运算符</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#赋值运算符"><span class="nav-number">2.4.</span> <span class="nav-text">赋值运算符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下标运算符"><span class="nav-number">2.5.</span> <span class="nav-text">下标运算符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#递增和递减运算符"><span class="nav-number">2.6.</span> <span class="nav-text">递增和递减运算符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#成员访问运算符"><span class="nav-number">2.7.</span> <span class="nav-text">成员访问运算符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数调用运算符"><span class="nav-number">2.8.</span> <span class="nav-text">函数调用运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lambda-是函数对象"><span class="nav-number">2.8.1.</span> <span class="nav-text">lambda 是函数对象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重载、类型转换与运算符"><span class="nav-number">2.9.</span> <span class="nav-text">重载、类型转换与运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#类型转换运算符"><span class="nav-number">2.9.1.</span> <span class="nav-text">类型转换运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#避免有二义性的类型转换"><span class="nav-number">2.9.2.</span> <span class="nav-text">避免有二义性的类型转换</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#面向对象程序设计"><span class="nav-number">3.</span> <span class="nav-text">面向对象程序设计</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#OOP：概述"><span class="nav-number">3.1.</span> <span class="nav-text">OOP：概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#继承"><span class="nav-number">3.1.1.</span> <span class="nav-text">继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动态绑定"><span class="nav-number">3.1.2.</span> <span class="nav-text">动态绑定</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定义基类和派生类"><span class="nav-number">3.2.</span> <span class="nav-text">定义基类和派生类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义基类"><span class="nav-number">3.2.1.</span> <span class="nav-text">定义基类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定义派生类"><span class="nav-number">3.2.2.</span> <span class="nav-text">定义派生类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类型转换与继承"><span class="nav-number">3.2.3.</span> <span class="nav-text">类型转换与继承</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚函数"><span class="nav-number">3.3.</span> <span class="nav-text">虚函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#抽象基类"><span class="nav-number">3.4.</span> <span class="nav-text">抽象基类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#访问控制与继承"><span class="nav-number">3.5.</span> <span class="nav-text">访问控制与继承</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#继承中的类作用域"><span class="nav-number">3.6.</span> <span class="nav-text">继承中的类作用域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构造函数与拷贝控制"><span class="nav-number">3.7.</span> <span class="nav-text">构造函数与拷贝控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#虚析构函数"><span class="nav-number">3.7.1.</span> <span class="nav-text">虚析构函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#合成拷贝控制与继承"><span class="nav-number">3.7.2.</span> <span class="nav-text">合成拷贝控制与继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#派生类的拷贝控制成员"><span class="nav-number">3.7.3.</span> <span class="nav-text">派生类的拷贝控制成员</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#继承的构造函数"><span class="nav-number">3.7.4.</span> <span class="nav-text">继承的构造函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器与继承"><span class="nav-number">3.8.</span> <span class="nav-text">容器与继承</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编写Basket类"><span class="nav-number">3.8.1.</span> <span class="nav-text">编写Basket类</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模板与泛型编程"><span class="nav-number">4.</span> <span class="nav-text">模板与泛型编程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义模板"><span class="nav-number">4.1.</span> <span class="nav-text">定义模板</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#函数模板"><span class="nav-number">4.1.1.</span> <span class="nav-text">函数模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类模板"><span class="nav-number">4.1.2.</span> <span class="nav-text">类模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模板参数"><span class="nav-number">4.1.3.</span> <span class="nav-text">模板参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#成员模板"><span class="nav-number">4.1.4.</span> <span class="nav-text">成员模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#控制实例化"><span class="nav-number">4.1.5.</span> <span class="nav-text">控制实例化</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -2971,10 +1518,10 @@
   
 
   
-    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
 
-  
+
 
   
 
@@ -3003,6 +1550,17 @@
 
 
 
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
   
 
 
