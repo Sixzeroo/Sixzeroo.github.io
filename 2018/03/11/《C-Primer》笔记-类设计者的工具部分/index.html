@@ -106,13 +106,13 @@
 
 
 
-<meta name="description" content="拷贝控制当定义一个类时,我们显式地或隐式地指定在此类型的对象拷贝、移动、赋值和销毁时做什么。一个类通过定义五种特殊的成员函数来控制这些操作,包括:拷贝构造函数( copy constructor)、拷贝赋值运算符( copy-assignment operator)、移动构造函数(moveconstructor)、移动赋值运算符(move-assignment operator)和析构函数( d">
+<meta name="description" content="《C++ Primer》笔记 类设计者的工具部分">
 <meta name="keywords" content="C&#x2F;C++">
 <meta property="og:type" content="article">
 <meta property="og:title" content="《C++ Primer》笔记 类设计者的工具部分">
 <meta property="og:url" content="https://www.liuin.cn/2018/03/11/《C-Primer》笔记-类设计者的工具部分/index.html">
 <meta property="og:site_name" content="Sixzeroo">
-<meta property="og:description" content="拷贝控制当定义一个类时,我们显式地或隐式地指定在此类型的对象拷贝、移动、赋值和销毁时做什么。一个类通过定义五种特殊的成员函数来控制这些操作,包括:拷贝构造函数( copy constructor)、拷贝赋值运算符( copy-assignment operator)、移动构造函数(moveconstructor)、移动赋值运算符(move-assignment operator)和析构函数( d">
+<meta property="og:description" content="《C++ Primer》笔记 类设计者的工具部分">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://data2.liuin.cn/2018-03-05-15202146959452.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-03-05-15202148530112.jpg">
@@ -144,10 +144,10 @@
 <meta property="og:image" content="https://data2.liuin.cn/2018-03-10-15206826958070.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208165159357.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208167547457.jpg">
-<meta property="og:updated_time" content="2018-03-12T01:21:48.000Z">
+<meta property="og:updated_time" content="2018-03-13T02:00:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《C++ Primer》笔记 类设计者的工具部分">
-<meta name="twitter:description" content="拷贝控制当定义一个类时,我们显式地或隐式地指定在此类型的对象拷贝、移动、赋值和销毁时做什么。一个类通过定义五种特殊的成员函数来控制这些操作,包括:拷贝构造函数( copy constructor)、拷贝赋值运算符( copy-assignment operator)、移动构造函数(moveconstructor)、移动赋值运算符(move-assignment operator)和析构函数( d">
+<meta name="twitter:description" content="《C++ Primer》笔记 类设计者的工具部分">
 <meta name="twitter:image" content="https://data2.liuin.cn/2018-03-05-15202146959452.jpg">
 
 
@@ -471,7 +471,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  17,851 字
+                  17,864 字
                 </span>
               
 
@@ -496,7 +496,8 @@
       
 
       
-        <a id="more"></a>
+        <p>《C++ Primer》笔记 类设计者的工具部分</p>
+<a id="more"></a>
 <h1 id="拷贝控制"><a href="#拷贝控制" class="headerlink" title="拷贝控制"></a>拷贝控制</h1><p>当定义一个类时,我们显式地或隐式地指定在此类型的对象拷贝、移动、赋值和销毁时做什么。一个类通过定义五种特殊的成员函数来控制这些操作,包括:拷贝构造函数( copy constructor)、拷贝赋值运算符( copy-assignment operator)、移动构造函数(moveconstructor)、移动赋值运算符(move-assignment operator)和析构函数( destructor)。</p>
 <h2 id="拷贝、赋值与销毁"><a href="#拷贝、赋值与销毁" class="headerlink" title="拷贝、赋值与销毁"></a>拷贝、赋值与销毁</h2><h3 id="拷贝构造函数"><a href="#拷贝构造函数" class="headerlink" title="拷贝构造函数"></a>拷贝构造函数</h3><p>如果一个构造函数的第一个参数是自身类类型的引用,且任何额外参数都有默认值,则此构造函数是拷贝构造函数。</p>
 <p>拷贝构造函数的第一个参数必须是一个引用类型,原因我们稍后解释。虽然我们可以定义个接受非 const引用的拷贝构造函数,但此参数几乎总是一个 const的引用。拷贝构造函数在几种情况下都会被隐式地使用。因此,拷贝构造函数通常不应该是 explicit的</p>
@@ -1149,7 +1150,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年3月12日 - 09时03分
+	2018年3月13日 - 10时03分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -2007,6 +2008,8 @@
   
 
   
+  
+
 
   
 
