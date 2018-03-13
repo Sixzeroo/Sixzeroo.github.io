@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="unDM_uE8uu2mZxh8kTTsrR_tk8grv9nQAz6QQoaIOcU" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="机器学习," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sixzeroo" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="https://data1.liuin.cn/bitbug_favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="Coursera 吴恩达机器学习 课程笔记">
+<meta name="keywords" content="机器学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Coursera 吴恩达机器学习 课程笔记">
+<meta property="og:url" content="https://www.liuin.cn/2018/03/13/Coursera-吴恩达机器学习-课程笔记/index.html">
+<meta property="og:site_name" content="Sixzeroo">
+<meta property="og:description" content="Coursera 吴恩达机器学习 课程笔记">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208368350754.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208368814648.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208369551948.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208370522571.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208370968972.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208371698906.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208382454378.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208395529904.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208397051963.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208400482188.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208401837391.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208404559020.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208404858375.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208405675961.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208406207656.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208613808836.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208618844580.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208619474872.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208619856026.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-13-15209095236343.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-13-15209096625766.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-13-15209097782077.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-13-15209102744925.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-13-15209107024350.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-13-15209111273173.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-13-15209221924071.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-13-15209222169590.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-13-15209222993254.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-03-13-15209223711085.jpg">
+<meta property="og:updated_time" content="2018-03-13T06:28:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Coursera 吴恩达机器学习 课程笔记">
+<meta name="twitter:description" content="Coursera 吴恩达机器学习 课程笔记">
+<meta name="twitter:image" content="https://data2.liuin.cn/2018-03-12-15208368350754.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.liuin.cn/2018/03/13/Coursera-吴恩达机器学习-课程笔记/"/>
+
+
+
+
+
+  <title>Coursera 吴恩达机器学习 课程笔记 | Sixzeroo</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?eb51bd4c48350fa08cbc200aead6109f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+	
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sixzeroo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-taiwan">
+          <a href="/categories/台湾" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+            
+            台湾
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2018/03/13/Coursera-吴恩达机器学习-课程笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sixzeroo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://data1.liuin.cn/ava.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sixzeroo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Coursera 吴恩达机器学习 课程笔记</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-13T14:27:40+08:00">
+                2018-03-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/03/13/Coursera-吴恩达机器学习-课程笔记/" class="leancloud_visitors" data-flag-title="Coursera 吴恩达机器学习 课程笔记">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2,672 字
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Coursera 吴恩达机器学习 课程笔记</p>
+<a id="more"></a>
+<h1 id="监督学习和无监督学习"><a href="#监督学习和无监督学习" class="headerlink" title="监督学习和无监督学习"></a>监督学习和无监督学习</h1><h2 id="监督学习"><a href="#监督学习" class="headerlink" title="监督学习"></a>监督学习</h2><p>维基百科中的定义：</p>
+<blockquote>
+<p>监督式学习（英语：Supervised learning），是一个机器学习中的方法，可以由训练资料中学到或建立一个模式（函数 / learning model），并依此模式推测新的实例。训练资料是由输入物件（通常是向量）和预期输出所组成。函数的输出可以是一个连续的值（称为回归分析），或是预测一个分类标签（称作分类）</p>
+</blockquote>
+<p>在监督学习中, 我们的预测结果可以是连续值, 也可以是离散值. 我们根据这样的属性将监督学习氛围回归问题和分类问题.</p>
+<h3 id="监督学习举例"><a href="#监督学习举例" class="headerlink" title="监督学习举例"></a>监督学习举例</h3><blockquote>
+<p>回归问题</p>
+</blockquote>
+<p>通过给定的一个房子的面积来预测这个房子在市场中的价格. 这里的房子的面积就是特征, 房子的价格就是一个输出值. 为了解决这个问题, 我们获取了大量的房地产数据, 每一条数据都包含房子的面积及其对应价格. 第一, 我们的数据不仅包含房屋的面积, 还包含其对应的价格, 而我们的目标就是通过面积预测房价. 所以这应该是一个监督学习; 其次, 我们的输出数据房价可以看做是连续的值, 所以这个问题是一个回归问题.</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208368350754.jpg" alt=""></p>
+<blockquote>
+<p>分类问题</p>
+</blockquote>
+<p>我们的目标应该是要对数据进行分类. 现在我们的数据是有关乳腺癌的医学数据, 它包含了肿瘤的大小以及该肿瘤是良性的还是恶性的. 我们的目标是给定一个肿瘤的大小来预测它是良性还是恶性. 我们可以用0代表良性，1代表恶性. 这就是一个分类问题, 因为我们要预测的是一个离散值. </p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208368814648.jpg" alt=""></p>
+<p>在这个例子中特征只有一个即瘤的大小。 对于大多数机器学习的问题, 特征往往有多个(上面的房价问题也是, 实际中特征不止是房子的面积). 例如下图， 有“年龄”和“肿瘤大小”两个特征。</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208369551948.jpg" alt=""></p>
+<h2 id="无监督学习"><a href="#无监督学习" class="headerlink" title="无监督学习"></a>无监督学习</h2><p>在无监督学习中, 我们的数据并没有给出特定的标签, 例如上面例子中的房价或者是良性还是恶性. 我们目标也从预测某个值或者某个分类变成了寻找数据集中特殊的或者对我们来说有价值结构. </p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208370522571.jpg" alt=""></p>
+<h3 id="无监督学习举例"><a href="#无监督学习举例" class="headerlink" title="无监督学习举例"></a>无监督学习举例</h3><blockquote>
+<p>新闻分类</p>
+</blockquote>
+<p>Google News搜集网上的新闻，并且根据新闻的主题将新闻分成许多簇, 然后将在同一个簇的新闻放在一起。如图中红圈部分都是关于BP Oil Well各种新闻的链接，当打开各个新闻链接的时候，展现的都是关于BP Oil Well的新闻。</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208370968972.jpg" alt=""></p>
+<blockquote>
+<p>根据给定基因将人群分类</p>
+</blockquote>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208371698906.jpg" alt=""></p>
+<h1 id="单变量线性回归"><a href="#单变量线性回归" class="headerlink" title="单变量线性回归"></a>单变量线性回归</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="训练集"><a href="#训练集" class="headerlink" title="训练集"></a>训练集</h3><p>由训练样例(training example)组成的集合就是训练集(training set)</p>
+<h3 id="假设函数"><a href="#假设函数" class="headerlink" title="假设函数"></a>假设函数</h3><p>使用某种学习算法对训练集的数据进行训练, 我们可以得到假设函数(Hypothesis Function)</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208382454378.jpg" alt=""></p>
+<p>我们使用如下方法表示假设函数，</p>
+<p>$$ {h_\theta(x)=\theta_0+\theta_1x} $$</p>
+<p>以上这个模型就叫做单变量的线性回归(Linear Regression with One Variable).</p>
+<h2 id="代价函数"><a href="#代价函数" class="headerlink" title="代价函数"></a>代价函数</h2><h3 id="什么是代价函数"><a href="#什么是代价函数" class="headerlink" title="什么是代价函数"></a>什么是代价函数</h3><p>只要我们知道了假设函数, 我们就可以进行预测了. 关键是, 假设函数中有两个未知的量$\theta_0$,$\theta_1$. 当选择不同的$\theta_0$和$\theta_1$时, 我们模型的效果肯定是不一样的. 我们的想法是选择某个$\theta_0$和$\theta<em>1$，使得对于训练样例$(x,y)$，$h</em>\theta(x)$最“接近”$y$。越是接近, 代表这个假设函数越是准确, 这里我们选择均方误差来作为衡量标准, 即我们想要每个样例的估计值与真实值之间差的平方的均值最小:（其中$1/2$只是为了我们后面计算方便）</p>
+<p>$${\mathop{min}\limits_{\theta_0,\theta<em>1} \frac{1}{2m}\sum</em>{i=0}^m\left(h_\theta(x^{(i)})-y^{(i)}\right)^2}$$</p>
+<p>记作：</p>
+<p>$${J(\theta_0,\theta<em>1) = \frac{1}{2m}\sum</em>{i=0}^m\left(h_\theta(x^{(i)})-y^{(i)}\right)^2 }$$</p>
+<p>这样就得到了我们的代价函数(cost function), 也就是我们的优化目标, 我们想要代价函数最小:</p>
+<p>$$ \mathop{min}\limits_{\theta_0,\theta_1}J(\theta_0,\theta_1)$$</p>
+<h3 id="代价函数和假设函数"><a href="#代价函数和假设函数" class="headerlink" title="代价函数和假设函数"></a>代价函数和假设函数</h3><p>对于不同的$\theta<em>1$，对应着不同的假设函数$h</em>\theta(x)$，于是就有了不同的代价函数$J(\theta_1)$的值。将这些点连接起来就可以得到$J(\theta_1)$和$\theta_1$关系的图像：</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208395529904.jpg" alt=""></p>
+<p>我们的目标是找到一个$\theta$使得$J(\theta_1)$最小</p>
+<p>如果我们考虑两个变量，能够绘制$J(\theta_0,\theta_1)$的图形如下</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208397051963.jpg" alt=""></p>
+<p>由于3D图形不太方便我们研究，我们就使用二维的等高线(上图右上角教授写的contour plots/figures)，这样看上去比较清楚一些。越靠近中心表示$J(\theta_0,\theta_1)$值越小</p>
+<h2 id="梯度下降算法"><a href="#梯度下降算法" class="headerlink" title="梯度下降算法"></a>梯度下降算法</h2><h3 id="梯度下降"><a href="#梯度下降" class="headerlink" title="梯度下降"></a>梯度下降</h3><p>梯度下降算法是一种优化算法, 它可以帮助我们找到一个函数的局部极小值点. 它不仅仅可以用在线性回归模型中, 在机器学习许多其他的模型中也可以使用它. 对于我们现在研究的单变量线性回归来说, 我们想要使用梯度下降来找到最优的$\theta_0$,$\theta_1$。</p>
+<p>它的思想是，首先随机选择两个$\theta_0$,$\theta_1$，不断改变他们的值使得$J(\theta)$最小，最终找到$J(\theta)$的最小点</p>
+<p>可以把梯度下降的过程想象成下山坡, 如果想要尽可能快的下坡, 应该每次都往坡度最大的方向下山.</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208400482188.jpg" alt=""></p>
+<p>算法过程：（要注意的是，算法是每次同时改变$\theta_0$和$\theta_1$的值）</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208401837391.jpg" alt=""></p>
+<h3 id="梯度和学习率"><a href="#梯度和学习率" class="headerlink" title="梯度和学习率"></a>梯度和学习率</h3><p>学习率$\alpha$会影响梯度下降的幅度。如果$\alpha$的值太小，$\theta$的值每次会变化很小，那么梯度下降就会比较慢；相反，如果$\alpha$过大，$\theta$的值每次就会变化很大，有可能超过最低点，可能导致永远没法到达最低点。</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208404559020.jpg" alt=""></p>
+<p>由于随着越来越接近最低点, 相应的梯度(绝对值)也会逐渐减小，所以每次下降程度就会越来越小, 我们并不需要减小$\alpha$的值来减小下降程度。</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208404858375.jpg" alt=""></p>
+<h3 id="计算梯度"><a href="#计算梯度" class="headerlink" title="计算梯度"></a>计算梯度</h3><p>将偏导计算出来就得到了完整梯度下降算法：</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208405675961.jpg" alt=""></p>
+<p>事实上，用于线性回归的代价函数总是一个凸函数(Convex Function)。这样的函数没有局部最优解，只有一个全局最优解。所以我们在使用梯度下降的时候，总会得到一个全局最优解。</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208406207656.jpg" alt=""></p>
+<h1 id="多变量线性回归"><a href="#多变量线性回归" class="headerlink" title="多变量线性回归"></a>多变量线性回归</h1><h2 id="假设函数-1"><a href="#假设函数-1" class="headerlink" title="假设函数"></a>假设函数</h2><p>在之前的单变量线性回归中, 我们的问题只涉及到了房子面积这一个特征。在实际问题中, 会有很多特征. 例如, 除了房子面积, 还有房子的卧室数量, 房子的楼层数, 房子建筑年龄.</p>
+<p>在单变量线性回归中假设函数为：</p>
+<p>$${h_\theta(x)=\theta_0+\theta_1x}$$</p>
+<p>现在对于多变量，可以设其假设函数为：</p>
+<p>$${h_\theta(x)=\theta_0+\theta_1x_1+\theta_2x_2+…+\theta_nx_n}$$</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208613808836.jpg" alt=""></p>
+<p>得到其向量表示：</p>
+<p>$${h_\theta(x)=\theta_0x_0+\theta_1x_1+\theta_2x_2+…+\theta_nx_n= \theta^Tx}$$</p>
+<h2 id="梯度下降-1"><a href="#梯度下降-1" class="headerlink" title="梯度下降"></a>梯度下降</h2><p>多变量情况下的梯度下降其实没有区别, 只需要把对应的偏导数项换掉即可</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208618844580.jpg" alt=""></p>
+<h2 id="特征处理"><a href="#特征处理" class="headerlink" title="特征处理"></a>特征处理</h2><h3 id="特征缩放"><a href="#特征缩放" class="headerlink" title="特征缩放"></a>特征缩放</h3><p>如果每个特征的范围相差的很大, 梯度下降会很慢. 为了解决这个问题, 我们在梯度下降之前应该对数据做特征归缩放(Feature Scaling)处理, 从而将所有的特征的数量级都在一个差不多的范围之内, 以加快梯度下降的速度.</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208619474872.jpg" alt=""></p>
+<p>通常我们需要把特征都缩放到$[-1,1]$(附近)这个范围</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208619856026.jpg" alt=""></p>
+<h3 id="均值均一化"><a href="#均值均一化" class="headerlink" title="均值均一化"></a>均值均一化</h3><p>还有一个特征处理的方法就是均值归一化(Mean normalization)</p>
+<p>$${x_i=\frac{x_i-\mu_i}{max-min}}$$</p>
+<h2 id="代价函数与学习率"><a href="#代价函数与学习率" class="headerlink" title="代价函数与学习率"></a>代价函数与学习率</h2><p>我们可以通过画出$\mathop{min}\limits_{\theta}J(\theta)$与迭代次数的关系来观察梯度下降的运行情况，</p>
+<p><img src="https://data2.liuin.cn/2018-03-13-15209095236343.jpg" alt=""></p>
+<p>出现下面两种情况，应该选择更小的学习率$\alpha$，</p>
+<p><img src="https://data2.liuin.cn/2018-03-13-15209096625766.jpg" alt=""></p>
+<p>注意：</p>
+<ul>
+<li>如果$\alpha$足够小，，那么$J(\theta)$在每次迭代之后都会减小</li>
+<li>如果$\alpha$太小， 梯度下降会进行的非常缓慢.</li>
+</ul>
+<p>进行尝试的值：<br><img src="https://data2.liuin.cn/2018-03-13-15209097782077.jpg" alt=""></p>
+<h2 id="多项式回归"><a href="#多项式回归" class="headerlink" title="多项式回归"></a>多项式回归</h2><p>多项式回归(Polynomial Regression)是研究一个因变量与一个或多个自变量间多项式的回归分析方法。如果自变量只有一个时，称为一元多项式回归；如果自变量有多个时，称为多元多项式回归。</p>
+<p>我们可以将房屋的面积作为第一个特征, 面积的平方作为第二个特征, 面积的立方作为第三个特征:</p>
+<p><img src="https://data2.liuin.cn/2018-03-13-15209102744925.jpg" alt=""></p>
+<p>除了三次函数模型, 这里也可以选择平方根函数模型, 如下图所示</p>
+<p><img src="https://data2.liuin.cn/2018-03-13-15209107024350.jpg" alt=""></p>
+<h2 id="正规方程"><a href="#正规方程" class="headerlink" title="正规方程"></a>正规方程</h2><h3 id="正规方程介绍"><a href="#正规方程介绍" class="headerlink" title="正规方程介绍"></a>正规方程介绍</h3><p>之前我们一直是用的梯度下降求解最优值. 它的缺点就是需要进行很多次迭代才能得到全局最优解. 有没有更好的方法呢? 我们先来看一个最简单的例子, 假设现在的代价函数为$J(\theta)=a\theta^2+b\theta+c$，在导数等于0的时候取到最优解。</p>
+<p><img src="https://data2.liuin.cn/2018-03-13-15209111273173.jpg" alt=""></p>
+<p>下面我们介绍一种向量化的求解方法。首先, 在数据集前加上一列$X_0$，值都为1，然后将所有的变量都放入矩阵$X$中（包括加上的$x_0$）；再将输出值放入向量$y$中. 最后通过公式$$\theta=(X^TX)^{-1}X^Ty$$就可以算出最优解</p>
+<p><img src="https://data2.liuin.cn/2018-03-13-15209221924071.jpg" alt=""></p>
+<p>更通用的表达方式</p>
+<p><img src="https://data2.liuin.cn/2018-03-13-15209222169590.jpg" alt=""></p>
+<h3 id="梯度下降和正规方程的比较"><a href="#梯度下降和正规方程的比较" class="headerlink" title="梯度下降和正规方程的比较"></a>梯度下降和正规方程的比较</h3><p><img src="https://data2.liuin.cn/2018-03-13-15209222993254.jpg" alt=""></p>
+<h3 id="正规方程不可逆的情况"><a href="#正规方程不可逆的情况" class="headerlink" title="正规方程不可逆的情况"></a>正规方程不可逆的情况</h3><p>使用正规方程还有一个问题就是$X^TX$可能存在不可逆的情况. 这个时候, 可能是因为我们使用了冗余的特征, 还有一个原因是我们使用了太多的特征(特征的数量超过了样本的数量). 对于这种情况我们可以删掉一些特征或者使用正则化(正则化在后面的课中讲).</p>
+<p><img src="https://data2.liuin.cn/2018-03-13-15209223711085.jpg" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://data1.liuin.cn/wechat_pay.png" alt="Sixzeroo WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="https://data1.liuin.cn/alipay.jpg" alt="Sixzeroo Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Sixzeroo
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.liuin.cn/2018/03/13/Coursera-吴恩达机器学习-课程笔记/" title="Coursera 吴恩达机器学习 课程笔记">https://www.liuin.cn/2018/03/13/Coursera-吴恩达机器学习-课程笔记/</a>
+  </li>
+  <li class="post-copyright-author">
+	<strong>发布时间: </strong>
+	2018年3月13日 - 14时03分
+  </li>
+  <li class="post-copyright-author">
+	<strong>最后更新: </strong>
+	2018年3月13日 - 14时03分
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/11/《C-Primer》笔记-类设计者的工具部分/" rel="next" title="《C++ Primer》笔记 类设计者的工具部分">
+                <i class="fa fa-chevron-left"></i> 《C++ Primer》笔记 类设计者的工具部分
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMTYzMi84MTk2"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://data1.liuin.cn/ava.jpeg"
+               alt="Sixzeroo" />
+          <p class="site-author-name" itemprop="name">Sixzeroo</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">131</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Sixzeroo" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="tencent://message/?menu=yes&uin=1790798600&websitename=im.qq.com" target="_blank" title="QQ">
+                  
+                    <i class="fa fa-fw fa-qq"></i>
+                  
+                    
+                      QQ
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#监督学习和无监督学习"><span class="nav-number">1.</span> <span class="nav-text">监督学习和无监督学习</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#监督学习"><span class="nav-number">1.1.</span> <span class="nav-text">监督学习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#监督学习举例"><span class="nav-number">1.1.1.</span> <span class="nav-text">监督学习举例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#无监督学习"><span class="nav-number">1.2.</span> <span class="nav-text">无监督学习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#无监督学习举例"><span class="nav-number">1.2.1.</span> <span class="nav-text">无监督学习举例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#单变量线性回归"><span class="nav-number">2.</span> <span class="nav-text">单变量线性回归</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">2.1.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#训练集"><span class="nav-number">2.1.1.</span> <span class="nav-text">训练集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#假设函数"><span class="nav-number">2.1.2.</span> <span class="nav-text">假设函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代价函数"><span class="nav-number">2.2.</span> <span class="nav-text">代价函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是代价函数"><span class="nav-number">2.2.1.</span> <span class="nav-text">什么是代价函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代价函数和假设函数"><span class="nav-number">2.2.2.</span> <span class="nav-text">代价函数和假设函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#梯度下降算法"><span class="nav-number">2.3.</span> <span class="nav-text">梯度下降算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#梯度下降"><span class="nav-number">2.3.1.</span> <span class="nav-text">梯度下降</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#梯度和学习率"><span class="nav-number">2.3.2.</span> <span class="nav-text">梯度和学习率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#计算梯度"><span class="nav-number">2.3.3.</span> <span class="nav-text">计算梯度</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#多变量线性回归"><span class="nav-number">3.</span> <span class="nav-text">多变量线性回归</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#假设函数-1"><span class="nav-number">3.1.</span> <span class="nav-text">假设函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#梯度下降-1"><span class="nav-number">3.2.</span> <span class="nav-text">梯度下降</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特征处理"><span class="nav-number">3.3.</span> <span class="nav-text">特征处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特征缩放"><span class="nav-number">3.3.1.</span> <span class="nav-text">特征缩放</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#均值均一化"><span class="nav-number">3.3.2.</span> <span class="nav-text">均值均一化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代价函数与学习率"><span class="nav-number">3.4.</span> <span class="nav-text">代价函数与学习率</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多项式回归"><span class="nav-number">3.5.</span> <span class="nav-text">多项式回归</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正规方程"><span class="nav-number">3.6.</span> <span class="nav-text">正规方程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#正规方程介绍"><span class="nav-number">3.6.1.</span> <span class="nav-text">正规方程介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#梯度下降和正规方程的比较"><span class="nav-number">3.6.2.</span> <span class="nav-text">梯度下降和正规方程的比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正规方程不可逆的情况"><span class="nav-number">3.6.3.</span> <span class="nav-text">正规方程不可逆的情况</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sixzeroo</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">共</span>
+    
+    <span title="Site words total count">
+      216.3k 字
+    </span>
+  
+
+  <span> | </span>
+  <span id="showDays"></span>
+</div>
+
+
+
+  <div class="powered-by">皖ICP备17000842号</div>
+  <span class="post-meta-divider">|</span>                    
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+<script>
+	var birthDay = new Date('09/1/2016');
+	var now = new Date();
+	var duration = now.getTime() - birthDay.getTime();
+	var total= Math.floor(duration / (1000 * 60 * 60 * 24));
+	document.getElementById('showDays').innerHTML='本站已运行' + total + '天';
+</script>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("3YyBK9PnKj86xfGt1vr8ps6Q-gzGzoHsz", "Sf6vsslcm0nwqrxAcm1MMwRM");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>

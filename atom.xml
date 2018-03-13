@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-03-13T02:00:44.000Z</updated>
+  <updated>2018-03-13T06:28:19.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,130 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Coursera 吴恩达机器学习 课程笔记</title>
+    <link href="https://www.liuin.cn/2018/03/13/Coursera-%E5%90%B4%E6%81%A9%E8%BE%BE%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/"/>
+    <id>https://www.liuin.cn/2018/03/13/Coursera-吴恩达机器学习-课程笔记/</id>
+    <published>2018-03-13T06:27:40.000Z</published>
+    <updated>2018-03-13T06:28:19.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Coursera 吴恩达机器学习 课程笔记</p>
+<a id="more"></a>
+<h1 id="监督学习和无监督学习"><a href="#监督学习和无监督学习" class="headerlink" title="监督学习和无监督学习"></a>监督学习和无监督学习</h1><h2 id="监督学习"><a href="#监督学习" class="headerlink" title="监督学习"></a>监督学习</h2><p>维基百科中的定义：</p>
+<blockquote>
+<p>监督式学习（英语：Supervised learning），是一个机器学习中的方法，可以由训练资料中学到或建立一个模式（函数 / learning model），并依此模式推测新的实例。训练资料是由输入物件（通常是向量）和预期输出所组成。函数的输出可以是一个连续的值（称为回归分析），或是预测一个分类标签（称作分类）</p>
+</blockquote>
+<p>在监督学习中, 我们的预测结果可以是连续值, 也可以是离散值. 我们根据这样的属性将监督学习氛围回归问题和分类问题.</p>
+<h3 id="监督学习举例"><a href="#监督学习举例" class="headerlink" title="监督学习举例"></a>监督学习举例</h3><blockquote>
+<p>回归问题</p>
+</blockquote>
+<p>通过给定的一个房子的面积来预测这个房子在市场中的价格. 这里的房子的面积就是特征, 房子的价格就是一个输出值. 为了解决这个问题, 我们获取了大量的房地产数据, 每一条数据都包含房子的面积及其对应价格. 第一, 我们的数据不仅包含房屋的面积, 还包含其对应的价格, 而我们的目标就是通过面积预测房价. 所以这应该是一个监督学习; 其次, 我们的输出数据房价可以看做是连续的值, 所以这个问题是一个回归问题.</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208368350754.jpg" alt=""></p>
+<blockquote>
+<p>分类问题</p>
+</blockquote>
+<p>我们的目标应该是要对数据进行分类. 现在我们的数据是有关乳腺癌的医学数据, 它包含了肿瘤的大小以及该肿瘤是良性的还是恶性的. 我们的目标是给定一个肿瘤的大小来预测它是良性还是恶性. 我们可以用0代表良性，1代表恶性. 这就是一个分类问题, 因为我们要预测的是一个离散值. </p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208368814648.jpg" alt=""></p>
+<p>在这个例子中特征只有一个即瘤的大小。 对于大多数机器学习的问题, 特征往往有多个(上面的房价问题也是, 实际中特征不止是房子的面积). 例如下图， 有“年龄”和“肿瘤大小”两个特征。</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208369551948.jpg" alt=""></p>
+<h2 id="无监督学习"><a href="#无监督学习" class="headerlink" title="无监督学习"></a>无监督学习</h2><p>在无监督学习中, 我们的数据并没有给出特定的标签, 例如上面例子中的房价或者是良性还是恶性. 我们目标也从预测某个值或者某个分类变成了寻找数据集中特殊的或者对我们来说有价值结构. </p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208370522571.jpg" alt=""></p>
+<h3 id="无监督学习举例"><a href="#无监督学习举例" class="headerlink" title="无监督学习举例"></a>无监督学习举例</h3><blockquote>
+<p>新闻分类</p>
+</blockquote>
+<p>Google News搜集网上的新闻，并且根据新闻的主题将新闻分成许多簇, 然后将在同一个簇的新闻放在一起。如图中红圈部分都是关于BP Oil Well各种新闻的链接，当打开各个新闻链接的时候，展现的都是关于BP Oil Well的新闻。</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208370968972.jpg" alt=""></p>
+<blockquote>
+<p>根据给定基因将人群分类</p>
+</blockquote>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208371698906.jpg" alt=""></p>
+<h1 id="单变量线性回归"><a href="#单变量线性回归" class="headerlink" title="单变量线性回归"></a>单变量线性回归</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="训练集"><a href="#训练集" class="headerlink" title="训练集"></a>训练集</h3><p>由训练样例(training example)组成的集合就是训练集(training set)</p>
+<h3 id="假设函数"><a href="#假设函数" class="headerlink" title="假设函数"></a>假设函数</h3><p>使用某种学习算法对训练集的数据进行训练, 我们可以得到假设函数(Hypothesis Function)</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208382454378.jpg" alt=""></p>
+<p>我们使用如下方法表示假设函数，</p>
+<p>$$ {h_\theta(x)=\theta_0+\theta_1x} $$</p>
+<p>以上这个模型就叫做单变量的线性回归(Linear Regression with One Variable).</p>
+<h2 id="代价函数"><a href="#代价函数" class="headerlink" title="代价函数"></a>代价函数</h2><h3 id="什么是代价函数"><a href="#什么是代价函数" class="headerlink" title="什么是代价函数"></a>什么是代价函数</h3><p>只要我们知道了假设函数, 我们就可以进行预测了. 关键是, 假设函数中有两个未知的量$\theta_0$,$\theta_1$. 当选择不同的$\theta_0$和$\theta_1$时, 我们模型的效果肯定是不一样的. 我们的想法是选择某个$\theta_0$和$\theta<em>1$，使得对于训练样例$(x,y)$，$h</em>\theta(x)$最“接近”$y$。越是接近, 代表这个假设函数越是准确, 这里我们选择均方误差来作为衡量标准, 即我们想要每个样例的估计值与真实值之间差的平方的均值最小:（其中$1/2$只是为了我们后面计算方便）</p>
+<p>$${\mathop{min}\limits_{\theta_0,\theta<em>1} \frac{1}{2m}\sum</em>{i=0}^m\left(h_\theta(x^{(i)})-y^{(i)}\right)^2}$$</p>
+<p>记作：</p>
+<p>$${J(\theta_0,\theta<em>1) = \frac{1}{2m}\sum</em>{i=0}^m\left(h_\theta(x^{(i)})-y^{(i)}\right)^2 }$$</p>
+<p>这样就得到了我们的代价函数(cost function), 也就是我们的优化目标, 我们想要代价函数最小:</p>
+<p>$$ \mathop{min}\limits_{\theta_0,\theta_1}J(\theta_0,\theta_1)$$</p>
+<h3 id="代价函数和假设函数"><a href="#代价函数和假设函数" class="headerlink" title="代价函数和假设函数"></a>代价函数和假设函数</h3><p>对于不同的$\theta<em>1$，对应着不同的假设函数$h</em>\theta(x)$，于是就有了不同的代价函数$J(\theta_1)$的值。将这些点连接起来就可以得到$J(\theta_1)$和$\theta_1$关系的图像：</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208395529904.jpg" alt=""></p>
+<p>我们的目标是找到一个$\theta$使得$J(\theta_1)$最小</p>
+<p>如果我们考虑两个变量，能够绘制$J(\theta_0,\theta_1)$的图形如下</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208397051963.jpg" alt=""></p>
+<p>由于3D图形不太方便我们研究，我们就使用二维的等高线(上图右上角教授写的contour plots/figures)，这样看上去比较清楚一些。越靠近中心表示$J(\theta_0,\theta_1)$值越小</p>
+<h2 id="梯度下降算法"><a href="#梯度下降算法" class="headerlink" title="梯度下降算法"></a>梯度下降算法</h2><h3 id="梯度下降"><a href="#梯度下降" class="headerlink" title="梯度下降"></a>梯度下降</h3><p>梯度下降算法是一种优化算法, 它可以帮助我们找到一个函数的局部极小值点. 它不仅仅可以用在线性回归模型中, 在机器学习许多其他的模型中也可以使用它. 对于我们现在研究的单变量线性回归来说, 我们想要使用梯度下降来找到最优的$\theta_0$,$\theta_1$。</p>
+<p>它的思想是，首先随机选择两个$\theta_0$,$\theta_1$，不断改变他们的值使得$J(\theta)$最小，最终找到$J(\theta)$的最小点</p>
+<p>可以把梯度下降的过程想象成下山坡, 如果想要尽可能快的下坡, 应该每次都往坡度最大的方向下山.</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208400482188.jpg" alt=""></p>
+<p>算法过程：（要注意的是，算法是每次同时改变$\theta_0$和$\theta_1$的值）</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208401837391.jpg" alt=""></p>
+<h3 id="梯度和学习率"><a href="#梯度和学习率" class="headerlink" title="梯度和学习率"></a>梯度和学习率</h3><p>学习率$\alpha$会影响梯度下降的幅度。如果$\alpha$的值太小，$\theta$的值每次会变化很小，那么梯度下降就会比较慢；相反，如果$\alpha$过大，$\theta$的值每次就会变化很大，有可能超过最低点，可能导致永远没法到达最低点。</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208404559020.jpg" alt=""></p>
+<p>由于随着越来越接近最低点, 相应的梯度(绝对值)也会逐渐减小，所以每次下降程度就会越来越小, 我们并不需要减小$\alpha$的值来减小下降程度。</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208404858375.jpg" alt=""></p>
+<h3 id="计算梯度"><a href="#计算梯度" class="headerlink" title="计算梯度"></a>计算梯度</h3><p>将偏导计算出来就得到了完整梯度下降算法：</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208405675961.jpg" alt=""></p>
+<p>事实上，用于线性回归的代价函数总是一个凸函数(Convex Function)。这样的函数没有局部最优解，只有一个全局最优解。所以我们在使用梯度下降的时候，总会得到一个全局最优解。</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208406207656.jpg" alt=""></p>
+<h1 id="多变量线性回归"><a href="#多变量线性回归" class="headerlink" title="多变量线性回归"></a>多变量线性回归</h1><h2 id="假设函数-1"><a href="#假设函数-1" class="headerlink" title="假设函数"></a>假设函数</h2><p>在之前的单变量线性回归中, 我们的问题只涉及到了房子面积这一个特征。在实际问题中, 会有很多特征. 例如, 除了房子面积, 还有房子的卧室数量, 房子的楼层数, 房子建筑年龄.</p>
+<p>在单变量线性回归中假设函数为：</p>
+<p>$${h_\theta(x)=\theta_0+\theta_1x}$$</p>
+<p>现在对于多变量，可以设其假设函数为：</p>
+<p>$${h_\theta(x)=\theta_0+\theta_1x_1+\theta_2x_2+…+\theta_nx_n}$$</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208613808836.jpg" alt=""></p>
+<p>得到其向量表示：</p>
+<p>$${h_\theta(x)=\theta_0x_0+\theta_1x_1+\theta_2x_2+…+\theta_nx_n= \theta^Tx}$$</p>
+<h2 id="梯度下降-1"><a href="#梯度下降-1" class="headerlink" title="梯度下降"></a>梯度下降</h2><p>多变量情况下的梯度下降其实没有区别, 只需要把对应的偏导数项换掉即可</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208618844580.jpg" alt=""></p>
+<h2 id="特征处理"><a href="#特征处理" class="headerlink" title="特征处理"></a>特征处理</h2><h3 id="特征缩放"><a href="#特征缩放" class="headerlink" title="特征缩放"></a>特征缩放</h3><p>如果每个特征的范围相差的很大, 梯度下降会很慢. 为了解决这个问题, 我们在梯度下降之前应该对数据做特征归缩放(Feature Scaling)处理, 从而将所有的特征的数量级都在一个差不多的范围之内, 以加快梯度下降的速度.</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208619474872.jpg" alt=""></p>
+<p>通常我们需要把特征都缩放到$[-1,1]$(附近)这个范围</p>
+<p><img src="https://data2.liuin.cn/2018-03-12-15208619856026.jpg" alt=""></p>
+<h3 id="均值均一化"><a href="#均值均一化" class="headerlink" title="均值均一化"></a>均值均一化</h3><p>还有一个特征处理的方法就是均值归一化(Mean normalization)</p>
+<p>$${x_i=\frac{x_i-\mu_i}{max-min}}$$</p>
+<h2 id="代价函数与学习率"><a href="#代价函数与学习率" class="headerlink" title="代价函数与学习率"></a>代价函数与学习率</h2><p>我们可以通过画出$\mathop{min}\limits_{\theta}J(\theta)$与迭代次数的关系来观察梯度下降的运行情况，</p>
+<p><img src="https://data2.liuin.cn/2018-03-13-15209095236343.jpg" alt=""></p>
+<p>出现下面两种情况，应该选择更小的学习率$\alpha$，</p>
+<p><img src="https://data2.liuin.cn/2018-03-13-15209096625766.jpg" alt=""></p>
+<p>注意：</p>
+<ul>
+<li>如果$\alpha$足够小，，那么$J(\theta)$在每次迭代之后都会减小</li>
+<li>如果$\alpha$太小， 梯度下降会进行的非常缓慢.</li>
+</ul>
+<p>进行尝试的值：<br><img src="https://data2.liuin.cn/2018-03-13-15209097782077.jpg" alt=""></p>
+<h2 id="多项式回归"><a href="#多项式回归" class="headerlink" title="多项式回归"></a>多项式回归</h2><p>多项式回归(Polynomial Regression)是研究一个因变量与一个或多个自变量间多项式的回归分析方法。如果自变量只有一个时，称为一元多项式回归；如果自变量有多个时，称为多元多项式回归。</p>
+<p>我们可以将房屋的面积作为第一个特征, 面积的平方作为第二个特征, 面积的立方作为第三个特征:</p>
+<p><img src="https://data2.liuin.cn/2018-03-13-15209102744925.jpg" alt=""></p>
+<p>除了三次函数模型, 这里也可以选择平方根函数模型, 如下图所示</p>
+<p><img src="https://data2.liuin.cn/2018-03-13-15209107024350.jpg" alt=""></p>
+<h2 id="正规方程"><a href="#正规方程" class="headerlink" title="正规方程"></a>正规方程</h2><h3 id="正规方程介绍"><a href="#正规方程介绍" class="headerlink" title="正规方程介绍"></a>正规方程介绍</h3><p>之前我们一直是用的梯度下降求解最优值. 它的缺点就是需要进行很多次迭代才能得到全局最优解. 有没有更好的方法呢? 我们先来看一个最简单的例子, 假设现在的代价函数为$J(\theta)=a\theta^2+b\theta+c$，在导数等于0的时候取到最优解。</p>
+<p><img src="https://data2.liuin.cn/2018-03-13-15209111273173.jpg" alt=""></p>
+<p>下面我们介绍一种向量化的求解方法。首先, 在数据集前加上一列$X_0$，值都为1，然后将所有的变量都放入矩阵$X$中（包括加上的$x_0$）；再将输出值放入向量$y$中. 最后通过公式$$\theta=(X^TX)^{-1}X^Ty$$就可以算出最优解</p>
+<p><img src="https://data2.liuin.cn/2018-03-13-15209221924071.jpg" alt=""></p>
+<p>更通用的表达方式</p>
+<p><img src="https://data2.liuin.cn/2018-03-13-15209222169590.jpg" alt=""></p>
+<h3 id="梯度下降和正规方程的比较"><a href="#梯度下降和正规方程的比较" class="headerlink" title="梯度下降和正规方程的比较"></a>梯度下降和正规方程的比较</h3><p><img src="https://data2.liuin.cn/2018-03-13-15209222993254.jpg" alt=""></p>
+<h3 id="正规方程不可逆的情况"><a href="#正规方程不可逆的情况" class="headerlink" title="正规方程不可逆的情况"></a>正规方程不可逆的情况</h3><p>使用正规方程还有一个问题就是$X^TX$可能存在不可逆的情况. 这个时候, 可能是因为我们使用了冗余的特征, 还有一个原因是我们使用了太多的特征(特征的数量超过了样本的数量). 对于这种情况我们可以删掉一些特征或者使用正则化(正则化在后面的课中讲).</p>
+<p><img src="https://data2.liuin.cn/2018-03-13-15209223711085.jpg" alt=""></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Coursera 吴恩达机器学习 课程笔记&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="机器学习" scheme="https://www.liuin.cn/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>《C++ Primer》笔记 类设计者的工具部分</title>
@@ -3039,93 +3163,6 @@
     
     
       <category term="Git" scheme="https://www.liuin.cn/tags/Git/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CSAPP 并发编程</title>
-    <link href="https://www.liuin.cn/2018/02/03/CSAPP-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
-    <id>https://www.liuin.cn/2018/02/03/CSAPP-并发编程/</id>
-    <published>2018-02-03T10:58:52.000Z</published>
-    <updated>2018-02-23T04:05:57.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>《深入理解计算机系统》第12章笔记</p>
-<a id="more"></a>
-<p>如果逻辑流在时间上重叠，那么它们就是并发（concurrent）的。并发性不仅仅局限于内核，他也可以在应用中也扮演着重要的角色：</p>
-<ul>
-<li>在多处理器上进行并行计算</li>
-<li>访问慢速I/O设备</li>
-<li>与人交互</li>
-<li>通过推迟工作以减少执行时间</li>
-<li>服务多个网络客户端</li>
-</ul>
-<p>现代操作系统提供了三种基本的构造并发程序的方法：</p>
-<ul>
-<li>进程。用这种方法，每个逻辑控制流都是一个进程，由内核来调度和维护。因为进程有独立的虚拟地址空间，想要和其他流通信，控制流必须使用某种显式的进程间通信(interprocess communication, IPC)机制。</li>
-<li>I/O 多路复用。在这种形式的并发编程中，应用程序在一个进程的上下文中显式地调度它们自己的逻辑流。逻辑流被模型化为状态机，数据到达文件描述符后，主程序显式地从一个状态转换到另一个状态。因为程序是一个单独的进程，所以所有的流都共享同一个地址空间。</li>
-<li>线程。线程是运行在一个单一进程上下文中的逻辑流，由内核进行调度。你可以把线程看成是其他两种方式的混合体，像进程流一样由内核进行调度，而像 I/O 多路复用一样共享同一个虚拟地址空间。</li>
-</ul>
-<h2 id="基于线程的并发编程"><a href="#基于线程的并发编程" class="headerlink" title="基于线程的并发编程"></a>基于线程的并发编程</h2><p>构造并发程序最简单的方法就是用进程，使用那些大家都很熟悉的函数，像 fork, exec 和 waitpid。</p>
-<p>对于在父、子进程间共享状态信息，进程有一个非常清晰的模型：<strong>共享文件表，但是不共享用户地址空间</strong>。进程有独立的地址空间既是优点也是缺点。这样一来，一个进程不可能不小心覆盖另一个进程的虚拟存储器，这就消除了许多令人迷惑的错误。</p>
-<p>另一方面，<strong>独立的地址空间使得进程共享状态信息变得更加困难</strong>。为了共享信息，它们必须使用显式的 IPC 机制。基于进程的设计的另一个缺点是，它们往往比较慢，因为进程控制和 IPC 的开销很高。</p>
-<h2 id="基于I-O多路复用的并发编程"><a href="#基于I-O多路复用的并发编程" class="headerlink" title="基于I/O多路复用的并发编程"></a>基于I/O多路复用的并发编程</h2><p>I/O 多路复用可以用作并发<strong>事件驱动</strong>(event-driven)程序的基础，在事件驱动程序中，流是因为某种事件而前进的。一般概念是将逻辑流模型化为<strong>状态机</strong>。不严格地说，一个状态机(state machine)就是一组状态(state)、输入事件(input event)和转移(transition)，其中转移就是将状态和输入事件映射到状态。每个状态都将一个(输入状态，输入事件)对映射到一个输出状态。自循环(self-loop)是同一组输入和输出状态之间的转移。通常把状态机花城有向图，其中节点表示状态，有向弧表示转移，而弧上的标号表示输入事件。一个状态机从某种初始状态开始执行。每个输入事件都会引发一个从当前状态到下一状态的转移。</p>
-<p>事件驱动设计的一个优点是，它比基于进程的设计给了程序员更多的对程序行为的控制。另一个优点是在流之间共享数据变得很容易，而且事件驱动设计常常比基于进程的设计要高效得多，因为它们不需要进程上下文切换来调度新的流。</p>
-<p>事件驱动设计的一个明显的缺点就是编码复杂，另一重大缺点时它们不能充分利用多核处理器。</p>
-<h2 id="基于线程的并发编程-1"><a href="#基于线程的并发编程-1" class="headerlink" title="基于线程的并发编程"></a>基于线程的并发编程</h2><p>一个线程（thread）就是运行在一个进程上下文中的一个逻辑流。每个线程都有它自己的<strong>线程上下文</strong>(thread context)，包括一个唯一的整数线程ID(Thread ID, TID)、栈、栈指针、程序计数器、通用目的寄存器和条件码。所有的运行在一个进程里的线程共享该进程的整个虚拟地址空间。</p>
-<p>基于线程的逻辑流结合了基于进程和基于I/O多路复用的流的特点</p>
-<h3 id="线程执行模型"><a href="#线程执行模型" class="headerlink" title="线程执行模型"></a>线程执行模型</h3><p><img src="https://data2.liuin.cn/story-writer/2018_2_3_1517653797354.jpg" alt="enter description here"></p>
-<h2 id="多线程程序中的共享变量"><a href="#多线程程序中的共享变量" class="headerlink" title="多线程程序中的共享变量"></a>多线程程序中的共享变量</h2><p>线程很有吸引力的一个方面就是多个线程很容易共享相同的程序变量</p>
-<h3 id="线程存储器模型"><a href="#线程存储器模型" class="headerlink" title="线程存储器模型"></a>线程存储器模型</h3><p>一组并发线程运行在一个进程的上下文中。每个线程都有它自己独立的线程上下文，包括线程 ID、栈、栈指针、程序计数器、条件码和通用目的寄存器。每个线程和其他线程一个共享进程上下文的剩余部分。这包括整个用户虚拟地址空间，它是由只读文本(代码)、读/写数据、堆以及所有的共享库代码和数据区域组成的。</p>
-<p>从实际操作的角度来说，让一个线程去读写另一个线程的寄存器是不可能的。寄存器不是共享的，而虚拟存储器是共享的。</p>
-<h3 id="将变量映射到存储器"><a href="#将变量映射到存储器" class="headerlink" title="将变量映射到存储器"></a>将变量映射到存储器</h3><p>线程化的 C 程序中变量根据它们的存储类型被映射到虚拟存储器：</p>
-<ul>
-<li>全局变量：在运行时，虚拟存储器的读/写区域只包含每个全局变量的一个实例，任何线程都可以引用</li>
-<li>本地自动变量：定义在函数内部但是没有 static 属性的变量。在运行时，每个线程的栈都包含它自己的所有本地自动变量的实例</li>
-<li>本地静态变量：定义在函数内部并有 static 属性的变量，和全局变量一样</li>
-</ul>
-<h2 id="用信号量同步线程"><a href="#用信号量同步线程" class="headerlink" title="用信号量同步线程"></a>用信号量同步线程</h2><p>共享变量十分方便，但是它们也引入了同步错误（synchronization error）的可能性。</p>
-<h3 id="进度图"><a href="#进度图" class="headerlink" title="进度图"></a>进度图</h3><p>一个进度图( progress graph)将个并发线程的执行模型化为一条维笛卡儿空间中的轨线。 每条轴k对应于线程k的进度。每个点(1,2…,n)代表线程k(k=1,,n)已经完成了指令I(k)这一个状态</p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_2_3_1517654269007.jpg" alt="enter description here"></p>
-<p>一个进度图将指令执行模型化为一个从一种状态到另一种状态的转換( transition)。一个转换被 表示为一条从一点到相邻点的有向边。合法的转换是向右(线程1中的一条指令完成)或者向上(线 程2中的一条指令完成)的。两个指令不能在同一时刻完成一一对角线转換是不允许的。程序决不 会反向运行,所以向下或者向左移动的转换也是不合法的。</p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_2_3_1517654474783.jpg" alt="enter description here"></p>
-<p>环绕不安全区的轨线叫做<strong>安全轨线</strong>( safe trajectory)。相反,接触任何不安全区的轨线就叫做<strong>不安全轨线</strong>( unsafe trajectory)。</p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_2_3_1517654599444.jpg" alt="enter description here"></p>
-<p>任何安全轨迹都将正确地更新共享计数器。</p>
-<h3 id="利用信号量访问共享变量"><a href="#利用信号量访问共享变量" class="headerlink" title="利用信号量访问共享变量"></a>利用信号量访问共享变量</h3><p>一种经典的解决同步不同执行线程问题的方法：基于一种叫做信号量( semaphore)的特殊类型变量的。信号量s是具有非负整数值的全局变量,只能由两种特殊的操作来处理,这两种操作称为P和V。</p>
-<ul>
-<li>P(s):如果s是非零的,那么P将s减1,并且立即返回。如如果s为零,那么就挂起进程, 直到s变为非零,并且该进程被一个V操作重启。在重启之后,P操作将s减1,并将控制 返回给调用者。 </li>
-<li>V(s):操作将s加1。如果有任何进程阻塞在P操作等待s变成非零,那么V操作会重启 这些进程中的一个,然后该进程将s减1,完成它的P操作</li>
-</ul>
-<p>P和和V的定义确保了一个运行程序绝不可能进入这样一种状态,也就是一个正确初始化了的信 号量有一个负值。这个属性称为信号量不变性( semaphore invariant),为控制并发程序的轨线而避 免不安全区提供了强有力的工具。 </p>
-<p>基本的思想是将每个共享变量(或者相关共享变量集合)与一个信号量s(初始为1)联系起来, 然后用P(s)和W(s)操作将相应的临界区包围起来。以这种方式来保护共享变量的信号量叫做二进制 信号量( binary semaphore),因为它的值总是0或者1。</p>
-<h3 id="利用信号量来调度共享资源"><a href="#利用信号量来调度共享资源" class="headerlink" title="利用信号量来调度共享资源"></a>利用信号量来调度共享资源</h3><p>信号量另一个重要的作用是调度对共享资源的访问，一个线程用信号量来通知另一个线程，程序状态中的某个量已经为真了。</p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_2_3_1517654937600.jpg" alt="enter description here"></p>
-<h2 id="其他并发性问题"><a href="#其他并发性问题" class="headerlink" title="其他并发性问题"></a>其他并发性问题</h2><h3 id="线程安全"><a href="#线程安全" class="headerlink" title="线程安全"></a>线程安全</h3><p>当我们用线程编写程序时,我们必须小心地编写那些具有称为线程安全性( thread safety)属性 的函数。一个函数被称为线程安全的( thread- safe),当且仅当被<strong>多个并发线程反复地调用时,它会 一直产生正确的结果</strong>。如果一个函数不是线程安全的,我们就说它是线程不安全的( thread-unsafe)。 我们能够定义出四类(有相交的)线程不安全函数:</p>
-<ul>
-<li>不保护共享变量的函数</li>
-<li>保持跨越多个调用的状态的函数</li>
-<li>返回指向静态变量的指针函数</li>
-<li>调用线程不安全函数的函数</li>
-</ul>
-<h3 id="可重入性"><a href="#可重入性" class="headerlink" title="可重入性"></a>可重入性</h3><p>有一类重要的线程安全函数,叫做<strong>可重入函数</strong>( reentrant function),其特点在于它们具有这样 种属性:<strong>当它们被多个线程调用时,不会引用任何共享数据。</strong></p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_2_3_1517655306363.jpg" alt="enter description here"></p>
-<h3 id="竞争"><a href="#竞争" class="headerlink" title="竞争"></a>竞争</h3><p>当一个程序的正确性依赖于一个线程要在另一个线程到达y点之前到达它的控制流中的x点时, 就会发生<strong>竞争</strong>(race)。通常发生竟争是因为程序员假定线程将按照某种特殊的轨线穿过执行状态空 间,而忘记了另一条准则规定定:多线程程序必须对任何可行的轨线都正确工作。</p>
-<h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><p>一组线程被阻塞了，等待一个永远也不会为真的条件</p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_2_3_1517655428227.jpg" alt="enter description here"></p>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>无论哪种并发机制，同步对于共享数据的并发访问都是一个困难的问题。提出对信号的 P 和 V 操作就是为了帮助解决这个问题。信号量操作可以用来提供对共享数据的互斥访问，也对诸如生产者-消费者程序中有限缓冲区和读者-写者系统中的共享对象这样的资源访问进行调度。</p>
-<p>并发也引入了其他一些困难的问题。被线程调用的函数必须具有一种称为线程安全的属性。竞争和死锁是并发程序中出现的另一些困难的问题。当程序员错误地假设逻辑流该如何调度时，就会发生竞争。当一个流等待一个永远不会发生的事件时，就会产生死锁。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;《深入理解计算机系统》第12章笔记&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="CSAPP" scheme="https://www.liuin.cn/tags/CSAPP/"/>
     
   </entry>
   
