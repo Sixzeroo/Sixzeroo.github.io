@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-03-13T06:28:19.000Z</updated>
+  <updated>2018-03-15T03:22:04.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,36 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>LeetCode 题解——Substring with Concatenation of All Words</title>
+    <link href="https://www.liuin.cn/2018/03/15/LeetCode-%E9%A2%98%E8%A7%A3%E2%80%94%E2%80%94Substring-with-Concatenation-of-All-Words/"/>
+    <id>https://www.liuin.cn/2018/03/15/LeetCode-题解——Substring-with-Concatenation-of-All-Words/</id>
+    <published>2018-03-15T03:21:04.000Z</published>
+    <updated>2018-03-15T03:22:04.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>LeetCode 题解——Substring with Concatenation of All Words</p>
+<a id="more"></a>
+<h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>给定一个字符串，和一组匹配字符串（vector），其中每一个字符串的长度是相同的，后面的这一组字符串可以形成一个组合，比如[“ab”,”cd”]可以组合成的字符串有：”abcd” “cdab”。题目要求我们在给定的这个字符串中查找出现后面这些组合的子串的位置（给出首字母位置）</p>
+<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>题目中给出的匹配字符串组中每一个字符串的长度是相同的这个条件降低了题目的难度，如果从普通的字符串匹配的思路下手的话，就是每次从原串截取对比的长度是一样的，然后截取的字符串可以分割成几个长度相同的子字符串，我们只要判断这几个字符子串是否都在给出的这组匹配字符串中就行了。</p>
+<p>这里使用两个unordered_map(Hash实现，性能更优)来判断是否都在这组字符串中，第一个map存储匹配字符串组中的字符串和出现的次数（都是1），第二个map存储截取的字符串分割以后的子串（并且在匹配字符串组中）以及其出现的次数，如果其次数大于1，表示截取的这段不符合条件，进行下一次匹配。</p>
+<p>map有两个作用：查找字符串；记录出现次数</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; findSubstring(<span class="built_in">string</span> s, <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt;&amp; words) &#123;</div><div class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; res;</div><div class="line">        <span class="comment">// 用来进行对比的map</span></div><div class="line">        <span class="built_in">unordered_map</span>&lt;<span class="built_in">string</span>, <span class="keyword">int</span>&gt; contrast;</div><div class="line">        <span class="keyword">for</span>(<span class="built_in">string</span> s : words)</div><div class="line">        &#123;</div><div class="line">            contrast[s]++;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">int</span> slen = s.length(), wlen = words[<span class="number">0</span>].length(), wsize = words.size();</div><div class="line">        <span class="comment">// 依次截取一定长度的字符串进行匹配</span></div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;slen-wsize*wlen+<span class="number">1</span>; i++)</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">unordered_map</span>&lt;<span class="built_in">string</span>, <span class="keyword">int</span>&gt; tem;</div><div class="line">            <span class="keyword">int</span> j=<span class="number">0</span>;</div><div class="line">            <span class="keyword">for</span>(; j&lt;wsize; j++)</div><div class="line">            &#123;</div><div class="line">                <span class="comment">// 分割以后的每一个字符串</span></div><div class="line">                <span class="built_in">string</span> stem = s.substr(i+j*wlen, wlen);</div><div class="line">                <span class="comment">// 判断是否在匹配字符串组中</span></div><div class="line">                <span class="keyword">if</span>(contrast.find(stem) != contrast.end())</div><div class="line">                &#123;</div><div class="line">                    tem[stem]++;</div><div class="line">                    <span class="comment">// 出现次数超过1，放弃</span></div><div class="line">                    <span class="keyword">if</span>(tem[stem] &gt; contrast[stem])</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">else</span></div><div class="line">                    <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span>(j == wsize)</div><div class="line">                res.push_back(i);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>更多LeetCode题解，欢迎查看我的<a href="https://github.com/Sixzeroo/LeetCode" target="_blank" rel="external">GitHub项目</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;LeetCode 题解——Substring with Concatenation of All Words&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="算法" scheme="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="LeetCode" scheme="https://www.liuin.cn/tags/LeetCode/"/>
+    
+  </entry>
   
   <entry>
     <title>Coursera 吴恩达机器学习 课程笔记</title>
@@ -3101,68 +3131,6 @@
     
     
       <category term="Network" scheme="https://www.liuin.cn/tags/Network/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Git 分支</title>
-    <link href="https://www.liuin.cn/2018/02/04/Git-%E5%88%86%E6%94%AF/"/>
-    <id>https://www.liuin.cn/2018/02/04/Git-分支/</id>
-    <published>2018-02-04T13:06:54.000Z</published>
-    <updated>2018-02-23T04:05:57.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>《Pro Git》读书笔记</p>
-<p>接触Git这个工具已经很长一段时间了，用起来也是一直是半生不熟的状态，索性寒假有时间就系统的学习一下。选择的是《Pro Git》，讲解得非常详细的。</p>
-<a id="more"></a>
-<hr>
-<p>几乎所有的版本控制系统都以某种形式支持分支。使用分支意味着你可以把你的工作从开发主线上分离开来，以免影响开发主线。</p>
-<p>Git 处理分支的方式可谓是难以置信的轻量，创建新分支这一操作几乎能在瞬间完成，并且在不同分支之间的切换操作也是一样便捷。</p>
-<h2 id="分支简介"><a href="#分支简介" class="headerlink" title="分支简介"></a>分支简介</h2><p>Git 保存的不是文件的变化或者差异，而是一系列不同时刻的文件快照。</p>
-<p>首次提交产生的提交对象没有父对象，普通提交操作产生的提交对象有一个父对象，而由多个分支合并产生的提交对象有多个父对象。当使用 git commit 进行提交操作时，Git 会先计算每一个子目录（本例中只有项目根目录）的校验和，然后在Git 仓库中这些校验和保存为树对象。</p>
-<p>Git 仓库中有五个对象：三个 blob 对象（保存着文件快照）、一个树对象（记录着目录结构和 blob 对象索引）以及一个提交对象（包含着指向前述树对象的指针和所有提交信息）。</p>
-<p><strong>Git 的分支，其实本质上仅仅是指向提交对象的可变指针。</strong></p>
-<p>Git 又是怎么知道当前在哪一个分支上呢？也很简单，它有一个<strong>名为 HEAD 的特殊指针</strong>。请注意它和许多其它版本控制系统（如 Subversion 或 CVS）里的 HEAD 概念完全不同。在 Git 中，它是一个指针，指向当前所在的本地分支（译注：将 HEAD 想象为当前分支的别名）。</p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_2_4_1517735734642.jpg" alt="enter description here"></p>
-<blockquote>
-<p>分支切换会改变你工作目录中的文件</p>
-</blockquote>
-<p>在切换分支时，一定要注意你工作目录里的文件会被改变。如果是切换到一个较旧的分支，你的工作目录会恢复到该分支最后一次提交时的样子。如果 Git 不能干净利落地完成这个任务，它将禁止切换分支。</p>
-<p>由于 Git 的分支实质上仅是包含所指对象校验和（长度为 40 的 SHA-1 值字符串）的文件，所以它的创建和销毁都异常高效。</p>
-<h2 id="分支的新建与合并"><a href="#分支的新建与合并" class="headerlink" title="分支的新建与合并"></a>分支的新建与合并</h2><p>在切换分支的时候，要留意你的工作目录和暂存区里那些还没有被提交的修改，它可能会和你即将检出的分支产生冲突从而阻止 Git 切换到该分支。最好的方法是，在你切换分支之前，保持好一个干净的状态。</p>
-<p>请牢记：<strong>当你切换分支的时候，Git 会重置你的工作目录，使其看起来像回到了你在那个分支上最后一次提交的样子。</strong></p>
-<p>在合并的时候，你应该注意到了”快进（fast-forward）”这个词。由于当前 master 分支所指向的提交是你当前提交（有关 hotfix 的提交）的直接上游，所以 Git 只是简单的将指针向前移动。</p>
-<p>另外一种更加普遍的合并情况是：Git 会使用两个分支的末端所指的快照（C4 和 C5）以及这两个分支的工作祖先（C2），做一个简单的三方合并。</p>
-<h3 id="遇到冲突时的分支合并"><a href="#遇到冲突时的分支合并" class="headerlink" title="遇到冲突时的分支合并"></a>遇到冲突时的分支合并</h3><p>如果你在两个不同的分支中，对同一个文件的同一个部分进行了不同的修改，Git 就没法干净的合并它们。此时 Git 做了合并，但是没有自动地创建一个新的合并提交。Git 会暂停下来，等待你去解决合并产生的冲突。你可以在合并冲突后的任意时刻使用 git status 命令来查看那些因包含合并冲突而处于未合并</p>
-<h2 id="分支开发工作流"><a href="#分支开发工作流" class="headerlink" title="分支开发工作流"></a>分支开发工作流</h2><h3 id="长期分支"><a href="#长期分支" class="headerlink" title="长期分支"></a>长期分支</h3><p>在整个项目开发周期的不同阶段，你可以同时拥有多个开放的分支；你可以定期地把某些特性分支合并入其他分支中。</p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_2_4_1517736327603.jpg" alt="enter description here"></p>
-<h3 id="特性分支"><a href="#特性分支" class="headerlink" title="特性分支"></a>特性分支</h3><p><img src="https://data2.liuin.cn/story-writer/2018_2_4_1517736357963.jpg" alt="enter description here"></p>
-<h2 id="变基"><a href="#变基" class="headerlink" title="变基"></a>变基</h2><p>在 Git 中整合来自不同分支的修改主要有两种方法：merge 以及 rebase。</p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_2_4_1517736500075.jpg" alt="enter description here"></p>
-<p>如上图所示，提取在 C4 中引入的补丁和修改，然后在 C3 的基础上再应用一次。在 Git 中，这种操作就叫做 变基。</p>
-<p>它的原理是首先找到这两个分支（即当前分支 experiment、变基操作的目标基底分支 master）的最近共同祖先 C2，然后对比当前分支相对于该祖先的历次提交，提取相应的修改并存为临时文件，然后将当前分支指向目标基底 C3, 最后以此将之前另存为临时文件的修改依序应用。</p>
-<h3 id="更有趣的变基例子"><a href="#更有趣的变基例子" class="headerlink" title="更有趣的变基例子"></a>更有趣的变基例子</h3><p>在对两个分支进行变基时，所生成的“重演”并不一定要在目标分支上应用，你也可以指定另外的一个分支进行应用。就像 <strong>从一个特性分支里再分出一个特性分支</strong>的提交历史 中的例子这样。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git rebase --onto master server client</div></pre></td></tr></table></figure>
-<p>以上命令的意思是：“取出 client 分支，找出处于 client 分支和 server 分支的共同祖先之后的修改，然后把它们在 master 分支上重演一遍”。这理解起来有一点复杂，不过效果非常酷。</p>
-<p>使用 git rebase [basebranch] [topicbranch] 命令可以直接将特性分支（即本例中的 server）变基到目标分支（即 master）上。这样做能省去你先切换到server 分支，再对其执行变基命令的多个步骤。</p>
-<h3 id="变基的风险"><a href="#变基的风险" class="headerlink" title="变基的风险"></a>变基的风险</h3><p>奇妙的变基也并非完美无缺，要用它得遵守一条准则：<strong>不要对在你的仓库外有副本的分支执行变基</strong>。</p>
-<p>变基操作的实质是丢弃一些现有的提交，然后相应地新建一些内容一样但实际上不同的提交。</p>
-<p>只要你把变基命令当作是在推送前清理提交使之整洁的工具，并且只在从未推送至共用仓库的提交上执行变基命令，你就不会有事。</p>
-<h3 id="变基vs合并"><a href="#变基vs合并" class="headerlink" title="变基vs合并"></a>变基vs合并</h3><p>有一种观点认为，仓库的提交历史即是 <strong>记录实际发生过什么</strong>。它是针对历史的文档，本身就有价值，不能乱改。从这个角度看来，改变提交历史是一种亵渎，你使用<em>谎言</em>掩盖了实际发生过的事情。如果由合并产生的提交历史是一团糟怎么办？既然事实就是如此，那么这些痕迹就应该被保留下来，让后人能够查阅</p>
-<p>。另一种观点则正好相反，他们认为提交历史是 <strong>项目过程中发生的故事</strong>。没人会出版一本书的第一批草稿，软件维护手册也是需要反复修订才能方便使用。持这一观点的人会使用 rebase 及 filter-branch等工具来编写故事，怎么方便后来的读者就怎么写。</p>
-<p>总的原则是，只对尚未推送或分享给别人的本地修改执行变基操作清理历史，从不对已推送至别处的提交执行变基操作，这样，你才能享受到两种方式带来的便利。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;《Pro Git》读书笔记&lt;/p&gt;
-&lt;p&gt;接触Git这个工具已经很长一段时间了，用起来也是一直是半生不熟的状态，索性寒假有时间就系统的学习一下。选择的是《Pro Git》，讲解得非常详细的。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Git" scheme="https://www.liuin.cn/tags/Git/"/>
     
   </entry>
   
