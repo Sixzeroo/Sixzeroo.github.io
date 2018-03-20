@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-03-19T10:46:37.000Z</updated>
+  <updated>2018-03-20T06:41:53.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,86 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Redis源码解析——链表和字典</title>
+    <link href="https://www.liuin.cn/2018/03/20/Redis%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E2%80%94%E2%80%94%E9%93%BE%E8%A1%A8/"/>
+    <id>https://www.liuin.cn/2018/03/20/Redis源码解析——链表/</id>
+    <published>2018-03-20T05:17:06.000Z</published>
+    <updated>2018-03-20T06:41:53.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>链表是一个基本的数据结构，但是C语言在底层并没有内置这种数据结构，字典（dict）也是一种比较常用的抽象数据结构，这里通过源码查看这两个数据结构在Redis底层的实现</p>
+<a id="more"></a>
+<h2 id="链表结构"><a href="#链表结构" class="headerlink" title="链表结构"></a>链表结构</h2><p>Redis底层使用的是一个双端链表</p>
+<p>链表节点结构定义：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 双端链表节点</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> listNode &#123;</div><div class="line">    <span class="keyword">struct</span> listNode *prev;  <span class="comment">// 前置节点</span></div><div class="line">    <span class="keyword">struct</span> listNode *next;  <span class="comment">// 后置节点</span></div><div class="line">    <span class="keyword">void</span> *value;   <span class="comment">// 节点值</span></div><div class="line">&#125; listNode;</div></pre></td></tr></table></figure></p>
+<p>链表迭代器结构定义：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 双端链表迭代器</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> listIter &#123;</div><div class="line">    listNode *next; <span class="comment">// 迭代的指针</span></div><div class="line">    <span class="keyword">int</span> direction;  <span class="comment">// 迭代的方向</span></div><div class="line">&#125; listIter;</div></pre></td></tr></table></figure></p>
+<p>通过迭代器可以比较容易对整个链表进行遍历，从而轻松实现查找等功能。</p>
+<p>链表结构定义<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 双端链表</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="built_in">list</span> &#123;</div><div class="line">    listNode *head;  <span class="comment">// 头结点</span></div><div class="line">    listNode *tail;  <span class="comment">// 尾节点</span></div><div class="line">    <span class="keyword">void</span> *(*dup)(<span class="keyword">void</span> *ptr);  <span class="comment">// 节点值复制函数，可指定复制的方法</span></div><div class="line">    <span class="keyword">void</span> (*<span class="built_in">free</span>)(<span class="keyword">void</span> *ptr);  <span class="comment">// 节点值释放函数</span></div><div class="line">    <span class="keyword">int</span> (*match)(<span class="keyword">void</span> *ptr, <span class="keyword">void</span> *key);  <span class="comment">// 节点值对比函数</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> len;   <span class="comment">// 链表中所包含的节点数量</span></div><div class="line">&#125; <span class="built_in">list</span>;</div></pre></td></tr></table></figure></p>
+<p>Redis底层中所包含的链表API都是对链表常用功能的实现，比如说插入、删除、搜索等，这里不在解释。</p>
+<p>Redis的链表实现的特点有如下几个：</p>
+<ul>
+<li>双端，方便向前和向后便利</li>
+<li>多态，链表节点使用void*指针来保存节点值,并且可以通过1ist结构的dup、free、 match三个属性为节点值设置类型特定函数,所以链表可以用于保存各种不同类型的值。</li>
+</ul>
+<h2 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h2><p>字典,又称为符号表( symbol table)、关联数组( associative array)或映射(map),是种用于<strong>保存键值对(key- value pair)的抽象数据结构</strong>。</p>
+<p>字典在Reds中的应用相当广泛,比如 Redis的数据库就是使用字典来作为底层实现的,对数据库的增、删、查、改操作也是构建在对字典的操作之上的。</p>
+<h3 id="字典的实现"><a href="#字典的实现" class="headerlink" title="字典的实现"></a>字典的实现</h3><p>Redis的字典用哈希表作为底层实现，哈希表中含有哈希表节点，而每一个哈希表节点就保存了字典中的一个键值对。</p>
+<blockquote>
+<p>哈希表</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> dictht &#123;</div><div class="line">    dictEntry **table;  <span class="comment">// 哈希表的节点数组</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> size; <span class="comment">// 哈希表大小</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> sizemask;  <span class="comment">// 哈希表的大小掩码，用于计算索引值，总等于size-1</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> used; <span class="comment">// 哈希表中含有的节点数</span></div><div class="line">&#125; dictht;</div></pre></td></tr></table></figure>
+<p>sizemask属性的值总是等于size-1,这个属性和哈希值一起决定一个键应该被放到tab1e数组的哪个索引上面。</p>
+<blockquote>
+<p>哈希表节点</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 哈希表节点</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> dictEntry &#123;</div><div class="line">    <span class="keyword">void</span> *key;  <span class="comment">// 键  </span></div><div class="line">    <span class="keyword">union</span> &#123;  </div><div class="line">        <span class="keyword">void</span> *val;</div><div class="line">        <span class="keyword">uint64_t</span> u64;</div><div class="line">        <span class="keyword">int64_t</span> s64;</div><div class="line">        <span class="keyword">double</span> d;</div><div class="line">    &#125; v;   <span class="comment">// 值</span></div><div class="line">    <span class="keyword">struct</span> dictEntry *next;  <span class="comment">// 下一个哈希表结点，形成链表</span></div><div class="line">&#125; dictEntry;</div></pre></td></tr></table></figure>
+<p>Redis中哈希表解决冲突的方法是拉链法，所以其中有next属性指向另一个哈希表节点的指针,这个指针可以将多个哈希值相同的键值对连接在一次,以此来解决键冲突( collision)的问题。</p>
+<blockquote>
+<p>字典</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> dict &#123;</div><div class="line">    dictType *type;  <span class="comment">// 类型特定函数</span></div><div class="line">    <span class="keyword">void</span> *privdata;  <span class="comment">// 私有数据</span></div><div class="line">    dictht ht[<span class="number">2</span>];   <span class="comment">// 含有两个哈希表</span></div><div class="line">    <span class="keyword">long</span> rehashidx; <span class="comment">// rehash 索引，当rehash不再运行的时候，值为-1</span></div><div class="line">    <span class="keyword">int</span> iterators;  <span class="comment">// 现在正在运行的迭代器数量</span></div><div class="line">&#125; dict;</div></pre></td></tr></table></figure>
+<p>type属性和 privata属性是针对不同类型的键值对,为创建多态字典而设置的；ht属性是一个包含两个项的数组,数组中的每个项都是一个 dictht哈希表,一般情况下,字典只使用ht[0]哈希表,ht[1]哈希表只会在对ht[0]哈希表进行 rehash时使用。</p>
+<h3 id="哈希算法"><a href="#哈希算法" class="headerlink" title="哈希算法"></a>哈希算法</h3><p>把一个新的键值对加入到字典中，首先要根据key计算出哈希值和索引值，然后把新的哈希节点加到哈希表数组的指定索引上面：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 计算哈希值</span></div><div class="line">    h = dictHashKey(d, key);</div><div class="line">    <span class="keyword">for</span> (table = <span class="number">0</span>; table &lt;= <span class="number">1</span>; table++) &#123;</div><div class="line">        <span class="comment">// 计算索引值</span></div><div class="line">        idx = h &amp; d-&gt;ht[table].sizemask;</div><div class="line">        <span class="comment">/* Search if this slot does not already contain the given key */</span></div><div class="line">        <span class="comment">// 查找key是否存在</span></div><div class="line">        he = d-&gt;ht[table].table[idx];</div><div class="line">        <span class="keyword">while</span>(he) &#123;</div><div class="line">            <span class="keyword">if</span> (dictCompareKeys(d, key, he-&gt;key))</div><div class="line">                <span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line">            he = he-&gt;next;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (!dictIsRehashing(d)) <span class="keyword">break</span>;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>Redis使用的是Murmur算法计算哈希值的，这种算法的优点在于,即使输人的键是有规律的,算法仍能给出一个很好的随机分布性,并且算法的计算速度也非常快。</p>
+<h3 id="解决键冲突"><a href="#解决键冲突" class="headerlink" title="解决键冲突"></a>解决键冲突</h3><p>Redis采用的是链地址法( separate chaining)解决键冲突的，每个哈希表节点都有个next指针,多个哈希表节点可以用next指针构成一个单向链表,被分配到同一个索引上的多个节点可以用这个单向链表连接起来,这就解决了键冲突的问题。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Allocate the memory and store the new entry */</span></div><div class="line">ht = dictIsRehashing(d) ? &amp;d-&gt;ht[<span class="number">1</span>] : &amp;d-&gt;ht[<span class="number">0</span>];</div><div class="line">entry = zmalloc(<span class="keyword">sizeof</span>(*entry));</div><div class="line">entry-&gt;next = ht-&gt;table[index];  <span class="comment">// 把新的哈希节点加入到哈希数组索引处，并放在链表的头结点处</span></div><div class="line">ht-&gt;table[index] = entry;</div><div class="line">ht-&gt;used++;</div></pre></td></tr></table></figure>
+<p><img src="https://data2.liuin.cn/2018-03-20-15215263654971.jpg" alt=""></p>
+<h3 id="重新散列（rehash）"><a href="#重新散列（rehash）" class="headerlink" title="重新散列（rehash）"></a>重新散列（rehash）</h3><p>当dict不断进行添加或删除等操作的时候，所保存的键值对也会不断的增加或者减少。为了使哈希表的负载因子（load factor）维持在合理的范围内，此时就需要对哈希表的大小进行相应的扩展或者收缩。</p>
+<p>这个工作通过重新散列（rehash）来进行，执行的主要步骤如下：</p>
+<ul>
+<li>为dict的ht[1]哈希表分配合适的空间，空间的大小取决于要执行的操作和ht[0]哈希表中键值对的数量</li>
+<li>对所有在ht[0]中的键值对重新计算哈希索引值，将他们转移到ht[1]中</li>
+<li>释放ht[0]，将ht[1]设置为ht[0]</li>
+</ul>
+<p>其中负载因子的计算公式为：<code>load_factor = ht[0].used / ht[0].size</code></p>
+<blockquote>
+<p>渐进式rehash</p>
+</blockquote>
+<p>在进行rehash的过程中需要将所有的键值对从ht[0]迁移到ht[1]中，如果键值对的数量比较大的话，就会导致Redis需要停止一段时间的服务才能够完成这些操作，所以为了避免对服务性能造成影响，rehash并不是一次性的、集中式地完成的，而是分多次、渐进式完成的。</p>
+<p>具体的步骤如下：</p>
+<ul>
+<li>为ht[1]分配空间，同时保留ht[0]和ht[1]两个哈希表</li>
+<li>在dict中维持一个索引计数变量rehashldx，将其值设为0，表示开始rehash（不工作是为-1）</li>
+<li>在rehash是，每对dict进行一次操作的时候，除了进行制定操作外还要ht[0]哈希表中rehashldx索引上的索引键值对转移的ht[1]上，完成以后将rehashldx加一</li>
+<li>当完成了所有ht[0]到ht[1]键值对的转移工作时，表示完成了rehash，此时将rehashldx的值设为-1</li>
+</ul>
+<p>在渐进式rehash的过程中，dict同时拥有两个hash表，所以dict的删除、查找、更新等操作会在两个哈希表上同时进行。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 在rehash期间每进行一次操作，迁移一个索引中所有的键值对</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dictRehash</span><span class="params">(dict *d, <span class="keyword">int</span> n)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> empty_visits = n*<span class="number">10</span>; <span class="comment">/* Max number of empty buckets to visit. */</span></div><div class="line">    <span class="keyword">if</span> (!dictIsRehashing(d)) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="keyword">while</span>(n-- &amp;&amp; d-&gt;ht[<span class="number">0</span>].used != <span class="number">0</span>) &#123;</div><div class="line">        dictEntry *de, *nextde;</div><div class="line"></div><div class="line">        <span class="comment">/* Note that rehashidx can't overflow as we are sure there are more</span></div><div class="line">         * elements because ht[0].used != 0 */</div><div class="line">        assert(d-&gt;ht[<span class="number">0</span>].size &gt; (<span class="keyword">unsigned</span> <span class="keyword">long</span>)d-&gt;rehashidx);</div><div class="line">        <span class="keyword">while</span>(d-&gt;ht[<span class="number">0</span>].table[d-&gt;rehashidx] == <span class="literal">NULL</span>) &#123;</div><div class="line">            d-&gt;rehashidx++;</div><div class="line">            <span class="keyword">if</span> (--empty_visits == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">        &#125;</div><div class="line">        de = d-&gt;ht[<span class="number">0</span>].table[d-&gt;rehashidx];</div><div class="line">        <span class="comment">/* Move all the keys in this bucket from the old to the new hash HT */</span></div><div class="line">        <span class="comment">// 对每一个键值对重新计算hash值、index值，进行迁移</span></div><div class="line">        <span class="keyword">while</span>(de) &#123;</div><div class="line">            <span class="keyword">unsigned</span> <span class="keyword">int</span> h;</div><div class="line"></div><div class="line">            nextde = de-&gt;next;</div><div class="line">            <span class="comment">/* Get the index in the new hash table */</span></div><div class="line">            h = dictHashKey(d, de-&gt;key) &amp; d-&gt;ht[<span class="number">1</span>].sizemask;</div><div class="line">            de-&gt;next = d-&gt;ht[<span class="number">1</span>].table[h];</div><div class="line">            d-&gt;ht[<span class="number">1</span>].table[h] = de;</div><div class="line">            d-&gt;ht[<span class="number">0</span>].used--;</div><div class="line">            d-&gt;ht[<span class="number">1</span>].used++;</div><div class="line">            de = nextde;</div><div class="line">        &#125;</div><div class="line">        d-&gt;ht[<span class="number">0</span>].table[d-&gt;rehashidx] = <span class="literal">NULL</span>;</div><div class="line">        d-&gt;rehashidx++; <span class="comment">// 将rehashldx的值加一</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/* Check if we already rehashed the whole table... */</span></div><div class="line">    <span class="comment">// 完成渐进式rehash工作</span></div><div class="line">    <span class="keyword">if</span> (d-&gt;ht[<span class="number">0</span>].used == <span class="number">0</span>) &#123;</div><div class="line">        zfree(d-&gt;ht[<span class="number">0</span>].table);</div><div class="line">        d-&gt;ht[<span class="number">0</span>] = d-&gt;ht[<span class="number">1</span>];</div><div class="line">        _dictReset(&amp;d-&gt;ht[<span class="number">1</span>]);</div><div class="line">        d-&gt;rehashidx = <span class="number">-1</span>;</div><div class="line">        <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/* More to rehash... */</span></div><div class="line">    <span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;链表是一个基本的数据结构，但是C语言在底层并没有内置这种数据结构，字典（dict）也是一种比较常用的抽象数据结构，这里通过源码查看这两个数据结构在Redis底层的实现&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="源码解析" scheme="https://www.liuin.cn/categories/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    
+    
+      <category term="Reids" scheme="https://www.liuin.cn/tags/Reids/"/>
+    
+  </entry>
   
   <entry>
     <title>Redis源码解析——简单动态字符串(SDS)</title>
@@ -2674,66 +2754,6 @@
       <category term="Nginx" scheme="https://www.liuin.cn/tags/Nginx/"/>
     
       <category term="代理" scheme="https://www.liuin.cn/tags/%E4%BB%A3%E7%90%86/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Git 内部原理</title>
-    <link href="https://www.liuin.cn/2018/02/11/Git-%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86/"/>
-    <id>https://www.liuin.cn/2018/02/11/Git-内部原理/</id>
-    <published>2018-02-11T13:39:14.000Z</published>
-    <updated>2018-02-23T04:05:57.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>《Pro Git》读书笔记</p>
-<a id="more"></a>
-<p>从根本上来讲 Git 是一个内容寻址（content-addressable）文件系统</p>
-<h2 id="底层命令和高层命令"><a href="#底层命令和高层命令" class="headerlink" title="底层命令和高层命令"></a>底层命令和高层命令</h2><p>由于 Git 最初是一套面向版本控制系统的工具集，而不是一个完整的、用户友好的版本控制系统，所以它还包含了一部分用于完成底层工作的命令。这些命令被设计成能以 UNIX 命令行的风格连接在一起，抑或藉由脚本调用，来完成工作。这部分命令一般被称作“<strong>底层（plumbing）”命令</strong>，而那些更友好的命令则被称作“高层（porcelain）”命令。</p>
-<p>当在一个新目录或已有目录执行 git init 时，Git 会创建一个 .git 目录。这个目录包含了几乎所有 Git 存储和操作的对象。如若想备份或复制一个版本库，只需把这个目录拷贝至另一处即可。</p>
-<p>目录结构如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ ls -F1</div><div class="line">index				# 保存暂存区信息</div><div class="line">HEAD				# 指示目前被检出的分支</div><div class="line">config*				# 包含项目特有的配置项</div><div class="line">description			# 仅供GitWeb使用</div><div class="line">hooks/				# 包含hook钩子脚本</div><div class="line">info/				# 包含全局性排除（global exclude）文件</div><div class="line">objects/			# 存储所有的数据内容</div><div class="line">refs/				# 存储指向数据（分支）的提交对象的指针</div></pre></td></tr></table></figure></p>
-<h2 id="Git-对象"><a href="#Git-对象" class="headerlink" title="Git 对象"></a>Git 对象</h2><p>Git 是一个内容寻址文件系统。Git 的核心部分是一个简单的键值对数据库（key-value data store）。你可以向该数据库插入任意类型的内容，它会返回一个键值，通过该键值可以在任意时刻再次检索（retrieve）该内容。</p>
-<h3 id="树对象"><a href="#树对象" class="headerlink" title="树对象"></a>树对象</h3><p>树对象（tree object），它能解决文件名保存的问题，也允许我们将多个文件组织到一起。Git 以一种类似于 UNIX 文件系统的方式存储内容，但作了些许简化。所有内容均以树对象和数据对象的形式存储，其中<strong>树对象对应了 UNIX 中的目录项</strong>，<strong>数据对象则大致上对应了 inodes 或文件内容</strong>。一个树对象包含了一条或多条树对象记录（tree entry），<strong>每条记录含有一个指向数据对象或者子树对象的 SHA-1 指针，以及相应的模式、类型、文件名信息</strong>。</p>
-<p>通常，Git 根据某一时刻暂存区（即 index 区域，下同）所表示的状态创建并记录一个对应的树对象，如此重复便可依次记录（某个时间段内）一系列的树对象。因此，为创建一个树对象，首先需要通过暂存一些文件来创建一个暂存区。</p>
-<h3 id="提交对象"><a href="#提交对象" class="headerlink" title="提交对象"></a>提交对象</h3><p>提交对象的格式很简单：它先指定一个顶层树对象，代表当前项目快照；然后是作者/提交者信息（依据你的user.name 和 user.email 配置来设定，外加一个时间戳）；留空一行，最后是提交注释</p>
-<p>每次我们运行 git add 和 git commit 命令时， Git 所做的实质工作——<strong>将被改写的文件保存为数据对象，更新暂存区，记录树对象，最后创建一个指明了顶层树对象和父提交的提交对象。</strong>这三种主要的 Git 对象——数据对象、树对象、提交对象——最初均以单独文件的形式保存在 .git/objects 目录下。</p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_2_11_1518354037927.jpg" alt="enter description here"></p>
-<h3 id="对象存储"><a href="#对象存储" class="headerlink" title="对象存储"></a>对象存储</h3><p>在存储内容时，会有个头部信息一并被保存。让我们略花些时间来看看 Git 是如何存储其对象的。</p>
-<p>所有的 Git 对象均以这种方式存储，区别仅在于类型标识——另两种对象类型的头部信息以字符串“commit”或“tree”开头，而不是“blob”。另外，虽然数据对象的内容几乎可以是任何东西，但提交对象和树对象的内容却有各自固定的格式。</p>
-<h2 id="Git-引用"><a href="#Git-引用" class="headerlink" title="Git 引用"></a>Git 引用</h2><p>为了能遍历那段历史从而找到所有相关对象，你仍须记住 1a410e 是最后一个提交。我们需要一个文件来保存 SHA-1 值，并<strong>给文件起一个简单的名字，然后用这个名字指针来替代原始的 SHA-1 值</strong>。在 Git 里，这样的文件被称为“引用（references，或缩写为 refs）”；你可以在 .git/refs 目录下找到这类含有 SHA-1 值的文件。</p>
-<p> <strong>Git 分支的本质：一个指向某一系列提交之首的指针或引用</strong>。</p>
-<h3 id="HEAD引用"><a href="#HEAD引用" class="headerlink" title="HEAD引用"></a>HEAD引用</h3><p> HEAD 文件是一个符号引用（symbolic reference），指向目前所在的分支。所谓符号引用，意味着它并不像普通引用那样包含一个 SHA-1 值——它是一个<strong>指向其他引用的指针</strong>。</p>
-<p>当我们执行 git commit 时，该命令会创建一个提交对象，并用 HEAD 文件中那个引用所指向的 SHA-1 值设置其父提交字段</p>
-<h3 id="标签引用"><a href="#标签引用" class="headerlink" title="标签引用"></a>标签引用</h3><p>前文我们刚讨论过 Git 的三种主要对象类型，事实上还有第四种。标签对象（tag object）非常类似于一个提交对象——它包含一个标签创建者信息、一个日期、一段注释信息，以及一个指针。主要的区别在于，<strong>标签对象通常指向一个提交对象，而不是一个树对象</strong>。它像是一个永不移动的分支引用——永远指向同一个提交对象，只不过给这个提交对象加上一个更友好的名字罢了。</p>
-<p>存在两种类型的标签：附注标签和轻量标签。轻量标签的全部内容——一个固定的引用。一个附注标签则更复杂一些。若要创建一个附注标签，Git 会创建一个标签对象，并记录一个引用来指向该标签对象，而不是直接指向提交对象。</p>
-<h3 id="远程引用"><a href="#远程引用" class="headerlink" title="远程引用"></a>远程引用</h3><p>第三种引用类型是远程引用（remote reference）。如果你添加了一个远程版本库并对其执行过推送操作，Git 会记录下最近一次推送操作时每一个分支所对应的值，并保存在 refs/remotes 目录下</p>
-<p>远程引用和分支（位于 refs/heads 目录下的引用）之间最主要的区别在于，远程引用是只读的。虽然可以git checkout 到某个远程引用，但是 Git 并不会将 HEAD 引用指向该远程引用。</p>
-<h2 id="包文件"><a href="#包文件" class="headerlink" title="包文件"></a>包文件</h2><p>Git 最初向磁盘中存储对象时所使用的格式被称为<strong>“松散（loose）”对象格式</strong>。但是，Git 会时不时地<strong>将多个这些对象打包成一个称为“包文件（packfile）</strong>”的二进制文件，以节省空间和提高效率。当版本库中有太多的松散对象，或者你手动执行 git gc 命令，或者你向远程服务器执行推送时，Git 都会这样做。</p>
-<p>包文件包含了刚才从文件系统中移除的所有对象的内容。索引文件包含了包文件的偏移信息，我们通过索引文件就可以快速定位任意一个指定对象。</p>
-<p>同样有趣的地方在于，最新版本完整保存了文件内容，而原始的版本反而是以差异方式保存的——这是因为大部分情况下需要快速访问文件的最新版本。</p>
-<h2 id="引用规格"><a href="#引用规格" class="headerlink" title="引用规格"></a>引用规格</h2><p>我们已经使用过一些诸如远程分支到本地引用的简单映射方式，但这种映射可以更复杂。</p>
-<p>添加一个远程版本库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[remote &quot;origin&quot;]</div><div class="line">url = https://github.com/schacon/simplegit-progit</div><div class="line">fetch = +refs/heads/*:refs/remotes/origin/*</div></pre></td></tr></table></figure></p>
-<p>引用规格的格式由一个可选的 + 号和紧随其后的 \<src>:\<dst> 组成，其中 \<src> 是一个模式（pattern），代表远程版本库中的引用；\<dst> 是那些远程引用在本地所对应的位置。+ 号告诉 Git 即使在不能快进的情况下也要（强制）更新引用</dst></src></dst></src></p>
-<h3 id="引用规格推送"><a href="#引用规格推送" class="headerlink" title="引用规格推送"></a>引用规格推送</h3><p>如果 QA 团队想把他们的 master 分支推送到远程服务器的 qa/master 分支上，可以运行：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git push origin master:refs/heads/qa/master</div></pre></td></tr></table></figure></p>
-<p>如果他们希望 Git 每次运行 git push origin 时都像上面这样推送，可以在他们的配置文件中添加一条 push值：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[remote &quot;origin&quot;]</div><div class="line">url = https://github.com/schacon/simplegit-progit</div><div class="line">fetch = +refs/heads/*:refs/remotes/origin/*</div><div class="line">push = refs/heads/master:refs/heads/qa/master</div></pre></td></tr></table></figure></p>
-<h3 id="删除引用"><a href="#删除引用" class="headerlink" title="删除引用"></a>删除引用</h3><p>你还可以借助类似下面的命令通过引用规格从远程服务器上删除引用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git push origin :topic</div></pre></td></tr></table></figure></p>
-<p>因为引用规格（的格式）是 \<src>:\<dst>，所以上述命令把 \<src> 留空，意味着把远程版本库的 topic 分支<br>定义为空值，也就是删除它。</src></dst></src></p>
-<h2 id="传输协议"><a href="#传输协议" class="headerlink" title="传输协议"></a>传输协议</h2><p>Git 可以通过两种主要的方式在版本库之间传输数据：“哑（dumb）”协议和“智能（smart）”协议。</p>
-<h3 id="哑协议"><a href="#哑协议" class="headerlink" title="哑协议"></a>哑协议</h3><p>如果你正在架设一个基于 HTTP 协议的只读版本库，一般而言这种情况下使用的就是哑协议。</p>
-<h3 id="智能协议"><a href="#智能协议" class="headerlink" title="智能协议"></a>智能协议</h3><p>智能协议是更常用的传送数据的方法，但它需要在服务端运行一个进程，而这也是 Git 的智能之处——它可以读取本地数据，理解客户端有什么和需要什么，并为它生成合适的包文件。总共有两组进程用于传输数据，它们分别负责上传和下载数据。</p>
-<h2 id="维护与数据恢复"><a href="#维护与数据恢复" class="headerlink" title="维护与数据恢复"></a>维护与数据恢复</h2><h3 id="维护"><a href="#维护" class="headerlink" title="维护"></a>维护</h3><p>Git 会不定时地自动运行一个叫做 “auto gc” 的命令。大多数时候，这个命令并不会产生效果。然而，如果有太多松散对象（不在包文件中的对象）或者太多包文件，Git 会运行一个完整的 git gc 命令。“gc” 代表垃圾回收，这个命令会做以下事情：收集所有松散对象并将它们放置到包文件中，将多个包文件合并为一个大的包文件，移除与任何提交都不相关的陈旧对象。</p>
-<h3 id="数据恢复"><a href="#数据恢复" class="headerlink" title="数据恢复"></a>数据恢复</h3><p>在你使用 Git 的时候，你可能会意外丢失一次提交。通常这是因为你强制删除了正在工作的分支，但是最后却发现你还需要这个分支；亦或者硬重置了一个分支，放弃了你想要的提交。如果这些事情已经发生，该如何找回你的提交呢？</p>
-<p>最方便，也是最常用的方法，是使用一个名叫 <code>git reflog</code> 的工具。当你正在工作时，Git 会默默地记录每一次你改变 HEAD 时它的值。每一次你提交或改变分支，引用日志都会被更新。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;《Pro Git》读书笔记&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Git" scheme="https://www.liuin.cn/tags/Git/"/>
     
   </entry>
   
