@@ -167,7 +167,7 @@
         
         <tags>
             
-            <tag> Reids </tag>
+            <tag> Redis </tag>
             
         </tags>
         
@@ -6974,48 +6974,6 @@ doDecrypt(passwd, onError);
     </entry>
     
     <entry>
-      <title><![CDATA[Codeforces 390 题解]]></title>
-      <url>/2017/05/13/Codeforces%20390%20%E9%A2%98%E8%A7%A3/</url>
-      <content type="html"><![CDATA[<p>这次Codeforces的A和B都是比较简单的，A就是贪心算法（我一开始在理解题意的时候出了一点问题），B就是蛮力枚举。<br>看懂题目的话我觉得每道题在20分钟之内将把代码写出来是没有问题的，可是英语还是硬伤，努力学英语中。。。</p>
-<a id="more"></a>
-<h2 id="A"><a href="#A" class="headerlink" title="A"></a>A</h2><h3 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h3><p>给你一个数组要求将他们进行划分成连续的几个部分，要求每个部分部分不为0</p>
-<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><ul>
-<li>无法划分的情况：数组中的各个都为0</li>
-<li>对于剩下的情况，我一开始就只是统一处理：分成两组，第一组从1到最后一个不为0的前面一位，剩下的部分组成第二组。但是后来发现这样做是对于数组总和为0的时候可以，对于数组总和不为0时就是不对的，因为可能有第一组都是0的情况，所以还是要分两种情况讨论</li>
-<li>数组总和不为0时，就分成一组</li>
-<li>数组总和为0是，分成两组：第一组从1到最后一个不为0的数的前面一位，剩下的组成第二组</li>
-</ul>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> n;</div><div class="line">	<span class="keyword">while</span>(<span class="built_in">cin</span> &gt;&gt; n)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">int</span> sum=<span class="number">0</span>,tag=<span class="number">1</span>,u;</div><div class="line">		<span class="keyword">int</span> a[<span class="number">101</span>];</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">cin</span>&gt;&gt;a[i];</div><div class="line">			sum+=a[i];</div><div class="line">			<span class="keyword">if</span>(a[i])  <span class="comment">//记录最后一个不为0的数字</span></div><div class="line">			&#123;</div><div class="line">				u=i+<span class="number">1</span>;</div><div class="line">				tag=<span class="number">0</span>;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">if</span>(tag)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;<span class="string">"NO"</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">			<span class="keyword">return</span> ;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">if</span>(sum)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;<span class="string">"YES"</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;<span class="string">"1"</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;<span class="string">"1"</span>&lt;&lt;<span class="string">" "</span>&lt;&lt;n&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">			<span class="keyword">return</span> ;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">else</span></div><div class="line">		&#123;</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;<span class="string">"YES"</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;<span class="string">"2"</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;<span class="string">"1"</span>&lt;&lt;<span class="string">" "</span>&lt;&lt;u<span class="number">-1</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;u&lt;&lt;<span class="string">" "</span>&lt;&lt;n&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="B"><a href="#B" class="headerlink" title="B"></a>B</h2><h3 id="题意-1"><a href="#题意-1" class="headerlink" title="题意"></a>题意</h3><p>题目以小时候玩的井字旗为背景，给出残局，让你求出其中一方是否可以走一步就获得胜利（棋盘大小4*4）</p>
-<h3 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h3><ul>
-<li>依次考虑每个空格，胜利有两种情况</li>
-<li>中间和两边中的一个棋子是自己的，另一个是空格</li>
-<li>两个自己的棋子夹一个空格</li>
-</ul>
-<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">char</span> a[<span class="number">6</span>][<span class="number">6</span>];</div><div class="line"><span class="keyword">char</span> tl[<span class="number">2</span>]=&#123;<span class="string">'x'</span>,<span class="string">'o'</span>&#125;;</div><div class="line"><span class="keyword">int</span> dx[<span class="number">8</span>]=&#123;<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">-1</span>,<span class="number">-1</span>,<span class="number">0</span>,<span class="number">1</span>&#125;;</div><div class="line"><span class="keyword">int</span> dy[<span class="number">8</span>]=&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">-1</span>,<span class="number">-1</span>&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">judge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y,<span class="keyword">int</span> nu)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">8</span>;i++)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">int</span> xx=x+dx[i];</div><div class="line">        <span class="keyword">int</span> yy=y+dy[i];</div><div class="line">        <span class="keyword">if</span>(a[xx][yy]==tl[nu])</div><div class="line">        &#123;</div><div class="line">            xx=x-dx[i];</div><div class="line">            yy=y-dy[i];</div><div class="line">            <span class="keyword">if</span>(a[xx][yy]==<span class="string">'.'</span>)</div><div class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span>(a[xx][yy]==<span class="string">'.'</span>)</div><div class="line">        &#123;</div><div class="line">            xx=xx+dx[i];</div><div class="line">            yy=yy+dy[i];</div><div class="line">            <span class="keyword">if</span>(a[xx][yy]==tl[nu])</div><div class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> num1=<span class="number">0</span>,num2=<span class="number">0</span>;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=<span class="number">4</span>;i++)</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=<span class="number">4</span>;j++)</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cin</span>&gt;&gt;a[i][j];</div><div class="line">            <span class="keyword">if</span>(a[i][j]==<span class="string">'x'</span>)</div><div class="line">                num1++;</div><div class="line">            <span class="keyword">if</span>(a[i][j]==<span class="string">'o'</span>)</div><div class="line">                num2++;</div><div class="line">        &#125;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">6</span>;i++)</div><div class="line">        a[i][<span class="number">0</span>]=a[<span class="number">0</span>][i]=a[<span class="number">6</span>][i]=a[i][<span class="number">6</span>]=<span class="string">'*'</span>;</div><div class="line">    <span class="keyword">int</span> be=<span class="number">0</span>;</div><div class="line">    <span class="keyword">if</span>(num2&lt;num1)</div><div class="line">        be=<span class="number">1</span>;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=<span class="number">4</span>;i++)</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=<span class="number">4</span>;j++)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span>(a[i][j]==tl[be]&amp;&amp;judge(i,j,be))</div><div class="line">            &#123;</div><div class="line">                <span class="built_in">cout</span>&lt;&lt;<span class="string">"YES"</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">                <span class="keyword">return</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="string">"NO"</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="简洁的代码"><a href="#简洁的代码" class="headerlink" title="简洁的代码"></a>简洁的代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> dx[]=&#123;<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">-1</span>,<span class="number">-1</span>&#125;;</div><div class="line"><span class="keyword">int</span> dy[]=&#123;<span class="number">1</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">1</span>,<span class="number">-1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">-1</span>&#125;;</div><div class="line"><span class="keyword">char</span> s[<span class="number">10</span>][<span class="number">10</span>];</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">check</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> k=<span class="number">0</span>;k&lt;<span class="number">8</span>;k++)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">if</span>(s[i+dx[k]][j+dy[k]]==<span class="string">'x'</span>&amp;&amp;s[i+dx[k]*<span class="number">2</span>][j+dy[k]*<span class="number">2</span>]==<span class="string">'x'</span>)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">puts</span>(<span class="string">"YES"</span>);</div><div class="line">			<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">if</span>(s[i+dx[k]][j+dy[k]]==<span class="string">'x'</span>&amp;&amp;s[i-dx[k]][j-dy[k]]==<span class="string">'x'</span>)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">puts</span>(<span class="string">"YES"</span>);</div><div class="line">			<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;=<span class="number">5</span>;i++)<span class="built_in">scanf</span>(<span class="string">"%s"</span>,s[i]+<span class="number">2</span>);</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;=<span class="number">5</span>;i++)<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">2</span>;j&lt;=<span class="number">5</span>;j++)<span class="keyword">if</span>(s[i][j]==<span class="string">'.'</span>)check(i,j);</div><div class="line">	<span class="built_in">puts</span>(<span class="string">"NO"</span>);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
-<li>还是要多练，切水题的时间比较长，不能死在水题上面</li>
-<li>看题目不能靠翻译，要锻炼自己的英语水平</li>
-</ul>
-]]></content>
-      
-        <categories>
-            
-            <category> 算法 </category>
-            
-        </categories>
-        
-        
-        <tags>
-            
-            <tag> Codeforces </tag>
-            
-        </tags>
-        
-    </entry>
-    
-    <entry>
       <title><![CDATA[ACM中常用的STL （一）]]></title>
       <url>/2017/05/13/ACM%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84STL-%EF%BC%88%E4%B8%80%EF%BC%89/</url>
       <content type="html"><![CDATA[<p>近期在在刷题的时候发现很多的STL的容器还有函数都用得不是很熟练。总所周知，在刷题的时候一些基本的STL的容器和函数的用法是必不可少的。<br>我将用两篇文章来整理一些常用的STL容器和函数的用法，这一篇主要讲容器</p>
@@ -7040,9 +6998,8 @@ doDecrypt(passwd, onError);
 <li>top() 获取堆顶元素</li>
 <li>empty() 判断队列是否为空</li>
 <li>size()  访问队列中的元素个数</li>
-<li><h3 id="vector-动态数组"><a href="#vector-动态数组" class="headerlink" title="vector 动态数组"></a>vector 动态数组</h3></li>
 </ul>
-<h4 id="定义-2"><a href="#定义-2" class="headerlink" title="定义"></a>定义</h4><p>一般只使用到一个参数，数据类型参数</p>
+<h3 id="vector-动态数组"><a href="#vector-动态数组" class="headerlink" title="vector 动态数组"></a>vector 动态数组</h3><h4 id="定义-2"><a href="#定义-2" class="headerlink" title="定义"></a>定义</h4><p>一般只使用到一个参数，数据类型参数</p>
 <h4 id="基本方法-2"><a href="#基本方法-2" class="headerlink" title="基本方法"></a>基本方法</h4><ul>
 <li>重载[]  可以通过下边获取元素</li>
 <li>front() 返回第一个元素的值</li>
@@ -7094,6 +7051,48 @@ doDecrypt(passwd, onError);
         <tags>
             
             <tag> STL </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Codeforces 390 题解]]></title>
+      <url>/2017/05/13/Codeforces%20390%20%E9%A2%98%E8%A7%A3/</url>
+      <content type="html"><![CDATA[<p>这次Codeforces的A和B都是比较简单的，A就是贪心算法（我一开始在理解题意的时候出了一点问题），B就是蛮力枚举。<br>看懂题目的话我觉得每道题在20分钟之内将把代码写出来是没有问题的，可是英语还是硬伤，努力学英语中。。。</p>
+<a id="more"></a>
+<h2 id="A"><a href="#A" class="headerlink" title="A"></a>A</h2><h3 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h3><p>给你一个数组要求将他们进行划分成连续的几个部分，要求每个部分部分不为0</p>
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><ul>
+<li>无法划分的情况：数组中的各个都为0</li>
+<li>对于剩下的情况，我一开始就只是统一处理：分成两组，第一组从1到最后一个不为0的前面一位，剩下的部分组成第二组。但是后来发现这样做是对于数组总和为0的时候可以，对于数组总和不为0时就是不对的，因为可能有第一组都是0的情况，所以还是要分两种情况讨论</li>
+<li>数组总和不为0时，就分成一组</li>
+<li>数组总和为0是，分成两组：第一组从1到最后一个不为0的数的前面一位，剩下的组成第二组</li>
+</ul>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> n;</div><div class="line">	<span class="keyword">while</span>(<span class="built_in">cin</span> &gt;&gt; n)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">int</span> sum=<span class="number">0</span>,tag=<span class="number">1</span>,u;</div><div class="line">		<span class="keyword">int</span> a[<span class="number">101</span>];</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">cin</span>&gt;&gt;a[i];</div><div class="line">			sum+=a[i];</div><div class="line">			<span class="keyword">if</span>(a[i])  <span class="comment">//记录最后一个不为0的数字</span></div><div class="line">			&#123;</div><div class="line">				u=i+<span class="number">1</span>;</div><div class="line">				tag=<span class="number">0</span>;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">if</span>(tag)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;<span class="string">"NO"</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">			<span class="keyword">return</span> ;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">if</span>(sum)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;<span class="string">"YES"</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;<span class="string">"1"</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;<span class="string">"1"</span>&lt;&lt;<span class="string">" "</span>&lt;&lt;n&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">			<span class="keyword">return</span> ;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">else</span></div><div class="line">		&#123;</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;<span class="string">"YES"</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;<span class="string">"2"</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;<span class="string">"1"</span>&lt;&lt;<span class="string">" "</span>&lt;&lt;u<span class="number">-1</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;u&lt;&lt;<span class="string">" "</span>&lt;&lt;n&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="B"><a href="#B" class="headerlink" title="B"></a>B</h2><h3 id="题意-1"><a href="#题意-1" class="headerlink" title="题意"></a>题意</h3><p>题目以小时候玩的井字旗为背景，给出残局，让你求出其中一方是否可以走一步就获得胜利（棋盘大小4*4）</p>
+<h3 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h3><ul>
+<li>依次考虑每个空格，胜利有两种情况</li>
+<li>中间和两边中的一个棋子是自己的，另一个是空格</li>
+<li>两个自己的棋子夹一个空格</li>
+</ul>
+<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">char</span> a[<span class="number">6</span>][<span class="number">6</span>];</div><div class="line"><span class="keyword">char</span> tl[<span class="number">2</span>]=&#123;<span class="string">'x'</span>,<span class="string">'o'</span>&#125;;</div><div class="line"><span class="keyword">int</span> dx[<span class="number">8</span>]=&#123;<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">-1</span>,<span class="number">-1</span>,<span class="number">0</span>,<span class="number">1</span>&#125;;</div><div class="line"><span class="keyword">int</span> dy[<span class="number">8</span>]=&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">-1</span>,<span class="number">-1</span>&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">judge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y,<span class="keyword">int</span> nu)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">8</span>;i++)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">int</span> xx=x+dx[i];</div><div class="line">        <span class="keyword">int</span> yy=y+dy[i];</div><div class="line">        <span class="keyword">if</span>(a[xx][yy]==tl[nu])</div><div class="line">        &#123;</div><div class="line">            xx=x-dx[i];</div><div class="line">            yy=y-dy[i];</div><div class="line">            <span class="keyword">if</span>(a[xx][yy]==<span class="string">'.'</span>)</div><div class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span>(a[xx][yy]==<span class="string">'.'</span>)</div><div class="line">        &#123;</div><div class="line">            xx=xx+dx[i];</div><div class="line">            yy=yy+dy[i];</div><div class="line">            <span class="keyword">if</span>(a[xx][yy]==tl[nu])</div><div class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> num1=<span class="number">0</span>,num2=<span class="number">0</span>;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=<span class="number">4</span>;i++)</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=<span class="number">4</span>;j++)</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cin</span>&gt;&gt;a[i][j];</div><div class="line">            <span class="keyword">if</span>(a[i][j]==<span class="string">'x'</span>)</div><div class="line">                num1++;</div><div class="line">            <span class="keyword">if</span>(a[i][j]==<span class="string">'o'</span>)</div><div class="line">                num2++;</div><div class="line">        &#125;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">6</span>;i++)</div><div class="line">        a[i][<span class="number">0</span>]=a[<span class="number">0</span>][i]=a[<span class="number">6</span>][i]=a[i][<span class="number">6</span>]=<span class="string">'*'</span>;</div><div class="line">    <span class="keyword">int</span> be=<span class="number">0</span>;</div><div class="line">    <span class="keyword">if</span>(num2&lt;num1)</div><div class="line">        be=<span class="number">1</span>;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=<span class="number">4</span>;i++)</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=<span class="number">4</span>;j++)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span>(a[i][j]==tl[be]&amp;&amp;judge(i,j,be))</div><div class="line">            &#123;</div><div class="line">                <span class="built_in">cout</span>&lt;&lt;<span class="string">"YES"</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">                <span class="keyword">return</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="string">"NO"</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="简洁的代码"><a href="#简洁的代码" class="headerlink" title="简洁的代码"></a>简洁的代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> dx[]=&#123;<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">-1</span>,<span class="number">-1</span>&#125;;</div><div class="line"><span class="keyword">int</span> dy[]=&#123;<span class="number">1</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">1</span>,<span class="number">-1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">-1</span>&#125;;</div><div class="line"><span class="keyword">char</span> s[<span class="number">10</span>][<span class="number">10</span>];</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">check</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> k=<span class="number">0</span>;k&lt;<span class="number">8</span>;k++)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">if</span>(s[i+dx[k]][j+dy[k]]==<span class="string">'x'</span>&amp;&amp;s[i+dx[k]*<span class="number">2</span>][j+dy[k]*<span class="number">2</span>]==<span class="string">'x'</span>)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">puts</span>(<span class="string">"YES"</span>);</div><div class="line">			<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">if</span>(s[i+dx[k]][j+dy[k]]==<span class="string">'x'</span>&amp;&amp;s[i-dx[k]][j-dy[k]]==<span class="string">'x'</span>)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">puts</span>(<span class="string">"YES"</span>);</div><div class="line">			<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;=<span class="number">5</span>;i++)<span class="built_in">scanf</span>(<span class="string">"%s"</span>,s[i]+<span class="number">2</span>);</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;=<span class="number">5</span>;i++)<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">2</span>;j&lt;=<span class="number">5</span>;j++)<span class="keyword">if</span>(s[i][j]==<span class="string">'.'</span>)check(i,j);</div><div class="line">	<span class="built_in">puts</span>(<span class="string">"NO"</span>);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>还是要多练，切水题的时间比较长，不能死在水题上面</li>
+<li>看题目不能靠翻译，要锻炼自己的英语水平</li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 算法 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Codeforces </tag>
             
         </tags>
         
@@ -8131,108 +8130,6 @@ doDecrypt(passwd, onError);
     </entry>
     
     <entry>
-      <title><![CDATA[技术的正宗与野路子（转）]]></title>
-      <url>/2016/11/25/%E6%8A%80%E6%9C%AF%E7%9A%84%E6%AD%A3%E5%AE%97%E4%B8%8E%E9%87%8E%E8%B7%AF%E5%AD%90/</url>
-      <content type="html"><![CDATA[<blockquote>
-<p>黄衫女子的武功似乎与周芷若乃是一路，飘忽灵动，变幻无方，但举手抬足之间却是正而不邪，如说周芷若形似鬼魅，那黄衫女子便是态拟神仙。</p>
-</blockquote>
-<p>这段描写出自《倚天屠龙记》第三十八回。<br>“九阴神抓”本是《九阴真经》中的上乘武功，但当初梅超风夫妇由于拿到的《九阴真经》不完整，学不到里面的内功心法，硬是把这门上乘武功练到了邪路上，于是就成了“九阴白骨爪”。周芷若为求速成，也练就了这门邪功。<br>但黄衫女子乃出身武林名门（相传是杨过和小龙女的后人），自然修炼的是正宗的《九阴真经》。虽然武功路数与周芷若本同属一脉，但更加“醇真深厚”，自然也更胜一筹。这是金庸武侠中“正宗”武功胜过“野路子”的一个典型案例。<br>那么，这是否能够说明，“正宗”一定强于“野路子”呢？<br><a id="more"></a><br>且慢！<br>喜欢金庸武侠的朋友，可还记得《越女剑》中的阿青？<br>阿青本是一名牧羊女，却在牧羊时巧遇一头会使竹棒的白猿。在与白猿的玩耍嬉闹中，她硬是悟得了高超的剑法，竟能以一人之力敌两千越甲！<br>就是这样一个从野路子练出来的柔弱女子，即使按广大金庸迷的保守估计，她也能在整个金庸武侠图谱中至少排名前五！<br>做技术，犹如修习一门武功。<br>历数我周围的技术牛人（牛不到一定程度的先不算），他们中既有名牌大学计算机科班毕业的，也有半路出家转行过来的。<br>但他们都有一个共同特点：他们在遇到问题后，思考片刻，总是能一下子切中要害，在表达上也往往一语中的。这也包括那些平常不善言辞的程序员。反观那些“更一般”的程序员（其中不乏科班毕业的），他们经常很难抓住问题的本质，表达起来也总是说不到点子上。<br>可见，“正宗”还是“野路子”，并不在出身。<br>写到这里，我终于自己长出了一口气。我出身一个极普通的农民家庭，既不是书香门第，也不是技匠世家。记得在大学一年级的上机编程课上，我才发现自己原来根本不会用键盘打字。相比那些初中高中就把计算机玩得很溜的同学，我算野路子吗？<br>好了，那“正宗”还是“野路子”，不在出身在什么呢？<br>在于学习和思考的方法。<br>据我观察，技术牛人的学习方法和思考方式，大体类似。<br>思考方式，是个很难说清的东西。所以，本文我们重点来讨论讨论学习的方法。<br>面对一项新技术的时候，我们怎样去学习才能循序渐进，最终理解得深刻？<br>让我们先把可供自学的资料列出来，分析一下：</p>
-<ul>
-<li>Tutorial（入门教程）。由该项技术的官网提供。通常是英文的。这份资料是给初次接触该项技术的人看的，一般是一步一步地教你完成某些例子。当我们说某项技术对于新手不太友好的时候，一般也是因为这项技术的Tutorial部分做得不够好。</li>
-<li>Specification，简称Spec。这是集中体现该项技术的设计思想的东西，是高度抽象的描述。这个一般也是一份完备的、系统的描述，包含该项技术涉及到的方方面面。这部分资料在不同的地方叫法不同，在相对简单的技术项目中，也可能没有；在另一些情况下，这部分资料混杂在其它文档资料之中；它还可能以论文（paper）的形式出现。</li>
-<li>API Reference。大而全的API索引和文档，针对不同的语言接口可能提供多份。当我们使用这项技术进行编程的时候，API Reference自然是个离不开的、总是要不停去查询的一份资料。</li>
-<li>别人写的技术博客。质量良莠不齐，到底有没有价值，我们要学会去分辨。</li>
-<li>技术书籍。跟技术博客类似，质量有好有坏。稍后我们和技术博客放在一起来分析。</li>
-<li>Source Code。如果我们要学习的技术是开源的，那么很幸运，我们能得到源代码。这是一份终极资料。</li>
-</ul>
-<p>为了让这些概念表达无误，我接下来多举一些例子。</p>
-<h2 id="Java语言"><a href="#Java语言" class="headerlink" title="Java语言"></a>Java语言</h2><p>从来没有接触过Java语言的人，要想开始自学Java，从哪里开始呢？可以从Oracle官方提供的Tutorial入手：</p>
-<ul>
-<li><a href="http://docs.oracle.com/javase/tutorial/" target="_blank" rel="external">http://docs.oracle.com/javase/tutorial/</a></li>
-</ul>
-<p>这份资料《The Java™ Tutorials 》，集中体现了Tutorial类型的资料的特点。它从最开始的编译和运行环境搭建说起，教你写出第一个Hello World，再用介绍的方式将Java各种语言特性（变量、类、泛型、Lambda表达式、JavaBeans，等等）进行讲解，同时还有对于JDK里常用API（集合类、多线程、IO等等）的介绍。<br>对初学者而言，需要的就是这样一份资料。即使你手头没有任何Java的入门书籍，读完这样的一份资料之后，一个新手基本就可以开始使用Java来编程了。<br>再看Spec：</p>
-<ul>
-<li><a href="http://docs.oracle.com/javase/specs/jls/se8/html/index.html" target="_blank" rel="external">http://docs.oracle.com/javase/specs/jls/se8/html/index.html</a></li>
-</ul>
-<p>这份文档，叫做《The Java® Language Specification》。是一份很典型的Spec，完备而规范。<br>任何讲Java语法的资料，包括各种书籍和前面提到的Tutorial，都只能涉及部分。而这份Spec，如果你能读通的话，那么与Java语言特性有关的所有一切，你就再也不用求人了。<br>JDK 8的API Reference:</p>
-<ul>
-<li><a href="http://docs.oracle.com/javase/8/docs/api/index.html" target="_blank" rel="external">http://docs.oracle.com/javase/8/docs/api/index.html</a></li>
-</ul>
-<p>用Java语言编程的时候，我们需要不断查阅的就是这份API Reference。我们平常一般是通过IDE来快速查看某个接口的文档说明。</p>
-<h2 id="Android开发"><a href="#Android开发" class="headerlink" title="Android开发"></a>Android开发</h2><p>Android针对新手的Tutorial类型的资料，官网上称为Training：</p>
-<ul>
-<li><a href="https://developer.android.com/training/index.html" target="_blank" rel="external">https://developer.android.com/training/index.html</a></li>
-</ul>
-<p><img src="http://oeziv5rwi.bkt.clouddn.com/2016/11/25/003.jpg" alt=""></p>
-<p>这份资料是典型的Tutorial。它教你制作第一个Android App，并针对若干个主题进行一步一步的教学。<br>下面这份资料在Android官网上被称为：API Guides。</p>
-<ul>
-<li><a href="https://developer.android.com/guide/index.html" target="_blank" rel="external">https://developer.android.com/guide/index.html</a><br><img src="http://oeziv5rwi.bkt.clouddn.com/2016/11/25/004.jpg" alt=""></li>
-</ul>
-<p>它实际上是一份介于Tutorial和Spec之间的文档。它有很多Spec的特点，比如它介绍Android中的抽象的四大组件的概念，介绍资源尺寸的抽象（dp），介绍View层原理，等等。但是，跟前面看到的Java Spec相比，它没有那么规范和正式，描述也更随意一些，估计也算不上完备（但涉及到了Android技术的绝大部分）。<br>当我们对Android中某项具体技术存疑，或是有争论的时候，我们就需要来翻翻这份文档。因此，它基本可以归入Spec类型。<br>然后是Android SDK的API Reference：</p>
-<ul>
-<li><a href="https://developer.android.com/reference/packages.html" target="_blank" rel="external">https://developer.android.com/reference/packages.html</a></li>
-</ul>
-<p>这份API Reference的质量并不高，描述上过于简略，甚至模糊不清，其可读性跟前面提到的JDK 8的API Reference完全不在一个水平上。这也是一些开源项目的通病，不重视接口文档。</p>
-<h2 id="iOS开发"><a href="#iOS开发" class="headerlink" title="iOS开发"></a>iOS开发</h2><p>苹果在iOS开发方面给出的文档是相当丰富的，这也是一个闭源系统做得好的地方。<br>iOS开发的文档，很难区分出Tutorial和Spec这两个层面。它由很多文档组成，每个文档描述系统的某一方面。通常是在一个文档中，既有教学的部分，又有完备描述的部分。<br>针对完全的新手入门的话，下面这个文档，算是真正的一个Tutorial：</p>
-<ul>
-<li>Start Developing iOS Apps (Swift)(<a href="https://developer.apple.com/library/ios/referencelibrary/GettingStarted/DevelopiOSAppsSwift/index.html" target="_blank" rel="external">https://developer.apple.com/library/ios/referencelibrary/GettingStarted/DevelopiOSAppsSwift/index.html</a>)</li>
-</ul>
-<p>其它各个文档也是介于Tutorial和Spec之间，更偏向Spec。比如：</p>
-<ul>
-<li>App Programming Guide for iOS(<a href="https://developer.apple.com/library/ios/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/Introduction/Introduction.html" target="_blank" rel="external">https://developer.apple.com/library/ios/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/Introduction/Introduction.html</a>)</li>
-<li>View Controller Programming Guide for iOS(<a href="https://developer.apple.com/library/ios/featuredarticles/ViewControllerPGforiPhoneOS/index.html" target="_blank" rel="external">https://developer.apple.com/library/ios/featuredarticles/ViewControllerPGforiPhoneOS/index.html</a>)</li>
-<li>View Programming Guide for iOS(<a href="https://developer.apple.com/library/ios/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Introduction/Introduction.html" target="_blank" rel="external">https://developer.apple.com/library/ios/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Introduction/Introduction.html</a>)</li>
-<li>Core Animation Programming Guide(<a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CoreAnimation_guide/Introduction/Introduction.html" target="_blank" rel="external">https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CoreAnimation_guide/Introduction/Introduction.html</a>)</li>
-<li>Concurrency Programming Guide(<a href="https://developer.apple.com/library/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/Introduction/Introduction.html" target="_blank" rel="external">https://developer.apple.com/library/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/Introduction/Introduction.html</a>)</li>
-</ul>
-<p>然后是iOS的API Reference：</p>
-<ul>
-<li><a href="https://developer.apple.com/reference/" target="_blank" rel="external">https://developer.apple.com/reference/</a></li>
-</ul>
-<p>如前所述，这份API Reference的可读性非常高，比Android SDK的要强多了。很多前后相关的概念，在这份API Reference的描述中，都有体现。<br>当然，除了developer.apple.com之外，iOS的文档也都可以通过XCode取到。</p>
-<h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><p>Redis的Tutorial是我见过的最好的Tutorial，它对初学者非常友好，不仅能读，还能执行。</p>
-<ul>
-<li><a href="http://try.redis.io/" target="_blank" rel="external">http://try.redis.io/</a></li>
-</ul>
-<p><img src="http://oeziv5rwi.bkt.clouddn.com/2016/11/25/005.jpg" alt=""></p>
-<p>Redis的Spec举例:</p>
-<ul>
-<li>Redis Protocol specification (<a href="http://redis.io/topics/protocol" target="_blank" rel="external">http://redis.io/topics/protocol</a>)</li>
-<li>Redis Cluster Specification (<a href="http://redis.io/topics/cluster-spec" target="_blank" rel="external">http://redis.io/topics/cluster-spec</a>)</li>
-<li>Redis RDB Dump File Format (<a href="https://github.com/sripathikrishnan/redis-rdb-tools/wiki/Redis-RDB-Dump-File-Format" target="_blank" rel="external">https://github.com/sripathikrishnan/redis-rdb-tools/wiki/Redis-RDB-Dump-File-Format</a>)</li>
-</ul>
-<p>Redis的Commands Reference:</p>
-<ul>
-<li><a href="http://redis.io/commands" target="_blank" rel="external">http://redis.io/commands</a></li>
-</ul>
-<h2 id="TCP-HTTP网络协议"><a href="#TCP-HTTP网络协议" class="headerlink" title="TCP/HTTP网络协议"></a>TCP/HTTP网络协议</h2><p>与前面的都不同，它不是一个实现，而是一种标准。<br>网络协议的Spec文档很明显，就是它们对应的RFC。如果你的工作经常涉及到使用某个网络协议，恐怕就需要找来RFC通读一遍了。<br>再来说一下技术博客和技术书籍。<br>现在网上的技术文章空前繁荣，想读都读不过来。胡峰同学在他的微信公众号“瞬息之间”上，发过一篇文章《技术干货的选择性问题》，讨论的就是技术人员在当前技术文章爆炸的情况下如何取舍的问题。<br>在这里，我们从另一个角度来讨论一下这个问题。如果一篇技术文章，仅仅是对于所涉及技术的官方文档（Tutorial或Spec）的复述，甚至只是个翻译，那么就价值不高。换句话说，如果我们能通过阅读官方文档学到同样的知识，那为什么要看你写的技术文章呢？官方文档自然更权威，直接阅读它能确保不会遗漏重要的东西。<br>那什么样的技术文章才有价值呢？大概可以说（未必那么准确），那些包涵了实践经验的，能将各个技术点综合起来产生思考，从而给人以启迪的。简单来说，就是有深度的。<br>当然，技术书籍也大体如此。<br>我们回过头来再看一下，各个学习资料之间的层次结构。</p>
-<p><img src="http://oeziv5rwi.bkt.clouddn.com/2016/11/25/006.jpg" alt=""></p>
-<p>每当我们接触一项新的技术的时候，我们都要把手头的资料按照类似的这样一个金字塔结构进行分类。如果我们阅读了一些技术博客和技术书籍，那么也要清楚地知道它们涉及到的是金字塔中的哪些部分。<br>最开始，一般读完Tutorial之后，就基本能上手做一些开发工作了。然后一边开发，一边查阅API Reference。注意，从这时候起，你的老板就开始向你付工资了，因为你的工作已经能够产出成果了。<br>但是，工作一段时间之后，我们发现，似乎身边的技术牛人学东西都比较快，而且在很短的时间内就能对某项新技术达到很深的理解。这是为什么呢？<br>这并不是因为技术牛人阅读技术资料阅读得快，而是他们知道阅读正确的资料，从而很快能达到知识金字塔更高的一层。<br>我见过的很多技术牛人，他们如果不是把一项技术至少理解到Spec那个层次，他们是不敢随便写代码的。相反另一些人则从网上随意拷贝代码，并在自己不能完全理解的情况下用到项目中去。技术牛人们当然也参考网上的代码，但他们通常会确保它的每一部分都能安放在知识金字塔的某一部分，他们不容许那种不属于任何体系的知识孤岛的出现。<br>我们现在可以这样总结，技术的“野路子”，其实是知识结构的不完整和不系统造成的一种状态。只有当你冲破知识金字塔层层的障碍，迈向更高层次的时候，老板才开始向你付高价。<br>我们的大脑好比内存。<br>既然是内存，就装不下所有的知识。但应该能装下对于知识的索引，否则我们便没法工作了。<br>那么，这里就有一个选择性的问题：我们选择哪部分知识加载到“内存”里呢？<br>显然，应该优先选择重要的，对我们最有用的信息。<br>对于那些最核心的技术，我们应该做到：</p>
-<ul>
-<li>通读Spec。读完就不再困惑。</li>
-<li>重要部分的API Reference要通读。里面包含了很多跟实现有关的信息。</li>
-<li>如果工作需要，还可能需要读到Source Code。特别是对于平常一直在使用的SDK，不一定从头到尾把源码读通，这样工作量太大且效率不高，但一定要把你的开发环境设置成一点击某个调用的方法就能跳转进源码实现。只有这样，你才能把平常开发的时间利用起来，随时随刻都点过去看源码。</li>
-</ul>
-<p>对于剩下的知识里80%的部分，应该至少理解到Spec层次。只有这样，我们才能游刃有余地去使用它。<br>通读重要的Spec，在很多情况下，其实还是很有难度的。这需要毅力，和一点点英语基础。<br>按本文前面提到的例子，做Java的人有谁读过Java Spec？做Android的人有谁把developer.android.com上的API Guides都能通读下来？而做iOS的人，developer.apple.com上的各个Programming Guide又完整地读过几个？对于经常调用的SDK，你会有计划地去通读其中重要部分的API Reference吗？<br>能够把这一套做下来的，有可能不成为技术牛人吗？<br>到了文章最后了，总感觉还有些意犹未尽，脑海中似乎有些东西还是没有表达出来，也不确定本文描述的学习方式是不是适用于每位读者。仔细想想也难怪，学习本来就是一个复杂的问题，每个人并不是完全一样的套路。<br>但是，不管本文介绍的方法是“正宗”的路子，还是属于“野路子”，我在这里想要强调的一点是很明确的，那就是：要把知识梳理成系统的结构，要让头脑中的知识层次清楚，为此，我们需要阅读恰当的东西，需要不断地练习，需要克服种种困难。<br>成长没有捷径可走。需要的是一个一个坚实的突破。</p>
-<p>文章转自 <a href="http://zhangtielei.com/posts/blog-programmer-learn.html" target="_blank" rel="external">张铁蕾</a></p>
-]]></content>
-      
-        <categories>
-            
-            <category> 杂记 </category>
-            
-        </categories>
-        
-        
-        <tags>
-            
-            <tag> 计算机 </tag>
-            
-        </tags>
-        
-    </entry>
-    
-    <entry>
       <title><![CDATA[Codeforces #381（Div.2）题解]]></title>
       <url>/2016/11/25/Codeforces-381%EF%BC%88Div-2%EF%BC%89%E9%A2%98%E8%A7%A3/</url>
       <content type="html"><![CDATA[<p>第二次打CF，一开始的读题速度是快了一点但是在英语环境下对题目中的一些细节和关键部分的理解还是有待加强。<br>这次想玩玩hack结果锁定题目太早了，导致A马上就被hack了，改都不能改，哎，好气啊。。。</p>
@@ -8421,66 +8318,6 @@ doDecrypt(passwd, onError);
     </entry>
     
     <entry>
-      <title><![CDATA[心安就是归处]]></title>
-      <url>/2016/11/03/%E5%BF%83%E5%AE%89%E5%B0%B1%E6%98%AF%E5%BD%92%E5%A4%84/</url>
-      <content type="html"><![CDATA[<p>既然选择了编程，只管风雨兼程<br>一次会议记录是不会有人感兴趣的，做标题党也是不道德的。所以，走了个折衷的路线，标题不叫会议记录， 内容不纯总结，技术加吐槽，经验加总结。</p>
-<p>对于一个程序员的成长，学习似乎是永恒的事情。为什么网友爱用“苦逼”来形容程序员，因为他们整天伏案写代码，学不完的新技术。其实仔细想想，又何止是程序员要不断的保持学习，做什么都是一样的。党员为了保持先进性，要不停的学资料，开会议，然后再学资料，再开会；干理发的要紧跟潮流趋势，赶上时代步伐，不然现在男生统一的平头，女生统一的扎俩辫子；而现在，连扫地的大妈都危险了，一群为了有编制的高学历人才要去争这个饭碗，所以，作为程序员这样高端职业的我们来说，保持学习真的还是很有必需的。<br><a id="more"></a></p>
-<h2 id="心安即是归处"><a href="#心安即是归处" class="headerlink" title="心安即是归处"></a>心安即是归处</h2><p>学习是解惑的，所以学习过程中要遇到困惑。因为有困惑，所以才需要不断的学习来解决。那到底是为了解决困惑学习还是为了学习解决困惑，这个，不重要。</p>
-<p>一路走来，觉得最大的困惑莫过于无法静下心来学习。任何能耐得住寂寞坐得了板凳的人都成功了，比如周杰伦他以前耐得住寂寞把自己关小黑屋才写出了这么多传世之作，现在浮躁了静不下来好好写歌跑去拍些个烂电影受到了来自众多影评人的广泛差评。</p>
-<p>心安即是归处，流浪的人啊，你究竟在追寻什么。一切问题除了是时间问题，更是一个人心态的问题。静不下心来往往是妨碍自己学习前进的主要原因。这个世界如此浮躁如何做到众人皆醉我独醒，确实有点难。事实往往是这样：道理大家都懂，但真正做到的没几个。就比如大家作为长辈教育小同学要好好学习道理说得头头是道，完了发现没有一条应用到了自己身上。</p>
-<p>所以有明白人指出，那些凡是书名带了教你如何如何提升，一个人的自我修维，成功之道，杰出的品格应该是这样的，通往成功捷径……的书，完全是坑爹而没有必需看的。如果我们不带自己的思维盲目的接受，你还真以为《十万个为什么》真的有十万条问答记录在目，《钢铁是怎样炼成的》真的是一本工业书籍教你怎样炼钢！那些出书的人根本就没想要你成功，他们只是想要你想成功，然后再去拜读这些烂作。最明显的例子就是《我的成功可以复制》，撕掉作者的伪善有人在他演讲后向他提问：哥，你西太平洋大学的毕业证书也可以复制！</p>
-<p>一颗能够沉淀下来的心是绝对不会找借口说没时间而推掉自己对于学习的计划的。对于上班的我们，很多时候都会冠冕堂皇的用上这个借口。并且由于工作没时间还被用在很多其他地方，比如不陪家人。电影《教父》中的老大哥都觉得：一个不花时间陪家人的男人算不得一个好男人。繁花似锦，岁月青葱，人生不过25亿秒，过一秒，少一秒，时间正滴答滴答地蚕食我们，我们唯一需要做的，就是让这些秒钟过得有意思：高效工作，不断的学习充实，陪陪家人联络亲友，爱惜身体养养花草。</p>
-<p>年轻难免气盛，好高骛远是这我们这群热血一带少年的通病，久困牢笼稚气未脱的新人们总是从刚踏出校门那一刻起就觉得自己天之骄子我最大。但其实谁又不是在刚踏入大学门槛时都信誓旦旦要披星戴月学到天荒地老。结果都是玩得死去活来爱到花开鸟儿飞。</p>
-<p>现实总比理想更生猛一些，他用上有老将来会下有小的压力要求一个人快速成长，而不像理想让一个人自我陶醉然后成天独守空房。当发现自己真的缺少很多实践的时候，如果还感到气盛的话，那真的该抓住青春的尾巴把这些力气用到自我完善当中。如果还活在自我的世界以为振作起来就是从明天开始劈柴煮饭面朝大海笑一笑，那真的是文艺到了极点，现实生活与你无关。</p>
-<p>停下脚步，安下心来。起点就是归处。</p>
-<h2 id="既然选择了编程，只管风雨兼程"><a href="#既然选择了编程，只管风雨兼程" class="headerlink" title="既然选择了编程，只管风雨兼程"></a>既然选择了编程，只管风雨兼程</h2><p>学习需要有目标，往远了说就是职业规划。</p>
-<p>我一开始也不知道自己要干什么，什么我能干。好干的已经有很多人在干了，不好干的只有那么几个人一直干干到白发苍苍最后拿个诺奖终了一生。</p>
-<p>任何时候只要你找不到方向感觉生活无望像是末日来临，请想想伟大的党伟大的毛主席。</p>
-<p>毛主席说这个世界是我们的，也是你们的，但终究是你们的。</p>
-<p>但我觉得这事儿还能说细一点，信息时代是我们的，也是人类的，但终究是IT人的。于是乎，作为码农，还是很有前景的。光是每天翻看英文技术文档修修电脑就看着很有技术很有品，更不用说没事的时候写写小软件自娱自乐。靠敲键盘度日的，还有作家，但如你所知，在当前国情下，呵呵。但写代码不用通过广电总局中宣部文化部审批。唯一影响你生活的无非就是开着车的时候骂骂发改委[此处文字已替换]喊你回家下调油价。</p>
-<p>同学有问：做什么啊在？</p>
-<p>搞开发啊当码农啊。</p>
-<p>一听都觉得牛逼高端加技术，形象顿时伟岸起来。自己也会觉得有范儿够面子。<br>当然，苦逼就源于技术二字。一个技术宅不是一天练就的。正如技术宅这个词，首先他必需是经常宅的，而且不是宅着吃薯条看AV，而是钻研技术，最后还是跟上面说的一样要耐得住寂寞坐得住板凳，最后方可修炼成为技术宅。</p>
-<p>关键是新技术层出不穷，就像赶朝流一样，你永远都只是路边的一个路人，而朝流就像飞驰而过的地铁，呼啦一下你就被甩开了。以至于今天搞安卓的人很吃香，同行间一交流，咦，你是.NET程序员啊，然后心里鄙夷地呵呵一下，第二天WIN8火了，咦，你是搞手机开发的啊，呵呵。</p>
-<p>其次，作为一名码农，总是有解决不完的bug和改了又改的需求，似乎整天都在忙于应付这些令人费脑细胞的问题，有的时候完全没有任何方案，真的想关屏幕砸键盘最后来一句：phuck! 但出于一个高端人才的内在修养与自我约束，这样的事情还是很少发生的。大不了转行卖电脑。但一般我们认为不堪技术压力而选择放弃的程序员不是一个好的码农。谁也丢不起那个脸。想想就知道有多恐怖了。</p>
-<p>同学又问：干啥啊最近？</p>
-<p>微软平板只要三千九，是的，你绝对没有听错没有听错！</p>
-<p>同学：……</p>
-<p>可见一个技术人员成长过程确实是比较苦逼的。一个技术人员的生涯也是需要坚强意志的。<br>但作为一个IT人来说，既然选择了编程，就只管风雨兼程，任何bug都是纸老虎经不起你打断点调试几下就Over了。再强大一点的问题拉几个同事组队也是三下五除二就可以解决了。并且这些解决问题的过程是对自己技术的验证，解决成功之后也是一种非常有成就感的体验，那感觉比开挂打死一只精英BOSS还要爽。</p>
-<h2 id="一路走下去，何方是彼岸。"><a href="#一路走下去，何方是彼岸。" class="headerlink" title="一路走下去，何方是彼岸。"></a>一路走下去，何方是彼岸。</h2><p>或者继续技术下去，当个专家，大家都相信IT行业的专家绝对要比其他行业的砖家靠谱，因为你看，乔布斯，一个杰出的无领黑色棉彬穿着家，一个IT行业时代的创造者，他每次在产品发布会上讲解着新产品新功能的时候，都能吸引全球的眼光，并且你买回产品来看，还真的是那样绝不是盖的。但你打开电视一看，张教授说美国不会对伊开战的，结果第二天战争就打起来了，他又说利比亚局势会好转的，结果卡扎菲被活捉了；司马北一边把自己的妻儿送到太平洋的对岸，一边又树立着一个坚定的反美斗士的形象。</p>
-<p>并且当一个IT业的资深专家并不会有秃顶的烦恼，一般透顶的都是科研搞学术的专家教授，IT人需要双手敲键盘，而学术人一只手握笔还空了只手会在想问题时抓头皮。</p>
-<p>还可以转型当管理，带领一个开发团队管理几个项目。每天喝着茶唱着小曲检查一下代码，生活就是如此多娇，风景IT这边独好。这时你会觉得，以前所有苦逼的日子是值得的。</p>
-<h2 id="你错过了夏花绚烂，必将走进秋叶静羌"><a href="#你错过了夏花绚烂，必将走进秋叶静羌" class="headerlink" title="你错过了夏花绚烂，必将走进秋叶静羌"></a>你错过了夏花绚烂，必将走进秋叶静羌</h2><p>人越长大，就越觉得孤单。这话真的不假。一直都是听到任然的《那年》比较有感，真的有种怀念不如活好当下的感触。</p>
-<p>人生会错失太多没把握好的东西，试想当年孔子站在河边上指着湍急的河水发出的感叹：看，时间就像这家伙！后面肯定还说了我年轻时怎么没做什么什么等的话只是没有被记录下来，但可以肯定的是他当时是何时的沧桑与无奈。人到中年，做事情将会是心有余而力不足。家庭，工作，各种羁绊，各种黯然神伤。</p>
-<p>这就提醒我们，有想法就要付诸行动。张爱怜也说：出名要趁早。</p>
-<p>而这点，对于一个程序员来说，尤为重要。选择你热爱的方向，整理下装备满状态出发，死心踏地走下去。</p>
-<p>当计划好要学习某种技术后，应该矢志不渝，不应被其他花样繁多的技术所分心，一会儿学这个，一会儿学那个，如此不忠节操何在先不谈，往往是开始信心满满干劲十足，什么都想学结果什么都学不好精力已尽。于是进行一个迷茫的阶段，无法找到自己的定位。这时候，我觉得需要重新确定一下目标再上路，或者能从同行前辈的经验之谈中补充到一些正能量。</p>
-<p>一个程序员的定位，也是最开始所选择的方向。越到后面，转型的代价越大。在这一点上，是应该思考成熟再行动的，而不是现在什么火，学什么。</p>
-<p>作为程序员，往往还带有拖延症。在学习上，就表现在一个技术学习时间跨度太大，以至于从这个技术的兴起到它已经淡出舞台，你都还没真正掌握而用于项目实践。不得不说这样低效的学习多么的低效，这样懒散的人生是多么的懒散。而且，对于一个知识点，学久了会忘，拖太久会让人无法把所有知识点系统地连贯起来，这感觉，你能想象一个便秘的人是用何种眼光望着天花板然后听着旁边一位后进来的人脱裤解决冲水走人毫不拖泥带水半分钟完事么，我有个高中同学就是。</p>
-<p>在工作上，无法就是大家都熟知的代码不够完善便进行下一功能的开发，自测也不够全面就甩旁边然后大舒一口气。总是在内心对自己说呆会再来写注释，等有时间了再来完善。但工作经验告诉我们由于这样的一时疏忽而导致的返工是屡见不鲜的，我们仍然像重启的电脑把日事日毕忘得一干二净。</p>
-<p>及时当勉励。或许，我也曾常常幻想过牛逼的那一天，身后是放射状的光芒。但一直安慰自己：现在还在牛逼的路上。</p>
-<p>但其实就是拖延症，大多数人败给了拖延症而安于现状，得过且过。</p>
-<p>而现在秋天已过冬意渐浓，如果我们已经错过了夏花绚烂，那只待来年花开了，如果还够年轻的话，如果现在还积极准备的话</p>
-<h2 id="有感"><a href="#有感" class="headerlink" title="有感"></a>有感</h2><p>在这个比较浮躁的社会，在这个比较浮躁的行业，有的时候我们是要静下心来思考，来学一些东西。在各种环境下我们更应该秉承一种工匠精神，把手中的每一件事情做好，耐得住寂寞，坐的了冷板凳。</p>
-<p><img src="http://oeziv5rwi.bkt.clouddn.com/2016/11/03/001.jpg" alt=""></p>
-]]></content>
-      
-        <categories>
-            
-            <category> 杂记 </category>
-            
-        </categories>
-        
-        
-        <tags>
-            
-            <tag> 生活 </tag>
-            
-        </tags>
-        
-    </entry>
-    
-    <entry>
       <title><![CDATA[锐雯上单不给就送——题解]]></title>
       <url>/2016/11/03/%E9%94%90%E9%9B%AF%E4%B8%8A%E5%8D%95%E4%B8%8D%E7%BB%99%E5%B0%B1%E9%80%81-%E9%A2%98%E8%A7%A3/</url>
       <content type="html"><![CDATA[<p>15安徽省赛D题</p>
@@ -8621,85 +8458,6 @@ doDecrypt(passwd, onError);
         <tags>
             
             <tag> 点滴 </tag>
-            
-        </tags>
-        
-    </entry>
-    
-    <entry>
-      <title><![CDATA[计算机的启动[转]]]></title>
-      <url>/2016/10/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9A%84%E5%90%AF%E5%8A%A8-%E8%BD%AC/</url>
-      <content type="html"><![CDATA[<p>最近在给工作室的电脑重装系统，也了解了一些计算机启动的相关知识，在网上觉得这篇<a href="http://www.ruanyifeng.com/blog/2013/02/booting.html" target="_blank" rel="external">博客</a>写得不错。虽然自己现在只是大二，有些地方看起来还是有一些吃力，但是还是收获到了很多的知识。</p>
-<a id="more"></a>
-<h2 id="零、boot的含义"><a href="#零、boot的含义" class="headerlink" title="零、boot的含义"></a>零、boot的含义</h2><p>先问一个问题，”启动”用英语怎么说？</p>
-<p>回答是boot。可是，boot原来的意思是靴子，”启动”与靴子有什么关系呢？ 原来，这里的boot是bootstrap（鞋带）的缩写，它来自一句谚语：</p>
-<blockquote>
-<p>“pull oneself up by one’s bootstraps”</p>
-</blockquote>
-<p>字面意思是”拽着鞋带把自己拉起来”，这当然是不可能的事情。最早的时候，工程师们用它来比喻，计算机启动是一个很矛盾的过程：必须先运行程序，然后计算机才能启动，但是计算机不启动就无法运行程序！</p>
-<p>早期真的是这样，必须想尽各种办法，把一小段程序装进内存，然后计算机才能正常运行。所以，工程师们把这个过程叫做”拉鞋带”，久而久之就简称为boot了。</p>
-<p>计算机的整个启动过程分成四个阶段。</p>
-<h2 id="第一阶段：BIOS"><a href="#第一阶段：BIOS" class="headerlink" title="第一阶段：BIOS"></a>第一阶段：BIOS</h2><p>上个世纪70年代初，”只读内存”（read-only memory，缩写为ROM）发明，开机程序被刷入ROM芯片，计算机通电后，第一件事就是读取它。</p>
-<p><img src="http://oeziv5rwi.bkt.clouddn.com/2016/10/19/001.png" alt=""></p>
-<p>这块芯片里的程序叫做”基本輸出輸入系統”（Basic Input/Output System），简称为BIOS。</p>
-<h3 id="硬件自检"><a href="#硬件自检" class="headerlink" title="硬件自检"></a>硬件自检</h3><p>BIOS中主要存放的程序包括：自诊断程序（通过读取CMOS RAM中的内容识别硬件配置，并对其进行自检和初始化）、CMOS设置程序（引导过程中，通过特殊热键启动，进行设置后，存入CMOS RAM中）、系统自动装载程序（在系统自检成功后，将磁盘相对0道0扇区上的引导程序装入内存使其运行）和主要I/O驱动程序和中断服务（BIOS和硬件直接打交道，需要加载I/O驱动程序）。</p>
-<p>BIOS程序首先检查，计算机硬件能否满足运行的基本条件，这叫做”硬件自检”（Power-On Self-Test），缩写为POST。</p>
-<p>如果硬件出现问题，主板会发出不同含义的蜂鸣，启动中止。如果没有问题，屏幕就会显示出CPU、内存、硬盘等信息。</p>
-<h3 id="启动顺序"><a href="#启动顺序" class="headerlink" title="启动顺序"></a>启动顺序</h3><p>硬件自检完成后，BIOS把控制权转交给下一阶段的启动程序。</p>
-<p>这时，BIOS需要知道，”下一阶段的启动程序”具体存放在哪一个设备。也就是说，BIOS需要有一个外部储存设备的排序，排在前面的设备就是优先转交控制权的设备。这种排序叫做”启动顺序”（Boot Sequence）。</p>
-<p>打开BIOS的操作界面，里面有一项就是”设定启动顺序”。</p>
-<p>BIOS Sequence</p>
-<p><img src="http://oeziv5rwi.bkt.clouddn.com/2016/10/19/002.jpg" alt=""></p>
-<p>常见项有：</p>
-<ul>
-<li>Floppy 软盘</li>
-<li>HDD－0 硬盘（第一块硬盘）</li>
-<li>CDROM 光驱</li>
-<li>USB－CDROM USB光驱</li>
-<li>USB－HDD 移动硬盘</li>
-<li>LAN 网络启动</li>
-</ul>
-<h2 id="第二阶段：主引导记录"><a href="#第二阶段：主引导记录" class="headerlink" title="第二阶段：主引导记录"></a>第二阶段：主引导记录</h2><p>BIOS按照”启动顺序”，把控制权转交给排在第一位的储存设备。即根据用户指定的引导顺序从软盘、硬盘或是可移动设备中读取启动设备的MBR，并放入指定的位置（0x7c000）内存中。</p>
-<p>这时，计算机读取该设备的第一个扇区，也就是读取最前面的512个字节。如果这512个字节的最后两个字节是0x55和0xAA，表明这个设备可以用于启动；如果不是，表明设备不能用于启动，控制权于是被转交给”启动顺序”中的下一个设备。</p>
-<p>这最前面的512个字节，就叫做”主引导记录”（Master boot record，缩写为MBR）。</p>
-<h3 id="主引导记录的结构"><a href="#主引导记录的结构" class="headerlink" title="主引导记录的结构"></a>主引导记录的结构</h3><p>“主引导记录”只有512个字节，放不了太多东西。它的主要作用是，告诉计算机到硬盘的哪一个位置去找操作系统。</p>
-<p>主引导记录由三个部分组成：</p>
-<p>（1） 第1-446字节：调用操作系统的机器码。<br>（2） 第447-510字节：分区表（Partition table）。<br>（3） 第511-512字节：主引导记录签名（0x55和0xAA）。<br>其中，第二部分”分区表”的作用，是将硬盘分成若干个区。</p>
-<h3 id="分区表"><a href="#分区表" class="headerlink" title="分区表"></a>分区表</h3><p>硬盘分区有很多好处。考虑到每个区可以安装不同的操作系统，”主引导记录”因此必须知道将控制权转交给哪个区。</p>
-<p>分区表的长度只有64个字节，里面又分成四项，每项16个字节。所以，一个硬盘最多只能分四个一级分区，又叫做”主分区”。</p>
-<p>每个主分区的16个字节，由6个部分组成：</p>
-<p>（1） 第1个字节：如果为0x80，就表示该主分区是激活分区，控制权要转交给这个分区。四个主分区里面只能有一个是激活的。<br>（2） 第2-4个字节：主分区第一个扇区的物理位置（柱面、磁头、扇区号等等）。<br>（3） 第5个字节：主分区类型。<br>（4） 第6-8个字节：主分区最后一个扇区的物理位置。<br>（5） 第9-12字节：该主分区第一个扇区的逻辑地址。<br>（6） 第13-16字节：主分区的扇区总数。<br>最后的四个字节（”主分区的扇区总数”），决定了这个主分区的长度。也就是说，一个主分区的扇区总数最多不超过2的32次方。</p>
-<p>如果每个扇区为512个字节，就意味着单个分区最大不超过2TB。再考虑到扇区的逻辑地址也是32位，所以单个硬盘可利用的空间最大也不超过2TB。如果想使用更大的硬盘，只有2个方法：一是提高每个扇区的字节数，二是增加扇区总数。</p>
-<h2 id="第三阶段：硬盘启动"><a href="#第三阶段：硬盘启动" class="headerlink" title="第三阶段：硬盘启动"></a>第三阶段：硬盘启动</h2><p>这时，计算机的控制权就要转交给硬盘的某个分区了，这里又分成三种情况。</p>
-<h3 id="情况A：卷引导记录"><a href="#情况A：卷引导记录" class="headerlink" title="情况A：卷引导记录"></a>情况A：卷引导记录</h3><p>上一节提到，四个主分区里面，只有一个是激活的。计算机会读取激活分区的第一个扇区，叫做”卷引导记录”（Volume boot record，缩写为VBR）。</p>
-<p>“卷引导记录”的主要作用是，告诉计算机，操作系统在这个分区里的位置。然后，计算机就会加载操作系统了。</p>
-<h3 id="情况B：扩展分区和逻辑分区"><a href="#情况B：扩展分区和逻辑分区" class="headerlink" title="情况B：扩展分区和逻辑分区"></a>情况B：扩展分区和逻辑分区</h3><p>随着硬盘越来越大，四个主分区已经不够了，需要更多的分区。但是，分区表只有四项，因此规定有且仅有一个区可以被定义成”扩展分区”（Extended partition）。</p>
-<p>所谓”扩展分区”，就是指这个区里面又分成多个区。这种分区里面的分区，就叫做”逻辑分区”（logical partition）。</p>
-<p>计算机先读取扩展分区的第一个扇区，叫做”扩展引导记录”（Extended boot record，缩写为EBR）。它里面也包含一张64字节的分区表，但是最多只有两项（也就是两个逻辑分区）。</p>
-<p>计算机接着读取第二个逻辑分区的第一个扇区，再从里面的分区表中找到第三个逻辑分区的位置，以此类推，直到某个逻辑分区的分区表只包含它自身为止（即只有一个分区项）。因此，扩展分区可以包含无数个逻辑分区。</p>
-<p>但是，似乎很少通过这种方式启动操作系统。如果操作系统确实安装在扩展分区，一般采用下一种方式启动。</p>
-<h3 id="情况C：启动管理器"><a href="#情况C：启动管理器" class="headerlink" title="情况C：启动管理器"></a>情况C：启动管理器</h3><p>在这种情况下，计算机读取”主引导记录”前面446字节的机器码之后，不再把控制权转交给某一个分区，而是运行事先安装的”启动管理器”（boot loader），由用户选择启动哪一个操作系统。</p>
-<p>Linux环境中，目前最流行的启动管理器是Grub。</p>
-<p><img src="http://oeziv5rwi.bkt.clouddn.com/2016/10/19/003.png" alt=""></p>
-<p>Grub</p>
-<p>对于grub而言，在MBR中的446字节的引导程序属于GRUB的开始执行程序，通过这段程序，进一步执行stage1.5或是stage2的执行程序，将在下面详细介绍执行过程。</p>
-<p>其中stage1.5或是stage2便属于阶段2引导的过程了，stage2过程也是作为GRUB kernel的核心代码出现。Stage1.5过程（对于GRUB而言存在stage1.5，GRUB2则不存在）的功能很单一，主要就是为了引导stage2过程服务。由于stage2过程的代码存放在文件系统下的boot分区目录中，因此stage1.5过程就是需要提供一个文件系统的环境，而该文件系统环境需要保证系统可以找到stage2过程的文件，那么stage1.5阶段提供的文件系统需要是boot文件系统所对应的，这个在执行grub install过程中就已经确定了。stage2过程中，主要会把系统切换到保护模式，设置好C运行时环境，找到config文件（事实上就是menulist文件），如果没有找到就执行一个shell，等待用户的执行。然后的工作就变成了输入命令-&gt;解析命令-&gt;执行命令的循环中。当然该阶段引导的最终状态就是执行boot命令，将内核和initrd镜像加载进入内存中，进而将控制权转交给内核。</p>
-<h2 id="第四阶段：操作系统"><a href="#第四阶段：操作系统" class="headerlink" title="第四阶段：操作系统"></a>第四阶段：操作系统</h2><p>控制权转交给操作系统后，操作系统的内核首先被载入内存。</p>
-<p>以Linux系统为例，先载入/boot目录下面的kernel。内核加载成功后，第一个运行的程序是/sbin/init。它根据配置文件（Debian系统是/etc/initab）产生init进程。这是Linux启动后的第一个进程，pid进程编号为1，其他进程都是它的后代。</p>
-<p>然后，init线程加载系统的各个模块，比如窗口程序和网络程序，直至执行/bin/login程序，跳出登录界面，等待用户输入用户名和密码。</p>
-<p>至此，全部启动过程完成。</p>
-]]></content>
-      
-        <categories>
-            
-            <category> 操作系统 </category>
-            
-        </categories>
-        
-        
-        <tags>
-            
-            <tag> 计算机 </tag>
             
         </tags>
         
