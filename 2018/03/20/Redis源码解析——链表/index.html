@@ -109,15 +109,15 @@
 <meta name="description" content="链表和字典（dict）是比较常用的数据结构，但是C语言在底层并没有内置这种数据结构，这里通过源码查看这两个数据结构在Redis底层的实现">
 <meta name="keywords" content="Reids">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Redis源码解析——链表和字典">
+<meta property="og:title" content="Redis源码剖析——链表和字典">
 <meta property="og:url" content="https://www.liuin.cn/2018/03/20/Redis源码解析——链表/index.html">
 <meta property="og:site_name" content="Sixzeroo">
 <meta property="og:description" content="链表和字典（dict）是比较常用的数据结构，但是C语言在底层并没有内置这种数据结构，这里通过源码查看这两个数据结构在Redis底层的实现">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://data2.liuin.cn/2018-03-20-15215263654971.jpg">
-<meta property="og:updated_time" content="2018-03-21T06:43:41.000Z">
+<meta property="og:updated_time" content="2018-03-23T10:40:56.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Redis源码解析——链表和字典">
+<meta name="twitter:title" content="Redis源码剖析——链表和字典">
 <meta name="twitter:description" content="链表和字典（dict）是比较常用的数据结构，但是C语言在底层并没有内置这种数据结构，这里通过源码查看这两个数据结构在Redis底层的实现">
 <meta name="twitter:image" content="https://data2.liuin.cn/2018-03-20-15215263654971.jpg">
 
@@ -155,7 +155,7 @@
 
 
 
-  <title>Redis源码解析——链表和字典 | Sixzeroo</title>
+  <title>Redis源码剖析——链表和字典 | Sixzeroo</title>
   
 
 
@@ -365,7 +365,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">Redis源码解析——链表和字典</h2>
+          <h2 class="post-title" itemprop="name headline">Redis源码剖析——链表和字典</h2>
         
 
         <div class="post-meta">
@@ -400,8 +400,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/源码解析/" itemprop="url" rel="index">
-                    <span itemprop="name">源码解析</span>
+                  <a href="/categories/源码剖析/" itemprop="url" rel="index">
+                    <span itemprop="name">源码剖析</span>
                   </a>
                 </span>
 
@@ -417,7 +417,7 @@
 
           
           
-             <span id="/2018/03/20/Redis源码解析——链表/" class="leancloud_visitors" data-flag-title="Redis源码解析——链表和字典">
+             <span id="/2018/03/20/Redis源码解析——链表/" class="leancloud_visitors" data-flag-title="Redis源码剖析——链表和字典">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -574,7 +574,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://www.liuin.cn/2018/03/20/Redis源码解析——链表/" title="Redis源码解析——链表和字典">https://www.liuin.cn/2018/03/20/Redis源码解析——链表/</a>
+    <a href="https://www.liuin.cn/2018/03/20/Redis源码解析——链表/" title="Redis源码剖析——链表和字典">https://www.liuin.cn/2018/03/20/Redis源码解析——链表/</a>
   </li>
   <li class="post-copyright-author">
 	<strong>发布时间: </strong>
@@ -582,7 +582,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年3月21日 - 14时03分
+	2018年3月23日 - 18时03分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -610,8 +610,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/03/19/Redis源码解析——简单动态字符串-SDS/" rel="next" title="Redis源码解析——简单动态字符串(SDS)">
-                <i class="fa fa-chevron-left"></i> Redis源码解析——简单动态字符串(SDS)
+              <a href="/2018/03/19/Redis源码解析——简单动态字符串-SDS/" rel="next" title="Redis源码剖析——简单动态字符串(SDS)">
+                <i class="fa fa-chevron-left"></i> Redis源码剖析——简单动态字符串(SDS)
               </a>
             
           </div>
@@ -620,8 +620,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/03/22/Redis源码解析——跳跃表/" rel="prev" title="Redis源码解析——跳跃表">
-                Redis源码解析——跳跃表 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/03/22/Redis源码解析——跳跃表/" rel="prev" title="Redis源码剖析——跳跃表">
+                Redis源码剖析——跳跃表 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -703,7 +703,7 @@
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">139</span>
+                <span class="site-state-item-count">140</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -829,7 +829,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      225.8k 字
+      227.1k 字
     </span>
   
 

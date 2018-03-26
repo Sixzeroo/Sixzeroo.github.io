@@ -109,16 +109,16 @@
 <meta name="description" content="Redis使用跳跃表作为有序集合键的底层实现之一，跳跃表(skiplist)是一种有序数据结构,它通过在每个节点中维持多个指向其他节点的指针,从而达到快速访问节点的目的。">
 <meta name="keywords" content="Redis">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Redis源码解析——跳跃表">
+<meta property="og:title" content="Redis源码剖析——跳跃表">
 <meta property="og:url" content="https://www.liuin.cn/2018/03/22/Redis源码解析——跳跃表/index.html">
 <meta property="og:site_name" content="Sixzeroo">
 <meta property="og:description" content="Redis使用跳跃表作为有序集合键的底层实现之一，跳跃表(skiplist)是一种有序数据结构,它通过在每个节点中维持多个指向其他节点的指针,从而达到快速访问节点的目的。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://data2.liuin.cn/2018-03-22-15217053998776.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-03-22-56782.png">
-<meta property="og:updated_time" content="2018-03-22T12:56:11.000Z">
+<meta property="og:updated_time" content="2018-03-23T10:40:47.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Redis源码解析——跳跃表">
+<meta name="twitter:title" content="Redis源码剖析——跳跃表">
 <meta name="twitter:description" content="Redis使用跳跃表作为有序集合键的底层实现之一，跳跃表(skiplist)是一种有序数据结构,它通过在每个节点中维持多个指向其他节点的指针,从而达到快速访问节点的目的。">
 <meta name="twitter:image" content="https://data2.liuin.cn/2018-03-22-15217053998776.jpg">
 
@@ -156,7 +156,7 @@
 
 
 
-  <title>Redis源码解析——跳跃表 | Sixzeroo</title>
+  <title>Redis源码剖析——跳跃表 | Sixzeroo</title>
   
 
 
@@ -366,7 +366,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">Redis源码解析——跳跃表</h2>
+          <h2 class="post-title" itemprop="name headline">Redis源码剖析——跳跃表</h2>
         
 
         <div class="post-meta">
@@ -401,8 +401,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/源码解析/" itemprop="url" rel="index">
-                    <span itemprop="name">源码解析</span>
+                  <a href="/categories/源码剖析/" itemprop="url" rel="index">
+                    <span itemprop="name">源码剖析</span>
                   </a>
                 </span>
 
@@ -418,7 +418,7 @@
 
           
           
-             <span id="/2018/03/22/Redis源码解析——跳跃表/" class="leancloud_visitors" data-flag-title="Redis源码解析——跳跃表">
+             <span id="/2018/03/22/Redis源码解析——跳跃表/" class="leancloud_visitors" data-flag-title="Redis源码剖析——跳跃表">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -548,7 +548,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://www.liuin.cn/2018/03/22/Redis源码解析——跳跃表/" title="Redis源码解析——跳跃表">https://www.liuin.cn/2018/03/22/Redis源码解析——跳跃表/</a>
+    <a href="https://www.liuin.cn/2018/03/22/Redis源码解析——跳跃表/" title="Redis源码剖析——跳跃表">https://www.liuin.cn/2018/03/22/Redis源码解析——跳跃表/</a>
   </li>
   <li class="post-copyright-author">
 	<strong>发布时间: </strong>
@@ -556,7 +556,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年3月22日 - 20时03分
+	2018年3月23日 - 18时03分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -584,8 +584,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/03/20/Redis源码解析——链表/" rel="next" title="Redis源码解析——链表和字典">
-                <i class="fa fa-chevron-left"></i> Redis源码解析——链表和字典
+              <a href="/2018/03/20/Redis源码解析——链表/" rel="next" title="Redis源码剖析——链表和字典">
+                <i class="fa fa-chevron-left"></i> Redis源码剖析——链表和字典
               </a>
             
           </div>
@@ -593,6 +593,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/23/Redis源码剖析——内存分配/" rel="prev" title="Redis源码剖析——内存分配">
+                Redis源码剖析——内存分配 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -673,7 +677,7 @@
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">139</span>
+                <span class="site-state-item-count">140</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -799,7 +803,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      225.8k 字
+      227.1k 字
     </span>
   
 
