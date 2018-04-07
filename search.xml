@@ -3,6 +3,2303 @@
   
     
     <entry>
+      <title><![CDATA[Github分布式爬虫——数据分析]]></title>
+      <url>/2018/04/07/Github%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E2%80%94%E2%80%94%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/</url>
+      <content type="html"><![CDATA[<p>对Github分布式爬虫爬取的20w用户信息和40w仓库信息进行简单的分析和统计</p>
+<a id="more"></a>
+<p>这里爬取的数据主要有两大类：用户数据和仓库数据，此次分析的数据量：256171用户数据，434994仓库数据</p>
+<h2 id="用户"><a href="#用户" class="headerlink" title="用户"></a>用户</h2><h3 id="全球用户榜单"><a href="#全球用户榜单" class="headerlink" title="全球用户榜单"></a>全球用户榜单</h3><h4 id="Followers人数榜"><a href="#Followers人数榜" class="headerlink" title="Followers人数榜"></a>Followers人数榜</h4><table>
+<thead>
+<tr>
+<th>Avatar</th>
+<th>User</th>
+<th>Repos</th>
+<th>Stars</th>
+<th>Followers</th>
+<th>Following</th>
+<th>Contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/1024025" alt=""></td>
+<td><a href="https://github.com/torvalds" target="_blank" rel="external">https://github.com/torvalds</a></td>
+<td>6</td>
+<td>2</td>
+<td>70400</td>
+<td>0</td>
+<td>8</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/66577" alt=""></td>
+<td><a href="https://github.com/JakeWharton" target="_blank" rel="external">https://github.com/JakeWharton</a></td>
+<td>95</td>
+<td>228</td>
+<td>45000</td>
+<td>12</td>
+<td>3541</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/905434" alt=""></td>
+<td><a href="https://github.com/ruanyf" target="_blank" rel="external">https://github.com/ruanyf</a></td>
+<td>48</td>
+<td>206</td>
+<td>38200</td>
+<td>0</td>
+<td>1645</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/25254" alt=""></td>
+<td><a href="https://github.com/tj" target="_blank" rel="external">https://github.com/tj</a></td>
+<td>273</td>
+<td>2000</td>
+<td>34400</td>
+<td>46</td>
+<td>3310</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/499550" alt=""></td>
+<td><a href="https://github.com/yyx990803" target="_blank" rel="external">https://github.com/yyx990803</a></td>
+<td>141</td>
+<td>779</td>
+<td>29200</td>
+<td>90</td>
+<td>2553</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/110953" alt=""></td>
+<td><a href="https://github.com/addyosmani" target="_blank" rel="external">https://github.com/addyosmani</a></td>
+<td>295</td>
+<td>807</td>
+<td>29000</td>
+<td>254</td>
+<td>928</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/810438" alt=""></td>
+<td><a href="https://github.com/gaearon" target="_blank" rel="external">https://github.com/gaearon</a></td>
+<td>227</td>
+<td>1300</td>
+<td>27200</td>
+<td>171</td>
+<td>3019</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/39191" alt=""></td>
+<td><a href="https://github.com/paulirish" target="_blank" rel="external">https://github.com/paulirish</a></td>
+<td>266</td>
+<td>723</td>
+<td>25600</td>
+<td>245</td>
+<td>2375</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/170270" alt=""></td>
+<td><a href="https://github.com/sindresorhus" target="_blank" rel="external">https://github.com/sindresorhus</a></td>
+<td>975</td>
+<td>2500</td>
+<td>23600</td>
+<td>50</td>
+<td>4753</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/119893" alt=""></td>
+<td><a href="https://github.com/kennethreitz" target="_blank" rel="external">https://github.com/kennethreitz</a></td>
+<td>141</td>
+<td>1900</td>
+<td>21200</td>
+<td>197</td>
+<td>5626</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Following人数榜"><a href="#Following人数榜" class="headerlink" title="Following人数榜"></a>Following人数榜</h4><table>
+<thead>
+<tr>
+<th>Avatar</th>
+<th>User</th>
+<th>Repos</th>
+<th>Stars</th>
+<th>Followers</th>
+<th>Following</th>
+<th>Contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/3076393" alt=""></td>
+<td><a href="https://github.com/KevinHock" target="_blank" rel="external">https://github.com/KevinHock</a></td>
+<td>19</td>
+<td>198</td>
+<td>1300</td>
+<td>284000</td>
+<td>639</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/5877145" alt=""></td>
+<td><a href="https://github.com/angusshire" target="_blank" rel="external">https://github.com/angusshire</a></td>
+<td>8</td>
+<td>217000</td>
+<td>10300</td>
+<td>230000</td>
+<td>30</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/6508763" alt=""></td>
+<td><a href="https://github.com/dalinhuang99" target="_blank" rel="external">https://github.com/dalinhuang99</a></td>
+<td>20</td>
+<td>75</td>
+<td>3200</td>
+<td>162000</td>
+<td>1293</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/3604053" alt=""></td>
+<td><a href="https://github.com/cusspvz" target="_blank" rel="external">https://github.com/cusspvz</a></td>
+<td>109</td>
+<td>1200</td>
+<td>6600</td>
+<td>130000</td>
+<td>90</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/6673982" alt=""></td>
+<td><a href="https://github.com/MichalPaszkiewicz" target="_blank" rel="external">https://github.com/MichalPaszkiewicz</a></td>
+<td>60</td>
+<td>558</td>
+<td>4600</td>
+<td>72700</td>
+<td>172</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/418638" alt=""></td>
+<td><a href="https://github.com/nfultz" target="_blank" rel="external">https://github.com/nfultz</a></td>
+<td>70</td>
+<td>2500</td>
+<td>2600</td>
+<td>61600</td>
+<td>2141</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/14251570" alt=""></td>
+<td><a href="https://github.com/mstraughan86" target="_blank" rel="external">https://github.com/mstraughan86</a></td>
+<td>15</td>
+<td>454</td>
+<td>3400</td>
+<td>60500</td>
+<td>299</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/32831059" alt=""></td>
+<td><a href="https://github.com/opengiineer" target="_blank" rel="external">https://github.com/opengiineer</a></td>
+<td>19</td>
+<td>90</td>
+<td>1600</td>
+<td>55700</td>
+<td>46</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/778015" alt=""></td>
+<td><a href="https://github.com/ahmetabdi" target="_blank" rel="external">https://github.com/ahmetabdi</a></td>
+<td>130</td>
+<td>4100</td>
+<td>448</td>
+<td>53300</td>
+<td>1954</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/4107768" alt=""></td>
+<td><a href="https://github.com/brunocasanova" target="_blank" rel="external">https://github.com/brunocasanova</a></td>
+<td>46</td>
+<td>152</td>
+<td>2400</td>
+<td>48300</td>
+<td>13</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Stars榜"><a href="#Stars榜" class="headerlink" title="Stars榜"></a>Stars榜</h4><p>看看谁收藏的仓库最多</p>
+<table>
+<thead>
+<tr>
+<th>Avatar</th>
+<th>User</th>
+<th>Repos</th>
+<th>Stars</th>
+<th>Followers</th>
+<th>Following</th>
+<th>Contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/5877145" alt=""></td>
+<td><a href="https://github.com/angusshire" target="_blank" rel="external">https://github.com/angusshire</a></td>
+<td>8</td>
+<td>217000</td>
+<td>10300</td>
+<td>230000</td>
+<td>30</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/1610158" alt=""></td>
+<td><a href="https://github.com/mcanthony" target="_blank" rel="external">https://github.com/mcanthony</a></td>
+<td>4300</td>
+<td>42500</td>
+<td>375</td>
+<td>12700</td>
+<td>21</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/3947125" alt=""></td>
+<td><a href="https://github.com/maoabc1818" target="_blank" rel="external">https://github.com/maoabc1818</a></td>
+<td>9</td>
+<td>32200</td>
+<td>121</td>
+<td>95</td>
+<td>2</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/391299" alt=""></td>
+<td><a href="https://github.com/JT5D" target="_blank" rel="external">https://github.com/JT5D</a></td>
+<td>210</td>
+<td>29300</td>
+<td>276</td>
+<td>6200</td>
+<td>0</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/500775" alt=""></td>
+<td><a href="https://github.com/reduxionist" target="_blank" rel="external">https://github.com/reduxionist</a></td>
+<td>15</td>
+<td>25800</td>
+<td>174</td>
+<td>429</td>
+<td>62</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/6948067" alt=""></td>
+<td><a href="https://github.com/pranavlathigara" target="_blank" rel="external">https://github.com/pranavlathigara</a></td>
+<td>1200</td>
+<td>24600</td>
+<td>793</td>
+<td>14900</td>
+<td>130</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/2882" alt=""></td>
+<td><a href="https://github.com/nikolay" target="_blank" rel="external">https://github.com/nikolay</a></td>
+<td>12</td>
+<td>23100</td>
+<td>243</td>
+<td>349</td>
+<td>469</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/3759759" alt=""></td>
+<td><a href="https://github.com/denji" target="_blank" rel="external">https://github.com/denji</a></td>
+<td>1300</td>
+<td>22500</td>
+<td>181</td>
+<td>397</td>
+<td>305</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/24416962" alt=""></td>
+<td><a href="https://github.com/roscopecoltran" target="_blank" rel="external">https://github.com/roscopecoltran</a></td>
+<td>156</td>
+<td>21000</td>
+<td>121</td>
+<td>4400</td>
+<td>599</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/6257454" alt=""></td>
+<td><a href="https://github.com/Jerzerak" target="_blank" rel="external">https://github.com/Jerzerak</a></td>
+<td>1</td>
+<td>18900</td>
+<td>54</td>
+<td>0</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Reps榜"><a href="#Reps榜" class="headerlink" title="Reps榜"></a>Reps榜</h4><p>Github上创建仓库最多的人在这里</p>
+<table>
+<thead>
+<tr>
+<th>Avatar</th>
+<th>User</th>
+<th>Repos</th>
+<th>Stars</th>
+<th>Followers</th>
+<th>Following</th>
+<th>Contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/675997" alt=""></td>
+<td><a href="https://github.com/pombredanne" target="_blank" rel="external">https://github.com/pombredanne</a></td>
+<td>40600</td>
+<td>6500</td>
+<td>149</td>
+<td>87</td>
+<td>2558</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/1732196" alt=""></td>
+<td><a href="https://github.com/carriercomm" target="_blank" rel="external">https://github.com/carriercomm</a></td>
+<td>20400</td>
+<td>12900</td>
+<td>72</td>
+<td>176</td>
+<td>151</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/14135456" alt=""></td>
+<td><a href="https://github.com/digideskio" target="_blank" rel="external">https://github.com/digideskio</a></td>
+<td>18000</td>
+<td>88</td>
+<td>120</td>
+<td>3900</td>
+<td>113</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/431924" alt=""></td>
+<td><a href="https://github.com/guoyu07" target="_blank" rel="external">https://github.com/guoyu07</a></td>
+<td>11600</td>
+<td>91</td>
+<td>20</td>
+<td>1000</td>
+<td>112</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/12729391" alt=""></td>
+<td><a href="https://github.com/modulexcite" target="_blank" rel="external">https://github.com/modulexcite</a></td>
+<td>10700</td>
+<td>4200</td>
+<td>30</td>
+<td>192</td>
+<td>15</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/1218365" alt=""></td>
+<td><a href="https://github.com/PlumpMath" target="_blank" rel="external">https://github.com/PlumpMath</a></td>
+<td>10100</td>
+<td>508</td>
+<td>31</td>
+<td>147</td>
+<td>103</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/3380677" alt=""></td>
+<td><a href="https://github.com/carabina" target="_blank" rel="external">https://github.com/carabina</a></td>
+<td>9300</td>
+<td>8700</td>
+<td>83</td>
+<td>5</td>
+<td>101</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/4687038" alt=""></td>
+<td><a href="https://github.com/jorik041" target="_blank" rel="external">https://github.com/jorik041</a></td>
+<td>9200</td>
+<td>53</td>
+<td>20</td>
+<td>129</td>
+<td>101</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/1332574" alt=""></td>
+<td><a href="https://github.com/treejames" target="_blank" rel="external">https://github.com/treejames</a></td>
+<td>8000</td>
+<td>6900</td>
+<td>93</td>
+<td>897</td>
+<td>101</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/498130" alt=""></td>
+<td><a href="https://github.com/mehulsbhatt" target="_blank" rel="external">https://github.com/mehulsbhatt</a></td>
+<td>7400</td>
+<td>364</td>
+<td>23</td>
+<td>9</td>
+<td>104</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Contribution榜"><a href="#Contribution榜" class="headerlink" title="Contribution榜"></a>Contribution榜</h4><table>
+<thead>
+<tr>
+<th>Avatar</th>
+<th>User</th>
+<th>Repos</th>
+<th>Stars</th>
+<th>Followers</th>
+<th>Following</th>
+<th>Contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/3244" alt=""></td>
+<td><a href="https://github.com/robertbrook" target="_blank" rel="external">https://github.com/robertbrook</a></td>
+<td>67</td>
+<td>32</td>
+<td>63</td>
+<td>114</td>
+<td>539804</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/20975616" alt=""></td>
+<td><a href="https://github.com/SimiCode" target="_blank" rel="external">https://github.com/SimiCode</a></td>
+<td>24</td>
+<td>11</td>
+<td>5</td>
+<td>15</td>
+<td>377077</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/751143" alt=""></td>
+<td><a href="https://github.com/jasoncalabrese" target="_blank" rel="external">https://github.com/jasoncalabrese</a></td>
+<td>75</td>
+<td>50</td>
+<td>64</td>
+<td>19</td>
+<td>357587</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/56100" alt=""></td>
+<td><a href="https://github.com/kinlane" target="_blank" rel="external">https://github.com/kinlane</a></td>
+<td>222</td>
+<td>242</td>
+<td>346</td>
+<td>588</td>
+<td>199240</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/415831" alt=""></td>
+<td><a href="https://github.com/talos" target="_blank" rel="external">https://github.com/talos</a></td>
+<td>113</td>
+<td>95</td>
+<td>143</td>
+<td>7</td>
+<td>115891</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/283441" alt=""></td>
+<td><a href="https://github.com/honzajavorek" target="_blank" rel="external">https://github.com/honzajavorek</a></td>
+<td>87</td>
+<td>167</td>
+<td>128</td>
+<td>93</td>
+<td>80301</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/1006477" alt=""></td>
+<td><a href="https://github.com/felixonmars" target="_blank" rel="external">https://github.com/felixonmars</a></td>
+<td>420</td>
+<td>369</td>
+<td>806</td>
+<td>149</td>
+<td>70179</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/1317792" alt=""></td>
+<td><a href="https://github.com/xndcn" target="_blank" rel="external">https://github.com/xndcn</a></td>
+<td>33</td>
+<td>86</td>
+<td>67</td>
+<td>8</td>
+<td>67634</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/3935007" alt=""></td>
+<td><a href="https://github.com/ojengwa" target="_blank" rel="external">https://github.com/ojengwa</a></td>
+<td>293</td>
+<td>469</td>
+<td>67</td>
+<td>8</td>
+<td>49621</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/10103766" alt=""></td>
+<td><a href="https://github.com/SergioChan" target="_blank" rel="external">https://github.com/SergioChan</a></td>
+<td>47</td>
+<td>372</td>
+<td>982</td>
+<td>598</td>
+<td>42202</td>
+</tr>
+</tbody>
+</table>
+<p>365天，天天绿是种怎样的体验？</p>
+<h3 id="中国用户榜单"><a href="#中国用户榜单" class="headerlink" title="中国用户榜单"></a>中国用户榜单</h3><p>这里只是通过location中”China”、”Shanghai”类似的关键词对中国用户进行区分，所以可能有遗漏的地方，还请谅解。此次统计的中国用户数据有18011</p>
+<h4 id="Followers人数榜-1"><a href="#Followers人数榜-1" class="headerlink" title="Followers人数榜"></a>Followers人数榜</h4><table>
+<thead>
+<tr>
+<th>Avatar</th>
+<th>User</th>
+<th>Repos</th>
+<th>Stars</th>
+<th>Followers</th>
+<th>Following</th>
+<th>Contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/905434" alt=""></td>
+<td><a href="https://github.com/ruanyf" target="_blank" rel="external">https://github.com/ruanyf</a></td>
+<td>48</td>
+<td>206</td>
+<td>38200</td>
+<td>0</td>
+<td>1645</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/499550" alt=""></td>
+<td><a href="https://github.com/yyx990803" target="_blank" rel="external">https://github.com/yyx990803</a></td>
+<td>141</td>
+<td>779</td>
+<td>29200</td>
+<td>90</td>
+<td>2553</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/2503423" alt=""></td>
+<td><a href="https://github.com/daimajia" target="_blank" rel="external">https://github.com/daimajia</a></td>
+<td>63</td>
+<td>2900</td>
+<td>20000</td>
+<td>241</td>
+<td>21</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/470058" alt=""></td>
+<td><a href="https://github.com/michaelliao" target="_blank" rel="external">https://github.com/michaelliao</a></td>
+<td>61</td>
+<td>81</td>
+<td>19700</td>
+<td>0</td>
+<td>297</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/327019" alt=""></td>
+<td><a href="https://github.com/JacksonTian" target="_blank" rel="external">https://github.com/JacksonTian</a></td>
+<td>229</td>
+<td>583</td>
+<td>15500</td>
+<td>151</td>
+<td>805</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/1169522" alt=""></td>
+<td><a href="https://github.com/Trinea" target="_blank" rel="external">https://github.com/Trinea</a></td>
+<td>24</td>
+<td>1500</td>
+<td>14100</td>
+<td>38</td>
+<td>80</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/2267900" alt=""></td>
+<td><a href="https://github.com/stormzhang" target="_blank" rel="external">https://github.com/stormzhang</a></td>
+<td>5</td>
+<td>1500</td>
+<td>12800</td>
+<td>91</td>
+<td>9</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/97227" alt=""></td>
+<td><a href="https://github.com/lifesinger" target="_blank" rel="external">https://github.com/lifesinger</a></td>
+<td>2</td>
+<td>278</td>
+<td>12000</td>
+<td>13</td>
+<td>1</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/729648" alt=""></td>
+<td><a href="https://github.com/cloudwu" target="_blank" rel="external">https://github.com/cloudwu</a></td>
+<td>102</td>
+<td>63</td>
+<td>11700</td>
+<td>1</td>
+<td>690</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/472311" alt=""></td>
+<td><a href="https://github.com/phodal" target="_blank" rel="external">https://github.com/phodal</a></td>
+<td>254</td>
+<td>1700</td>
+<td>11100</td>
+<td>15</td>
+<td>5924</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Following人数榜-1"><a href="#Following人数榜-1" class="headerlink" title="Following人数榜"></a>Following人数榜</h4><table>
+<thead>
+<tr>
+<th>Avatar</th>
+<th>User</th>
+<th>Repos</th>
+<th>Stars</th>
+<th>Followers</th>
+<th>Following</th>
+<th>Contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/3693121" alt=""></td>
+<td><a href="https://github.com/fordream" target="_blank" rel="external">https://github.com/fordream</a></td>
+<td>724</td>
+<td>21</td>
+<td>919</td>
+<td>19800</td>
+<td>1</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/17972943" alt=""></td>
+<td><a href="https://github.com/Vermisse" target="_blank" rel="external">https://github.com/Vermisse</a></td>
+<td>15</td>
+<td>25</td>
+<td>2300</td>
+<td>10400</td>
+<td>102</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/93859" alt=""></td>
+<td><a href="https://github.com/technologiclee" target="_blank" rel="external">https://github.com/technologiclee</a></td>
+<td>149</td>
+<td>844</td>
+<td>374</td>
+<td>9500</td>
+<td>6</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/15626022" alt=""></td>
+<td><a href="https://github.com/shenzhoudance" target="_blank" rel="external">https://github.com/shenzhoudance</a></td>
+<td>599</td>
+<td>6</td>
+<td>108</td>
+<td>7700</td>
+<td>2373</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/10573715" alt=""></td>
+<td><a href="https://github.com/kotobukki" target="_blank" rel="external">https://github.com/kotobukki</a></td>
+<td>15</td>
+<td>68</td>
+<td>111</td>
+<td>7500</td>
+<td>889</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/29220207" alt=""></td>
+<td><a href="https://github.com/vincentpanqi" target="_blank" rel="external">https://github.com/vincentpanqi</a></td>
+<td>1800</td>
+<td>714</td>
+<td>47</td>
+<td>5600</td>
+<td>102</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/1727724" alt=""></td>
+<td><a href="https://github.com/ovwane" target="_blank" rel="external">https://github.com/ovwane</a></td>
+<td>220</td>
+<td>1100</td>
+<td>120</td>
+<td>5500</td>
+<td>329</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/9153294" alt=""></td>
+<td><a href="https://github.com/pisual" target="_blank" rel="external">https://github.com/pisual</a></td>
+<td>39</td>
+<td>62</td>
+<td>917</td>
+<td>4900</td>
+<td>122</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/23236638" alt=""></td>
+<td><a href="https://github.com/youkaichao" target="_blank" rel="external">https://github.com/youkaichao</a></td>
+<td>39</td>
+<td>0</td>
+<td>58</td>
+<td>4800</td>
+<td>113</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/7576876" alt=""></td>
+<td><a href="https://github.com/bloodycoder" target="_blank" rel="external">https://github.com/bloodycoder</a></td>
+<td>73</td>
+<td>34</td>
+<td>162</td>
+<td>4200</td>
+<td>390</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Stars榜-1"><a href="#Stars榜-1" class="headerlink" title="Stars榜"></a>Stars榜</h4><table>
+<thead>
+<tr>
+<th>Avatar</th>
+<th>User</th>
+<th>Repos</th>
+<th>Stars</th>
+<th>Followers</th>
+<th>Following</th>
+<th>Contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/1041542" alt=""></td>
+<td><a href="https://github.com/weimingtom" target="_blank" rel="external">https://github.com/weimingtom</a></td>
+<td>2100</td>
+<td>9100</td>
+<td>172</td>
+<td>1800</td>
+<td>1724</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/2041398" alt=""></td>
+<td><a href="https://github.com/jiangplus" target="_blank" rel="external">https://github.com/jiangplus</a></td>
+<td>28</td>
+<td>8800</td>
+<td>85</td>
+<td>115</td>
+<td>13</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/1024948" alt=""></td>
+<td><a href="https://github.com/DavidAlphaFox" target="_blank" rel="external">https://github.com/DavidAlphaFox</a></td>
+<td>346</td>
+<td>7800</td>
+<td>167</td>
+<td>83</td>
+<td>1122</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/480859" alt=""></td>
+<td><a href="https://github.com/mayulu" target="_blank" rel="external">https://github.com/mayulu</a></td>
+<td>12</td>
+<td>7700</td>
+<td>133</td>
+<td>616</td>
+<td>14</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/4370703" alt=""></td>
+<td><a href="https://github.com/hzy87email" target="_blank" rel="external">https://github.com/hzy87email</a></td>
+<td>73</td>
+<td>7700</td>
+<td>77</td>
+<td>167</td>
+<td>3</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/1468284" alt=""></td>
+<td><a href="https://github.com/se77en" target="_blank" rel="external">https://github.com/se77en</a></td>
+<td>197</td>
+<td>7600</td>
+<td>119</td>
+<td>455</td>
+<td>0</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/12030169" alt=""></td>
+<td><a href="https://github.com/JaredYeDH" target="_blank" rel="external">https://github.com/JaredYeDH</a></td>
+<td>166</td>
+<td>7400</td>
+<td>45</td>
+<td>636</td>
+<td>101</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/10380759" alt=""></td>
+<td><a href="https://github.com/xhs" target="_blank" rel="external">https://github.com/xhs</a></td>
+<td>20</td>
+<td>7200</td>
+<td>43</td>
+<td>119</td>
+<td>10</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/1881113" alt=""></td>
+<td><a href="https://github.com/paladin74" target="_blank" rel="external">https://github.com/paladin74</a></td>
+<td>618</td>
+<td>7100</td>
+<td>52</td>
+<td>901</td>
+<td>1</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/3856" alt=""></td>
+<td><a href="https://github.com/mrluanma" target="_blank" rel="external">https://github.com/mrluanma</a></td>
+<td>12</td>
+<td>7000</td>
+<td>126</td>
+<td>541</td>
+<td>36</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Reps榜-1"><a href="#Reps榜-1" class="headerlink" title="Reps榜"></a>Reps榜</h4><table>
+<thead>
+<tr>
+<th>Avatar</th>
+<th>User</th>
+<th>Repos</th>
+<th>Stars</th>
+<th>Followers</th>
+<th>Following</th>
+<th>Contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/10938976" alt=""></td>
+<td><a href="https://github.com/skyformat99" target="_blank" rel="external">https://github.com/skyformat99</a></td>
+<td>6000</td>
+<td>143</td>
+<td>98</td>
+<td>3200</td>
+<td>134</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/1203820" alt=""></td>
+<td><a href="https://github.com/tempbottle" target="_blank" rel="external">https://github.com/tempbottle</a></td>
+<td>4200</td>
+<td>59</td>
+<td>21</td>
+<td>18</td>
+<td>101</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/8662447" alt=""></td>
+<td><a href="https://github.com/JamesLinus" target="_blank" rel="external">https://github.com/JamesLinus</a></td>
+<td>4100</td>
+<td>1600</td>
+<td>89</td>
+<td>3300</td>
+<td>181</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/12955801" alt=""></td>
+<td><a href="https://github.com/hu19891110" target="_blank" rel="external">https://github.com/hu19891110</a></td>
+<td>3600</td>
+<td>90</td>
+<td>11</td>
+<td>112</td>
+<td>107</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/452743" alt=""></td>
+<td><a href="https://github.com/WilliamRen" target="_blank" rel="external">https://github.com/WilliamRen</a></td>
+<td>2900</td>
+<td>3200</td>
+<td>32</td>
+<td>5</td>
+<td>5</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/3414057" alt=""></td>
+<td><a href="https://github.com/chagge" target="_blank" rel="external">https://github.com/chagge</a></td>
+<td>2300</td>
+<td>8</td>
+<td>16</td>
+<td>669</td>
+<td>101</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/6813552" alt=""></td>
+<td><a href="https://github.com/forging2012" target="_blank" rel="external">https://github.com/forging2012</a></td>
+<td>2200</td>
+<td>789</td>
+<td>8</td>
+<td>71</td>
+<td>151</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/1041542" alt=""></td>
+<td><a href="https://github.com/weimingtom" target="_blank" rel="external">https://github.com/weimingtom</a></td>
+<td>2100</td>
+<td>9100</td>
+<td>172</td>
+<td>1800</td>
+<td>1724</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/23429527" alt=""></td>
+<td><a href="https://github.com/isuhao" target="_blank" rel="external">https://github.com/isuhao</a></td>
+<td>2000</td>
+<td>153</td>
+<td>62</td>
+<td>2700</td>
+<td>282</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/5791117" alt=""></td>
+<td><a href="https://github.com/ycaihua" target="_blank" rel="external">https://github.com/ycaihua</a></td>
+<td>1900</td>
+<td>109</td>
+<td>38</td>
+<td>589</td>
+<td>133</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Contribution榜-1"><a href="#Contribution榜-1" class="headerlink" title="Contribution榜"></a>Contribution榜</h4><table>
+<thead>
+<tr>
+<th>Avatar</th>
+<th>User</th>
+<th>Repos</th>
+<th>Stars</th>
+<th>Followers</th>
+<th>Following</th>
+<th>Contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/1006477" alt=""></td>
+<td><a href="https://github.com/felixonmars" target="_blank" rel="external">https://github.com/felixonmars</a></td>
+<td>420</td>
+<td>369</td>
+<td>806</td>
+<td>149</td>
+<td>70179</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/10103766" alt=""></td>
+<td><a href="https://github.com/SergioChan" target="_blank" rel="external">https://github.com/SergioChan</a></td>
+<td>47</td>
+<td>372</td>
+<td>982</td>
+<td>598</td>
+<td>42202</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/12693644" alt=""></td>
+<td><a href="https://github.com/dragon-yuan" target="_blank" rel="external">https://github.com/dragon-yuan</a></td>
+<td>16</td>
+<td>109</td>
+<td>35</td>
+<td>50</td>
+<td>18591</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/8347202" alt=""></td>
+<td><a href="https://github.com/fengss" target="_blank" rel="external">https://github.com/fengss</a></td>
+<td>30</td>
+<td>67</td>
+<td>15</td>
+<td>1</td>
+<td>12560</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/9410171" alt=""></td>
+<td><a href="https://github.com/xieguigang" target="_blank" rel="external">https://github.com/xieguigang</a></td>
+<td>41</td>
+<td>115</td>
+<td>136</td>
+<td>143</td>
+<td>10999</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/9280577" alt=""></td>
+<td><a href="https://github.com/csjunxu" target="_blank" rel="external">https://github.com/csjunxu</a></td>
+<td>194</td>
+<td>81</td>
+<td>35</td>
+<td>51</td>
+<td>9935</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/559179" alt=""></td>
+<td><a href="https://github.com/airyland" target="_blank" rel="external">https://github.com/airyland</a></td>
+<td>183</td>
+<td>1400</td>
+<td>996</td>
+<td>175</td>
+<td>8852</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/11537812" alt=""></td>
+<td><a href="https://github.com/yutiansut" target="_blank" rel="external">https://github.com/yutiansut</a></td>
+<td>216</td>
+<td>1100</td>
+<td>298</td>
+<td>8</td>
+<td>7311</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/1826685" alt=""></td>
+<td><a href="https://github.com/lloydzhou" target="_blank" rel="external">https://github.com/lloydzhou</a></td>
+<td>92</td>
+<td>556</td>
+<td>52</td>
+<td>69</td>
+<td>6729</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/8784712" alt=""></td>
+<td><a href="https://github.com/egoist" target="_blank" rel="external">https://github.com/egoist</a></td>
+<td>647</td>
+<td>2700</td>
+<td>3600</td>
+<td>40</td>
+<td>6236</td>
+</tr>
+</tbody>
+</table>
+<h3 id="个人网站中顶级域名分布情况"><a href="#个人网站中顶级域名分布情况" class="headerlink" title="个人网站中顶级域名分布情况"></a>个人网站中顶级域名分布情况</h3><p><img src="https://data2.liuin.cn/2018-04-01-15225621477939.jpg" alt=""></p>
+<h3 id="用户公布邮箱情况"><a href="#用户公布邮箱情况" class="headerlink" title="用户公布邮箱情况"></a>用户公布邮箱情况</h3><p><img src="https://data2.liuin.cn/2018-04-01-15225624252077.jpg" alt=""></p>
+<h3 id="用户所在公司情况"><a href="#用户所在公司情况" class="headerlink" title="用户所在公司情况"></a>用户所在公司情况</h3><p>公布公司的前8</p>
+<p><img src="https://data2.liuin.cn/2018-04-01-15225631364406.jpg" alt=""></p>
+<p>云图</p>
+<p><img src="https://data2.liuin.cn/2018-04-01-15225635127953.jpg" alt=""></p>
+<h2 id="仓库"><a href="#仓库" class="headerlink" title="仓库"></a>仓库</h2><h3 id="Stars榜-2"><a href="#Stars榜-2" class="headerlink" title="Stars榜"></a>Stars榜</h3><table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/freeCodeCamp/freeCodeCamp" target="_blank" rel="external">freeCodeCamp/freeCodeCamp</a></td>
+<td><a href="https://github.com/freeCodeCamp" target="_blank" rel="external">freeCodeCamp</a></td>
+<td>JavaScript</td>
+<td>291895</td>
+<td>13667</td>
+<td>11334</td>
+</tr>
+<tr>
+<td><a href="https://github.com/twbs/bootstrap" target="_blank" rel="external">twbs/bootstrap</a></td>
+<td><a href="https://github.com/twbs" target="_blank" rel="external">twbs</a></td>
+<td>CSS</td>
+<td>123341</td>
+<td>58717</td>
+<td>17645</td>
+</tr>
+<tr>
+<td><a href="https://github.com/EbookFoundation/free-programming-books" target="_blank" rel="external">EbookFoundation/free-programming-books</a></td>
+<td><a href="https://github.com/EbookFoundation" target="_blank" rel="external">EbookFoundation</a></td>
+<td></td>
+<td>103480</td>
+<td>26331</td>
+<td>4634</td>
+</tr>
+<tr>
+<td><a href="https://github.com/tensorflow/tensorflow" target="_blank" rel="external">tensorflow/tensorflow</a></td>
+<td><a href="https://github.com/tensorflow" target="_blank" rel="external">tensorflow</a></td>
+<td>C++</td>
+<td>95028</td>
+<td>60694</td>
+<td>30887</td>
+</tr>
+<tr>
+<td><a href="https://github.com/facebook/react" target="_blank" rel="external">facebook/react</a></td>
+<td><a href="https://github.com/facebook" target="_blank" rel="external">facebook</a></td>
+<td>JavaScript</td>
+<td>92602</td>
+<td>17473</td>
+<td>9773</td>
+</tr>
+<tr>
+<td><a href="https://github.com/vuejs/vue" target="_blank" rel="external">vuejs/vue</a></td>
+<td><a href="https://github.com/vuejs" target="_blank" rel="external">vuejs</a></td>
+<td>JavaScript</td>
+<td>89447</td>
+<td>13129</td>
+<td>2581</td>
+</tr>
+<tr>
+<td><a href="https://github.com/sindresorhus/awesome" target="_blank" rel="external">sindresorhus/awesome</a></td>
+<td><a href="https://github.com/sindresorhus" target="_blank" rel="external">sindresorhus</a></td>
+<td></td>
+<td>82141</td>
+<td>10785</td>
+<td>725</td>
+</tr>
+<tr>
+<td><a href="https://github.com/getify/You-Dont-Know-JS" target="_blank" rel="external">getify/You-Dont-Know-JS</a></td>
+<td><a href="https://github.com/getify" target="_blank" rel="external">getify</a></td>
+<td></td>
+<td>78848</td>
+<td>14404</td>
+<td>1465</td>
+</tr>
+<tr>
+<td><a href="https://github.com/d3/d3" target="_blank" rel="external">d3/d3</a></td>
+<td><a href="https://github.com/d3" target="_blank" rel="external">d3</a></td>
+<td>JavaScript</td>
+<td>74472</td>
+<td>19024</td>
+<td>4132</td>
+</tr>
+<tr>
+<td><a href="https://github.com/airbnb/javascript" target="_blank" rel="external">airbnb/javascript</a></td>
+<td><a href="https://github.com/airbnb" target="_blank" rel="external">airbnb</a></td>
+<td>JavaScript</td>
+<td>68833</td>
+<td>13127</td>
+<td>1607</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Forks榜"><a href="#Forks榜" class="headerlink" title="Forks榜"></a>Forks榜</h3><table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/jtleek/datasharing" target="_blank" rel="external">jtleek/datasharing</a></td>
+<td><a href="https://github.com/jtleek" target="_blank" rel="external">jtleek</a></td>
+<td></td>
+<td>4332</td>
+<td>184409</td>
+<td>29</td>
+</tr>
+<tr>
+<td><a href="https://github.com/rdpeng/ProgrammingAssignment2" target="_blank" rel="external">rdpeng/ProgrammingAssignment2</a></td>
+<td><a href="https://github.com/rdpeng" target="_blank" rel="external">rdpeng</a></td>
+<td>R</td>
+<td>528</td>
+<td>110145</td>
+<td>7</td>
+</tr>
+<tr>
+<td><a href="https://github.com/octocat/Spoon-Knife" target="_blank" rel="external">octocat/Spoon-Knife</a></td>
+<td><a href="https://github.com/octocat" target="_blank" rel="external">octocat</a></td>
+<td>HTML</td>
+<td>10043</td>
+<td>97471</td>
+<td>3</td>
+</tr>
+<tr>
+<td><a href="https://github.com/tensorflow/tensorflow" target="_blank" rel="external">tensorflow/tensorflow</a></td>
+<td><a href="https://github.com/tensorflow" target="_blank" rel="external">tensorflow</a></td>
+<td>C++</td>
+<td>95028</td>
+<td>60694</td>
+<td>30887</td>
+</tr>
+<tr>
+<td><a href="https://github.com/twbs/bootstrap" target="_blank" rel="external">twbs/bootstrap</a></td>
+<td><a href="https://github.com/twbs" target="_blank" rel="external">twbs</a></td>
+<td>CSS</td>
+<td>123341</td>
+<td>58717</td>
+<td>17645</td>
+</tr>
+<tr>
+<td><a href="https://github.com/SmartThingsCommunity/SmartThingsPublic" target="_blank" rel="external">SmartThingsCommunity/SmartThingsPublic</a></td>
+<td><a href="https://github.com/SmartThingsCommunity" target="_blank" rel="external">SmartThingsCommunity</a></td>
+<td>Groovy</td>
+<td>853</td>
+<td>38018</td>
+<td>2448</td>
+</tr>
+<tr>
+<td><a href="https://github.com/rdpeng/RepData_PeerAssessment1" target="_blank" rel="external">rdpeng/RepData_PeerAssessment1</a></td>
+<td><a href="https://github.com/rdpeng" target="_blank" rel="external">rdpeng</a></td>
+<td></td>
+<td>69</td>
+<td>29883</td>
+<td>13</td>
+</tr>
+<tr>
+<td><a href="https://github.com/github/gitignore" target="_blank" rel="external">github/gitignore</a></td>
+<td><a href="https://github.com/github" target="_blank" rel="external">github</a></td>
+<td></td>
+<td>63853</td>
+<td>29259</td>
+<td>2738</td>
+</tr>
+<tr>
+<td><a href="https://github.com/angular/angular.js" target="_blank" rel="external">angular/angular.js</a></td>
+<td><a href="https://github.com/angular" target="_blank" rel="external">angular</a></td>
+<td>JavaScript</td>
+<td>58232</td>
+<td>28872</td>
+<td>8755</td>
+</tr>
+<tr>
+<td><a href="https://github.com/EbookFoundation/free-programming-books" target="_blank" rel="external">EbookFoundation/free-programming-books</a></td>
+<td><a href="https://github.com/EbookFoundation" target="_blank" rel="external">EbookFoundation</a></td>
+<td></td>
+<td>103480</td>
+<td>26331</td>
+<td>4634</td>
+</tr>
+</tbody>
+</table>
+<h3 id="C"><a href="#C" class="headerlink" title="C"></a>C</h3><p>stars排行</p>
+<table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/torvalds/linux" target="_blank" rel="external">torvalds/linux</a></td>
+<td><a href="https://github.com/torvalds" target="_blank" rel="external">torvalds</a></td>
+<td>C</td>
+<td>57191</td>
+<td>21032</td>
+<td>744803</td>
+</tr>
+<tr>
+<td><a href="https://github.com/firehol/netdata" target="_blank" rel="external">firehol/netdata</a></td>
+<td><a href="https://github.com/firehol" target="_blank" rel="external">firehol</a></td>
+<td>C</td>
+<td>28607</td>
+<td>2389</td>
+<td>6690</td>
+</tr>
+<tr>
+<td><a href="https://github.com/antirez/redis" target="_blank" rel="external">antirez/redis</a></td>
+<td><a href="https://github.com/antirez" target="_blank" rel="external">antirez</a></td>
+<td>C</td>
+<td>28340</td>
+<td>10916</td>
+<td>6679</td>
+</tr>
+<tr>
+<td><a href="https://github.com/git/git" target="_blank" rel="external">git/git</a></td>
+<td><a href="https://github.com/git" target="_blank" rel="external">git</a></td>
+<td>C</td>
+<td>21665</td>
+<td>12634</td>
+<td>50674</td>
+</tr>
+<tr>
+<td><a href="https://github.com/Bilibili/ijkplayer" target="_blank" rel="external">Bilibili/ijkplayer</a></td>
+<td><a href="https://github.com/Bilibili" target="_blank" rel="external">Bilibili</a></td>
+<td>C</td>
+<td>18374</td>
+<td>5191</td>
+<td>2584</td>
+</tr>
+<tr>
+<td><a href="https://github.com/php/php-src" target="_blank" rel="external">php/php-src</a></td>
+<td><a href="https://github.com/php" target="_blank" rel="external">php</a></td>
+<td>C</td>
+<td>16996</td>
+<td>4745</td>
+<td>107206</td>
+</tr>
+<tr>
+<td><a href="https://github.com/SamyPesse/How-to-Make-a-Computer-Operating-System" target="_blank" rel="external">SamyPesse/How-to-Make-a-Computer-Operating-System</a></td>
+<td><a href="https://github.com/SamyPesse" target="_blank" rel="external">SamyPesse</a></td>
+<td>C</td>
+<td>16957</td>
+<td>3015</td>
+<td>243</td>
+</tr>
+<tr>
+<td><a href="https://github.com/wg/wrk" target="_blank" rel="external">wg/wrk</a></td>
+<td><a href="https://github.com/wg" target="_blank" rel="external">wg</a></td>
+<td>C</td>
+<td>15386</td>
+<td>1245</td>
+<td>72</td>
+</tr>
+<tr>
+<td><a href="https://github.com/ggreer/the_silver_searcher" target="_blank" rel="external">ggreer/the_silver_searcher</a></td>
+<td><a href="https://github.com/ggreer" target="_blank" rel="external">ggreer</a></td>
+<td>C</td>
+<td>14854</td>
+<td>954</td>
+<td>1974</td>
+</tr>
+<tr>
+<td><a href="https://github.com/kripken/emscripten" target="_blank" rel="external">kripken/emscripten</a></td>
+<td><a href="https://github.com/kripken" target="_blank" rel="external">kripken</a></td>
+<td>C</td>
+<td>14373</td>
+<td>1704</td>
+<td>18154</td>
+</tr>
+</tbody>
+</table>
+<p>forks排行</p>
+<table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/torvalds/linux" target="_blank" rel="external">torvalds/linux</a></td>
+<td><a href="https://github.com/torvalds" target="_blank" rel="external">torvalds</a></td>
+<td>C</td>
+<td>57191</td>
+<td>21032</td>
+<td>744803</td>
+</tr>
+<tr>
+<td><a href="https://github.com/git/git" target="_blank" rel="external">git/git</a></td>
+<td><a href="https://github.com/git" target="_blank" rel="external">git</a></td>
+<td>C</td>
+<td>21665</td>
+<td>12634</td>
+<td>50674</td>
+</tr>
+<tr>
+<td><a href="https://github.com/antirez/redis" target="_blank" rel="external">antirez/redis</a></td>
+<td><a href="https://github.com/antirez" target="_blank" rel="external">antirez</a></td>
+<td>C</td>
+<td>28340</td>
+<td>10916</td>
+<td>6679</td>
+</tr>
+<tr>
+<td><a href="https://github.com/arduino/Arduino" target="_blank" rel="external">arduino/Arduino</a></td>
+<td><a href="https://github.com/arduino" target="_blank" rel="external">arduino</a></td>
+<td>C</td>
+<td>7936</td>
+<td>6184</td>
+<td>6649</td>
+</tr>
+<tr>
+<td><a href="https://github.com/julycoding/The-Art-Of-Programming-By-July" target="_blank" rel="external">julycoding/The-Art-Of-Programming-By-July</a></td>
+<td><a href="https://github.com/julycoding" target="_blank" rel="external">julycoding</a></td>
+<td>C</td>
+<td>13544</td>
+<td>5666</td>
+<td>3630</td>
+</tr>
+<tr>
+<td><a href="https://github.com/MarlinFirmware/Marlin" target="_blank" rel="external">MarlinFirmware/Marlin</a></td>
+<td><a href="https://github.com/MarlinFirmware" target="_blank" rel="external">MarlinFirmware</a></td>
+<td>C</td>
+<td>3615</td>
+<td>5340</td>
+<td>9015</td>
+</tr>
+<tr>
+<td><a href="https://github.com/Bilibili/ijkplayer" target="_blank" rel="external">Bilibili/ijkplayer</a></td>
+<td><a href="https://github.com/Bilibili" target="_blank" rel="external">Bilibili</a></td>
+<td>C</td>
+<td>18374</td>
+<td>5191</td>
+<td>2584</td>
+</tr>
+<tr>
+<td><a href="https://github.com/php/php-src" target="_blank" rel="external">php/php-src</a></td>
+<td><a href="https://github.com/php" target="_blank" rel="external">php</a></td>
+<td>C</td>
+<td>16996</td>
+<td>4745</td>
+<td>107206</td>
+</tr>
+<tr>
+<td><a href="https://github.com/esp8266/Arduino" target="_blank" rel="external">esp8266/Arduino</a></td>
+<td><a href="https://github.com/esp8266" target="_blank" rel="external">esp8266</a></td>
+<td>C</td>
+<td>7063</td>
+<td>4378</td>
+<td>2697</td>
+</tr>
+<tr>
+<td><a href="https://github.com/FFmpeg/FFmpeg" target="_blank" rel="external">FFmpeg/FFmpeg</a></td>
+<td><a href="https://github.com/FFmpeg" target="_blank" rel="external">FFmpeg</a></td>
+<td>C</td>
+<td>10314</td>
+<td>4377</td>
+<td>90611</td>
+</tr>
+</tbody>
+</table>
+<h3 id="C-1"><a href="#C-1" class="headerlink" title="C++"></a>C++</h3><p>stars排行</p>
+<table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/tensorflow/tensorflow" target="_blank" rel="external">tensorflow/tensorflow</a></td>
+<td><a href="https://github.com/tensorflow" target="_blank" rel="external">tensorflow</a></td>
+<td>C++</td>
+<td>95028</td>
+<td>60694</td>
+<td>30887</td>
+</tr>
+<tr>
+<td><a href="https://github.com/electron/electron" target="_blank" rel="external">electron/electron</a></td>
+<td><a href="https://github.com/electron" target="_blank" rel="external">electron</a></td>
+<td>C++</td>
+<td>58531</td>
+<td>7642</td>
+<td>18669</td>
+</tr>
+<tr>
+<td><a href="https://github.com/apple/swift" target="_blank" rel="external">apple/swift</a></td>
+<td><a href="https://github.com/apple" target="_blank" rel="external">apple</a></td>
+<td>C++</td>
+<td>43250</td>
+<td>6795</td>
+<td>68510</td>
+</tr>
+<tr>
+<td><a href="https://github.com/nwjs/nw.js" target="_blank" rel="external">nwjs/nw.js</a></td>
+<td><a href="https://github.com/nwjs" target="_blank" rel="external">nwjs</a></td>
+<td>C++</td>
+<td>33478</td>
+<td>3731</td>
+<td>3188</td>
+</tr>
+<tr>
+<td><a href="https://github.com/x64dbg/x64dbg" target="_blank" rel="external">x64dbg/x64dbg</a></td>
+<td><a href="https://github.com/x64dbg" target="_blank" rel="external">x64dbg</a></td>
+<td>C++</td>
+<td>33242</td>
+<td>684</td>
+<td>3923</td>
+</tr>
+<tr>
+<td><a href="https://github.com/bitcoin/bitcoin" target="_blank" rel="external">bitcoin/bitcoin</a></td>
+<td><a href="https://github.com/bitcoin" target="_blank" rel="external">bitcoin</a></td>
+<td>C++</td>
+<td>30209</td>
+<td>18101</td>
+<td>16629</td>
+</tr>
+<tr>
+<td><a href="https://github.com/google/protobuf" target="_blank" rel="external">google/protobuf</a></td>
+<td><a href="https://github.com/google" target="_blank" rel="external">google</a></td>
+<td>C++</td>
+<td>24950</td>
+<td>7150</td>
+<td>5557</td>
+</tr>
+<tr>
+<td><a href="https://github.com/BVLC/caffe" target="_blank" rel="external">BVLC/caffe</a></td>
+<td><a href="https://github.com/BVLC" target="_blank" rel="external">BVLC</a></td>
+<td>C++</td>
+<td>23550</td>
+<td>14390</td>
+<td>4118</td>
+</tr>
+<tr>
+<td><a href="https://github.com/opencv/opencv" target="_blank" rel="external">opencv/opencv</a></td>
+<td><a href="https://github.com/opencv" target="_blank" rel="external">opencv</a></td>
+<td>C++</td>
+<td>23493</td>
+<td>16901</td>
+<td>23654</td>
+</tr>
+<tr>
+<td><a href="https://github.com/rethinkdb/rethinkdb" target="_blank" rel="external">rethinkdb/rethinkdb</a></td>
+<td><a href="https://github.com/rethinkdb" target="_blank" rel="external">rethinkdb</a></td>
+<td>C++</td>
+<td>20993</td>
+<td>1665</td>
+<td>33382</td>
+</tr>
+</tbody>
+</table>
+<p>forks排行</p>
+<table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/tensorflow/tensorflow" target="_blank" rel="external">tensorflow/tensorflow</a></td>
+<td><a href="https://github.com/tensorflow" target="_blank" rel="external">tensorflow</a></td>
+<td>C++</td>
+<td>95028</td>
+<td>60694</td>
+<td>30887</td>
+</tr>
+<tr>
+<td><a href="https://github.com/bitcoin/bitcoin" target="_blank" rel="external">bitcoin/bitcoin</a></td>
+<td><a href="https://github.com/bitcoin" target="_blank" rel="external">bitcoin</a></td>
+<td>C++</td>
+<td>30209</td>
+<td>18101</td>
+<td>16629</td>
+</tr>
+<tr>
+<td><a href="https://github.com/opencv/opencv" target="_blank" rel="external">opencv/opencv</a></td>
+<td><a href="https://github.com/opencv" target="_blank" rel="external">opencv</a></td>
+<td>C++</td>
+<td>23493</td>
+<td>16901</td>
+<td>23654</td>
+</tr>
+<tr>
+<td><a href="https://github.com/BVLC/caffe" target="_blank" rel="external">BVLC/caffe</a></td>
+<td><a href="https://github.com/BVLC" target="_blank" rel="external">BVLC</a></td>
+<td>C++</td>
+<td>23550</td>
+<td>14390</td>
+<td>4118</td>
+</tr>
+<tr>
+<td><a href="https://github.com/electron/electron" target="_blank" rel="external">electron/electron</a></td>
+<td><a href="https://github.com/electron" target="_blank" rel="external">electron</a></td>
+<td>C++</td>
+<td>58531</td>
+<td>7642</td>
+<td>18669</td>
+</tr>
+<tr>
+<td><a href="https://github.com/google/protobuf" target="_blank" rel="external">google/protobuf</a></td>
+<td><a href="https://github.com/google" target="_blank" rel="external">google</a></td>
+<td>C++</td>
+<td>24950</td>
+<td>7150</td>
+<td>5557</td>
+</tr>
+<tr>
+<td><a href="https://github.com/apple/swift" target="_blank" rel="external">apple/swift</a></td>
+<td><a href="https://github.com/apple" target="_blank" rel="external">apple</a></td>
+<td>C++</td>
+<td>43250</td>
+<td>6795</td>
+<td>68510</td>
+</tr>
+<tr>
+<td><a href="https://github.com/cocos2d/cocos2d-x" target="_blank" rel="external">cocos2d/cocos2d-x</a></td>
+<td><a href="https://github.com/cocos2d" target="_blank" rel="external">cocos2d</a></td>
+<td>C++</td>
+<td>11759</td>
+<td>6496</td>
+<td>36641</td>
+</tr>
+<tr>
+<td><a href="https://github.com/ArduPilot/ardupilot" target="_blank" rel="external">ArduPilot/ardupilot</a></td>
+<td><a href="https://github.com/ArduPilot" target="_blank" rel="external">ArduPilot</a></td>
+<td>C++</td>
+<td>3110</td>
+<td>6153</td>
+<td>31379</td>
+</tr>
+<tr>
+<td><a href="https://github.com/dmlc/xgboost" target="_blank" rel="external">dmlc/xgboost</a></td>
+<td><a href="https://github.com/dmlc" target="_blank" rel="external">dmlc</a></td>
+<td>C++</td>
+<td>11406</td>
+<td>5192</td>
+<td>3254</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h3><p>stars排行</p>
+<table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/ReactiveX/RxJava" target="_blank" rel="external">ReactiveX/RxJava</a></td>
+<td><a href="https://github.com/ReactiveX" target="_blank" rel="external">ReactiveX</a></td>
+<td>Java</td>
+<td>32001</td>
+<td>5594</td>
+<td>5328</td>
+</tr>
+<tr>
+<td><a href="https://github.com/iluwatar/java-design-patterns" target="_blank" rel="external">iluwatar/java-design-patterns</a></td>
+<td><a href="https://github.com/iluwatar" target="_blank" rel="external">iluwatar</a></td>
+<td>Java</td>
+<td>31422</td>
+<td>10072</td>
+<td>2022</td>
+</tr>
+<tr>
+<td><a href="https://github.com/elastic/elasticsearch" target="_blank" rel="external">elastic/elasticsearch</a></td>
+<td><a href="https://github.com/elastic" target="_blank" rel="external">elastic</a></td>
+<td>Java</td>
+<td>29931</td>
+<td>10408</td>
+<td>30528</td>
+</tr>
+<tr>
+<td><a href="https://github.com/square/retrofit" target="_blank" rel="external">square/retrofit</a></td>
+<td><a href="https://github.com/square" target="_blank" rel="external">square</a></td>
+<td>Java</td>
+<td>27182</td>
+<td>5311</td>
+<td>1569</td>
+</tr>
+<tr>
+<td><a href="https://github.com/square/okhttp" target="_blank" rel="external">square/okhttp</a></td>
+<td><a href="https://github.com/square" target="_blank" rel="external">square</a></td>
+<td>Java</td>
+<td>25870</td>
+<td>6054</td>
+<td>3147</td>
+</tr>
+<tr>
+<td><a href="https://github.com/google/guava" target="_blank" rel="external">google/guava</a></td>
+<td><a href="https://github.com/google" target="_blank" rel="external">google</a></td>
+<td>Java</td>
+<td>23154</td>
+<td>5323</td>
+<td>4676</td>
+</tr>
+<tr>
+<td><a href="https://github.com/spring-projects/spring-boot" target="_blank" rel="external">spring-projects/spring-boot</a></td>
+<td><a href="https://github.com/spring-projects" target="_blank" rel="external">spring-projects</a></td>
+<td>Java</td>
+<td>22927</td>
+<td>17555</td>
+<td>16129</td>
+</tr>
+<tr>
+<td><a href="https://github.com/PhilJay/MPAndroidChart" target="_blank" rel="external">PhilJay/MPAndroidChart</a></td>
+<td><a href="https://github.com/PhilJay" target="_blank" rel="external">PhilJay</a></td>
+<td>Java</td>
+<td>21393</td>
+<td>5939</td>
+<td>1938</td>
+</tr>
+<tr>
+<td><a href="https://github.com/kdn251/interviews" target="_blank" rel="external">kdn251/interviews</a></td>
+<td><a href="https://github.com/kdn251" target="_blank" rel="external">kdn251</a></td>
+<td>Java</td>
+<td>21348</td>
+<td>3503</td>
+<td>370</td>
+</tr>
+<tr>
+<td><a href="https://github.com/bumptech/glide" target="_blank" rel="external">bumptech/glide</a></td>
+<td><a href="https://github.com/bumptech" target="_blank" rel="external">bumptech</a></td>
+<td>Java</td>
+<td>21032</td>
+<td>4132</td>
+<td>2190</td>
+</tr>
+</tbody>
+</table>
+<p>forks排行</p>
+<table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/spring-projects/spring-boot" target="_blank" rel="external">spring-projects/spring-boot</a></td>
+<td><a href="https://github.com/spring-projects" target="_blank" rel="external">spring-projects</a></td>
+<td>Java</td>
+<td>22927</td>
+<td>17555</td>
+<td>16129</td>
+</tr>
+<tr>
+<td><a href="https://github.com/spring-projects/spring-framework" target="_blank" rel="external">spring-projects/spring-framework</a></td>
+<td><a href="https://github.com/spring-projects" target="_blank" rel="external">spring-projects</a></td>
+<td>Java</td>
+<td>20126</td>
+<td>13328</td>
+<td>16384</td>
+</tr>
+<tr>
+<td><a href="https://github.com/apache/incubator-dubbo" target="_blank" rel="external">apache/incubator-dubbo</a></td>
+<td><a href="https://github.com/apache" target="_blank" rel="external">apache</a></td>
+<td>Java</td>
+<td>17706</td>
+<td>12714</td>
+<td>2201</td>
+</tr>
+<tr>
+<td><a href="https://github.com/elastic/elasticsearch" target="_blank" rel="external">elastic/elasticsearch</a></td>
+<td><a href="https://github.com/elastic" target="_blank" rel="external">elastic</a></td>
+<td>Java</td>
+<td>29931</td>
+<td>10408</td>
+<td>30528</td>
+</tr>
+<tr>
+<td><a href="https://github.com/iluwatar/java-design-patterns" target="_blank" rel="external">iluwatar/java-design-patterns</a></td>
+<td><a href="https://github.com/iluwatar" target="_blank" rel="external">iluwatar</a></td>
+<td>Java</td>
+<td>31422</td>
+<td>10072</td>
+<td>2022</td>
+</tr>
+<tr>
+<td><a href="https://github.com/eugenp/tutorials" target="_blank" rel="external">eugenp/tutorials</a></td>
+<td><a href="https://github.com/eugenp" target="_blank" rel="external">eugenp</a></td>
+<td>Java</td>
+<td>4950</td>
+<td>8411</td>
+<td>7809</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zxing/zxing" target="_blank" rel="external">zxing/zxing</a></td>
+<td><a href="https://github.com/zxing" target="_blank" rel="external">zxing</a></td>
+<td>Java</td>
+<td>18000</td>
+<td>7345</td>
+<td>3425</td>
+</tr>
+<tr>
+<td><a href="https://github.com/nostra13/Android-Universal-Image-Loader" target="_blank" rel="external">nostra13/Android-Universal-Image-Loader</a></td>
+<td><a href="https://github.com/nostra13" target="_blank" rel="external">nostra13</a></td>
+<td>Java</td>
+<td>16040</td>
+<td>6476</td>
+<td>1025</td>
+</tr>
+<tr>
+<td><a href="https://github.com/checkstyle/checkstyle" target="_blank" rel="external">checkstyle/checkstyle</a></td>
+<td><a href="https://github.com/checkstyle" target="_blank" rel="external">checkstyle</a></td>
+<td>Java</td>
+<td>3597</td>
+<td>6402</td>
+<td>7658</td>
+</tr>
+<tr>
+<td><a href="https://github.com/netty/netty" target="_blank" rel="external">netty/netty</a></td>
+<td><a href="https://github.com/netty" target="_blank" rel="external">netty</a></td>
+<td>Java</td>
+<td>13422</td>
+<td>6122</td>
+<td>8723</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h3><p>stars排行</p>
+<table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/vinta/awesome-python" target="_blank" rel="external">vinta/awesome-python</a></td>
+<td><a href="https://github.com/vinta" target="_blank" rel="external">vinta</a></td>
+<td>Python</td>
+<td>47930</td>
+<td>9270</td>
+<td>1222</td>
+</tr>
+<tr>
+<td><a href="https://github.com/rg3/youtube-dl" target="_blank" rel="external">rg3/youtube-dl</a></td>
+<td><a href="https://github.com/rg3" target="_blank" rel="external">rg3</a></td>
+<td>Python</td>
+<td>35575</td>
+<td>6532</td>
+<td>16048</td>
+</tr>
+<tr>
+<td><a href="https://github.com/toddmotto/public-apis" target="_blank" rel="external">toddmotto/public-apis</a></td>
+<td><a href="https://github.com/toddmotto" target="_blank" rel="external">toddmotto</a></td>
+<td>Python</td>
+<td>35115</td>
+<td>3319</td>
+<td>1760</td>
+</tr>
+<tr>
+<td><a href="https://github.com/jakubroztocil/httpie" target="_blank" rel="external">jakubroztocil/httpie</a></td>
+<td><a href="https://github.com/jakubroztocil" target="_blank" rel="external">jakubroztocil</a></td>
+<td>Python</td>
+<td>34746</td>
+<td>2362</td>
+<td>965</td>
+</tr>
+<tr>
+<td><a href="https://github.com/nvbn/thefuck" target="_blank" rel="external">nvbn/thefuck</a></td>
+<td><a href="https://github.com/nvbn" target="_blank" rel="external">nvbn</a></td>
+<td>Python</td>
+<td>34601</td>
+<td>1723</td>
+<td>1463</td>
+</tr>
+<tr>
+<td><a href="https://github.com/pallets/flask" target="_blank" rel="external">pallets/flask</a></td>
+<td><a href="https://github.com/pallets" target="_blank" rel="external">pallets</a></td>
+<td>Python</td>
+<td>34411</td>
+<td>10562</td>
+<td>3205</td>
+</tr>
+<tr>
+<td><a href="https://github.com/django/django" target="_blank" rel="external">django/django</a></td>
+<td><a href="https://github.com/django" target="_blank" rel="external">django</a></td>
+<td>Python</td>
+<td>32956</td>
+<td>13953</td>
+<td>25601</td>
+</tr>
+<tr>
+<td><a href="https://github.com/tensorflow/models" target="_blank" rel="external">tensorflow/models</a></td>
+<td><a href="https://github.com/tensorflow" target="_blank" rel="external">tensorflow</a></td>
+<td>Python</td>
+<td>32262</td>
+<td>17985</td>
+<td>2109</td>
+</tr>
+<tr>
+<td><a href="https://github.com/josephmisiti/awesome-machine-learning" target="_blank" rel="external">josephmisiti/awesome-machine-learning</a></td>
+<td><a href="https://github.com/josephmisiti" target="_blank" rel="external">josephmisiti</a></td>
+<td>Python</td>
+<td>31793</td>
+<td>7780</td>
+<td>1033</td>
+</tr>
+<tr>
+<td><a href="https://github.com/requests/requests" target="_blank" rel="external">requests/requests</a></td>
+<td><a href="https://github.com/requests" target="_blank" rel="external">requests</a></td>
+<td>Python</td>
+<td>31508</td>
+<td>5824</td>
+<td>5416</td>
+</tr>
+</tbody>
+</table>
+<p>forks排行</p>
+<table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/tensorflow/models" target="_blank" rel="external">tensorflow/models</a></td>
+<td><a href="https://github.com/tensorflow" target="_blank" rel="external">tensorflow</a></td>
+<td>Python</td>
+<td>32262</td>
+<td>17985</td>
+<td>2109</td>
+</tr>
+<tr>
+<td><a href="https://github.com/shadowsocks/shadowsocks" target="_blank" rel="external">shadowsocks/shadowsocks</a></td>
+<td><a href="https://github.com/shadowsocks" target="_blank" rel="external">shadowsocks</a></td>
+<td>Python</td>
+<td>24278</td>
+<td>15499</td>
+<td>1</td>
+</tr>
+<tr>
+<td><a href="https://github.com/django/django" target="_blank" rel="external">django/django</a></td>
+<td><a href="https://github.com/django" target="_blank" rel="external">django</a></td>
+<td>Python</td>
+<td>32956</td>
+<td>13953</td>
+<td>25601</td>
+</tr>
+<tr>
+<td><a href="https://github.com/scikit-learn/scikit-learn" target="_blank" rel="external">scikit-learn/scikit-learn</a></td>
+<td><a href="https://github.com/scikit-learn" target="_blank" rel="external">scikit-learn</a></td>
+<td>Python</td>
+<td>27088</td>
+<td>13623</td>
+<td>22684</td>
+</tr>
+<tr>
+<td><a href="https://github.com/ansible/ansible" target="_blank" rel="external">ansible/ansible</a></td>
+<td><a href="https://github.com/ansible" target="_blank" rel="external">ansible</a></td>
+<td>Python</td>
+<td>29373</td>
+<td>10728</td>
+<td>36562</td>
+</tr>
+<tr>
+<td><a href="https://github.com/pallets/flask" target="_blank" rel="external">pallets/flask</a></td>
+<td><a href="https://github.com/pallets" target="_blank" rel="external">pallets</a></td>
+<td>Python</td>
+<td>34411</td>
+<td>10562</td>
+<td>3205</td>
+</tr>
+<tr>
+<td><a href="https://github.com/keras-team/keras" target="_blank" rel="external">keras-team/keras</a></td>
+<td><a href="https://github.com/keras-team" target="_blank" rel="external">keras-team</a></td>
+<td>Python</td>
+<td>27833</td>
+<td>10213</td>
+<td>4442</td>
+</tr>
+<tr>
+<td><a href="https://github.com/udacity/fullstack-nanodegree-vm" target="_blank" rel="external">udacity/fullstack-nanodegree-vm</a></td>
+<td><a href="https://github.com/udacity" target="_blank" rel="external">udacity</a></td>
+<td>Python</td>
+<td>202</td>
+<td>9370</td>
+<td>53</td>
+</tr>
+<tr>
+<td><a href="https://github.com/vinta/awesome-python" target="_blank" rel="external">vinta/awesome-python</a></td>
+<td><a href="https://github.com/vinta" target="_blank" rel="external">vinta</a></td>
+<td>Python</td>
+<td>47930</td>
+<td>9270</td>
+<td>1222</td>
+</tr>
+<tr>
+<td><a href="https://github.com/odoo/odoo" target="_blank" rel="external">odoo/odoo</a></td>
+<td><a href="https://github.com/odoo" target="_blank" rel="external">odoo</a></td>
+<td>Python</td>
+<td>9200</td>
+<td>7889</td>
+<td>115520</td>
+</tr>
+</tbody>
+</table>
+<h3 id="JavaScript"><a href="#JavaScript" class="headerlink" title="JavaScript"></a>JavaScript</h3><p>stars排行</p>
+<table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/freeCodeCamp/freeCodeCamp" target="_blank" rel="external">freeCodeCamp/freeCodeCamp</a></td>
+<td><a href="https://github.com/freeCodeCamp" target="_blank" rel="external">freeCodeCamp</a></td>
+<td>JavaScript</td>
+<td>291895</td>
+<td>13667</td>
+<td>11334</td>
+</tr>
+<tr>
+<td><a href="https://github.com/facebook/react" target="_blank" rel="external">facebook/react</a></td>
+<td><a href="https://github.com/facebook" target="_blank" rel="external">facebook</a></td>
+<td>JavaScript</td>
+<td>92602</td>
+<td>17473</td>
+<td>9773</td>
+</tr>
+<tr>
+<td><a href="https://github.com/vuejs/vue" target="_blank" rel="external">vuejs/vue</a></td>
+<td><a href="https://github.com/vuejs" target="_blank" rel="external">vuejs</a></td>
+<td>JavaScript</td>
+<td>89447</td>
+<td>13129</td>
+<td>2581</td>
+</tr>
+<tr>
+<td><a href="https://github.com/d3/d3" target="_blank" rel="external">d3/d3</a></td>
+<td><a href="https://github.com/d3" target="_blank" rel="external">d3</a></td>
+<td>JavaScript</td>
+<td>74472</td>
+<td>19024</td>
+<td>4132</td>
+</tr>
+<tr>
+<td><a href="https://github.com/airbnb/javascript" target="_blank" rel="external">airbnb/javascript</a></td>
+<td><a href="https://github.com/airbnb" target="_blank" rel="external">airbnb</a></td>
+<td>JavaScript</td>
+<td>68833</td>
+<td>13127</td>
+<td>1607</td>
+</tr>
+<tr>
+<td><a href="https://github.com/facebook/react-native" target="_blank" rel="external">facebook/react-native</a></td>
+<td><a href="https://github.com/facebook" target="_blank" rel="external">facebook</a></td>
+<td>JavaScript</td>
+<td>62128</td>
+<td>14129</td>
+<td>13166</td>
+</tr>
+<tr>
+<td><a href="https://github.com/angular/angular.js" target="_blank" rel="external">angular/angular.js</a></td>
+<td><a href="https://github.com/angular" target="_blank" rel="external">angular</a></td>
+<td>JavaScript</td>
+<td>58232</td>
+<td>28872</td>
+<td>8755</td>
+</tr>
+<tr>
+<td><a href="https://github.com/jquery/jquery" target="_blank" rel="external">jquery/jquery</a></td>
+<td><a href="https://github.com/jquery" target="_blank" rel="external">jquery</a></td>
+<td>JavaScript</td>
+<td>48560</td>
+<td>15318</td>
+<td>6316</td>
+</tr>
+<tr>
+<td><a href="https://github.com/nodejs/node" target="_blank" rel="external">nodejs/node</a></td>
+<td><a href="https://github.com/nodejs" target="_blank" rel="external">nodejs</a></td>
+<td>JavaScript</td>
+<td>47212</td>
+<td>9904</td>
+<td>21744</td>
+</tr>
+<tr>
+<td><a href="https://github.com/facebook/create-react-app" target="_blank" rel="external">facebook/create-react-app</a></td>
+<td><a href="https://github.com/facebook" target="_blank" rel="external">facebook</a></td>
+<td>JavaScript</td>
+<td>46391</td>
+<td>9259</td>
+<td>1484</td>
+</tr>
+</tbody>
+</table>
+<p>forks排行</p>
+<table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/angular/angular.js" target="_blank" rel="external">angular/angular.js</a></td>
+<td><a href="https://github.com/angular" target="_blank" rel="external">angular</a></td>
+<td>JavaScript</td>
+<td>58232</td>
+<td>28872</td>
+<td>8755</td>
+</tr>
+<tr>
+<td><a href="https://github.com/udacity/frontend-nanodegree-resume" target="_blank" rel="external">udacity/frontend-nanodegree-resume</a></td>
+<td><a href="https://github.com/udacity" target="_blank" rel="external">udacity</a></td>
+<td>JavaScript</td>
+<td>915</td>
+<td>25814</td>
+<td>84</td>
+</tr>
+<tr>
+<td><a href="https://github.com/d3/d3" target="_blank" rel="external">d3/d3</a></td>
+<td><a href="https://github.com/d3" target="_blank" rel="external">d3</a></td>
+<td>JavaScript</td>
+<td>74472</td>
+<td>19024</td>
+<td>4132</td>
+</tr>
+<tr>
+<td><a href="https://github.com/facebook/react" target="_blank" rel="external">facebook/react</a></td>
+<td><a href="https://github.com/facebook" target="_blank" rel="external">facebook</a></td>
+<td>JavaScript</td>
+<td>92602</td>
+<td>17473</td>
+<td>9773</td>
+</tr>
+<tr>
+<td><a href="https://github.com/jquery/jquery" target="_blank" rel="external">jquery/jquery</a></td>
+<td><a href="https://github.com/jquery" target="_blank" rel="external">jquery</a></td>
+<td>JavaScript</td>
+<td>48560</td>
+<td>15318</td>
+<td>6316</td>
+</tr>
+<tr>
+<td><a href="https://github.com/nightscout/cgm-remote-monitor" target="_blank" rel="external">nightscout/cgm-remote-monitor</a></td>
+<td><a href="https://github.com/nightscout" target="_blank" rel="external">nightscout</a></td>
+<td>JavaScript</td>
+<td>439</td>
+<td>15228</td>
+<td>4505</td>
+</tr>
+<tr>
+<td><a href="https://github.com/mrdoob/three.js" target="_blank" rel="external">mrdoob/three.js</a></td>
+<td><a href="https://github.com/mrdoob" target="_blank" rel="external">mrdoob</a></td>
+<td>JavaScript</td>
+<td>40668</td>
+<td>15152</td>
+<td>22927</td>
+</tr>
+<tr>
+<td><a href="https://github.com/facebook/react-native" target="_blank" rel="external">facebook/react-native</a></td>
+<td><a href="https://github.com/facebook" target="_blank" rel="external">facebook</a></td>
+<td>JavaScript</td>
+<td>62128</td>
+<td>14129</td>
+<td>13166</td>
+</tr>
+<tr>
+<td><a href="https://github.com/freeCodeCamp/freeCodeCamp" target="_blank" rel="external">freeCodeCamp/freeCodeCamp</a></td>
+<td><a href="https://github.com/freeCodeCamp" target="_blank" rel="external">freeCodeCamp</a></td>
+<td>JavaScript</td>
+<td>291895</td>
+<td>13667</td>
+<td>11334</td>
+</tr>
+<tr>
+<td><a href="https://github.com/vuejs/vue" target="_blank" rel="external">vuejs/vue</a></td>
+<td><a href="https://github.com/vuejs" target="_blank" rel="external">vuejs</a></td>
+<td>JavaScript</td>
+<td>89447</td>
+<td>13129</td>
+<td>2581</td>
+</tr>
+</tbody>
+</table>
+<h3 id="语言使用比例"><a href="#语言使用比例" class="headerlink" title="语言使用比例"></a>语言使用比例</h3><p>stars 超过100的</p>
+<p><img src="https://data2.liuin.cn/2018-04-06-15229847469176.jpg" alt=""></p>
+<p>stars 超过1000的</p>
+<p><img src="https://data2.liuin.cn/2018-04-06-15229848318605.jpg" alt=""></p>
+<p>stars 超过10000的</p>
+<p><img src="https://data2.liuin.cn/2018-04-06-15229848710272.jpg" alt=""></p>
+<p>forks 超过100的</p>
+<p><img src="https://data2.liuin.cn/2018-04-06-15229849187089.jpg" alt=""></p>
+<p>forks 超过1000的</p>
+<p><img src="https://data2.liuin.cn/2018-04-06-15229849529776.jpg" alt=""></p>
+<p>forks 超过10000的</p>
+<p><img src="https://data2.liuin.cn/2018-04-06-15229849860861.jpg" alt=""></p>
+<p>欢迎大家Star我的<a href="https://github.com/Sixzeroo/GithubCrawler" target="_blank" rel="external">Github项目</a></p>
+]]></content>
+      
+        <categories>
+            
+            <category> python </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> python </tag>
+            
+            <tag> 爬虫 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Github分布式爬虫——实现]]></title>
+      <url>/2018/04/05/Github%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E2%80%94%E2%80%94%E5%AE%9E%E7%8E%B0/</url>
+      <content type="html"><![CDATA[<p>使用Redis实现分布式爬虫</p>
+<a id="more"></a>
+<p>主要使用Scrapy、Redis、MongoDB实现，Scrapy作为异步爬虫框架、Redis实现分布式以及Cookies池的存储，MongoDB实现底层数据存储</p>
+<h2 id="分布式示意图"><a href="#分布式示意图" class="headerlink" title="分布式示意图"></a>分布式示意图</h2><p><img src="https://data2.liuin.cn/2018-03-25-15219437958574.jpg" alt=""></p>
+<p>主机中安装Redis和MongoDB</p>
+<p>Redis中存储：</p>
+<ul>
+<li>所有Scrapy爬虫的待爬取队列</li>
+<li>去重用的已发出Request指纹</li>
+</ul>
+<p>MongoDB负责最终数据的存储</p>
+<p>可创建多个Scrapy从机进行爬取，实现分布式。</p>
+<h2 id="Features"><a href="#Features" class="headerlink" title="Features"></a>Features</h2><ul>
+<li>共享爬取队列实现分布式</li>
+<li>生成Request的指纹实现分布式的去重</li>
+<li>随机指定User-Agent</li>
+<li>通过Redis实现Cookies池并进行更新</li>
+</ul>
+<h2 id="分布式实现"><a href="#分布式实现" class="headerlink" title="分布式实现"></a>分布式实现</h2><h3 id="请求队列"><a href="#请求队列" class="headerlink" title="请求队列"></a>请求队列</h3><p>各个分布式爬虫共同维护一个Request请求队列，使用的是Redis的list。队列可以实现FIFO，LIFO或者优先级队列。</p>
+<p>爬取的时候一开始使用的是优先级队列，但是后来因为不好设置优先级，导致最后都是User的item，导致Rep的饥饿现象，所以到后面换成FIFO队列。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">FifoQueue</span><span class="params">(Base)</span>:</span></div><div class="line">    <span class="string">"""Per-spider FIFO queue"""</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__len__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""Return the length of the queue"""</span></div><div class="line">        <span class="keyword">return</span> self.server.llen(self.key)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">push</span><span class="params">(self, request)</span>:</span></div><div class="line">        <span class="string">"""Push a request"""</span></div><div class="line">        self.server.lpush(self.key, self._encode_request(request))</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pop</span><span class="params">(self, timeout=<span class="number">0</span>)</span>:</span></div><div class="line">        <span class="string">"""Pop a request"""</span></div><div class="line">        <span class="keyword">if</span> timeout &gt; <span class="number">0</span>:</div><div class="line">            data = self.server.brpop(self.key, timeout)</div><div class="line">            <span class="keyword">if</span> isinstance(data, tuple):</div><div class="line">                data = data[<span class="number">1</span>]</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            data = self.server.rpop(self.key)</div><div class="line">        <span class="keyword">if</span> data:</div><div class="line">            <span class="keyword">return</span> self._decode_request(data)</div></pre></td></tr></table></figure>
+<p>同时需要设置request队列的大小限制，因为爬取Github页面的时候可能爬取一个star列表以后就会产生几十个Request，这样很容易把Redis的队列挤爆：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">enqueue_request</span><span class="params">(self, request)</span>:</span></div><div class="line">    <span class="comment"># set upper limit of request num</span></div><div class="line">    <span class="keyword">if</span> len(self.queue) &gt; REQUEST_NUM:</div><div class="line">        <span class="keyword">return</span> <span class="keyword">False</span></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> request.dont_filter <span class="keyword">and</span> self.df.request_seen(request):</div><div class="line">        self.df.log(request, self.spider)</div><div class="line">        <span class="keyword">return</span> <span class="keyword">False</span></div><div class="line">    <span class="keyword">if</span> self.stats:</div><div class="line">        self.stats.inc_value(<span class="string">'scheduler/enqueued/redis'</span>, spider=self.spider)</div><div class="line">    self.queue.push(request)</div><div class="line">    <span class="keyword">return</span> <span class="keyword">True</span></div></pre></td></tr></table></figure>
+<p>没有设置数量大小的时候，1G内存的主机跑一个多小时之后就挂掉了：</p>
+<p><img src="https://data2.liuin.cn/2018-03-21-15215617499559.jpg" alt=""></p>
+<p><img src="https://data2.liuin.cn/2018-03-20-15215615819339.jpg" alt=""></p>
+<h3 id="调度器"><a href="#调度器" class="headerlink" title="调度器"></a>调度器</h3><p>为了使用共同的请求队列，所以需要重写Scheduler，重写的Scheduler负责把要爬取的request放入队列以及从队列中找出request进行爬取</p>
+<h3 id="去重集合"><a href="#去重集合" class="headerlink" title="去重集合"></a>去重集合</h3><p>本地爬虫通常需要解决一个去重问题，通常使用的是数据库查询，爬取之前判断url是否请求过。分布式爬虫就是在这个的基础上共用一个去重集合，使用的是Redis的set。</p>
+<p>判断一个Request是否已经爬取过，这里不是使用url，因为不同的url可能代表的是同一种资源，比如：<code>http://www.example.com/query?cat=222&amp;id=111</code>和<code>http://www.example.com/query?cat=222&amp;id=111</code> 事实表示的是一个东西。此外，发出的Request还可能与当时的Cookie有关，因为里面还会有用户信息。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 计算Request指纹判断有没有重复</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">request_seen</span><span class="params">(self, request)</span>:</span></div><div class="line">    fp = self.request_fingerprint(request)</div><div class="line">    <span class="keyword">if</span> USEBLOOMFILTER == <span class="keyword">True</span>:</div><div class="line">        <span class="keyword">if</span> self.bf.isContains(fp):</div><div class="line">            <span class="keyword">return</span> <span class="keyword">True</span></div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            self.bf.insert(fp)</div><div class="line">            <span class="keyword">return</span> <span class="keyword">False</span></div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        <span class="comment"># This returns the number of values added, zero if already exists.</span></div><div class="line">        added = self.server.sadd(self.key, fp)</div><div class="line">        <span class="keyword">return</span> added == <span class="number">0</span></div></pre></td></tr></table></figure>
+<p>这里采用的方案是生成一个Request的指纹，实际上是把request的url，method和指定的header使用sha1算法得到一个hash值。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Request 指纹计算方法</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">request_fingerprint</span><span class="params">(request, include_headers=None)</span>:</span></div><div class="line">    <span class="keyword">if</span> include_headers:</div><div class="line">        include_headers = tuple(to_bytes(h.lower())</div><div class="line">                                 <span class="keyword">for</span> h <span class="keyword">in</span> sorted(include_headers))</div><div class="line">    cache = _fingerprint_cache.setdefault(request, &#123;&#125;)</div><div class="line">    <span class="keyword">if</span> include_headers <span class="keyword">not</span> <span class="keyword">in</span> cache:</div><div class="line">        fp = hashlib.sha1()</div><div class="line">        fp.update(to_bytes(request.method))</div><div class="line">        fp.update(to_bytes(canonicalize_url(request.url)))</div><div class="line">        fp.update(request.body <span class="keyword">or</span> <span class="string">b''</span>)</div><div class="line">        <span class="keyword">if</span> include_headers:</div><div class="line">            <span class="keyword">for</span> hdr <span class="keyword">in</span> include_headers:</div><div class="line">                <span class="keyword">if</span> hdr <span class="keyword">in</span> request.headers:</div><div class="line">                    fp.update(hdr)</div><div class="line">                    <span class="keyword">for</span> v <span class="keyword">in</span> request.headers.getlist(hdr):</div><div class="line">                        fp.update(v)</div><div class="line">        cache[include_headers] = fp.hexdigest()</div><div class="line">    <span class="keyword">return</span> cache[include_headers]</div></pre></td></tr></table></figure>
+<h2 id="反反爬虫策略"><a href="#反反爬虫策略" class="headerlink" title="反反爬虫策略"></a>反反爬虫策略</h2><h3 id="随机User-Agent"><a href="#随机User-Agent" class="headerlink" title="随机User-Agent"></a>随机User-Agent</h3><p>使用中间件实现随机User-Agent，随机替换掉request的header的User-Agent参数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">GitHubUserAgentMiddleware</span><span class="params">(UserAgentMiddleware)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_request</span><span class="params">(self, request, spider)</span>:</span></div><div class="line">        agent = random.choice(agents)</div><div class="line">        request.headers[<span class="string">'User-Agent'</span>] = agent</div></pre></td></tr></table></figure>
+<h3 id="Cookies池"><a href="#Cookies池" class="headerlink" title="Cookies池"></a>Cookies池</h3><p>首先使用多账号模拟登录，获取到很多已登录账号的cookies，放入到Redis的hashset中，各个爬虫共用这一个Cookies池。爬虫同样实现一个中间件，替换Request的Cookies。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Cookie 中间件</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">GitHubCookieMiddleware</span><span class="params">(RetryMiddleware)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,settings)</span>:</span></div><div class="line">        RetryMiddleware.__init__(self,settings)</div><div class="line">        self.rconn = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=<span class="number">3</span>)</div><div class="line"></div><div class="line"><span class="meta">    @classmethod</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">from_crawler</span><span class="params">(cls, crawler)</span>:</span></div><div class="line">        <span class="keyword">return</span> cls(crawler.settings)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_request</span><span class="params">(self, request, spider)</span>:</span></div><div class="line">        keys = self.rconn.hkeys(REDIS_COOKIE)</div><div class="line">        <span class="keyword">if</span>(len(keys) == <span class="number">0</span>):</div><div class="line">            print(<span class="string">"cookies don't work!"</span>)</div><div class="line">            <span class="keyword">return</span></div><div class="line">        key = random.choice(keys)</div><div class="line">        <span class="comment"># 获取最新cookie</span></div><div class="line">        value = self.rconn.hget(REDIS_COOKIE, key)</div><div class="line">        <span class="keyword">if</span>( isinstance(value, bytes) ):</div><div class="line">            value = value.decode(<span class="string">'utf-8'</span>)</div><div class="line">        cookies = json.loads(value)</div><div class="line">        request.cookies = cookies</div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这是一个为了了解分布式工作原理而做的一个小的项目，其中很多地方存在缺陷，欢迎大家在Github上留建议：</p>
+<p><a href="https://github.com/Sixzeroo/GithubCrawler" target="_blank" rel="external">https://github.com/Sixzeroo/GithubCrawler</a></p>
+<p>同时也可以查看下一篇关于Github用户和仓库数据分析的文章</p>
+]]></content>
+      
+        <categories>
+            
+            <category> python </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> python </tag>
+            
+            <tag> 爬虫 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[LeetCode 题解——Redundant Connection II]]></title>
       <url>/2018/03/28/LeetCode-%E9%A2%98%E8%A7%A3%E2%80%94%E2%80%94Redundant-Connection-II/</url>
       <content type="html"><![CDATA[<p>LeetCode 题解——Redundant Connection II</p>
@@ -386,6 +2683,18 @@
 <p><img src="https://data2.liuin.cn/2018-03-13-15209367806251.jpg" alt=""></p>
 ]]></content>
       
+        <categories>
+            
+            <category> 读书笔记 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> C/C++ </tag>
+            
+        </tags>
         
     </entry>
     
@@ -5532,7 +7841,7 @@ function doDecrypt(pwd, onError) {
    document.getElementById("enc_passwd").style.display = "none";
 }
 </script>
-<div id="enc_content" style="display:none">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</div><div id="enc_passwd"> <input id="enc_pwd_input" type="password" style="border-radius: 5px;border-style: groove;height: 30px;width: 50%;cursor: auto;font-size: 102%;color: currentColor;outline: none;text-overflow: initial;padding-left: 5px;" onkeydown="if (event.keyCode == 13) { decrypt(); return false;}"> <input type="submit" value="解&nbsp;密" onclick="decrypt()" style="width: 58px;height: 34px;border-radius: 5px;background-color: white;border-style: solid;color: currentColor;"><div id="enc_error" style="display: inline-block;color: #d84527;margin-left: 10px"></div>
+<div id="enc_content" style="display:none">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</div><div id="enc_passwd"> <input id="enc_pwd_input" type="password" style="border-radius: 5px;border-style: groove;height: 30px;width: 50%;cursor: auto;font-size: 102%;color: currentColor;outline: none;text-overflow: initial;padding-left: 5px;" onkeydown="if (event.keyCode == 13) { decrypt(); return false;}"> <input type="submit" value="解&nbsp;密" onclick="decrypt()" style="width: 58px;height: 34px;border-radius: 5px;background-color: white;border-style: solid;color: currentColor;"><div id="enc_error" style="display: inline-block;color: #d84527;margin-left: 10px"></div>
 <script>
 var onError = function(error) {
 	document.getElementById("enc_error").innerHTML = "password error!"
@@ -6937,8 +9246,8 @@ doDecrypt(passwd, onError);
 <hr>
 <h2 id="带权并查集"><a href="#带权并查集" class="headerlink" title="带权并查集"></a>带权并查集</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=SIZE;i++)</div><div class="line">    &#123;</div><div class="line">        fa[i]=i;</div><div class="line">        son[i]=<span class="number">1</span>;</div><div class="line">        rm[i]=<span class="number">0</span>;   <span class="comment">//初始情况下每个结点下面的结点数目为0</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">Find</span><span class="params">(<span class="keyword">int</span> x)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span>(fa[x]==x)</div><div class="line">        <span class="keyword">return</span> fa[x];</div><div class="line">    <span class="keyword">int</span> t=fa[x];</div><div class="line">    fa[x]=Find(fa[x]);     <span class="comment">//压缩路径</span></div><div class="line">    rm[x]+=rm[t];       <span class="comment">//压住的结点数相加</span></div><div class="line">    <span class="keyword">return</span> fa[x];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">Union</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span>  <span class="comment">//x放在y上</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> fx=Find(x);</div><div class="line">    <span class="keyword">int</span> fy=Find(y);</div><div class="line"></div><div class="line">    <span class="keyword">if</span>(fx!=fy)</div><div class="line">    &#123;</div><div class="line">        fa[fx]=fy;</div><div class="line">        rm[fx]=son[fy];    <span class="comment">//加上的结点压住的结点数目刚好是y结点的子结点数目</span></div><div class="line">        son[fy]+=son[fx];   <span class="comment">//更新子结点的数目</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <hr>
-<h2 id="树状数组"><a href="#树状数组" class="headerlink" title="树状数组"></a>树状数组</h2><p>解决查询区间和线段树类似可解的问题</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> N,c[maxn];    <span class="comment">//树状数组</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">lowbit</span><span class="params">(<span class="keyword">int</span> i)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">return</span> i&amp;(-i);   <span class="comment">//得到最高位1以后的剩下的数的二进制数</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//修改节点操作（添加值）</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> value)</span>  <span class="comment">//i表示序号</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">while</span>(i&lt;=N)</div><div class="line">	&#123;</div><div class="line">		c[i]+=value;</div><div class="line">		i+=lowbit(i);</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//求和操作</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sum</span><span class="params">(<span class="keyword">int</span> i)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> sum=<span class="number">0</span>;</div><div class="line">	<span class="keyword">while</span>(i&gt;<span class="number">0</span>)</div><div class="line">	&#123;</div><div class="line">		sum+=c[i];</div><div class="line">		i-=lowbit(i);</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> sum;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="树状数组"><a href="#树状数组" class="headerlink" title="树状数组"></a>树状数组</h2><p>解决查询区间和线段树类似可解的问题，注意数组从1开始计数，初始化的时候要注意第一个元素（可以在代码中考虑）。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> N,c[maxn+<span class="number">1</span>];    <span class="comment">//树状数组</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">lowbit</span><span class="params">(<span class="keyword">int</span> i)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">return</span> i&amp;(-i);   <span class="comment">//得到最高位1以后的剩下的数的二进制数</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//修改节点操作（添加值）</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> value)</span>  <span class="comment">//i表示序号</span></span></div><div class="line">&#123;</div><div class="line">   i++;</div><div class="line">	<span class="keyword">while</span>(i&lt;=N)</div><div class="line">	&#123;</div><div class="line">		c[i]+=value;</div><div class="line">		i+=lowbit(i);</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 初始化</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;N; i++)</div><div class="line">        add(i, t[i])</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//求和操作</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sum</span><span class="params">(<span class="keyword">int</span> i)</span></span></div><div class="line">&#123;</div><div class="line">   i++;</div><div class="line">	<span class="keyword">int</span> sum=<span class="number">0</span>;</div><div class="line">	<span class="keyword">while</span>(i&gt;<span class="number">0</span>)</div><div class="line">	&#123;</div><div class="line">		sum+=c[i];</div><div class="line">		i-=lowbit(i);</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> sum;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <hr>
 <h2 id="左偏树"><a href="#左偏树" class="headerlink" title="左偏树"></a>左偏树</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span> r1,<span class="keyword">int</span> r2)</span>  <span class="comment">//合并操作，所有左偏树的基础</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span>(r1==<span class="number">0</span>)<span class="keyword">return</span> r2;</div><div class="line">    <span class="keyword">if</span>(r2==<span class="number">0</span>)<span class="keyword">return</span> r1;</div><div class="line">    <span class="keyword">if</span>(heap[r2].val&gt;heap[r1].val)swab(r1,r2);</div><div class="line">    heap[r1].r=merge(heap[r1].r,r2);   </div><div class="line">    heap[heap[r1].r].par=r1;  <span class="comment">//向下进行合并</span></div><div class="line"></div><div class="line">    <span class="keyword">if</span>(heap[heap[r1].l].dis</div><div class="line">        swap(heap[r1].l,heap[r2].r);     <span class="comment">//回溯保证左偏树的性质</span></div><div class="line">    <span class="keyword">else</span></div><div class="line">        heap[r1].dis=heap[heap[r1].r].dis+<span class="number">1</span>;    <span class="comment">//距离值进行更新</span></div><div class="line">    <span class="keyword">return</span> r1;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">int</span> push(<span class="keyword">int</span> x,<span class="keyword">int</span> y) <span class="comment">// 将y插入x左偏树中</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> merge(x,y);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">int</span> pop(<span class="keyword">int</span> &amp;x) <span class="comment">//在左偏树中删除x</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> l=heap[x].l;</div><div class="line">    <span class="keyword">int</span> r=heap[x].r;</div><div class="line">    <span class="comment">//heap[l].par=l;</span></div><div class="line">    <span class="comment">//heap[r].par=r;</span></div><div class="line">    <span class="comment">//heap[x].l=heap[x].r=heap[x].dis=0;</span></div><div class="line">    merge(l,r);    <span class="comment">//删除的核心步骤</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <hr>
@@ -7244,48 +9553,6 @@ doDecrypt(passwd, onError);
     </entry>
     
     <entry>
-      <title><![CDATA[Codeforces 390 题解]]></title>
-      <url>/2017/05/13/Codeforces%20390%20%E9%A2%98%E8%A7%A3/</url>
-      <content type="html"><![CDATA[<p>这次Codeforces的A和B都是比较简单的，A就是贪心算法（我一开始在理解题意的时候出了一点问题），B就是蛮力枚举。<br>看懂题目的话我觉得每道题在20分钟之内将把代码写出来是没有问题的，可是英语还是硬伤，努力学英语中。。。</p>
-<a id="more"></a>
-<h2 id="A"><a href="#A" class="headerlink" title="A"></a>A</h2><h3 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h3><p>给你一个数组要求将他们进行划分成连续的几个部分，要求每个部分部分不为0</p>
-<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><ul>
-<li>无法划分的情况：数组中的各个都为0</li>
-<li>对于剩下的情况，我一开始就只是统一处理：分成两组，第一组从1到最后一个不为0的前面一位，剩下的部分组成第二组。但是后来发现这样做是对于数组总和为0的时候可以，对于数组总和不为0时就是不对的，因为可能有第一组都是0的情况，所以还是要分两种情况讨论</li>
-<li>数组总和不为0时，就分成一组</li>
-<li>数组总和为0是，分成两组：第一组从1到最后一个不为0的数的前面一位，剩下的组成第二组</li>
-</ul>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> n;</div><div class="line">	<span class="keyword">while</span>(<span class="built_in">cin</span> &gt;&gt; n)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">int</span> sum=<span class="number">0</span>,tag=<span class="number">1</span>,u;</div><div class="line">		<span class="keyword">int</span> a[<span class="number">101</span>];</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">cin</span>&gt;&gt;a[i];</div><div class="line">			sum+=a[i];</div><div class="line">			<span class="keyword">if</span>(a[i])  <span class="comment">//记录最后一个不为0的数字</span></div><div class="line">			&#123;</div><div class="line">				u=i+<span class="number">1</span>;</div><div class="line">				tag=<span class="number">0</span>;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">if</span>(tag)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;<span class="string">"NO"</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">			<span class="keyword">return</span> ;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">if</span>(sum)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;<span class="string">"YES"</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;<span class="string">"1"</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;<span class="string">"1"</span>&lt;&lt;<span class="string">" "</span>&lt;&lt;n&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">			<span class="keyword">return</span> ;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">else</span></div><div class="line">		&#123;</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;<span class="string">"YES"</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;<span class="string">"2"</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;<span class="string">"1"</span>&lt;&lt;<span class="string">" "</span>&lt;&lt;u<span class="number">-1</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;u&lt;&lt;<span class="string">" "</span>&lt;&lt;n&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="B"><a href="#B" class="headerlink" title="B"></a>B</h2><h3 id="题意-1"><a href="#题意-1" class="headerlink" title="题意"></a>题意</h3><p>题目以小时候玩的井字旗为背景，给出残局，让你求出其中一方是否可以走一步就获得胜利（棋盘大小4*4）</p>
-<h3 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h3><ul>
-<li>依次考虑每个空格，胜利有两种情况</li>
-<li>中间和两边中的一个棋子是自己的，另一个是空格</li>
-<li>两个自己的棋子夹一个空格</li>
-</ul>
-<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">char</span> a[<span class="number">6</span>][<span class="number">6</span>];</div><div class="line"><span class="keyword">char</span> tl[<span class="number">2</span>]=&#123;<span class="string">'x'</span>,<span class="string">'o'</span>&#125;;</div><div class="line"><span class="keyword">int</span> dx[<span class="number">8</span>]=&#123;<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">-1</span>,<span class="number">-1</span>,<span class="number">0</span>,<span class="number">1</span>&#125;;</div><div class="line"><span class="keyword">int</span> dy[<span class="number">8</span>]=&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">-1</span>,<span class="number">-1</span>&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">judge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y,<span class="keyword">int</span> nu)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">8</span>;i++)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">int</span> xx=x+dx[i];</div><div class="line">        <span class="keyword">int</span> yy=y+dy[i];</div><div class="line">        <span class="keyword">if</span>(a[xx][yy]==tl[nu])</div><div class="line">        &#123;</div><div class="line">            xx=x-dx[i];</div><div class="line">            yy=y-dy[i];</div><div class="line">            <span class="keyword">if</span>(a[xx][yy]==<span class="string">'.'</span>)</div><div class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span>(a[xx][yy]==<span class="string">'.'</span>)</div><div class="line">        &#123;</div><div class="line">            xx=xx+dx[i];</div><div class="line">            yy=yy+dy[i];</div><div class="line">            <span class="keyword">if</span>(a[xx][yy]==tl[nu])</div><div class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> num1=<span class="number">0</span>,num2=<span class="number">0</span>;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=<span class="number">4</span>;i++)</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=<span class="number">4</span>;j++)</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cin</span>&gt;&gt;a[i][j];</div><div class="line">            <span class="keyword">if</span>(a[i][j]==<span class="string">'x'</span>)</div><div class="line">                num1++;</div><div class="line">            <span class="keyword">if</span>(a[i][j]==<span class="string">'o'</span>)</div><div class="line">                num2++;</div><div class="line">        &#125;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">6</span>;i++)</div><div class="line">        a[i][<span class="number">0</span>]=a[<span class="number">0</span>][i]=a[<span class="number">6</span>][i]=a[i][<span class="number">6</span>]=<span class="string">'*'</span>;</div><div class="line">    <span class="keyword">int</span> be=<span class="number">0</span>;</div><div class="line">    <span class="keyword">if</span>(num2&lt;num1)</div><div class="line">        be=<span class="number">1</span>;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=<span class="number">4</span>;i++)</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=<span class="number">4</span>;j++)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span>(a[i][j]==tl[be]&amp;&amp;judge(i,j,be))</div><div class="line">            &#123;</div><div class="line">                <span class="built_in">cout</span>&lt;&lt;<span class="string">"YES"</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">                <span class="keyword">return</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="string">"NO"</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="简洁的代码"><a href="#简洁的代码" class="headerlink" title="简洁的代码"></a>简洁的代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> dx[]=&#123;<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">-1</span>,<span class="number">-1</span>&#125;;</div><div class="line"><span class="keyword">int</span> dy[]=&#123;<span class="number">1</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">1</span>,<span class="number">-1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">-1</span>&#125;;</div><div class="line"><span class="keyword">char</span> s[<span class="number">10</span>][<span class="number">10</span>];</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">check</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> k=<span class="number">0</span>;k&lt;<span class="number">8</span>;k++)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">if</span>(s[i+dx[k]][j+dy[k]]==<span class="string">'x'</span>&amp;&amp;s[i+dx[k]*<span class="number">2</span>][j+dy[k]*<span class="number">2</span>]==<span class="string">'x'</span>)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">puts</span>(<span class="string">"YES"</span>);</div><div class="line">			<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">if</span>(s[i+dx[k]][j+dy[k]]==<span class="string">'x'</span>&amp;&amp;s[i-dx[k]][j-dy[k]]==<span class="string">'x'</span>)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">puts</span>(<span class="string">"YES"</span>);</div><div class="line">			<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;=<span class="number">5</span>;i++)<span class="built_in">scanf</span>(<span class="string">"%s"</span>,s[i]+<span class="number">2</span>);</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;=<span class="number">5</span>;i++)<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">2</span>;j&lt;=<span class="number">5</span>;j++)<span class="keyword">if</span>(s[i][j]==<span class="string">'.'</span>)check(i,j);</div><div class="line">	<span class="built_in">puts</span>(<span class="string">"NO"</span>);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
-<li>还是要多练，切水题的时间比较长，不能死在水题上面</li>
-<li>看题目不能靠翻译，要锻炼自己的英语水平</li>
-</ul>
-]]></content>
-      
-        <categories>
-            
-            <category> 算法 </category>
-            
-        </categories>
-        
-        
-        <tags>
-            
-            <tag> Codeforces </tag>
-            
-        </tags>
-        
-    </entry>
-    
-    <entry>
       <title><![CDATA[ACM中常用的STL （一）]]></title>
       <url>/2017/05/13/ACM%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84STL-%EF%BC%88%E4%B8%80%EF%BC%89/</url>
       <content type="html"><![CDATA[<p>近期在在刷题的时候发现很多的STL的容器还有函数都用得不是很熟练。总所周知，在刷题的时候一些基本的STL的容器和函数的用法是必不可少的。<br>我将用两篇文章来整理一些常用的STL容器和函数的用法，这一篇主要讲容器</p>
@@ -7365,6 +9632,48 @@ doDecrypt(passwd, onError);
             <tag> STL </tag>
             
             <tag> 算法模板 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Codeforces 390 题解]]></title>
+      <url>/2017/05/13/Codeforces%20390%20%E9%A2%98%E8%A7%A3/</url>
+      <content type="html"><![CDATA[<p>这次Codeforces的A和B都是比较简单的，A就是贪心算法（我一开始在理解题意的时候出了一点问题），B就是蛮力枚举。<br>看懂题目的话我觉得每道题在20分钟之内将把代码写出来是没有问题的，可是英语还是硬伤，努力学英语中。。。</p>
+<a id="more"></a>
+<h2 id="A"><a href="#A" class="headerlink" title="A"></a>A</h2><h3 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h3><p>给你一个数组要求将他们进行划分成连续的几个部分，要求每个部分部分不为0</p>
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><ul>
+<li>无法划分的情况：数组中的各个都为0</li>
+<li>对于剩下的情况，我一开始就只是统一处理：分成两组，第一组从1到最后一个不为0的前面一位，剩下的部分组成第二组。但是后来发现这样做是对于数组总和为0的时候可以，对于数组总和不为0时就是不对的，因为可能有第一组都是0的情况，所以还是要分两种情况讨论</li>
+<li>数组总和不为0时，就分成一组</li>
+<li>数组总和为0是，分成两组：第一组从1到最后一个不为0的数的前面一位，剩下的组成第二组</li>
+</ul>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> n;</div><div class="line">	<span class="keyword">while</span>(<span class="built_in">cin</span> &gt;&gt; n)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">int</span> sum=<span class="number">0</span>,tag=<span class="number">1</span>,u;</div><div class="line">		<span class="keyword">int</span> a[<span class="number">101</span>];</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">cin</span>&gt;&gt;a[i];</div><div class="line">			sum+=a[i];</div><div class="line">			<span class="keyword">if</span>(a[i])  <span class="comment">//记录最后一个不为0的数字</span></div><div class="line">			&#123;</div><div class="line">				u=i+<span class="number">1</span>;</div><div class="line">				tag=<span class="number">0</span>;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">if</span>(tag)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;<span class="string">"NO"</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">			<span class="keyword">return</span> ;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">if</span>(sum)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;<span class="string">"YES"</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;<span class="string">"1"</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;<span class="string">"1"</span>&lt;&lt;<span class="string">" "</span>&lt;&lt;n&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">			<span class="keyword">return</span> ;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">else</span></div><div class="line">		&#123;</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;<span class="string">"YES"</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;<span class="string">"2"</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;<span class="string">"1"</span>&lt;&lt;<span class="string">" "</span>&lt;&lt;u<span class="number">-1</span>&lt;&lt;<span class="built_in">endl</span>&lt;&lt;u&lt;&lt;<span class="string">" "</span>&lt;&lt;n&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="B"><a href="#B" class="headerlink" title="B"></a>B</h2><h3 id="题意-1"><a href="#题意-1" class="headerlink" title="题意"></a>题意</h3><p>题目以小时候玩的井字旗为背景，给出残局，让你求出其中一方是否可以走一步就获得胜利（棋盘大小4*4）</p>
+<h3 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h3><ul>
+<li>依次考虑每个空格，胜利有两种情况</li>
+<li>中间和两边中的一个棋子是自己的，另一个是空格</li>
+<li>两个自己的棋子夹一个空格</li>
+</ul>
+<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">char</span> a[<span class="number">6</span>][<span class="number">6</span>];</div><div class="line"><span class="keyword">char</span> tl[<span class="number">2</span>]=&#123;<span class="string">'x'</span>,<span class="string">'o'</span>&#125;;</div><div class="line"><span class="keyword">int</span> dx[<span class="number">8</span>]=&#123;<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">-1</span>,<span class="number">-1</span>,<span class="number">0</span>,<span class="number">1</span>&#125;;</div><div class="line"><span class="keyword">int</span> dy[<span class="number">8</span>]=&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">-1</span>,<span class="number">-1</span>&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">judge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y,<span class="keyword">int</span> nu)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">8</span>;i++)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">int</span> xx=x+dx[i];</div><div class="line">        <span class="keyword">int</span> yy=y+dy[i];</div><div class="line">        <span class="keyword">if</span>(a[xx][yy]==tl[nu])</div><div class="line">        &#123;</div><div class="line">            xx=x-dx[i];</div><div class="line">            yy=y-dy[i];</div><div class="line">            <span class="keyword">if</span>(a[xx][yy]==<span class="string">'.'</span>)</div><div class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span>(a[xx][yy]==<span class="string">'.'</span>)</div><div class="line">        &#123;</div><div class="line">            xx=xx+dx[i];</div><div class="line">            yy=yy+dy[i];</div><div class="line">            <span class="keyword">if</span>(a[xx][yy]==tl[nu])</div><div class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> num1=<span class="number">0</span>,num2=<span class="number">0</span>;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=<span class="number">4</span>;i++)</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=<span class="number">4</span>;j++)</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">cin</span>&gt;&gt;a[i][j];</div><div class="line">            <span class="keyword">if</span>(a[i][j]==<span class="string">'x'</span>)</div><div class="line">                num1++;</div><div class="line">            <span class="keyword">if</span>(a[i][j]==<span class="string">'o'</span>)</div><div class="line">                num2++;</div><div class="line">        &#125;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">6</span>;i++)</div><div class="line">        a[i][<span class="number">0</span>]=a[<span class="number">0</span>][i]=a[<span class="number">6</span>][i]=a[i][<span class="number">6</span>]=<span class="string">'*'</span>;</div><div class="line">    <span class="keyword">int</span> be=<span class="number">0</span>;</div><div class="line">    <span class="keyword">if</span>(num2&lt;num1)</div><div class="line">        be=<span class="number">1</span>;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=<span class="number">4</span>;i++)</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=<span class="number">4</span>;j++)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span>(a[i][j]==tl[be]&amp;&amp;judge(i,j,be))</div><div class="line">            &#123;</div><div class="line">                <span class="built_in">cout</span>&lt;&lt;<span class="string">"YES"</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">                <span class="keyword">return</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="string">"NO"</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="简洁的代码"><a href="#简洁的代码" class="headerlink" title="简洁的代码"></a>简洁的代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> dx[]=&#123;<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">-1</span>,<span class="number">-1</span>&#125;;</div><div class="line"><span class="keyword">int</span> dy[]=&#123;<span class="number">1</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">1</span>,<span class="number">-1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">-1</span>&#125;;</div><div class="line"><span class="keyword">char</span> s[<span class="number">10</span>][<span class="number">10</span>];</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">check</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> k=<span class="number">0</span>;k&lt;<span class="number">8</span>;k++)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">if</span>(s[i+dx[k]][j+dy[k]]==<span class="string">'x'</span>&amp;&amp;s[i+dx[k]*<span class="number">2</span>][j+dy[k]*<span class="number">2</span>]==<span class="string">'x'</span>)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">puts</span>(<span class="string">"YES"</span>);</div><div class="line">			<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">if</span>(s[i+dx[k]][j+dy[k]]==<span class="string">'x'</span>&amp;&amp;s[i-dx[k]][j-dy[k]]==<span class="string">'x'</span>)</div><div class="line">		&#123;</div><div class="line">			<span class="built_in">puts</span>(<span class="string">"YES"</span>);</div><div class="line">			<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;=<span class="number">5</span>;i++)<span class="built_in">scanf</span>(<span class="string">"%s"</span>,s[i]+<span class="number">2</span>);</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;=<span class="number">5</span>;i++)<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">2</span>;j&lt;=<span class="number">5</span>;j++)<span class="keyword">if</span>(s[i][j]==<span class="string">'.'</span>)check(i,j);</div><div class="line">	<span class="built_in">puts</span>(<span class="string">"NO"</span>);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>还是要多练，切水题的时间比较长，不能死在水题上面</li>
+<li>看题目不能靠翻译，要锻炼自己的英语水平</li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 算法 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Codeforces </tag>
             
         </tags>
         

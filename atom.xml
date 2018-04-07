@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-03-28T07:12:37.000Z</updated>
+  <updated>2018-04-07T02:00:07.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,2307 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Github分布式爬虫——数据分析</title>
+    <link href="https://www.liuin.cn/2018/04/07/Github%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E2%80%94%E2%80%94%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/"/>
+    <id>https://www.liuin.cn/2018/04/07/Github分布式爬虫——数据分析/</id>
+    <published>2018-04-07T01:54:54.000Z</published>
+    <updated>2018-04-07T02:00:07.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>对Github分布式爬虫爬取的20w用户信息和40w仓库信息进行简单的分析和统计</p>
+<a id="more"></a>
+<p>这里爬取的数据主要有两大类：用户数据和仓库数据，此次分析的数据量：256171用户数据，434994仓库数据</p>
+<h2 id="用户"><a href="#用户" class="headerlink" title="用户"></a>用户</h2><h3 id="全球用户榜单"><a href="#全球用户榜单" class="headerlink" title="全球用户榜单"></a>全球用户榜单</h3><h4 id="Followers人数榜"><a href="#Followers人数榜" class="headerlink" title="Followers人数榜"></a>Followers人数榜</h4><table>
+<thead>
+<tr>
+<th>Avatar</th>
+<th>User</th>
+<th>Repos</th>
+<th>Stars</th>
+<th>Followers</th>
+<th>Following</th>
+<th>Contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/1024025" alt=""></td>
+<td><a href="https://github.com/torvalds" target="_blank" rel="external">https://github.com/torvalds</a></td>
+<td>6</td>
+<td>2</td>
+<td>70400</td>
+<td>0</td>
+<td>8</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/66577" alt=""></td>
+<td><a href="https://github.com/JakeWharton" target="_blank" rel="external">https://github.com/JakeWharton</a></td>
+<td>95</td>
+<td>228</td>
+<td>45000</td>
+<td>12</td>
+<td>3541</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/905434" alt=""></td>
+<td><a href="https://github.com/ruanyf" target="_blank" rel="external">https://github.com/ruanyf</a></td>
+<td>48</td>
+<td>206</td>
+<td>38200</td>
+<td>0</td>
+<td>1645</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/25254" alt=""></td>
+<td><a href="https://github.com/tj" target="_blank" rel="external">https://github.com/tj</a></td>
+<td>273</td>
+<td>2000</td>
+<td>34400</td>
+<td>46</td>
+<td>3310</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/499550" alt=""></td>
+<td><a href="https://github.com/yyx990803" target="_blank" rel="external">https://github.com/yyx990803</a></td>
+<td>141</td>
+<td>779</td>
+<td>29200</td>
+<td>90</td>
+<td>2553</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/110953" alt=""></td>
+<td><a href="https://github.com/addyosmani" target="_blank" rel="external">https://github.com/addyosmani</a></td>
+<td>295</td>
+<td>807</td>
+<td>29000</td>
+<td>254</td>
+<td>928</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/810438" alt=""></td>
+<td><a href="https://github.com/gaearon" target="_blank" rel="external">https://github.com/gaearon</a></td>
+<td>227</td>
+<td>1300</td>
+<td>27200</td>
+<td>171</td>
+<td>3019</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/39191" alt=""></td>
+<td><a href="https://github.com/paulirish" target="_blank" rel="external">https://github.com/paulirish</a></td>
+<td>266</td>
+<td>723</td>
+<td>25600</td>
+<td>245</td>
+<td>2375</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/170270" alt=""></td>
+<td><a href="https://github.com/sindresorhus" target="_blank" rel="external">https://github.com/sindresorhus</a></td>
+<td>975</td>
+<td>2500</td>
+<td>23600</td>
+<td>50</td>
+<td>4753</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/119893" alt=""></td>
+<td><a href="https://github.com/kennethreitz" target="_blank" rel="external">https://github.com/kennethreitz</a></td>
+<td>141</td>
+<td>1900</td>
+<td>21200</td>
+<td>197</td>
+<td>5626</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Following人数榜"><a href="#Following人数榜" class="headerlink" title="Following人数榜"></a>Following人数榜</h4><table>
+<thead>
+<tr>
+<th>Avatar</th>
+<th>User</th>
+<th>Repos</th>
+<th>Stars</th>
+<th>Followers</th>
+<th>Following</th>
+<th>Contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/3076393" alt=""></td>
+<td><a href="https://github.com/KevinHock" target="_blank" rel="external">https://github.com/KevinHock</a></td>
+<td>19</td>
+<td>198</td>
+<td>1300</td>
+<td>284000</td>
+<td>639</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/5877145" alt=""></td>
+<td><a href="https://github.com/angusshire" target="_blank" rel="external">https://github.com/angusshire</a></td>
+<td>8</td>
+<td>217000</td>
+<td>10300</td>
+<td>230000</td>
+<td>30</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/6508763" alt=""></td>
+<td><a href="https://github.com/dalinhuang99" target="_blank" rel="external">https://github.com/dalinhuang99</a></td>
+<td>20</td>
+<td>75</td>
+<td>3200</td>
+<td>162000</td>
+<td>1293</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/3604053" alt=""></td>
+<td><a href="https://github.com/cusspvz" target="_blank" rel="external">https://github.com/cusspvz</a></td>
+<td>109</td>
+<td>1200</td>
+<td>6600</td>
+<td>130000</td>
+<td>90</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/6673982" alt=""></td>
+<td><a href="https://github.com/MichalPaszkiewicz" target="_blank" rel="external">https://github.com/MichalPaszkiewicz</a></td>
+<td>60</td>
+<td>558</td>
+<td>4600</td>
+<td>72700</td>
+<td>172</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/418638" alt=""></td>
+<td><a href="https://github.com/nfultz" target="_blank" rel="external">https://github.com/nfultz</a></td>
+<td>70</td>
+<td>2500</td>
+<td>2600</td>
+<td>61600</td>
+<td>2141</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/14251570" alt=""></td>
+<td><a href="https://github.com/mstraughan86" target="_blank" rel="external">https://github.com/mstraughan86</a></td>
+<td>15</td>
+<td>454</td>
+<td>3400</td>
+<td>60500</td>
+<td>299</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/32831059" alt=""></td>
+<td><a href="https://github.com/opengiineer" target="_blank" rel="external">https://github.com/opengiineer</a></td>
+<td>19</td>
+<td>90</td>
+<td>1600</td>
+<td>55700</td>
+<td>46</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/778015" alt=""></td>
+<td><a href="https://github.com/ahmetabdi" target="_blank" rel="external">https://github.com/ahmetabdi</a></td>
+<td>130</td>
+<td>4100</td>
+<td>448</td>
+<td>53300</td>
+<td>1954</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/4107768" alt=""></td>
+<td><a href="https://github.com/brunocasanova" target="_blank" rel="external">https://github.com/brunocasanova</a></td>
+<td>46</td>
+<td>152</td>
+<td>2400</td>
+<td>48300</td>
+<td>13</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Stars榜"><a href="#Stars榜" class="headerlink" title="Stars榜"></a>Stars榜</h4><p>看看谁收藏的仓库最多</p>
+<table>
+<thead>
+<tr>
+<th>Avatar</th>
+<th>User</th>
+<th>Repos</th>
+<th>Stars</th>
+<th>Followers</th>
+<th>Following</th>
+<th>Contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/5877145" alt=""></td>
+<td><a href="https://github.com/angusshire" target="_blank" rel="external">https://github.com/angusshire</a></td>
+<td>8</td>
+<td>217000</td>
+<td>10300</td>
+<td>230000</td>
+<td>30</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/1610158" alt=""></td>
+<td><a href="https://github.com/mcanthony" target="_blank" rel="external">https://github.com/mcanthony</a></td>
+<td>4300</td>
+<td>42500</td>
+<td>375</td>
+<td>12700</td>
+<td>21</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/3947125" alt=""></td>
+<td><a href="https://github.com/maoabc1818" target="_blank" rel="external">https://github.com/maoabc1818</a></td>
+<td>9</td>
+<td>32200</td>
+<td>121</td>
+<td>95</td>
+<td>2</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/391299" alt=""></td>
+<td><a href="https://github.com/JT5D" target="_blank" rel="external">https://github.com/JT5D</a></td>
+<td>210</td>
+<td>29300</td>
+<td>276</td>
+<td>6200</td>
+<td>0</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/500775" alt=""></td>
+<td><a href="https://github.com/reduxionist" target="_blank" rel="external">https://github.com/reduxionist</a></td>
+<td>15</td>
+<td>25800</td>
+<td>174</td>
+<td>429</td>
+<td>62</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/6948067" alt=""></td>
+<td><a href="https://github.com/pranavlathigara" target="_blank" rel="external">https://github.com/pranavlathigara</a></td>
+<td>1200</td>
+<td>24600</td>
+<td>793</td>
+<td>14900</td>
+<td>130</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/2882" alt=""></td>
+<td><a href="https://github.com/nikolay" target="_blank" rel="external">https://github.com/nikolay</a></td>
+<td>12</td>
+<td>23100</td>
+<td>243</td>
+<td>349</td>
+<td>469</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/3759759" alt=""></td>
+<td><a href="https://github.com/denji" target="_blank" rel="external">https://github.com/denji</a></td>
+<td>1300</td>
+<td>22500</td>
+<td>181</td>
+<td>397</td>
+<td>305</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/24416962" alt=""></td>
+<td><a href="https://github.com/roscopecoltran" target="_blank" rel="external">https://github.com/roscopecoltran</a></td>
+<td>156</td>
+<td>21000</td>
+<td>121</td>
+<td>4400</td>
+<td>599</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/6257454" alt=""></td>
+<td><a href="https://github.com/Jerzerak" target="_blank" rel="external">https://github.com/Jerzerak</a></td>
+<td>1</td>
+<td>18900</td>
+<td>54</td>
+<td>0</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Reps榜"><a href="#Reps榜" class="headerlink" title="Reps榜"></a>Reps榜</h4><p>Github上创建仓库最多的人在这里</p>
+<table>
+<thead>
+<tr>
+<th>Avatar</th>
+<th>User</th>
+<th>Repos</th>
+<th>Stars</th>
+<th>Followers</th>
+<th>Following</th>
+<th>Contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/675997" alt=""></td>
+<td><a href="https://github.com/pombredanne" target="_blank" rel="external">https://github.com/pombredanne</a></td>
+<td>40600</td>
+<td>6500</td>
+<td>149</td>
+<td>87</td>
+<td>2558</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/1732196" alt=""></td>
+<td><a href="https://github.com/carriercomm" target="_blank" rel="external">https://github.com/carriercomm</a></td>
+<td>20400</td>
+<td>12900</td>
+<td>72</td>
+<td>176</td>
+<td>151</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/14135456" alt=""></td>
+<td><a href="https://github.com/digideskio" target="_blank" rel="external">https://github.com/digideskio</a></td>
+<td>18000</td>
+<td>88</td>
+<td>120</td>
+<td>3900</td>
+<td>113</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/431924" alt=""></td>
+<td><a href="https://github.com/guoyu07" target="_blank" rel="external">https://github.com/guoyu07</a></td>
+<td>11600</td>
+<td>91</td>
+<td>20</td>
+<td>1000</td>
+<td>112</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/12729391" alt=""></td>
+<td><a href="https://github.com/modulexcite" target="_blank" rel="external">https://github.com/modulexcite</a></td>
+<td>10700</td>
+<td>4200</td>
+<td>30</td>
+<td>192</td>
+<td>15</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/1218365" alt=""></td>
+<td><a href="https://github.com/PlumpMath" target="_blank" rel="external">https://github.com/PlumpMath</a></td>
+<td>10100</td>
+<td>508</td>
+<td>31</td>
+<td>147</td>
+<td>103</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/3380677" alt=""></td>
+<td><a href="https://github.com/carabina" target="_blank" rel="external">https://github.com/carabina</a></td>
+<td>9300</td>
+<td>8700</td>
+<td>83</td>
+<td>5</td>
+<td>101</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/4687038" alt=""></td>
+<td><a href="https://github.com/jorik041" target="_blank" rel="external">https://github.com/jorik041</a></td>
+<td>9200</td>
+<td>53</td>
+<td>20</td>
+<td>129</td>
+<td>101</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/1332574" alt=""></td>
+<td><a href="https://github.com/treejames" target="_blank" rel="external">https://github.com/treejames</a></td>
+<td>8000</td>
+<td>6900</td>
+<td>93</td>
+<td>897</td>
+<td>101</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/498130" alt=""></td>
+<td><a href="https://github.com/mehulsbhatt" target="_blank" rel="external">https://github.com/mehulsbhatt</a></td>
+<td>7400</td>
+<td>364</td>
+<td>23</td>
+<td>9</td>
+<td>104</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Contribution榜"><a href="#Contribution榜" class="headerlink" title="Contribution榜"></a>Contribution榜</h4><table>
+<thead>
+<tr>
+<th>Avatar</th>
+<th>User</th>
+<th>Repos</th>
+<th>Stars</th>
+<th>Followers</th>
+<th>Following</th>
+<th>Contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/3244" alt=""></td>
+<td><a href="https://github.com/robertbrook" target="_blank" rel="external">https://github.com/robertbrook</a></td>
+<td>67</td>
+<td>32</td>
+<td>63</td>
+<td>114</td>
+<td>539804</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/20975616" alt=""></td>
+<td><a href="https://github.com/SimiCode" target="_blank" rel="external">https://github.com/SimiCode</a></td>
+<td>24</td>
+<td>11</td>
+<td>5</td>
+<td>15</td>
+<td>377077</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/751143" alt=""></td>
+<td><a href="https://github.com/jasoncalabrese" target="_blank" rel="external">https://github.com/jasoncalabrese</a></td>
+<td>75</td>
+<td>50</td>
+<td>64</td>
+<td>19</td>
+<td>357587</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/56100" alt=""></td>
+<td><a href="https://github.com/kinlane" target="_blank" rel="external">https://github.com/kinlane</a></td>
+<td>222</td>
+<td>242</td>
+<td>346</td>
+<td>588</td>
+<td>199240</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/415831" alt=""></td>
+<td><a href="https://github.com/talos" target="_blank" rel="external">https://github.com/talos</a></td>
+<td>113</td>
+<td>95</td>
+<td>143</td>
+<td>7</td>
+<td>115891</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/283441" alt=""></td>
+<td><a href="https://github.com/honzajavorek" target="_blank" rel="external">https://github.com/honzajavorek</a></td>
+<td>87</td>
+<td>167</td>
+<td>128</td>
+<td>93</td>
+<td>80301</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/1006477" alt=""></td>
+<td><a href="https://github.com/felixonmars" target="_blank" rel="external">https://github.com/felixonmars</a></td>
+<td>420</td>
+<td>369</td>
+<td>806</td>
+<td>149</td>
+<td>70179</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/1317792" alt=""></td>
+<td><a href="https://github.com/xndcn" target="_blank" rel="external">https://github.com/xndcn</a></td>
+<td>33</td>
+<td>86</td>
+<td>67</td>
+<td>8</td>
+<td>67634</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/3935007" alt=""></td>
+<td><a href="https://github.com/ojengwa" target="_blank" rel="external">https://github.com/ojengwa</a></td>
+<td>293</td>
+<td>469</td>
+<td>67</td>
+<td>8</td>
+<td>49621</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/10103766" alt=""></td>
+<td><a href="https://github.com/SergioChan" target="_blank" rel="external">https://github.com/SergioChan</a></td>
+<td>47</td>
+<td>372</td>
+<td>982</td>
+<td>598</td>
+<td>42202</td>
+</tr>
+</tbody>
+</table>
+<p>365天，天天绿是种怎样的体验？</p>
+<h3 id="中国用户榜单"><a href="#中国用户榜单" class="headerlink" title="中国用户榜单"></a>中国用户榜单</h3><p>这里只是通过location中”China”、”Shanghai”类似的关键词对中国用户进行区分，所以可能有遗漏的地方，还请谅解。此次统计的中国用户数据有18011</p>
+<h4 id="Followers人数榜-1"><a href="#Followers人数榜-1" class="headerlink" title="Followers人数榜"></a>Followers人数榜</h4><table>
+<thead>
+<tr>
+<th>Avatar</th>
+<th>User</th>
+<th>Repos</th>
+<th>Stars</th>
+<th>Followers</th>
+<th>Following</th>
+<th>Contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/905434" alt=""></td>
+<td><a href="https://github.com/ruanyf" target="_blank" rel="external">https://github.com/ruanyf</a></td>
+<td>48</td>
+<td>206</td>
+<td>38200</td>
+<td>0</td>
+<td>1645</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/499550" alt=""></td>
+<td><a href="https://github.com/yyx990803" target="_blank" rel="external">https://github.com/yyx990803</a></td>
+<td>141</td>
+<td>779</td>
+<td>29200</td>
+<td>90</td>
+<td>2553</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/2503423" alt=""></td>
+<td><a href="https://github.com/daimajia" target="_blank" rel="external">https://github.com/daimajia</a></td>
+<td>63</td>
+<td>2900</td>
+<td>20000</td>
+<td>241</td>
+<td>21</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/470058" alt=""></td>
+<td><a href="https://github.com/michaelliao" target="_blank" rel="external">https://github.com/michaelliao</a></td>
+<td>61</td>
+<td>81</td>
+<td>19700</td>
+<td>0</td>
+<td>297</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/327019" alt=""></td>
+<td><a href="https://github.com/JacksonTian" target="_blank" rel="external">https://github.com/JacksonTian</a></td>
+<td>229</td>
+<td>583</td>
+<td>15500</td>
+<td>151</td>
+<td>805</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/1169522" alt=""></td>
+<td><a href="https://github.com/Trinea" target="_blank" rel="external">https://github.com/Trinea</a></td>
+<td>24</td>
+<td>1500</td>
+<td>14100</td>
+<td>38</td>
+<td>80</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/2267900" alt=""></td>
+<td><a href="https://github.com/stormzhang" target="_blank" rel="external">https://github.com/stormzhang</a></td>
+<td>5</td>
+<td>1500</td>
+<td>12800</td>
+<td>91</td>
+<td>9</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/97227" alt=""></td>
+<td><a href="https://github.com/lifesinger" target="_blank" rel="external">https://github.com/lifesinger</a></td>
+<td>2</td>
+<td>278</td>
+<td>12000</td>
+<td>13</td>
+<td>1</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/729648" alt=""></td>
+<td><a href="https://github.com/cloudwu" target="_blank" rel="external">https://github.com/cloudwu</a></td>
+<td>102</td>
+<td>63</td>
+<td>11700</td>
+<td>1</td>
+<td>690</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/472311" alt=""></td>
+<td><a href="https://github.com/phodal" target="_blank" rel="external">https://github.com/phodal</a></td>
+<td>254</td>
+<td>1700</td>
+<td>11100</td>
+<td>15</td>
+<td>5924</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Following人数榜-1"><a href="#Following人数榜-1" class="headerlink" title="Following人数榜"></a>Following人数榜</h4><table>
+<thead>
+<tr>
+<th>Avatar</th>
+<th>User</th>
+<th>Repos</th>
+<th>Stars</th>
+<th>Followers</th>
+<th>Following</th>
+<th>Contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/3693121" alt=""></td>
+<td><a href="https://github.com/fordream" target="_blank" rel="external">https://github.com/fordream</a></td>
+<td>724</td>
+<td>21</td>
+<td>919</td>
+<td>19800</td>
+<td>1</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/17972943" alt=""></td>
+<td><a href="https://github.com/Vermisse" target="_blank" rel="external">https://github.com/Vermisse</a></td>
+<td>15</td>
+<td>25</td>
+<td>2300</td>
+<td>10400</td>
+<td>102</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/93859" alt=""></td>
+<td><a href="https://github.com/technologiclee" target="_blank" rel="external">https://github.com/technologiclee</a></td>
+<td>149</td>
+<td>844</td>
+<td>374</td>
+<td>9500</td>
+<td>6</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/15626022" alt=""></td>
+<td><a href="https://github.com/shenzhoudance" target="_blank" rel="external">https://github.com/shenzhoudance</a></td>
+<td>599</td>
+<td>6</td>
+<td>108</td>
+<td>7700</td>
+<td>2373</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/10573715" alt=""></td>
+<td><a href="https://github.com/kotobukki" target="_blank" rel="external">https://github.com/kotobukki</a></td>
+<td>15</td>
+<td>68</td>
+<td>111</td>
+<td>7500</td>
+<td>889</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/29220207" alt=""></td>
+<td><a href="https://github.com/vincentpanqi" target="_blank" rel="external">https://github.com/vincentpanqi</a></td>
+<td>1800</td>
+<td>714</td>
+<td>47</td>
+<td>5600</td>
+<td>102</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/1727724" alt=""></td>
+<td><a href="https://github.com/ovwane" target="_blank" rel="external">https://github.com/ovwane</a></td>
+<td>220</td>
+<td>1100</td>
+<td>120</td>
+<td>5500</td>
+<td>329</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/9153294" alt=""></td>
+<td><a href="https://github.com/pisual" target="_blank" rel="external">https://github.com/pisual</a></td>
+<td>39</td>
+<td>62</td>
+<td>917</td>
+<td>4900</td>
+<td>122</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/23236638" alt=""></td>
+<td><a href="https://github.com/youkaichao" target="_blank" rel="external">https://github.com/youkaichao</a></td>
+<td>39</td>
+<td>0</td>
+<td>58</td>
+<td>4800</td>
+<td>113</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/7576876" alt=""></td>
+<td><a href="https://github.com/bloodycoder" target="_blank" rel="external">https://github.com/bloodycoder</a></td>
+<td>73</td>
+<td>34</td>
+<td>162</td>
+<td>4200</td>
+<td>390</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Stars榜-1"><a href="#Stars榜-1" class="headerlink" title="Stars榜"></a>Stars榜</h4><table>
+<thead>
+<tr>
+<th>Avatar</th>
+<th>User</th>
+<th>Repos</th>
+<th>Stars</th>
+<th>Followers</th>
+<th>Following</th>
+<th>Contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/1041542" alt=""></td>
+<td><a href="https://github.com/weimingtom" target="_blank" rel="external">https://github.com/weimingtom</a></td>
+<td>2100</td>
+<td>9100</td>
+<td>172</td>
+<td>1800</td>
+<td>1724</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/2041398" alt=""></td>
+<td><a href="https://github.com/jiangplus" target="_blank" rel="external">https://github.com/jiangplus</a></td>
+<td>28</td>
+<td>8800</td>
+<td>85</td>
+<td>115</td>
+<td>13</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/1024948" alt=""></td>
+<td><a href="https://github.com/DavidAlphaFox" target="_blank" rel="external">https://github.com/DavidAlphaFox</a></td>
+<td>346</td>
+<td>7800</td>
+<td>167</td>
+<td>83</td>
+<td>1122</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/480859" alt=""></td>
+<td><a href="https://github.com/mayulu" target="_blank" rel="external">https://github.com/mayulu</a></td>
+<td>12</td>
+<td>7700</td>
+<td>133</td>
+<td>616</td>
+<td>14</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/4370703" alt=""></td>
+<td><a href="https://github.com/hzy87email" target="_blank" rel="external">https://github.com/hzy87email</a></td>
+<td>73</td>
+<td>7700</td>
+<td>77</td>
+<td>167</td>
+<td>3</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/1468284" alt=""></td>
+<td><a href="https://github.com/se77en" target="_blank" rel="external">https://github.com/se77en</a></td>
+<td>197</td>
+<td>7600</td>
+<td>119</td>
+<td>455</td>
+<td>0</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/12030169" alt=""></td>
+<td><a href="https://github.com/JaredYeDH" target="_blank" rel="external">https://github.com/JaredYeDH</a></td>
+<td>166</td>
+<td>7400</td>
+<td>45</td>
+<td>636</td>
+<td>101</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/10380759" alt=""></td>
+<td><a href="https://github.com/xhs" target="_blank" rel="external">https://github.com/xhs</a></td>
+<td>20</td>
+<td>7200</td>
+<td>43</td>
+<td>119</td>
+<td>10</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/1881113" alt=""></td>
+<td><a href="https://github.com/paladin74" target="_blank" rel="external">https://github.com/paladin74</a></td>
+<td>618</td>
+<td>7100</td>
+<td>52</td>
+<td>901</td>
+<td>1</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/3856" alt=""></td>
+<td><a href="https://github.com/mrluanma" target="_blank" rel="external">https://github.com/mrluanma</a></td>
+<td>12</td>
+<td>7000</td>
+<td>126</td>
+<td>541</td>
+<td>36</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Reps榜-1"><a href="#Reps榜-1" class="headerlink" title="Reps榜"></a>Reps榜</h4><table>
+<thead>
+<tr>
+<th>Avatar</th>
+<th>User</th>
+<th>Repos</th>
+<th>Stars</th>
+<th>Followers</th>
+<th>Following</th>
+<th>Contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/10938976" alt=""></td>
+<td><a href="https://github.com/skyformat99" target="_blank" rel="external">https://github.com/skyformat99</a></td>
+<td>6000</td>
+<td>143</td>
+<td>98</td>
+<td>3200</td>
+<td>134</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/1203820" alt=""></td>
+<td><a href="https://github.com/tempbottle" target="_blank" rel="external">https://github.com/tempbottle</a></td>
+<td>4200</td>
+<td>59</td>
+<td>21</td>
+<td>18</td>
+<td>101</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/8662447" alt=""></td>
+<td><a href="https://github.com/JamesLinus" target="_blank" rel="external">https://github.com/JamesLinus</a></td>
+<td>4100</td>
+<td>1600</td>
+<td>89</td>
+<td>3300</td>
+<td>181</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/12955801" alt=""></td>
+<td><a href="https://github.com/hu19891110" target="_blank" rel="external">https://github.com/hu19891110</a></td>
+<td>3600</td>
+<td>90</td>
+<td>11</td>
+<td>112</td>
+<td>107</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/452743" alt=""></td>
+<td><a href="https://github.com/WilliamRen" target="_blank" rel="external">https://github.com/WilliamRen</a></td>
+<td>2900</td>
+<td>3200</td>
+<td>32</td>
+<td>5</td>
+<td>5</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/3414057" alt=""></td>
+<td><a href="https://github.com/chagge" target="_blank" rel="external">https://github.com/chagge</a></td>
+<td>2300</td>
+<td>8</td>
+<td>16</td>
+<td>669</td>
+<td>101</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/6813552" alt=""></td>
+<td><a href="https://github.com/forging2012" target="_blank" rel="external">https://github.com/forging2012</a></td>
+<td>2200</td>
+<td>789</td>
+<td>8</td>
+<td>71</td>
+<td>151</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/1041542" alt=""></td>
+<td><a href="https://github.com/weimingtom" target="_blank" rel="external">https://github.com/weimingtom</a></td>
+<td>2100</td>
+<td>9100</td>
+<td>172</td>
+<td>1800</td>
+<td>1724</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/23429527" alt=""></td>
+<td><a href="https://github.com/isuhao" target="_blank" rel="external">https://github.com/isuhao</a></td>
+<td>2000</td>
+<td>153</td>
+<td>62</td>
+<td>2700</td>
+<td>282</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/5791117" alt=""></td>
+<td><a href="https://github.com/ycaihua" target="_blank" rel="external">https://github.com/ycaihua</a></td>
+<td>1900</td>
+<td>109</td>
+<td>38</td>
+<td>589</td>
+<td>133</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Contribution榜-1"><a href="#Contribution榜-1" class="headerlink" title="Contribution榜"></a>Contribution榜</h4><table>
+<thead>
+<tr>
+<th>Avatar</th>
+<th>User</th>
+<th>Repos</th>
+<th>Stars</th>
+<th>Followers</th>
+<th>Following</th>
+<th>Contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/1006477" alt=""></td>
+<td><a href="https://github.com/felixonmars" target="_blank" rel="external">https://github.com/felixonmars</a></td>
+<td>420</td>
+<td>369</td>
+<td>806</td>
+<td>149</td>
+<td>70179</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/10103766" alt=""></td>
+<td><a href="https://github.com/SergioChan" target="_blank" rel="external">https://github.com/SergioChan</a></td>
+<td>47</td>
+<td>372</td>
+<td>982</td>
+<td>598</td>
+<td>42202</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/12693644" alt=""></td>
+<td><a href="https://github.com/dragon-yuan" target="_blank" rel="external">https://github.com/dragon-yuan</a></td>
+<td>16</td>
+<td>109</td>
+<td>35</td>
+<td>50</td>
+<td>18591</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/8347202" alt=""></td>
+<td><a href="https://github.com/fengss" target="_blank" rel="external">https://github.com/fengss</a></td>
+<td>30</td>
+<td>67</td>
+<td>15</td>
+<td>1</td>
+<td>12560</td>
+</tr>
+<tr>
+<td><img src="https://avatars0.githubusercontent.com/u/9410171" alt=""></td>
+<td><a href="https://github.com/xieguigang" target="_blank" rel="external">https://github.com/xieguigang</a></td>
+<td>41</td>
+<td>115</td>
+<td>136</td>
+<td>143</td>
+<td>10999</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/9280577" alt=""></td>
+<td><a href="https://github.com/csjunxu" target="_blank" rel="external">https://github.com/csjunxu</a></td>
+<td>194</td>
+<td>81</td>
+<td>35</td>
+<td>51</td>
+<td>9935</td>
+</tr>
+<tr>
+<td><img src="https://avatars3.githubusercontent.com/u/559179" alt=""></td>
+<td><a href="https://github.com/airyland" target="_blank" rel="external">https://github.com/airyland</a></td>
+<td>183</td>
+<td>1400</td>
+<td>996</td>
+<td>175</td>
+<td>8852</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/11537812" alt=""></td>
+<td><a href="https://github.com/yutiansut" target="_blank" rel="external">https://github.com/yutiansut</a></td>
+<td>216</td>
+<td>1100</td>
+<td>298</td>
+<td>8</td>
+<td>7311</td>
+</tr>
+<tr>
+<td><img src="https://avatars2.githubusercontent.com/u/1826685" alt=""></td>
+<td><a href="https://github.com/lloydzhou" target="_blank" rel="external">https://github.com/lloydzhou</a></td>
+<td>92</td>
+<td>556</td>
+<td>52</td>
+<td>69</td>
+<td>6729</td>
+</tr>
+<tr>
+<td><img src="https://avatars1.githubusercontent.com/u/8784712" alt=""></td>
+<td><a href="https://github.com/egoist" target="_blank" rel="external">https://github.com/egoist</a></td>
+<td>647</td>
+<td>2700</td>
+<td>3600</td>
+<td>40</td>
+<td>6236</td>
+</tr>
+</tbody>
+</table>
+<h3 id="个人网站中顶级域名分布情况"><a href="#个人网站中顶级域名分布情况" class="headerlink" title="个人网站中顶级域名分布情况"></a>个人网站中顶级域名分布情况</h3><p><img src="https://data2.liuin.cn/2018-04-01-15225621477939.jpg" alt=""></p>
+<h3 id="用户公布邮箱情况"><a href="#用户公布邮箱情况" class="headerlink" title="用户公布邮箱情况"></a>用户公布邮箱情况</h3><p><img src="https://data2.liuin.cn/2018-04-01-15225624252077.jpg" alt=""></p>
+<h3 id="用户所在公司情况"><a href="#用户所在公司情况" class="headerlink" title="用户所在公司情况"></a>用户所在公司情况</h3><p>公布公司的前8</p>
+<p><img src="https://data2.liuin.cn/2018-04-01-15225631364406.jpg" alt=""></p>
+<p>云图</p>
+<p><img src="https://data2.liuin.cn/2018-04-01-15225635127953.jpg" alt=""></p>
+<h2 id="仓库"><a href="#仓库" class="headerlink" title="仓库"></a>仓库</h2><h3 id="Stars榜-2"><a href="#Stars榜-2" class="headerlink" title="Stars榜"></a>Stars榜</h3><table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/freeCodeCamp/freeCodeCamp" target="_blank" rel="external">freeCodeCamp/freeCodeCamp</a></td>
+<td><a href="https://github.com/freeCodeCamp" target="_blank" rel="external">freeCodeCamp</a></td>
+<td>JavaScript</td>
+<td>291895</td>
+<td>13667</td>
+<td>11334</td>
+</tr>
+<tr>
+<td><a href="https://github.com/twbs/bootstrap" target="_blank" rel="external">twbs/bootstrap</a></td>
+<td><a href="https://github.com/twbs" target="_blank" rel="external">twbs</a></td>
+<td>CSS</td>
+<td>123341</td>
+<td>58717</td>
+<td>17645</td>
+</tr>
+<tr>
+<td><a href="https://github.com/EbookFoundation/free-programming-books" target="_blank" rel="external">EbookFoundation/free-programming-books</a></td>
+<td><a href="https://github.com/EbookFoundation" target="_blank" rel="external">EbookFoundation</a></td>
+<td></td>
+<td>103480</td>
+<td>26331</td>
+<td>4634</td>
+</tr>
+<tr>
+<td><a href="https://github.com/tensorflow/tensorflow" target="_blank" rel="external">tensorflow/tensorflow</a></td>
+<td><a href="https://github.com/tensorflow" target="_blank" rel="external">tensorflow</a></td>
+<td>C++</td>
+<td>95028</td>
+<td>60694</td>
+<td>30887</td>
+</tr>
+<tr>
+<td><a href="https://github.com/facebook/react" target="_blank" rel="external">facebook/react</a></td>
+<td><a href="https://github.com/facebook" target="_blank" rel="external">facebook</a></td>
+<td>JavaScript</td>
+<td>92602</td>
+<td>17473</td>
+<td>9773</td>
+</tr>
+<tr>
+<td><a href="https://github.com/vuejs/vue" target="_blank" rel="external">vuejs/vue</a></td>
+<td><a href="https://github.com/vuejs" target="_blank" rel="external">vuejs</a></td>
+<td>JavaScript</td>
+<td>89447</td>
+<td>13129</td>
+<td>2581</td>
+</tr>
+<tr>
+<td><a href="https://github.com/sindresorhus/awesome" target="_blank" rel="external">sindresorhus/awesome</a></td>
+<td><a href="https://github.com/sindresorhus" target="_blank" rel="external">sindresorhus</a></td>
+<td></td>
+<td>82141</td>
+<td>10785</td>
+<td>725</td>
+</tr>
+<tr>
+<td><a href="https://github.com/getify/You-Dont-Know-JS" target="_blank" rel="external">getify/You-Dont-Know-JS</a></td>
+<td><a href="https://github.com/getify" target="_blank" rel="external">getify</a></td>
+<td></td>
+<td>78848</td>
+<td>14404</td>
+<td>1465</td>
+</tr>
+<tr>
+<td><a href="https://github.com/d3/d3" target="_blank" rel="external">d3/d3</a></td>
+<td><a href="https://github.com/d3" target="_blank" rel="external">d3</a></td>
+<td>JavaScript</td>
+<td>74472</td>
+<td>19024</td>
+<td>4132</td>
+</tr>
+<tr>
+<td><a href="https://github.com/airbnb/javascript" target="_blank" rel="external">airbnb/javascript</a></td>
+<td><a href="https://github.com/airbnb" target="_blank" rel="external">airbnb</a></td>
+<td>JavaScript</td>
+<td>68833</td>
+<td>13127</td>
+<td>1607</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Forks榜"><a href="#Forks榜" class="headerlink" title="Forks榜"></a>Forks榜</h3><table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/jtleek/datasharing" target="_blank" rel="external">jtleek/datasharing</a></td>
+<td><a href="https://github.com/jtleek" target="_blank" rel="external">jtleek</a></td>
+<td></td>
+<td>4332</td>
+<td>184409</td>
+<td>29</td>
+</tr>
+<tr>
+<td><a href="https://github.com/rdpeng/ProgrammingAssignment2" target="_blank" rel="external">rdpeng/ProgrammingAssignment2</a></td>
+<td><a href="https://github.com/rdpeng" target="_blank" rel="external">rdpeng</a></td>
+<td>R</td>
+<td>528</td>
+<td>110145</td>
+<td>7</td>
+</tr>
+<tr>
+<td><a href="https://github.com/octocat/Spoon-Knife" target="_blank" rel="external">octocat/Spoon-Knife</a></td>
+<td><a href="https://github.com/octocat" target="_blank" rel="external">octocat</a></td>
+<td>HTML</td>
+<td>10043</td>
+<td>97471</td>
+<td>3</td>
+</tr>
+<tr>
+<td><a href="https://github.com/tensorflow/tensorflow" target="_blank" rel="external">tensorflow/tensorflow</a></td>
+<td><a href="https://github.com/tensorflow" target="_blank" rel="external">tensorflow</a></td>
+<td>C++</td>
+<td>95028</td>
+<td>60694</td>
+<td>30887</td>
+</tr>
+<tr>
+<td><a href="https://github.com/twbs/bootstrap" target="_blank" rel="external">twbs/bootstrap</a></td>
+<td><a href="https://github.com/twbs" target="_blank" rel="external">twbs</a></td>
+<td>CSS</td>
+<td>123341</td>
+<td>58717</td>
+<td>17645</td>
+</tr>
+<tr>
+<td><a href="https://github.com/SmartThingsCommunity/SmartThingsPublic" target="_blank" rel="external">SmartThingsCommunity/SmartThingsPublic</a></td>
+<td><a href="https://github.com/SmartThingsCommunity" target="_blank" rel="external">SmartThingsCommunity</a></td>
+<td>Groovy</td>
+<td>853</td>
+<td>38018</td>
+<td>2448</td>
+</tr>
+<tr>
+<td><a href="https://github.com/rdpeng/RepData_PeerAssessment1" target="_blank" rel="external">rdpeng/RepData_PeerAssessment1</a></td>
+<td><a href="https://github.com/rdpeng" target="_blank" rel="external">rdpeng</a></td>
+<td></td>
+<td>69</td>
+<td>29883</td>
+<td>13</td>
+</tr>
+<tr>
+<td><a href="https://github.com/github/gitignore" target="_blank" rel="external">github/gitignore</a></td>
+<td><a href="https://github.com/github" target="_blank" rel="external">github</a></td>
+<td></td>
+<td>63853</td>
+<td>29259</td>
+<td>2738</td>
+</tr>
+<tr>
+<td><a href="https://github.com/angular/angular.js" target="_blank" rel="external">angular/angular.js</a></td>
+<td><a href="https://github.com/angular" target="_blank" rel="external">angular</a></td>
+<td>JavaScript</td>
+<td>58232</td>
+<td>28872</td>
+<td>8755</td>
+</tr>
+<tr>
+<td><a href="https://github.com/EbookFoundation/free-programming-books" target="_blank" rel="external">EbookFoundation/free-programming-books</a></td>
+<td><a href="https://github.com/EbookFoundation" target="_blank" rel="external">EbookFoundation</a></td>
+<td></td>
+<td>103480</td>
+<td>26331</td>
+<td>4634</td>
+</tr>
+</tbody>
+</table>
+<h3 id="C"><a href="#C" class="headerlink" title="C"></a>C</h3><p>stars排行</p>
+<table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/torvalds/linux" target="_blank" rel="external">torvalds/linux</a></td>
+<td><a href="https://github.com/torvalds" target="_blank" rel="external">torvalds</a></td>
+<td>C</td>
+<td>57191</td>
+<td>21032</td>
+<td>744803</td>
+</tr>
+<tr>
+<td><a href="https://github.com/firehol/netdata" target="_blank" rel="external">firehol/netdata</a></td>
+<td><a href="https://github.com/firehol" target="_blank" rel="external">firehol</a></td>
+<td>C</td>
+<td>28607</td>
+<td>2389</td>
+<td>6690</td>
+</tr>
+<tr>
+<td><a href="https://github.com/antirez/redis" target="_blank" rel="external">antirez/redis</a></td>
+<td><a href="https://github.com/antirez" target="_blank" rel="external">antirez</a></td>
+<td>C</td>
+<td>28340</td>
+<td>10916</td>
+<td>6679</td>
+</tr>
+<tr>
+<td><a href="https://github.com/git/git" target="_blank" rel="external">git/git</a></td>
+<td><a href="https://github.com/git" target="_blank" rel="external">git</a></td>
+<td>C</td>
+<td>21665</td>
+<td>12634</td>
+<td>50674</td>
+</tr>
+<tr>
+<td><a href="https://github.com/Bilibili/ijkplayer" target="_blank" rel="external">Bilibili/ijkplayer</a></td>
+<td><a href="https://github.com/Bilibili" target="_blank" rel="external">Bilibili</a></td>
+<td>C</td>
+<td>18374</td>
+<td>5191</td>
+<td>2584</td>
+</tr>
+<tr>
+<td><a href="https://github.com/php/php-src" target="_blank" rel="external">php/php-src</a></td>
+<td><a href="https://github.com/php" target="_blank" rel="external">php</a></td>
+<td>C</td>
+<td>16996</td>
+<td>4745</td>
+<td>107206</td>
+</tr>
+<tr>
+<td><a href="https://github.com/SamyPesse/How-to-Make-a-Computer-Operating-System" target="_blank" rel="external">SamyPesse/How-to-Make-a-Computer-Operating-System</a></td>
+<td><a href="https://github.com/SamyPesse" target="_blank" rel="external">SamyPesse</a></td>
+<td>C</td>
+<td>16957</td>
+<td>3015</td>
+<td>243</td>
+</tr>
+<tr>
+<td><a href="https://github.com/wg/wrk" target="_blank" rel="external">wg/wrk</a></td>
+<td><a href="https://github.com/wg" target="_blank" rel="external">wg</a></td>
+<td>C</td>
+<td>15386</td>
+<td>1245</td>
+<td>72</td>
+</tr>
+<tr>
+<td><a href="https://github.com/ggreer/the_silver_searcher" target="_blank" rel="external">ggreer/the_silver_searcher</a></td>
+<td><a href="https://github.com/ggreer" target="_blank" rel="external">ggreer</a></td>
+<td>C</td>
+<td>14854</td>
+<td>954</td>
+<td>1974</td>
+</tr>
+<tr>
+<td><a href="https://github.com/kripken/emscripten" target="_blank" rel="external">kripken/emscripten</a></td>
+<td><a href="https://github.com/kripken" target="_blank" rel="external">kripken</a></td>
+<td>C</td>
+<td>14373</td>
+<td>1704</td>
+<td>18154</td>
+</tr>
+</tbody>
+</table>
+<p>forks排行</p>
+<table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/torvalds/linux" target="_blank" rel="external">torvalds/linux</a></td>
+<td><a href="https://github.com/torvalds" target="_blank" rel="external">torvalds</a></td>
+<td>C</td>
+<td>57191</td>
+<td>21032</td>
+<td>744803</td>
+</tr>
+<tr>
+<td><a href="https://github.com/git/git" target="_blank" rel="external">git/git</a></td>
+<td><a href="https://github.com/git" target="_blank" rel="external">git</a></td>
+<td>C</td>
+<td>21665</td>
+<td>12634</td>
+<td>50674</td>
+</tr>
+<tr>
+<td><a href="https://github.com/antirez/redis" target="_blank" rel="external">antirez/redis</a></td>
+<td><a href="https://github.com/antirez" target="_blank" rel="external">antirez</a></td>
+<td>C</td>
+<td>28340</td>
+<td>10916</td>
+<td>6679</td>
+</tr>
+<tr>
+<td><a href="https://github.com/arduino/Arduino" target="_blank" rel="external">arduino/Arduino</a></td>
+<td><a href="https://github.com/arduino" target="_blank" rel="external">arduino</a></td>
+<td>C</td>
+<td>7936</td>
+<td>6184</td>
+<td>6649</td>
+</tr>
+<tr>
+<td><a href="https://github.com/julycoding/The-Art-Of-Programming-By-July" target="_blank" rel="external">julycoding/The-Art-Of-Programming-By-July</a></td>
+<td><a href="https://github.com/julycoding" target="_blank" rel="external">julycoding</a></td>
+<td>C</td>
+<td>13544</td>
+<td>5666</td>
+<td>3630</td>
+</tr>
+<tr>
+<td><a href="https://github.com/MarlinFirmware/Marlin" target="_blank" rel="external">MarlinFirmware/Marlin</a></td>
+<td><a href="https://github.com/MarlinFirmware" target="_blank" rel="external">MarlinFirmware</a></td>
+<td>C</td>
+<td>3615</td>
+<td>5340</td>
+<td>9015</td>
+</tr>
+<tr>
+<td><a href="https://github.com/Bilibili/ijkplayer" target="_blank" rel="external">Bilibili/ijkplayer</a></td>
+<td><a href="https://github.com/Bilibili" target="_blank" rel="external">Bilibili</a></td>
+<td>C</td>
+<td>18374</td>
+<td>5191</td>
+<td>2584</td>
+</tr>
+<tr>
+<td><a href="https://github.com/php/php-src" target="_blank" rel="external">php/php-src</a></td>
+<td><a href="https://github.com/php" target="_blank" rel="external">php</a></td>
+<td>C</td>
+<td>16996</td>
+<td>4745</td>
+<td>107206</td>
+</tr>
+<tr>
+<td><a href="https://github.com/esp8266/Arduino" target="_blank" rel="external">esp8266/Arduino</a></td>
+<td><a href="https://github.com/esp8266" target="_blank" rel="external">esp8266</a></td>
+<td>C</td>
+<td>7063</td>
+<td>4378</td>
+<td>2697</td>
+</tr>
+<tr>
+<td><a href="https://github.com/FFmpeg/FFmpeg" target="_blank" rel="external">FFmpeg/FFmpeg</a></td>
+<td><a href="https://github.com/FFmpeg" target="_blank" rel="external">FFmpeg</a></td>
+<td>C</td>
+<td>10314</td>
+<td>4377</td>
+<td>90611</td>
+</tr>
+</tbody>
+</table>
+<h3 id="C-1"><a href="#C-1" class="headerlink" title="C++"></a>C++</h3><p>stars排行</p>
+<table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/tensorflow/tensorflow" target="_blank" rel="external">tensorflow/tensorflow</a></td>
+<td><a href="https://github.com/tensorflow" target="_blank" rel="external">tensorflow</a></td>
+<td>C++</td>
+<td>95028</td>
+<td>60694</td>
+<td>30887</td>
+</tr>
+<tr>
+<td><a href="https://github.com/electron/electron" target="_blank" rel="external">electron/electron</a></td>
+<td><a href="https://github.com/electron" target="_blank" rel="external">electron</a></td>
+<td>C++</td>
+<td>58531</td>
+<td>7642</td>
+<td>18669</td>
+</tr>
+<tr>
+<td><a href="https://github.com/apple/swift" target="_blank" rel="external">apple/swift</a></td>
+<td><a href="https://github.com/apple" target="_blank" rel="external">apple</a></td>
+<td>C++</td>
+<td>43250</td>
+<td>6795</td>
+<td>68510</td>
+</tr>
+<tr>
+<td><a href="https://github.com/nwjs/nw.js" target="_blank" rel="external">nwjs/nw.js</a></td>
+<td><a href="https://github.com/nwjs" target="_blank" rel="external">nwjs</a></td>
+<td>C++</td>
+<td>33478</td>
+<td>3731</td>
+<td>3188</td>
+</tr>
+<tr>
+<td><a href="https://github.com/x64dbg/x64dbg" target="_blank" rel="external">x64dbg/x64dbg</a></td>
+<td><a href="https://github.com/x64dbg" target="_blank" rel="external">x64dbg</a></td>
+<td>C++</td>
+<td>33242</td>
+<td>684</td>
+<td>3923</td>
+</tr>
+<tr>
+<td><a href="https://github.com/bitcoin/bitcoin" target="_blank" rel="external">bitcoin/bitcoin</a></td>
+<td><a href="https://github.com/bitcoin" target="_blank" rel="external">bitcoin</a></td>
+<td>C++</td>
+<td>30209</td>
+<td>18101</td>
+<td>16629</td>
+</tr>
+<tr>
+<td><a href="https://github.com/google/protobuf" target="_blank" rel="external">google/protobuf</a></td>
+<td><a href="https://github.com/google" target="_blank" rel="external">google</a></td>
+<td>C++</td>
+<td>24950</td>
+<td>7150</td>
+<td>5557</td>
+</tr>
+<tr>
+<td><a href="https://github.com/BVLC/caffe" target="_blank" rel="external">BVLC/caffe</a></td>
+<td><a href="https://github.com/BVLC" target="_blank" rel="external">BVLC</a></td>
+<td>C++</td>
+<td>23550</td>
+<td>14390</td>
+<td>4118</td>
+</tr>
+<tr>
+<td><a href="https://github.com/opencv/opencv" target="_blank" rel="external">opencv/opencv</a></td>
+<td><a href="https://github.com/opencv" target="_blank" rel="external">opencv</a></td>
+<td>C++</td>
+<td>23493</td>
+<td>16901</td>
+<td>23654</td>
+</tr>
+<tr>
+<td><a href="https://github.com/rethinkdb/rethinkdb" target="_blank" rel="external">rethinkdb/rethinkdb</a></td>
+<td><a href="https://github.com/rethinkdb" target="_blank" rel="external">rethinkdb</a></td>
+<td>C++</td>
+<td>20993</td>
+<td>1665</td>
+<td>33382</td>
+</tr>
+</tbody>
+</table>
+<p>forks排行</p>
+<table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/tensorflow/tensorflow" target="_blank" rel="external">tensorflow/tensorflow</a></td>
+<td><a href="https://github.com/tensorflow" target="_blank" rel="external">tensorflow</a></td>
+<td>C++</td>
+<td>95028</td>
+<td>60694</td>
+<td>30887</td>
+</tr>
+<tr>
+<td><a href="https://github.com/bitcoin/bitcoin" target="_blank" rel="external">bitcoin/bitcoin</a></td>
+<td><a href="https://github.com/bitcoin" target="_blank" rel="external">bitcoin</a></td>
+<td>C++</td>
+<td>30209</td>
+<td>18101</td>
+<td>16629</td>
+</tr>
+<tr>
+<td><a href="https://github.com/opencv/opencv" target="_blank" rel="external">opencv/opencv</a></td>
+<td><a href="https://github.com/opencv" target="_blank" rel="external">opencv</a></td>
+<td>C++</td>
+<td>23493</td>
+<td>16901</td>
+<td>23654</td>
+</tr>
+<tr>
+<td><a href="https://github.com/BVLC/caffe" target="_blank" rel="external">BVLC/caffe</a></td>
+<td><a href="https://github.com/BVLC" target="_blank" rel="external">BVLC</a></td>
+<td>C++</td>
+<td>23550</td>
+<td>14390</td>
+<td>4118</td>
+</tr>
+<tr>
+<td><a href="https://github.com/electron/electron" target="_blank" rel="external">electron/electron</a></td>
+<td><a href="https://github.com/electron" target="_blank" rel="external">electron</a></td>
+<td>C++</td>
+<td>58531</td>
+<td>7642</td>
+<td>18669</td>
+</tr>
+<tr>
+<td><a href="https://github.com/google/protobuf" target="_blank" rel="external">google/protobuf</a></td>
+<td><a href="https://github.com/google" target="_blank" rel="external">google</a></td>
+<td>C++</td>
+<td>24950</td>
+<td>7150</td>
+<td>5557</td>
+</tr>
+<tr>
+<td><a href="https://github.com/apple/swift" target="_blank" rel="external">apple/swift</a></td>
+<td><a href="https://github.com/apple" target="_blank" rel="external">apple</a></td>
+<td>C++</td>
+<td>43250</td>
+<td>6795</td>
+<td>68510</td>
+</tr>
+<tr>
+<td><a href="https://github.com/cocos2d/cocos2d-x" target="_blank" rel="external">cocos2d/cocos2d-x</a></td>
+<td><a href="https://github.com/cocos2d" target="_blank" rel="external">cocos2d</a></td>
+<td>C++</td>
+<td>11759</td>
+<td>6496</td>
+<td>36641</td>
+</tr>
+<tr>
+<td><a href="https://github.com/ArduPilot/ardupilot" target="_blank" rel="external">ArduPilot/ardupilot</a></td>
+<td><a href="https://github.com/ArduPilot" target="_blank" rel="external">ArduPilot</a></td>
+<td>C++</td>
+<td>3110</td>
+<td>6153</td>
+<td>31379</td>
+</tr>
+<tr>
+<td><a href="https://github.com/dmlc/xgboost" target="_blank" rel="external">dmlc/xgboost</a></td>
+<td><a href="https://github.com/dmlc" target="_blank" rel="external">dmlc</a></td>
+<td>C++</td>
+<td>11406</td>
+<td>5192</td>
+<td>3254</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h3><p>stars排行</p>
+<table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/ReactiveX/RxJava" target="_blank" rel="external">ReactiveX/RxJava</a></td>
+<td><a href="https://github.com/ReactiveX" target="_blank" rel="external">ReactiveX</a></td>
+<td>Java</td>
+<td>32001</td>
+<td>5594</td>
+<td>5328</td>
+</tr>
+<tr>
+<td><a href="https://github.com/iluwatar/java-design-patterns" target="_blank" rel="external">iluwatar/java-design-patterns</a></td>
+<td><a href="https://github.com/iluwatar" target="_blank" rel="external">iluwatar</a></td>
+<td>Java</td>
+<td>31422</td>
+<td>10072</td>
+<td>2022</td>
+</tr>
+<tr>
+<td><a href="https://github.com/elastic/elasticsearch" target="_blank" rel="external">elastic/elasticsearch</a></td>
+<td><a href="https://github.com/elastic" target="_blank" rel="external">elastic</a></td>
+<td>Java</td>
+<td>29931</td>
+<td>10408</td>
+<td>30528</td>
+</tr>
+<tr>
+<td><a href="https://github.com/square/retrofit" target="_blank" rel="external">square/retrofit</a></td>
+<td><a href="https://github.com/square" target="_blank" rel="external">square</a></td>
+<td>Java</td>
+<td>27182</td>
+<td>5311</td>
+<td>1569</td>
+</tr>
+<tr>
+<td><a href="https://github.com/square/okhttp" target="_blank" rel="external">square/okhttp</a></td>
+<td><a href="https://github.com/square" target="_blank" rel="external">square</a></td>
+<td>Java</td>
+<td>25870</td>
+<td>6054</td>
+<td>3147</td>
+</tr>
+<tr>
+<td><a href="https://github.com/google/guava" target="_blank" rel="external">google/guava</a></td>
+<td><a href="https://github.com/google" target="_blank" rel="external">google</a></td>
+<td>Java</td>
+<td>23154</td>
+<td>5323</td>
+<td>4676</td>
+</tr>
+<tr>
+<td><a href="https://github.com/spring-projects/spring-boot" target="_blank" rel="external">spring-projects/spring-boot</a></td>
+<td><a href="https://github.com/spring-projects" target="_blank" rel="external">spring-projects</a></td>
+<td>Java</td>
+<td>22927</td>
+<td>17555</td>
+<td>16129</td>
+</tr>
+<tr>
+<td><a href="https://github.com/PhilJay/MPAndroidChart" target="_blank" rel="external">PhilJay/MPAndroidChart</a></td>
+<td><a href="https://github.com/PhilJay" target="_blank" rel="external">PhilJay</a></td>
+<td>Java</td>
+<td>21393</td>
+<td>5939</td>
+<td>1938</td>
+</tr>
+<tr>
+<td><a href="https://github.com/kdn251/interviews" target="_blank" rel="external">kdn251/interviews</a></td>
+<td><a href="https://github.com/kdn251" target="_blank" rel="external">kdn251</a></td>
+<td>Java</td>
+<td>21348</td>
+<td>3503</td>
+<td>370</td>
+</tr>
+<tr>
+<td><a href="https://github.com/bumptech/glide" target="_blank" rel="external">bumptech/glide</a></td>
+<td><a href="https://github.com/bumptech" target="_blank" rel="external">bumptech</a></td>
+<td>Java</td>
+<td>21032</td>
+<td>4132</td>
+<td>2190</td>
+</tr>
+</tbody>
+</table>
+<p>forks排行</p>
+<table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/spring-projects/spring-boot" target="_blank" rel="external">spring-projects/spring-boot</a></td>
+<td><a href="https://github.com/spring-projects" target="_blank" rel="external">spring-projects</a></td>
+<td>Java</td>
+<td>22927</td>
+<td>17555</td>
+<td>16129</td>
+</tr>
+<tr>
+<td><a href="https://github.com/spring-projects/spring-framework" target="_blank" rel="external">spring-projects/spring-framework</a></td>
+<td><a href="https://github.com/spring-projects" target="_blank" rel="external">spring-projects</a></td>
+<td>Java</td>
+<td>20126</td>
+<td>13328</td>
+<td>16384</td>
+</tr>
+<tr>
+<td><a href="https://github.com/apache/incubator-dubbo" target="_blank" rel="external">apache/incubator-dubbo</a></td>
+<td><a href="https://github.com/apache" target="_blank" rel="external">apache</a></td>
+<td>Java</td>
+<td>17706</td>
+<td>12714</td>
+<td>2201</td>
+</tr>
+<tr>
+<td><a href="https://github.com/elastic/elasticsearch" target="_blank" rel="external">elastic/elasticsearch</a></td>
+<td><a href="https://github.com/elastic" target="_blank" rel="external">elastic</a></td>
+<td>Java</td>
+<td>29931</td>
+<td>10408</td>
+<td>30528</td>
+</tr>
+<tr>
+<td><a href="https://github.com/iluwatar/java-design-patterns" target="_blank" rel="external">iluwatar/java-design-patterns</a></td>
+<td><a href="https://github.com/iluwatar" target="_blank" rel="external">iluwatar</a></td>
+<td>Java</td>
+<td>31422</td>
+<td>10072</td>
+<td>2022</td>
+</tr>
+<tr>
+<td><a href="https://github.com/eugenp/tutorials" target="_blank" rel="external">eugenp/tutorials</a></td>
+<td><a href="https://github.com/eugenp" target="_blank" rel="external">eugenp</a></td>
+<td>Java</td>
+<td>4950</td>
+<td>8411</td>
+<td>7809</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zxing/zxing" target="_blank" rel="external">zxing/zxing</a></td>
+<td><a href="https://github.com/zxing" target="_blank" rel="external">zxing</a></td>
+<td>Java</td>
+<td>18000</td>
+<td>7345</td>
+<td>3425</td>
+</tr>
+<tr>
+<td><a href="https://github.com/nostra13/Android-Universal-Image-Loader" target="_blank" rel="external">nostra13/Android-Universal-Image-Loader</a></td>
+<td><a href="https://github.com/nostra13" target="_blank" rel="external">nostra13</a></td>
+<td>Java</td>
+<td>16040</td>
+<td>6476</td>
+<td>1025</td>
+</tr>
+<tr>
+<td><a href="https://github.com/checkstyle/checkstyle" target="_blank" rel="external">checkstyle/checkstyle</a></td>
+<td><a href="https://github.com/checkstyle" target="_blank" rel="external">checkstyle</a></td>
+<td>Java</td>
+<td>3597</td>
+<td>6402</td>
+<td>7658</td>
+</tr>
+<tr>
+<td><a href="https://github.com/netty/netty" target="_blank" rel="external">netty/netty</a></td>
+<td><a href="https://github.com/netty" target="_blank" rel="external">netty</a></td>
+<td>Java</td>
+<td>13422</td>
+<td>6122</td>
+<td>8723</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h3><p>stars排行</p>
+<table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/vinta/awesome-python" target="_blank" rel="external">vinta/awesome-python</a></td>
+<td><a href="https://github.com/vinta" target="_blank" rel="external">vinta</a></td>
+<td>Python</td>
+<td>47930</td>
+<td>9270</td>
+<td>1222</td>
+</tr>
+<tr>
+<td><a href="https://github.com/rg3/youtube-dl" target="_blank" rel="external">rg3/youtube-dl</a></td>
+<td><a href="https://github.com/rg3" target="_blank" rel="external">rg3</a></td>
+<td>Python</td>
+<td>35575</td>
+<td>6532</td>
+<td>16048</td>
+</tr>
+<tr>
+<td><a href="https://github.com/toddmotto/public-apis" target="_blank" rel="external">toddmotto/public-apis</a></td>
+<td><a href="https://github.com/toddmotto" target="_blank" rel="external">toddmotto</a></td>
+<td>Python</td>
+<td>35115</td>
+<td>3319</td>
+<td>1760</td>
+</tr>
+<tr>
+<td><a href="https://github.com/jakubroztocil/httpie" target="_blank" rel="external">jakubroztocil/httpie</a></td>
+<td><a href="https://github.com/jakubroztocil" target="_blank" rel="external">jakubroztocil</a></td>
+<td>Python</td>
+<td>34746</td>
+<td>2362</td>
+<td>965</td>
+</tr>
+<tr>
+<td><a href="https://github.com/nvbn/thefuck" target="_blank" rel="external">nvbn/thefuck</a></td>
+<td><a href="https://github.com/nvbn" target="_blank" rel="external">nvbn</a></td>
+<td>Python</td>
+<td>34601</td>
+<td>1723</td>
+<td>1463</td>
+</tr>
+<tr>
+<td><a href="https://github.com/pallets/flask" target="_blank" rel="external">pallets/flask</a></td>
+<td><a href="https://github.com/pallets" target="_blank" rel="external">pallets</a></td>
+<td>Python</td>
+<td>34411</td>
+<td>10562</td>
+<td>3205</td>
+</tr>
+<tr>
+<td><a href="https://github.com/django/django" target="_blank" rel="external">django/django</a></td>
+<td><a href="https://github.com/django" target="_blank" rel="external">django</a></td>
+<td>Python</td>
+<td>32956</td>
+<td>13953</td>
+<td>25601</td>
+</tr>
+<tr>
+<td><a href="https://github.com/tensorflow/models" target="_blank" rel="external">tensorflow/models</a></td>
+<td><a href="https://github.com/tensorflow" target="_blank" rel="external">tensorflow</a></td>
+<td>Python</td>
+<td>32262</td>
+<td>17985</td>
+<td>2109</td>
+</tr>
+<tr>
+<td><a href="https://github.com/josephmisiti/awesome-machine-learning" target="_blank" rel="external">josephmisiti/awesome-machine-learning</a></td>
+<td><a href="https://github.com/josephmisiti" target="_blank" rel="external">josephmisiti</a></td>
+<td>Python</td>
+<td>31793</td>
+<td>7780</td>
+<td>1033</td>
+</tr>
+<tr>
+<td><a href="https://github.com/requests/requests" target="_blank" rel="external">requests/requests</a></td>
+<td><a href="https://github.com/requests" target="_blank" rel="external">requests</a></td>
+<td>Python</td>
+<td>31508</td>
+<td>5824</td>
+<td>5416</td>
+</tr>
+</tbody>
+</table>
+<p>forks排行</p>
+<table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/tensorflow/models" target="_blank" rel="external">tensorflow/models</a></td>
+<td><a href="https://github.com/tensorflow" target="_blank" rel="external">tensorflow</a></td>
+<td>Python</td>
+<td>32262</td>
+<td>17985</td>
+<td>2109</td>
+</tr>
+<tr>
+<td><a href="https://github.com/shadowsocks/shadowsocks" target="_blank" rel="external">shadowsocks/shadowsocks</a></td>
+<td><a href="https://github.com/shadowsocks" target="_blank" rel="external">shadowsocks</a></td>
+<td>Python</td>
+<td>24278</td>
+<td>15499</td>
+<td>1</td>
+</tr>
+<tr>
+<td><a href="https://github.com/django/django" target="_blank" rel="external">django/django</a></td>
+<td><a href="https://github.com/django" target="_blank" rel="external">django</a></td>
+<td>Python</td>
+<td>32956</td>
+<td>13953</td>
+<td>25601</td>
+</tr>
+<tr>
+<td><a href="https://github.com/scikit-learn/scikit-learn" target="_blank" rel="external">scikit-learn/scikit-learn</a></td>
+<td><a href="https://github.com/scikit-learn" target="_blank" rel="external">scikit-learn</a></td>
+<td>Python</td>
+<td>27088</td>
+<td>13623</td>
+<td>22684</td>
+</tr>
+<tr>
+<td><a href="https://github.com/ansible/ansible" target="_blank" rel="external">ansible/ansible</a></td>
+<td><a href="https://github.com/ansible" target="_blank" rel="external">ansible</a></td>
+<td>Python</td>
+<td>29373</td>
+<td>10728</td>
+<td>36562</td>
+</tr>
+<tr>
+<td><a href="https://github.com/pallets/flask" target="_blank" rel="external">pallets/flask</a></td>
+<td><a href="https://github.com/pallets" target="_blank" rel="external">pallets</a></td>
+<td>Python</td>
+<td>34411</td>
+<td>10562</td>
+<td>3205</td>
+</tr>
+<tr>
+<td><a href="https://github.com/keras-team/keras" target="_blank" rel="external">keras-team/keras</a></td>
+<td><a href="https://github.com/keras-team" target="_blank" rel="external">keras-team</a></td>
+<td>Python</td>
+<td>27833</td>
+<td>10213</td>
+<td>4442</td>
+</tr>
+<tr>
+<td><a href="https://github.com/udacity/fullstack-nanodegree-vm" target="_blank" rel="external">udacity/fullstack-nanodegree-vm</a></td>
+<td><a href="https://github.com/udacity" target="_blank" rel="external">udacity</a></td>
+<td>Python</td>
+<td>202</td>
+<td>9370</td>
+<td>53</td>
+</tr>
+<tr>
+<td><a href="https://github.com/vinta/awesome-python" target="_blank" rel="external">vinta/awesome-python</a></td>
+<td><a href="https://github.com/vinta" target="_blank" rel="external">vinta</a></td>
+<td>Python</td>
+<td>47930</td>
+<td>9270</td>
+<td>1222</td>
+</tr>
+<tr>
+<td><a href="https://github.com/odoo/odoo" target="_blank" rel="external">odoo/odoo</a></td>
+<td><a href="https://github.com/odoo" target="_blank" rel="external">odoo</a></td>
+<td>Python</td>
+<td>9200</td>
+<td>7889</td>
+<td>115520</td>
+</tr>
+</tbody>
+</table>
+<h3 id="JavaScript"><a href="#JavaScript" class="headerlink" title="JavaScript"></a>JavaScript</h3><p>stars排行</p>
+<table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/freeCodeCamp/freeCodeCamp" target="_blank" rel="external">freeCodeCamp/freeCodeCamp</a></td>
+<td><a href="https://github.com/freeCodeCamp" target="_blank" rel="external">freeCodeCamp</a></td>
+<td>JavaScript</td>
+<td>291895</td>
+<td>13667</td>
+<td>11334</td>
+</tr>
+<tr>
+<td><a href="https://github.com/facebook/react" target="_blank" rel="external">facebook/react</a></td>
+<td><a href="https://github.com/facebook" target="_blank" rel="external">facebook</a></td>
+<td>JavaScript</td>
+<td>92602</td>
+<td>17473</td>
+<td>9773</td>
+</tr>
+<tr>
+<td><a href="https://github.com/vuejs/vue" target="_blank" rel="external">vuejs/vue</a></td>
+<td><a href="https://github.com/vuejs" target="_blank" rel="external">vuejs</a></td>
+<td>JavaScript</td>
+<td>89447</td>
+<td>13129</td>
+<td>2581</td>
+</tr>
+<tr>
+<td><a href="https://github.com/d3/d3" target="_blank" rel="external">d3/d3</a></td>
+<td><a href="https://github.com/d3" target="_blank" rel="external">d3</a></td>
+<td>JavaScript</td>
+<td>74472</td>
+<td>19024</td>
+<td>4132</td>
+</tr>
+<tr>
+<td><a href="https://github.com/airbnb/javascript" target="_blank" rel="external">airbnb/javascript</a></td>
+<td><a href="https://github.com/airbnb" target="_blank" rel="external">airbnb</a></td>
+<td>JavaScript</td>
+<td>68833</td>
+<td>13127</td>
+<td>1607</td>
+</tr>
+<tr>
+<td><a href="https://github.com/facebook/react-native" target="_blank" rel="external">facebook/react-native</a></td>
+<td><a href="https://github.com/facebook" target="_blank" rel="external">facebook</a></td>
+<td>JavaScript</td>
+<td>62128</td>
+<td>14129</td>
+<td>13166</td>
+</tr>
+<tr>
+<td><a href="https://github.com/angular/angular.js" target="_blank" rel="external">angular/angular.js</a></td>
+<td><a href="https://github.com/angular" target="_blank" rel="external">angular</a></td>
+<td>JavaScript</td>
+<td>58232</td>
+<td>28872</td>
+<td>8755</td>
+</tr>
+<tr>
+<td><a href="https://github.com/jquery/jquery" target="_blank" rel="external">jquery/jquery</a></td>
+<td><a href="https://github.com/jquery" target="_blank" rel="external">jquery</a></td>
+<td>JavaScript</td>
+<td>48560</td>
+<td>15318</td>
+<td>6316</td>
+</tr>
+<tr>
+<td><a href="https://github.com/nodejs/node" target="_blank" rel="external">nodejs/node</a></td>
+<td><a href="https://github.com/nodejs" target="_blank" rel="external">nodejs</a></td>
+<td>JavaScript</td>
+<td>47212</td>
+<td>9904</td>
+<td>21744</td>
+</tr>
+<tr>
+<td><a href="https://github.com/facebook/create-react-app" target="_blank" rel="external">facebook/create-react-app</a></td>
+<td><a href="https://github.com/facebook" target="_blank" rel="external">facebook</a></td>
+<td>JavaScript</td>
+<td>46391</td>
+<td>9259</td>
+<td>1484</td>
+</tr>
+</tbody>
+</table>
+<p>forks排行</p>
+<table>
+<thead>
+<tr>
+<th>Rep</th>
+<th>User</th>
+<th>Language</th>
+<th>Stars</th>
+<th>Fork</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/angular/angular.js" target="_blank" rel="external">angular/angular.js</a></td>
+<td><a href="https://github.com/angular" target="_blank" rel="external">angular</a></td>
+<td>JavaScript</td>
+<td>58232</td>
+<td>28872</td>
+<td>8755</td>
+</tr>
+<tr>
+<td><a href="https://github.com/udacity/frontend-nanodegree-resume" target="_blank" rel="external">udacity/frontend-nanodegree-resume</a></td>
+<td><a href="https://github.com/udacity" target="_blank" rel="external">udacity</a></td>
+<td>JavaScript</td>
+<td>915</td>
+<td>25814</td>
+<td>84</td>
+</tr>
+<tr>
+<td><a href="https://github.com/d3/d3" target="_blank" rel="external">d3/d3</a></td>
+<td><a href="https://github.com/d3" target="_blank" rel="external">d3</a></td>
+<td>JavaScript</td>
+<td>74472</td>
+<td>19024</td>
+<td>4132</td>
+</tr>
+<tr>
+<td><a href="https://github.com/facebook/react" target="_blank" rel="external">facebook/react</a></td>
+<td><a href="https://github.com/facebook" target="_blank" rel="external">facebook</a></td>
+<td>JavaScript</td>
+<td>92602</td>
+<td>17473</td>
+<td>9773</td>
+</tr>
+<tr>
+<td><a href="https://github.com/jquery/jquery" target="_blank" rel="external">jquery/jquery</a></td>
+<td><a href="https://github.com/jquery" target="_blank" rel="external">jquery</a></td>
+<td>JavaScript</td>
+<td>48560</td>
+<td>15318</td>
+<td>6316</td>
+</tr>
+<tr>
+<td><a href="https://github.com/nightscout/cgm-remote-monitor" target="_blank" rel="external">nightscout/cgm-remote-monitor</a></td>
+<td><a href="https://github.com/nightscout" target="_blank" rel="external">nightscout</a></td>
+<td>JavaScript</td>
+<td>439</td>
+<td>15228</td>
+<td>4505</td>
+</tr>
+<tr>
+<td><a href="https://github.com/mrdoob/three.js" target="_blank" rel="external">mrdoob/three.js</a></td>
+<td><a href="https://github.com/mrdoob" target="_blank" rel="external">mrdoob</a></td>
+<td>JavaScript</td>
+<td>40668</td>
+<td>15152</td>
+<td>22927</td>
+</tr>
+<tr>
+<td><a href="https://github.com/facebook/react-native" target="_blank" rel="external">facebook/react-native</a></td>
+<td><a href="https://github.com/facebook" target="_blank" rel="external">facebook</a></td>
+<td>JavaScript</td>
+<td>62128</td>
+<td>14129</td>
+<td>13166</td>
+</tr>
+<tr>
+<td><a href="https://github.com/freeCodeCamp/freeCodeCamp" target="_blank" rel="external">freeCodeCamp/freeCodeCamp</a></td>
+<td><a href="https://github.com/freeCodeCamp" target="_blank" rel="external">freeCodeCamp</a></td>
+<td>JavaScript</td>
+<td>291895</td>
+<td>13667</td>
+<td>11334</td>
+</tr>
+<tr>
+<td><a href="https://github.com/vuejs/vue" target="_blank" rel="external">vuejs/vue</a></td>
+<td><a href="https://github.com/vuejs" target="_blank" rel="external">vuejs</a></td>
+<td>JavaScript</td>
+<td>89447</td>
+<td>13129</td>
+<td>2581</td>
+</tr>
+</tbody>
+</table>
+<h3 id="语言使用比例"><a href="#语言使用比例" class="headerlink" title="语言使用比例"></a>语言使用比例</h3><p>stars 超过100的</p>
+<p><img src="https://data2.liuin.cn/2018-04-06-15229847469176.jpg" alt=""></p>
+<p>stars 超过1000的</p>
+<p><img src="https://data2.liuin.cn/2018-04-06-15229848318605.jpg" alt=""></p>
+<p>stars 超过10000的</p>
+<p><img src="https://data2.liuin.cn/2018-04-06-15229848710272.jpg" alt=""></p>
+<p>forks 超过100的</p>
+<p><img src="https://data2.liuin.cn/2018-04-06-15229849187089.jpg" alt=""></p>
+<p>forks 超过1000的</p>
+<p><img src="https://data2.liuin.cn/2018-04-06-15229849529776.jpg" alt=""></p>
+<p>forks 超过10000的</p>
+<p><img src="https://data2.liuin.cn/2018-04-06-15229849860861.jpg" alt=""></p>
+<p>欢迎大家Star我的<a href="https://github.com/Sixzeroo/GithubCrawler" target="_blank" rel="external">Github项目</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;对Github分布式爬虫爬取的20w用户信息和40w仓库信息进行简单的分析和统计&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="python" scheme="https://www.liuin.cn/categories/python/"/>
+    
+    
+      <category term="python" scheme="https://www.liuin.cn/tags/python/"/>
+    
+      <category term="爬虫" scheme="https://www.liuin.cn/tags/%E7%88%AC%E8%99%AB/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Github分布式爬虫——实现</title>
+    <link href="https://www.liuin.cn/2018/04/05/Github%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E2%80%94%E2%80%94%E5%AE%9E%E7%8E%B0/"/>
+    <id>https://www.liuin.cn/2018/04/05/Github分布式爬虫——实现/</id>
+    <published>2018-04-05T11:40:54.000Z</published>
+    <updated>2018-04-07T01:54:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>使用Redis实现分布式爬虫</p>
+<a id="more"></a>
+<p>主要使用Scrapy、Redis、MongoDB实现，Scrapy作为异步爬虫框架、Redis实现分布式以及Cookies池的存储，MongoDB实现底层数据存储</p>
+<h2 id="分布式示意图"><a href="#分布式示意图" class="headerlink" title="分布式示意图"></a>分布式示意图</h2><p><img src="https://data2.liuin.cn/2018-03-25-15219437958574.jpg" alt=""></p>
+<p>主机中安装Redis和MongoDB</p>
+<p>Redis中存储：</p>
+<ul>
+<li>所有Scrapy爬虫的待爬取队列</li>
+<li>去重用的已发出Request指纹</li>
+</ul>
+<p>MongoDB负责最终数据的存储</p>
+<p>可创建多个Scrapy从机进行爬取，实现分布式。</p>
+<h2 id="Features"><a href="#Features" class="headerlink" title="Features"></a>Features</h2><ul>
+<li>共享爬取队列实现分布式</li>
+<li>生成Request的指纹实现分布式的去重</li>
+<li>随机指定User-Agent</li>
+<li>通过Redis实现Cookies池并进行更新</li>
+</ul>
+<h2 id="分布式实现"><a href="#分布式实现" class="headerlink" title="分布式实现"></a>分布式实现</h2><h3 id="请求队列"><a href="#请求队列" class="headerlink" title="请求队列"></a>请求队列</h3><p>各个分布式爬虫共同维护一个Request请求队列，使用的是Redis的list。队列可以实现FIFO，LIFO或者优先级队列。</p>
+<p>爬取的时候一开始使用的是优先级队列，但是后来因为不好设置优先级，导致最后都是User的item，导致Rep的饥饿现象，所以到后面换成FIFO队列。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">FifoQueue</span><span class="params">(Base)</span>:</span></div><div class="line">    <span class="string">"""Per-spider FIFO queue"""</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__len__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""Return the length of the queue"""</span></div><div class="line">        <span class="keyword">return</span> self.server.llen(self.key)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">push</span><span class="params">(self, request)</span>:</span></div><div class="line">        <span class="string">"""Push a request"""</span></div><div class="line">        self.server.lpush(self.key, self._encode_request(request))</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pop</span><span class="params">(self, timeout=<span class="number">0</span>)</span>:</span></div><div class="line">        <span class="string">"""Pop a request"""</span></div><div class="line">        <span class="keyword">if</span> timeout &gt; <span class="number">0</span>:</div><div class="line">            data = self.server.brpop(self.key, timeout)</div><div class="line">            <span class="keyword">if</span> isinstance(data, tuple):</div><div class="line">                data = data[<span class="number">1</span>]</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            data = self.server.rpop(self.key)</div><div class="line">        <span class="keyword">if</span> data:</div><div class="line">            <span class="keyword">return</span> self._decode_request(data)</div></pre></td></tr></table></figure>
+<p>同时需要设置request队列的大小限制，因为爬取Github页面的时候可能爬取一个star列表以后就会产生几十个Request，这样很容易把Redis的队列挤爆：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">enqueue_request</span><span class="params">(self, request)</span>:</span></div><div class="line">    <span class="comment"># set upper limit of request num</span></div><div class="line">    <span class="keyword">if</span> len(self.queue) &gt; REQUEST_NUM:</div><div class="line">        <span class="keyword">return</span> <span class="keyword">False</span></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> request.dont_filter <span class="keyword">and</span> self.df.request_seen(request):</div><div class="line">        self.df.log(request, self.spider)</div><div class="line">        <span class="keyword">return</span> <span class="keyword">False</span></div><div class="line">    <span class="keyword">if</span> self.stats:</div><div class="line">        self.stats.inc_value(<span class="string">'scheduler/enqueued/redis'</span>, spider=self.spider)</div><div class="line">    self.queue.push(request)</div><div class="line">    <span class="keyword">return</span> <span class="keyword">True</span></div></pre></td></tr></table></figure>
+<p>没有设置数量大小的时候，1G内存的主机跑一个多小时之后就挂掉了：</p>
+<p><img src="https://data2.liuin.cn/2018-03-21-15215617499559.jpg" alt=""></p>
+<p><img src="https://data2.liuin.cn/2018-03-20-15215615819339.jpg" alt=""></p>
+<h3 id="调度器"><a href="#调度器" class="headerlink" title="调度器"></a>调度器</h3><p>为了使用共同的请求队列，所以需要重写Scheduler，重写的Scheduler负责把要爬取的request放入队列以及从队列中找出request进行爬取</p>
+<h3 id="去重集合"><a href="#去重集合" class="headerlink" title="去重集合"></a>去重集合</h3><p>本地爬虫通常需要解决一个去重问题，通常使用的是数据库查询，爬取之前判断url是否请求过。分布式爬虫就是在这个的基础上共用一个去重集合，使用的是Redis的set。</p>
+<p>判断一个Request是否已经爬取过，这里不是使用url，因为不同的url可能代表的是同一种资源，比如：<code>http://www.example.com/query?cat=222&amp;id=111</code>和<code>http://www.example.com/query?cat=222&amp;id=111</code> 事实表示的是一个东西。此外，发出的Request还可能与当时的Cookie有关，因为里面还会有用户信息。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 计算Request指纹判断有没有重复</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">request_seen</span><span class="params">(self, request)</span>:</span></div><div class="line">    fp = self.request_fingerprint(request)</div><div class="line">    <span class="keyword">if</span> USEBLOOMFILTER == <span class="keyword">True</span>:</div><div class="line">        <span class="keyword">if</span> self.bf.isContains(fp):</div><div class="line">            <span class="keyword">return</span> <span class="keyword">True</span></div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            self.bf.insert(fp)</div><div class="line">            <span class="keyword">return</span> <span class="keyword">False</span></div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        <span class="comment"># This returns the number of values added, zero if already exists.</span></div><div class="line">        added = self.server.sadd(self.key, fp)</div><div class="line">        <span class="keyword">return</span> added == <span class="number">0</span></div></pre></td></tr></table></figure>
+<p>这里采用的方案是生成一个Request的指纹，实际上是把request的url，method和指定的header使用sha1算法得到一个hash值。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Request 指纹计算方法</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">request_fingerprint</span><span class="params">(request, include_headers=None)</span>:</span></div><div class="line">    <span class="keyword">if</span> include_headers:</div><div class="line">        include_headers = tuple(to_bytes(h.lower())</div><div class="line">                                 <span class="keyword">for</span> h <span class="keyword">in</span> sorted(include_headers))</div><div class="line">    cache = _fingerprint_cache.setdefault(request, &#123;&#125;)</div><div class="line">    <span class="keyword">if</span> include_headers <span class="keyword">not</span> <span class="keyword">in</span> cache:</div><div class="line">        fp = hashlib.sha1()</div><div class="line">        fp.update(to_bytes(request.method))</div><div class="line">        fp.update(to_bytes(canonicalize_url(request.url)))</div><div class="line">        fp.update(request.body <span class="keyword">or</span> <span class="string">b''</span>)</div><div class="line">        <span class="keyword">if</span> include_headers:</div><div class="line">            <span class="keyword">for</span> hdr <span class="keyword">in</span> include_headers:</div><div class="line">                <span class="keyword">if</span> hdr <span class="keyword">in</span> request.headers:</div><div class="line">                    fp.update(hdr)</div><div class="line">                    <span class="keyword">for</span> v <span class="keyword">in</span> request.headers.getlist(hdr):</div><div class="line">                        fp.update(v)</div><div class="line">        cache[include_headers] = fp.hexdigest()</div><div class="line">    <span class="keyword">return</span> cache[include_headers]</div></pre></td></tr></table></figure>
+<h2 id="反反爬虫策略"><a href="#反反爬虫策略" class="headerlink" title="反反爬虫策略"></a>反反爬虫策略</h2><h3 id="随机User-Agent"><a href="#随机User-Agent" class="headerlink" title="随机User-Agent"></a>随机User-Agent</h3><p>使用中间件实现随机User-Agent，随机替换掉request的header的User-Agent参数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">GitHubUserAgentMiddleware</span><span class="params">(UserAgentMiddleware)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_request</span><span class="params">(self, request, spider)</span>:</span></div><div class="line">        agent = random.choice(agents)</div><div class="line">        request.headers[<span class="string">'User-Agent'</span>] = agent</div></pre></td></tr></table></figure>
+<h3 id="Cookies池"><a href="#Cookies池" class="headerlink" title="Cookies池"></a>Cookies池</h3><p>首先使用多账号模拟登录，获取到很多已登录账号的cookies，放入到Redis的hashset中，各个爬虫共用这一个Cookies池。爬虫同样实现一个中间件，替换Request的Cookies。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Cookie 中间件</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">GitHubCookieMiddleware</span><span class="params">(RetryMiddleware)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,settings)</span>:</span></div><div class="line">        RetryMiddleware.__init__(self,settings)</div><div class="line">        self.rconn = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=<span class="number">3</span>)</div><div class="line"></div><div class="line"><span class="meta">    @classmethod</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">from_crawler</span><span class="params">(cls, crawler)</span>:</span></div><div class="line">        <span class="keyword">return</span> cls(crawler.settings)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_request</span><span class="params">(self, request, spider)</span>:</span></div><div class="line">        keys = self.rconn.hkeys(REDIS_COOKIE)</div><div class="line">        <span class="keyword">if</span>(len(keys) == <span class="number">0</span>):</div><div class="line">            print(<span class="string">"cookies don't work!"</span>)</div><div class="line">            <span class="keyword">return</span></div><div class="line">        key = random.choice(keys)</div><div class="line">        <span class="comment"># 获取最新cookie</span></div><div class="line">        value = self.rconn.hget(REDIS_COOKIE, key)</div><div class="line">        <span class="keyword">if</span>( isinstance(value, bytes) ):</div><div class="line">            value = value.decode(<span class="string">'utf-8'</span>)</div><div class="line">        cookies = json.loads(value)</div><div class="line">        request.cookies = cookies</div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这是一个为了了解分布式工作原理而做的一个小的项目，其中很多地方存在缺陷，欢迎大家在Github上留建议：</p>
+<p><a href="https://github.com/Sixzeroo/GithubCrawler" target="_blank" rel="external">https://github.com/Sixzeroo/GithubCrawler</a></p>
+<p>同时也可以查看下一篇关于Github用户和仓库数据分析的文章</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;使用Redis实现分布式爬虫&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="python" scheme="https://www.liuin.cn/categories/python/"/>
+    
+    
+      <category term="python" scheme="https://www.liuin.cn/tags/python/"/>
+    
+      <category term="爬虫" scheme="https://www.liuin.cn/tags/%E7%88%AC%E8%99%AB/"/>
+    
+  </entry>
   
   <entry>
     <title>LeetCode 题解——Redundant Connection II</title>
@@ -334,7 +2635,7 @@
     <link href="https://www.liuin.cn/2018/03/18/%E3%80%8AC-Primer%E3%80%8B%E7%AC%94%E8%AE%B0-%E9%AB%98%E7%BA%A7%E4%B8%BB%E9%A2%98%E9%83%A8%E5%88%86/"/>
     <id>https://www.liuin.cn/2018/03/18/《C-Primer》笔记-高级主题部分/</id>
     <published>2018-03-18T11:17:21.000Z</published>
-    <updated>2018-03-19T11:18:46.000Z</updated>
+    <updated>2018-04-03T01:05:36.000Z</updated>
     
     <content type="html"><![CDATA[<p>《C++ Primer》笔记 高级主题部分，时间关系只看了其中一部分</p>
 <a id="more"></a>
@@ -421,6 +2722,10 @@
     
     </summary>
     
+      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="C/C++" scheme="https://www.liuin.cn/tags/C-C/"/>
     
   </entry>
   
@@ -2144,125 +4449,6 @@
       <category term="Docker" scheme="https://www.liuin.cn/tags/Docker/"/>
     
       <category term="Hexo" scheme="https://www.liuin.cn/tags/Hexo/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Docker Swarm 简介</title>
-    <link href="https://www.liuin.cn/2018/02/28/Docker-Swarm-%E7%AE%80%E4%BB%8B/"/>
-    <id>https://www.liuin.cn/2018/02/28/Docker-Swarm-简介/</id>
-    <published>2018-02-28T07:36:04.000Z</published>
-    <updated>2018-02-28T07:37:04.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>Docker Swarm 为Docker 提供容器集群服务，是 Docker 官 方对容器云生态进行支持的核心方案。</p>
-<a id="more"></a>
-<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>Swarm 是使用 SwarmKit 构建的 Docker 引擎内置（原生）的集群管理和编排工具。 Swarm 集群之前需要了解以下几个概念。</p>
-<h3 id="什么是swarm"><a href="#什么是swarm" class="headerlink" title="什么是swarm"></a>什么是swarm</h3><p>嵌入在Docker Engine中的集群管理和编排功能是通过swarmkit构建的。 Swarmkit是一个独立的项目，它实现了Docker的编排层，并直接在Docker中使用。</p>
-<p>一个群由多个Docker主机组成，这些主机以群模式运行并充当管理者（管理成员资格和委派）和工作者（运行群集服务）。 给定的Docker主机可以是管理员，工作者或执行这两种角色。 当您创建服务时，您可以定义其理想状态（副本数量，可用的网络和存储资源，将服务暴露给外部世界等等）。 Docker的工作是维持这个理想的状态。 例如，如果工作者节点变得不可用，Docker会在其他节点上调度该节点的任务。 任务是一个正在运行的容器，它是swarm服务的一部分，由swarm管理器管理，而不是独立的容器。</p>
-<p>群集服务相对于独立容器的主要优势之一是可以修改服务的配置，其中包括连接的网络和卷，而无需手动重新启动服务。 Docker将更新配置，停止使用过时配置的服务任务，并创建与所需配置相匹配的新服务。</p>
-<p>当Docker以群集模式运行时，您仍然可以在参与群集的任何Docker主机以及群集服务上运行独立容器。 独立容器和群集服务之间的一个主要区别是，只有群集管理员可以管理群集，而独立容器可以在任何守护进程上启动。 Docker守护进程可以作为管理者，工作者或两者参与群体。</p>
-<h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><ul>
-<li>与Docker Engine集成的集群管理</li>
-<li>分散设计：Docker Engine在部署时不需要处理节点角色之间的差异，而是在运行时处理这些特殊的东西</li>
-<li>声明式服务模式：Docker Engine使用声明性方法来让您在应用程序堆栈中定义各种服务的所需状态。</li>
-<li>伸缩服务</li>
-<li>理想状态调整</li>
-<li>多主机联网</li>
-<li>服务发现</li>
-</ul>
-<h3 id="节点（Nodes）"><a href="#节点（Nodes）" class="headerlink" title="节点（Nodes）"></a>节点（Nodes）</h3><p>节点是参与群体的Docker引擎的一个实例。 您也可以将其视为Docker节点。 您可以在单台物理计算机或云服务器上运行一个或多个节点，但生产群部署通常包括分布在多台物理机和云计算机上的Docker节点。</p>
-<p>节点分为管理( manager)节点和工作( wor ker)节点。</p>
-<p>管理节点用于 Swarm集群的管理, <code>docker swarm</code>命令基本只能在管理节点执行(节点退出集群命令 docker swarm leave可以在工作节点执行)。一个 Swarm集群可以有多个管理节点,但只有一个管理节点可以成为 <code>leader</code> ,<code>leader</code>通过<code>raft</code>协议实现。</p>
-<p>工作节点是任务执行节点,管理节点将服务( servlce)下发至工作节点执行。管理节点默认也作为工作节点。你也可以通过配置让服务只运行在管理节点</p>
-<p><img src="https://data2.liuin.cn/story-writer/2018_2_28_1519799540229.jpg" alt="enter description here"></p>
-<h3 id="服务（Services）和任务（Tasks）"><a href="#服务（Services）和任务（Tasks）" class="headerlink" title="服务（Services）和任务（Tasks）"></a>服务（Services）和任务（Tasks）</h3><p>服务（Services）是要在管理器或工作节点上执行的任务的定义。它是群体系统的中心结构，也是群体与用户互动的主要根源。</p>
-<p>任务（Task）包含一个Docker容器和在容器内运行的命令。它是swarm的原子调度单位。</p>
-<p>服务有两种模式：</p>
-<ul>
-<li><code>replicated services</code> 按照一定规则在各个工作节点上运行指定个数的任务</li>
-<li><code>global services</code>每个工作节点上运行一个任务</li>
-</ul>
-<p><img src="https://data2.liuin.cn/story-writer/2018_2_28_1519799982888.jpg" alt="enter description here"></p>
-<h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><h3 id="初始化-swarm-init"><a href="#初始化-swarm-init" class="headerlink" title="初始化 (swarm init)"></a>初始化 (swarm init)</h3><p>使用<code>docker swarm init</code>来在本机初始化一个swarm集群</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">$ docker swarm init --advertise-addr 192.168.99.100</div><div class="line">Swarm initialized: current node (dxn1zf6l61qsb1josjja83ngz) is now a manager.</div><div class="line"></div><div class="line">To add a worker to this swarm, run the following <span class="built_in">command</span>:</div><div class="line"></div><div class="line">    docker swarm join \</div><div class="line">    --token SWMTKN-1-49nj1cmql0jkz5s954yi3oex3nedyz0fb0xx14ie39trti4wxv-8vxv8rssmk743ojnwacrr2e7c \</div><div class="line">    192.168.99.100:2377</div><div class="line"></div><div class="line">To add a manager to this swarm, run <span class="string">'docker swarm join-token manager'</span> and follow the instructions.</div></pre></td></tr></table></figure>
-<p>如果你的 Docker 主机有多个网卡，拥有多个 IP，必须使用 <code>--advertise-addr</code>指定 IP。</p>
-<p>执行 docker swarm init 命令的节点自动成为管理节点。</p>
-<h3 id="添加节点-swarm-join"><a href="#添加节点-swarm-join" class="headerlink" title="添加节点 (swarm join)"></a>添加节点 (swarm join)</h3><p>向集群中添加一个工作节点/管理节点</p>
-<p>格式： <code>docker swarm join [OPTIONS] HOST:PORT</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">docker@worker1:~$ docker swarm join \</div><div class="line">    --token SWMTKN-1-49nj1cmql0jkz5s954yi3oex3nedyz0fb0xx14ie39trti4wxv-8vxv8rssmk743ojnwacrr2e7c \</div><div class="line">    192.168.99.100:2377</div></pre></td></tr></table></figure>
-<h3 id="查看节点-node-ls"><a href="#查看节点-node-ls" class="headerlink" title="查看节点 (node ls)"></a>查看节点 (node ls)</h3><p>使用 <code>docker node ls</code> 查看集群</p>
-<h3 id="新建服务-service-create"><a href="#新建服务-service-create" class="headerlink" title="新建服务 (service create)"></a>新建服务 (service create)</h3><p>命令格式：<code>docker service create [OPTIONS] IMAGE [COMMAND] [ARG...]</code></p>
-<p>例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ docker service create --replicas 3 -p 80:80 --name nginx nginx:1.13.7-alpine</div></pre></td></tr></table></figure></p>
-<p><code>--replicas</code> 表示创建多少任务</p>
-<h3 id="查看服务信息-service-ls"><a href="#查看服务信息-service-ls" class="headerlink" title="查看服务信息 (service ls)"></a>查看服务信息 (service ls)</h3><p>使用 <code>docker service ls</code> 来查看当前 Swarm 集群运行的服务</p>
-<p>想要查看其中某一个服务的详细信息，可以使用 <code>service inspect</code>命令: <code>docker service inspect [OPTIONS] SERVICE [SERVICE...]</code></p>
-<h3 id="查看服务中的任务详情-service-ps"><a href="#查看服务中的任务详情-service-ps" class="headerlink" title="查看服务中的任务详情 (service ps)"></a>查看服务中的任务详情 (service ps)</h3><p>使用 <code>docker service ps</code> 来查看某个服务中的任务(Task)的详情 <code>docker service ps [OPTIONS] SERVICE [SERVICE...]</code></p>
-<h3 id="查看服务日志-service-logs"><a href="#查看服务日志-service-logs" class="headerlink" title="查看服务日志 (service logs)"></a>查看服务日志 (service logs)</h3><p>使用 <code>docker service logs</code> 来查看某个服务的日志</p>
-<h3 id="删除服务-service-rm"><a href="#删除服务-service-rm" class="headerlink" title="删除服务 (service rm)"></a>删除服务 (service rm)</h3><p>使用 <code>docker service rm</code> 来从 Swarm 集群移除某个服务。</p>
-<h3 id="服务伸缩-service-scale"><a href="#服务伸缩-service-scale" class="headerlink" title="服务伸缩 (service scale)"></a>服务伸缩 (service scale)</h3><p>使用 <code>docker service scale</code>调整服务中的任务数量</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker service scale backend=10</div></pre></td></tr></table></figure>
-<h2 id="使用Stack部署服务"><a href="#使用Stack部署服务" class="headerlink" title="使用Stack部署服务"></a>使用Stack部署服务</h2><p>Stack是一组相互关联的服务，它们可以共享依赖关系，并且可以进行协调和缩放。 单个Stack能够定义和协调整个应用程序的功能（尽管非常复杂的应用程序可能需要使用多个Stack）</p>
-<p>正如之前使用 docker-compose.yml 来一次配置、启动多个容器，在 Swarm 集群中也可以使用 compose 文件 （docker-compose.yml） 来配置、启动多个服务。</p>
-<p>我们使用 docker service create 一次只能部署一个服务，使用 docker-compose.yml 我们可以一次启动多个关联的服务。我们在此以 Swarm 集群中部署 WordPress 为例进行说明。</p>
-<p>docker-compose.yml 文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">version: &quot;3&quot;</div><div class="line"></div><div class="line">services:</div><div class="line">  wordpress:</div><div class="line">    image: wordpress</div><div class="line">    ports:</div><div class="line">      - 80:80</div><div class="line">    networks:</div><div class="line">      - overlay</div><div class="line">    environment:</div><div class="line">      WORDPRESS_DB_HOST: db:3306</div><div class="line">      WORDPRESS_DB_USER: wordpress</div><div class="line">      WORDPRESS_DB_PASSWORD: wordpress</div><div class="line">    deploy:</div><div class="line">      mode: replicated</div><div class="line">      replicas: 3</div><div class="line"></div><div class="line">  db:</div><div class="line">    image: mysql</div><div class="line">    networks:</div><div class="line">       - overlay</div><div class="line">    volumes:</div><div class="line">      - db-data:/var/lib/mysql</div><div class="line">    environment:</div><div class="line">      MYSQL_ROOT_PASSWORD: somewordpress</div><div class="line">      MYSQL_DATABASE: wordpress</div><div class="line">      MYSQL_USER: wordpress</div><div class="line">      MYSQL_PASSWORD: wordpress</div><div class="line">    deploy:</div><div class="line">      placement:</div><div class="line">        constraints: [node.role == manager]</div><div class="line"></div><div class="line">  visualizer:</div><div class="line">    image: dockersamples/visualizer:stable</div><div class="line">    ports:</div><div class="line">      - &quot;8080:8080&quot;</div><div class="line">    stop_grace_period: 1m30s</div><div class="line">    volumes:</div><div class="line">      - &quot;/var/run/docker.sock:/var/run/docker.sock&quot;</div><div class="line">    deploy:</div><div class="line">      placement:</div><div class="line">        constraints: [node.role == manager]</div><div class="line"></div><div class="line">volumes:</div><div class="line">  db-data:</div><div class="line">networks:</div><div class="line">  overlay:</div></pre></td></tr></table></figure></p>
-<p>在 Swarm 集群管理节点新建该文件，其中的 visualizer 服务提供一个可视化页面，我们可以从浏览器中很直观的查看集群中各个服务的运行节点。</p>
-<h3 id="部署服务"><a href="#部署服务" class="headerlink" title="部署服务"></a>部署服务</h3><p>部署服务使用 <code>docker stack deploy</code>，其中 -c 参数指定 compose 文件名。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ docker stack deploy -c docker-compose.yml wordpress</div></pre></td></tr></table></figure></p>
-<h3 id="查看服务"><a href="#查看服务" class="headerlink" title="查看服务"></a>查看服务</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ docker stack ls</div><div class="line">NAME                SERVICES</div><div class="line">wordpress           3</div></pre></td></tr></table></figure>
-<h3 id="移除服务"><a href="#移除服务" class="headerlink" title="移除服务"></a>移除服务</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">要移除服务，使用 docker stack down</div><div class="line"></div><div class="line">$ docker stack down wordpress</div><div class="line">Removing service wordpress_db</div><div class="line">Removing service wordpress_visualizer</div><div class="line">Removing service wordpress_wordpress</div><div class="line">Removing network wordpress_overlay</div><div class="line">Removing network wordpress_default</div></pre></td></tr></table></figure>
-<p>该命令不会移除服务所使用的 数据卷，如果你想移除数据卷请使用 docker volume rm</p>
-<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><ul>
-<li><a href="https://0x9.me/WYIcD" target="_blank" rel="external">https://0x9.me/WYIcD</a></li>
-<li><a href="https://0x9.me/Woidc" target="_blank" rel="external">https://0x9.me/Woidc</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Docker Swarm 为Docker 提供容器集群服务，是 Docker 官 方对容器云生态进行支持的核心方案。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="运维" scheme="https://www.liuin.cn/categories/%E8%BF%90%E7%BB%B4/"/>
-    
-    
-      <category term="Docker" scheme="https://www.liuin.cn/tags/Docker/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>LeetCode Next Permutation 题解</title>
-    <link href="https://www.liuin.cn/2018/02/25/LeetCode-Next-Permutation-%E9%A2%98%E8%A7%A3/"/>
-    <id>https://www.liuin.cn/2018/02/25/LeetCode-Next-Permutation-题解/</id>
-    <published>2018-02-25T01:27:43.000Z</published>
-    <updated>2018-03-02T13:53:30.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>LeetCode Next Permutation 题解</p>
-<a id="more"></a>
-<h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>题目的意思就是求给定序列的下一个字典序</p>
-<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>首先我们要了解什么是字典序，这里参考wiki的解释：</p>
-<blockquote>
-<p>设想一本英语字典里的单词，何者在前何者在后？</p>
-<p>显然的做法是先按照第一个字母、以 a、b、c……z 的顺序排列；如果第一个字母一样，那么比较第二个、第三个乃至后面的字母。如果比到最后两个单词不一样长（比如，sigh 和 sight），那么把短者排在前。</p>
-<p>通过这种方法，我们可以给本来不相关的单词强行规定出一个顺序。“单词”可以看作是“字母”的字符串，而把这一点推而广之就可以认为是给对应位置元素所属集合分别相同的各个有序多元组规定顺序</p>
-</blockquote>
-<p>我的理解是：<strong>把一组数的所有排列情况按照字母顺序进行一次排序得到的就是一个字典序</strong></p>
-<p>在这道题中要求给定排列的下一个字典序，可以知道把一个大一点的数往前移动这个序列的字典序一定会变大，那么就要从后往前找到第一个能变大的数（变大指和它后面的某个数互换以后），找到这个数以后把他和比他大的“第一个”数互换获得最小的增量，然后把这个数后面的数字按照从小到大的顺序重新排列。</p>
-<p>举个例子：</p>
-<p><img src="https://leetcode.com/media/original_images/31_Next_Permutation.gif" alt="enter description here"></p>
-<h2 id="代码-C"><a href="#代码-C" class="headerlink" title="代码(C++)"></a>代码(C++)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">class Solution &#123;</div><div class="line">public:</div><div class="line">    void nextPermutation(vector&lt;int&gt;&amp; nums) &#123;</div><div class="line">        int first = nums.size(), len = nums.size();</div><div class="line">        // 倒序查找第一个升序数</div><div class="line">        for(int i=len-1; i&gt;0;--i)</div><div class="line">        &#123;</div><div class="line">            if(nums[i] &gt; nums[i-1])</div><div class="line">            &#123;</div><div class="line">                first = i-1;</div><div class="line">                break;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        if(first == len)</div><div class="line">            reverse(nums.begin(), nums.end());</div><div class="line">        else</div><div class="line">        &#123;</div><div class="line">            int second = len-1;</div><div class="line">            // 在后面找一个刚好比这个数大一点的数和其互换</div><div class="line">            for(int i=first + 1;i&lt;len;++i)</div><div class="line">            &#123;</div><div class="line">                if(nums[i]&lt;=nums[first])</div><div class="line">                &#123;</div><div class="line">                    second = i-1;</div><div class="line">                    break;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            swap(nums[first], nums[second]);</div><div class="line">            // 反转后面的部分</div><div class="line">            reverse(nums.begin()+first+1, nums.end());</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>更多LeetCode题解，欢迎查看我的<a href="https://github.com/Sixzeroo/LeetCode" target="_blank" rel="external">GitHub项目</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;LeetCode Next Permutation 题解&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="算法" scheme="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
-    
-    
-      <category term="LeetCode" scheme="https://www.liuin.cn/tags/LeetCode/"/>
     
   </entry>
   
