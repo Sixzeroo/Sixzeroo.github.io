@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-04-07T02:00:07.000Z</updated>
+  <updated>2018-04-09T03:02:32.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,75 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>同步/异步与阻塞/非阻塞的理解</title>
+    <link href="https://www.liuin.cn/2018/04/09/%E5%90%8C%E6%AD%A5-%E5%BC%82%E6%AD%A5%E4%B8%8E%E9%98%BB%E5%A1%9E-%E9%9D%9E%E9%98%BB%E5%A1%9E%E7%9A%84%E7%90%86%E8%A7%A3/"/>
+    <id>https://www.liuin.cn/2018/04/09/同步-异步与阻塞-非阻塞的理解/</id>
+    <published>2018-04-09T02:57:32.000Z</published>
+    <updated>2018-04-09T03:02:32.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>近期在了解网络编程的时候对同步/异步和阻塞/非阻塞这些概念有一些混淆，所查了一些资料总结了这篇文章。</p>
+<a id="more"></a>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>对于同步/异步与阻塞/非阻塞的理解可能各个领域的人的回答是不一样的，在网络上也有各种各样的说法。这其实是因为不同的人的知识背景不同，并且在讨论这个问题的时候上下文(context)也不相同。本文主要结合网络上的观点以及一些书籍谈谈对同步/异步与阻塞/非阻塞大致概念上的理解，以及在Linux Network IO上的这四个概念的情况。</p>
+<h2 id="同步-异步"><a href="#同步-异步" class="headerlink" title="同步/异步"></a>同步/异步</h2><p>同步和异步关注的是消息通信机制 (synchronous communication/ asynchronous communication)</p>
+<p>所谓同步，就是在发出一个<strong>调用</strong>时，在没有得到结果之前，该<strong>调用</strong>就不返回。但是一旦调用返回，就得到返回值了。换句话说，就是由<strong>调用者</strong>主动等待这个<strong>调用</strong>的结果。</p>
+<p>而异步则是相反，<strong>调用</strong>在发出之后，这个调用就直接返回了，所以没有返回结果。换句话说，当一个异步过程调用发出后，调用者不会立刻得到结果。而是在<strong>调用</strong>发出后，<strong>被调用者</strong>通过状态、通知来通知调用者，或通过回调函数处理这个调用。</p>
+<p>打一个不恰当的比方：</p>
+<blockquote>
+<p>你打电话问书店老板有没有《分布式系统》这本书，如果是同步通信机制，书店老板会说，你稍等，”我查一下”，然后开始查啊查，等查好了（可能是5秒，也可能是一天）告诉你结果（返回结果）。而异步通信机制，书店老板直接告诉你我查一下啊，查好了打电话给你，然后直接挂电话了（不返回结果）。然后查好了，他会主动打电话给你。在这里老板通过“回电”这种方式来回调。</p>
+</blockquote>
+<h2 id="阻塞-非阻塞"><a href="#阻塞-非阻塞" class="headerlink" title="阻塞/非阻塞"></a>阻塞/非阻塞</h2><p>阻塞和非阻塞关注的是程序在<strong>等待调用结果（消息，返回值）时的状态</strong>.</p>
+<p>阻塞调用是指调用结果返回之前，当前线程会被挂起。调用线程只有在得到结果之后才会返回。<br>非阻塞调用指在不能立刻得到结果之前，该调用不会阻塞当前线程。</p>
+<p>例子：</p>
+<blockquote>
+<p>你打电话问书店老板有没有《分布式系统》这本书，你如果是阻塞式调用，你会一直把自己“挂起”，直到得到这本书有没有的结果，如果是非阻塞式调用，你不管老板有没有告诉你，你自己先一边去玩了， 当然你也要偶尔过几分钟check一下老板有没有返回结果。</p>
+</blockquote>
+<p>在这里阻塞与非阻塞与是否同步异步无关。跟老板通过什么方式回答你结果无关。</p>
+<p>把自己挂起可以是在电话里面一直等着老板回信（同步阻塞），也可以是挂掉电话以后一直等着老板回电过来（异步阻塞）。先玩一会儿可以是电话接通着你去玩一会儿（同步非阻塞），也可以是电话挂了你去玩老板回电给你的时候你回来接（异步非阻塞）。</p>
+<p>阻塞和非阻塞描述的是一种状态，同步与非同步描述的是行为方式。</p>
+<h2 id="Unix-网络IO"><a href="#Unix-网络IO" class="headerlink" title="Unix 网络IO"></a>Unix 网络IO</h2><p>POSIX对同步I/O和异步I/O的定义如下：</p>
+<ul>
+<li>同步I/O操作( synchronous I/O opetation) 导致请求进程阻塞,直到I/O操作完成</li>
+<li>异步IO操作( asynchronous I/O opetation) 不导致请求进程阻塞。</li>
+</ul>
+<p>在Unix中有四种常用的网络IO模型：</p>
+<ul>
+<li>阻塞式I/O</li>
+<li>非阻塞式I/O</li>
+<li>I/O复用</li>
+<li>异步I/O</li>
+</ul>
+<p>其中前者都是同步I/O</p>
+<h3 id="阻塞式I-O"><a href="#阻塞式I-O" class="headerlink" title="阻塞式I/O"></a>阻塞式I/O</h3><p>默认情况下，所有套接字都是阻塞的。在下面展示recvfrom系统调用中把数据接收过程分成两个阶段：1. 等待数据 2. 数据复制到用户空间。</p>
+<p><img src="https://data2.liuin.cn/2018-04-09-15232418188483.jpg" alt=""></p>
+<p>在等待过程中，进程不能做其他事情，所以是阻塞式的。什么时候调用结束：有结果或者报错的时候，调用才结束，所以是同步的。</p>
+<h3 id="非阻塞式I-O"><a href="#非阻塞式I-O" class="headerlink" title="非阻塞式I/O"></a>非阻塞式I/O</h3><p><img src="https://data2.liuin.cn/2018-04-09-15232420864225.jpg" alt=""></p>
+<p>在非阻塞式I/O中进程在进行系统调用recvfrom的时候，如果数据没有准备好线程不会等待，而是不断询问，直到数据准备好，复制数据到用户空间以后，接受数据这个动作才算完成。</p>
+<p>因为线程不是一直在等待数据返回，其中也可以做其他的事情，所以是非阻塞式的，对于接受数据这个动作，进程会不断询问，知道最后有结果才算结束，所以是同步式的。</p>
+<h3 id="I-O复用"><a href="#I-O复用" class="headerlink" title="I/O复用"></a>I/O复用</h3><p><img src="https://data2.liuin.cn/2018-04-09-15232424437721.jpg" alt=""></p>
+<p>我们阻塞于 select调用,等待数据报套接字变为可读。当se1ect返回套接字可读这一条件时,我们调用 recvfrom把所读数据报复制到应用进程缓冲区。</p>
+<h3 id="异步I-O"><a href="#异步I-O" class="headerlink" title="异步I/O"></a>异步I/O</h3><p><img src="https://data2.liuin.cn/2018-04-09-15232425049293.jpg" alt=""></p>
+<p>异步I/O的工作模式时:告知内核启动某个操作,并让内核在整个操作(包括将数据从内核复制到我们自己的缓冲区)完成后通知我们。所以进程不需要一直询问其数据是否准备好</p>
+<h3 id="比较"><a href="#比较" class="headerlink" title="比较"></a>比较</h3><p><img src="https://data2.liuin.cn/2018-04-09-15232425884264.jpg" alt=""></p>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><ul>
+<li><a href="https://www.zhihu.com/question/19732473/answer/20851256" target="_blank" rel="external">https://www.zhihu.com/question/19732473/answer/20851256</a></li>
+<li>《Unix 网络编程》</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;近期在了解网络编程的时候对同步/异步和阻塞/非阻塞这些概念有一些混淆，所查了一些资料总结了这篇文章。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="开发随笔" scheme="https://www.liuin.cn/categories/%E5%BC%80%E5%8F%91%E9%9A%8F%E7%AC%94/"/>
+    
+    
+      <category term="Unix" scheme="https://www.liuin.cn/tags/Unix/"/>
+    
+  </entry>
   
   <entry>
     <title>Github分布式爬虫——数据分析</title>
@@ -4403,52 +4472,6 @@
     
     
       <category term="C/C++" scheme="https://www.liuin.cn/tags/C-C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>使用Docker部署Hexo博客</title>
-    <link href="https://www.liuin.cn/2018/03/02/%E4%BD%BF%E7%94%A8Docker%E9%83%A8%E7%BD%B2Hexo%E5%8D%9A%E5%AE%A2/"/>
-    <id>https://www.liuin.cn/2018/03/02/使用Docker部署Hexo博客/</id>
-    <published>2018-03-02T09:39:37.000Z</published>
-    <updated>2018-03-02T09:47:40.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>本文展示使用Docker部署Hexo博客（当然也可以是其他的服务）在服务器上的一种方案，主要用到是webhook来触发git pull操作。</p>
-<a id="more"></a>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>之前部署Hexo博客的时候好像配置蛮久的，想着能不能把这些东西都放进Docker里面，以后换服务器以后部署也方面，于是便有了这波操作。</p>
-<p>这里使用的是<a href="https://github.com/adnanh/webhook" target="_blank" rel="external">webhook</a>这个轮子来实现持续集成的。</p>
-<p>工作示意图：<br>本地编辑—-git push—-&gt;Github—-webhook—-&gt;server—-get pull—-&gt;内容更新</p>
-<p>使用到两个Docker：</p>
-<ol>
-<li><code>webhook</code>:  当push新的commit到GitHub（或其他平台）时解析GitHub发过来的webhook执行脚本更新网站内容</li>
-<li><code>nginx</code>: Web服务器，展示网站内容</li>
-</ol>
-<h2 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h2><p>Nginx容器的配置比较简单,只需要修改<code>nginx.conf</code>配置，监听80端口就行了。（如果需要需要https，则需要配置要证书以及配置监听443端口）。</p>
-<p>这里贴出我的<code>docker-compose.yml</code>文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">version: &apos;3&apos;</div><div class="line">services:</div><div class="line">    web:</div><div class="line">        image: nginx</div><div class="line">        volumes:</div><div class="line">            - ./nginx.conf:/etc/nginx/nginx.conf</div><div class="line">            - ./sites-enabled:/etc/nginx/sites-enabled</div><div class="line">            - /path-to-your-content:/var/www</div><div class="line">            - ./ssl:/ssl</div><div class="line">        ports:</div><div class="line">            - &quot;80:80&quot;</div><div class="line">            - &quot;443:443&quot;</div></pre></td></tr></table></figure></p>
-<p>ssl文件夹中的是证书，<code>path-to-your-content</code>是你静态页面的路径。</p>
-<h2 id="Webhook"><a href="#Webhook" class="headerlink" title="Webhook"></a>Webhook</h2><p>Webhook任务是解析发过来的请求，然后执行脚本来从远程仓库中拉取更新。</p>
-<p>首先是构建镜像：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">FROM golang</div><div class="line">MAINTAINER sixzeroo &lt;sixzeroo60@gmail.com&gt;</div><div class="line"></div><div class="line">RUN mkdir -p /code/webhook \</div><div class="line">    &amp;&amp; touch /code/webhook/hook.json \</div><div class="line">    &amp;&amp; go get github.com/adnanh/webhook</div><div class="line"></div><div class="line">WORKDIR /code/webhook</div><div class="line"></div><div class="line">ENTRYPOINT /go/bin/webhook -hooks /code/webhook/hooks.json -verbose</div></pre></td></tr></table></figure></p>
-<p>成品：<a href="https://hub.docker.com/r/sixzeroo/webhook/" target="_blank" rel="external">sixzeroo/webhook</a></p>
-<p>之后就可以使用webhook来创建钩子任务了，其中配置文件在<code>hooks.json</code>中：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[</div><div class="line">  &#123;</div><div class="line">    <span class="attr">"id"</span>: <span class="string">"your-id"</span>,</div><div class="line">    <span class="attr">"execute-command"</span>: <span class="string">"/code/webhook/work.sh"</span>,</div><div class="line">    <span class="attr">"command-working-directory"</span>: <span class="string">"/code/webhook"</span></div><div class="line">  &#125;</div><div class="line">]</div></pre></td></tr></table></figure></p>
-<p>执行的脚本就是从GitHub中拉取更新而已，<code>work.sh</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#! /bin/sh</div><div class="line"></div><div class="line">cd /var/www &amp;&amp; git pull</div><div class="line"></div><div class="line">curtime=`date +&quot;%Y%m%d%H%M%S&quot;`</div><div class="line"></div><div class="line">if [ $? -eq 0 ];then</div><div class="line">    echo &quot;$curtime pull success!&quot; &gt;&gt; /code/webhook/git.log</div><div class="line">else</div><div class="line">    echo &quot;$curtime pull fail!&quot; &gt;&gt; /code/webhook/git.log</div><div class="line">fi</div></pre></td></tr></table></figure></p>
-<p>最后配置整个服务，<code>docker-compose.yml</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">version: &quot;3&quot;</div><div class="line">services:</div><div class="line"></div><div class="line">    webhook:</div><div class="line">        image: sixzeroo/webhook</div><div class="line">        volumes:</div><div class="line">         - ./:/code/webhook</div><div class="line">         - /path-to-your-content:/var/www</div><div class="line">         - /key-path:/root/.ssh</div><div class="line">        ports:</div><div class="line">         - &quot;9000:9000&quot;</div></pre></td></tr></table></figure></p>
-<p>其中<code>key-path</code>是你ssh文件夹路径</p>
-<p>最后启动两个服务就可以工作了，设置GitHub当有push的时候发送<code>http://your-host:9000/hooks/your-id</code>这样的webhook就行了。</p>
-<p>这里不把两个容器放到一个服务里面的原因是Nginx容器之后会有新的服务部署，里面会做一些修改。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;本文展示使用Docker部署Hexo博客（当然也可以是其他的服务）在服务器上的一种方案，主要用到是webhook来触发git pull操作。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="开发随笔" scheme="https://www.liuin.cn/categories/%E5%BC%80%E5%8F%91%E9%9A%8F%E7%AC%94/"/>
-    
-    
-      <category term="Docker" scheme="https://www.liuin.cn/tags/Docker/"/>
-    
-      <category term="Hexo" scheme="https://www.liuin.cn/tags/Hexo/"/>
     
   </entry>
   
