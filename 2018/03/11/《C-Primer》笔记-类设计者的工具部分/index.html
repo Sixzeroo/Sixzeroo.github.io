@@ -144,7 +144,7 @@
 <meta property="og:image" content="https://data2.liuin.cn/2018-03-10-15206826958070.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208165159357.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208167547457.jpg">
-<meta property="og:updated_time" content="2018-04-16T05:54:31.000Z">
+<meta property="og:updated_time" content="2018-04-17T11:14:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《C++ Primer》笔记 类设计者的工具部分">
 <meta name="twitter:description" content="《C++ Primer》笔记 类设计者的工具部分">
@@ -471,7 +471,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  18,123 字
+                  18,565 字
                 </span>
               
 
@@ -648,16 +648,28 @@
 <blockquote>
 <p>某些运算符不应该被重载</p>
 </blockquote>
-<p>回忆之前介绍过的,某些运算符指定了运算对象求值的顺序。因为使用重载的运算符本质上是一次函数调用,所以这些<strong>关于运算对象求值顺序的规则无法应用到重载的运算符上</strong>。特别是,逻辑与运算符、逻辑或运算符和逗号运算符的运算对又象求值顺序规则无法保留下来</p>
+<p>回忆之前介绍过的,某些运算符指定了运算对象求值的顺序。因为使用重载的运算符本质上是一次函数调用,所以这些<strong>关于运算对象求值顺序的规则无法应用到重载的运算符上</strong>。特别是,逻辑与运算符、逻辑或运算符和逗号运算符的运算对又象求值顺序规则无法保留下来。除此之外,&amp;&amp;和||运算符的重载版本也无法保留内置运算符的短路求值属性,两个运算对象总是会被求值。</p>
 <p>还有一个原因使得我们一般不重载逗号运算符和取地址运篁符:C+语言已经<strong>定义了这两种运算符用于类类型对象时的特殊含义</strong>,这一点与大多数运算符都不相同。因为这两种运算符已经有了内置的含义,所以一般来说它们不应该被重载,否则它们的行为将异于常态,从而导致类的用户无法适应。</p>
 <blockquote>
 <p>赋值和复合赋值运算符</p>
 </blockquote>
 <p>赋值运算符的行为与复合版本的类似:赋值之后,左侧运算对象和右侧运算对象的值相等,并且运算符应该返回它左侧运算对象的一个引用。<strong>重载的赋值运算应该继承而非违背其内置版本的含义</strong>。</p>
+<blockquote>
+<p>选择作为成员还是非成员</p>
+</blockquote>
+<p>当我们定义重载的运算符时,必须首先决定是将其声明为类的成员函数还是声明为一个普通的非成员函数。</p>
+<p>下面的准则有助于我们在将运算符定义为成员函数还是普通的非成员函数做出抉择：</p>
+<ul>
+<li>赋值(=)、下标([])、调用(())和成员访问箭头(-&gt;)运算符必须是成员。</li>
+<li>复合赋值运算符一般来说应该是成员,但并非必须,这一点与赋值运算符略有不同。</li>
+<li>改变对象状态的运算符或者与给定类型密切相关的运算符,如递增、递减和解引用运算符,通常应该是成员。</li>
+<li>具有对称性的运算符可能转换任意一端的运算对象,例如算术、相等性、关系和位运算符等,因此它们通常应该是普通的非成员函数。</li>
+</ul>
 <h2 id="输入和输出运算符"><a href="#输入和输出运算符" class="headerlink" title="输入和输出运算符"></a>输入和输出运算符</h2><p>IO标准库分别使用&gt;&gt;和&lt;&lt;执行输入和输出操作。</p>
 <h3 id="重载输出运算符-lt-lt"><a href="#重载输出运算符-lt-lt" class="headerlink" title="重载输出运算符&lt;&lt;"></a>重载输出运算符&lt;&lt;</h3><p>输出运算符的<strong>第一个形参是一个非常量 ostream对象的引用</strong>。之所以ostream是非常量是因为向流写入内容会改变其状态;而该形参是引用是因为我们无法直接复制一个 ostream对象。</p>
 <p><strong>第二个形参一般来说是一个常量的引用,该常量是我们想要打印的类类型</strong>。第二个形参是引用的原因是我们希望避免复制实参;而之所以该形参可以是常量是因为(通常情况下)打印对象不会改变对象的内容。</p>
 <p>为了与其他输出运算符保持一致, operator&lt;&lt;一般要返回它的 ostream形参。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">ostream &amp;<span class="keyword">operator</span>&lt;&lt;(ostream &amp;os, <span class="keyword">const</span> Sale_data &amp;item)</div><div class="line">&#123;</div><div class="line">    os &lt;&lt; item.isbon() &lt;&lt; <span class="string">" "</span> &lt;&lt; item.units_old ;</div><div class="line">    <span class="keyword">return</span> os;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <blockquote>
 <p>输入运算符尽量减少格式化操作</p>
 </blockquote>
@@ -666,7 +678,9 @@
 <p>输入输出函数必须为非成员函数</p>
 </blockquote>
 <p>与 iostream标准库兼容的输入输出运算符必须是普通的非成员函数,而不能是类的成员函数。否则,它们的左侧运算对象将是我们的类的一个对象</p>
+<p>因此,<strong>如果我们希望为类自定义IO运算符,则必须将其定义成非成员函数</strong>。当然,IO运算符通常需要读写类的非公有数据成员,所以IO运算符一般被声明为友元</p>
 <h3 id="重载输入运算符-gt-gt"><a href="#重载输入运算符-gt-gt" class="headerlink" title="重载输入运算符&gt;&gt;"></a>重载输入运算符&gt;&gt;</h3><p>通常情况下,输入运算符的<strong>第一个形参是运算符将要读取的流的引用</strong>,<strong>第二个形参是将要读入到的(非常量)对象的引用</strong>。该运算符通常会返回某个给定流的引|用。第二个形参之所以必须是个非常量是因为输入运算符本身的目的就是将数据读入到这个对象中。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">istream &amp;<span class="keyword">operator</span>&gt;&gt;(istream &amp;is, Sales_data &amp;item)</div><div class="line">&#123;</div><div class="line">    <span class="keyword">double</span> price;</div><div class="line">    is &gt;&gt; item.bokNo &gt;&gt; item.units_sold &gt;&gt; price;</div><div class="line">    item.revence = item.units_sold * price;</div><div class="line">    <span class="keyword">return</span> is;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <blockquote>
 <p>输入时的错误</p>
 </blockquote>
@@ -675,6 +689,7 @@
 <li>当读取操作到达文件末尾或者遇到输入流的其他错误时也会失败。</li>
 </ul>
 <h2 id="算术和关系运算符"><a href="#算术和关系运算符" class="headerlink" title="算术和关系运算符"></a>算术和关系运算符</h2><p>我们把<strong>算术和关系运算符定义成非成员函数以允许对左侧或右侧的运算对象进行转换</strong>。因为这些运算符一般不需要改变运算对象的状态,所以形参都是常量的引用</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Sales_data <span class="keyword">operator</span>+(Sales_data &amp;lhs, Sales_data &amp;rhs)</div><div class="line">&#123;</div><div class="line">    Sale_data sum = lhs;</div><div class="line">    sum += rhs;</div><div class="line">    <span class="keyword">return</span> sum;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h3 id="相等运算符"><a href="#相等运算符" class="headerlink" title="相等运算符"></a>相等运算符</h3><p>C++中的类通过定义相等运算符来检验两个对象是否相等。</p>
 <p><img src="https://data2.liuin.cn/2018-03-06-15203006569640.jpg" alt=""></p>
 <p>设计准则：</p>
@@ -690,11 +705,13 @@
 <li>定义顺序关系，令其与关联容器中对关键词的要求一致</li>
 <li>如果类同时含有==运算符的话，则定义一种关系令其与==保持一致</li>
 </ol>
-<h2 id="赋值运算符"><a href="#赋值运算符" class="headerlink" title="赋值运算符"></a>赋值运算符</h2><p>之前已经介绍过拷贝赋值和移动赋值运算符,它们可以把类的一个对象赋值给该类的另一个对象。此外,类还可以定义其他赋值运算符以使用别的类型作为右侧运算对象。</p>
+<h2 id="赋值运算符"><a href="#赋值运算符" class="headerlink" title="赋值运算符"></a>赋值运算符</h2><p>之前已经介绍过拷贝赋值和移动赋值运算符,它们可以把<strong>类的一个对象赋值给该类的另一个对象</strong>。此外,类还可以定义其他赋值运算符以使用别的类型作为右侧运算对象。</p>
 <p>复合赋值运算符不非得是类的成员,不过我们还是倾向于把包括复合赋值在内的所有赋值运算都定义在类的内部。为了与内置类型的复合赋值保持一致,类中的复合赋值运算符也要返回其左侧运算对象的引用。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">Sale_data &amp;Sale_data::<span class="keyword">operator</span>+=(<span class="keyword">const</span> Sale_data &amp;rhs)</div><div class="line">&#123;</div><div class="line">    units_sold += rhs.units_sold;</div><div class="line">    revenue += rhs.revenus;</div><div class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="下标运算符"><a href="#下标运算符" class="headerlink" title="下标运算符"></a>下标运算符</h2><p>表示容器的类通常可以通过元素在容器中的位置访问元素,这些类一般会定义下标运算符 operator[]。</p>
 <p><strong>下标运算符必须是成员函数</strong></p>
-<p>为了与下标的原始定义兼容,<strong>下标运算符通常以所访问元素的引用作为返回值</strong>,这样做的好处是下标可以出现在赋值运算符的任意一端。进一步,我们最好同时定义下标运算符的常量版本和非常量版本,当作用于一个常量对象时,下标运算符返回常量引用以确保我们不会给返回的对象赋值</p>
+<p>为了与下标的原始定义兼容,<strong>下标运算符通常以所访问元素的引用作为返回值</strong>,这样做的好处是下标可以出现在赋值运算符的任意一端。进一步,我们最好<strong>同时定义下标运算符的常量版本和非常量版本</strong>,当作用于一个常量对象时,下标运算符返回常量引用以确保我们不会给返回的对象赋值</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">class</span> StrVec &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">string</span>&amp; <span class="keyword">operator</span>[](<span class="built_in">std</span>::<span class="keyword">size_t</span> n)</div><div class="line">    &#123; <span class="keyword">return</span> element[n]; &#125;</div><div class="line">    <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; <span class="keyword">operator</span>[](<span class="built_in">std</span>::<span class="keyword">size_t</span> n) <span class="keyword">const</span></div><div class="line">    &#123; <span class="keyword">return</span> element[n]; &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="递增和递减运算符"><a href="#递增和递减运算符" class="headerlink" title="递增和递减运算符"></a>递增和递减运算符</h2><p>在迭代器类中通常会实现递増运算符(++)和递减运算符(–),这两种运算符使得类可以在元素的序列中前后移动。</p>
 <blockquote>
 <p>定义前置递增/递减运算符</p>
@@ -1163,7 +1180,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年4月16日 - 13时04分
+	2018年4月17日 - 19时04分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -1410,7 +1427,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      231.4k 字
+      231.9k 字
     </span>
   
 
