@@ -3138,7 +3138,7 @@
     <link href="https://www.liuin.cn/2018/03/11/%E3%80%8AC-Primer%E3%80%8B%E7%AC%94%E8%AE%B0-%E7%B1%BB%E8%AE%BE%E8%AE%A1%E8%80%85%E7%9A%84%E5%B7%A5%E5%85%B7%E9%83%A8%E5%88%86/"/>
     <id>https://www.liuin.cn/2018/03/11/《C-Primer》笔记-类设计者的工具部分/</id>
     <published>2018-03-11T11:58:50.000Z</published>
-    <updated>2018-04-17T11:14:16.000Z</updated>
+    <updated>2018-04-18T08:32:13.000Z</updated>
     
     <content type="html"><![CDATA[<p>《C++ Primer》笔记 类设计者的工具部分</p>
 <a id="more"></a>
@@ -3394,7 +3394,7 @@
 <h3 id="动态绑定"><a href="#动态绑定" class="headerlink" title="动态绑定"></a>动态绑定</h3><p>通过使用动态绑定( dynamic binding),我们们能用同一段代码分别处理 Quote和Bu1k_quote的对象(Bulk_quote 继承Quote）</p>
 <p><img src="https://data2.liuin.cn/2018-03-08-15204753653946.jpg" alt=""></p>
 <p>因为函数 print_tota1的item形参是基类Quote的一个引用,我们既能使用基类Quote的对象调用该函数,也能使用派生类Bu1k_quote的对象调用它;</p>
-<p>因为在上述过程中函数的运行版本由实参决定,即在运行时选择函数的版本,所以动态绑定有时又被称为运行时绑定(run- time binding)。</p>
+<p>因为在上述过程中函数的运行版本由实参决定,即在运行时选择函数的版本,所以动态绑定有时又被称为运行时绑定(run-time binding)。</p>
 <h2 id="定义基类和派生类"><a href="#定义基类和派生类" class="headerlink" title="定义基类和派生类"></a>定义基类和派生类</h2><h3 id="定义基类"><a href="#定义基类" class="headerlink" title="定义基类"></a>定义基类</h3><p>基类通常都应该定义一个虚析构函数,即使该函数不执行任何实际操作也是如</p>
 <blockquote>
 <p>成员函数与继承</p>
@@ -3408,7 +3408,7 @@
 <p>派生类可以继承定义在基类中的成员,但是派生类的成员函数不一定有权访问从基类继承而来的成员。和其他使用基类的代码一样,派生类能访问公有成员,而不能访问私有成员。不过在某些时候基类中还有这样一种成员,基类希望它的派生类有权访问该成员,同时禁止其他用户访向。我们用受保护的( protected)访向运算符说明这样的成员。</p>
 <h3 id="定义派生类"><a href="#定义派生类" class="headerlink" title="定义派生类"></a>定义派生类</h3><p>派生类必须通过使用类派生列表( class derivation list)明确指出它是从哪个(哪些)基类继承而来的。类派生列表的形式是:首先是一个冒号,后面紧跟以逗号分隔的基类列表,其中每个基类前面可以有以下三种访问说明符中的一个:<strong>pub1ic、 protected或者private</strong></p>
 <p>派生类必须将其继承而来的成员函数中需要覆盖的那些重新声明,因此,我们的Bulk_quote类必须包含一个 net_price成员:</p>
-<p><img src="https://data2.liuin.cn/2018-03-08-15204767757091.jpg" alt=""></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Bulk_quote : <span class="keyword">public</span> Quote &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    Bulk_quote() = <span class="keyword">default</span>;</div><div class="line">    Bulk_quote(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp;, <span class="keyword">double</span>, <span class="built_in">std</span>::<span class="keyword">size_t</span>, <span class="keyword">double</span>);</div><div class="line">    <span class="comment">// 覆盖基类函数</span></div><div class="line">    <span class="function"><span class="keyword">double</span> <span class="title">net_price</span><span class="params">(<span class="built_in">std</span>::<span class="keyword">size_t</span>)</span> <span class="keyword">const</span> override</span>;</div><div class="line"><span class="keyword">private</span>:</div><div class="line">    <span class="built_in">std</span>::<span class="keyword">size_t</span> min_qty = <span class="number">0</span>;</div><div class="line">    <span class="keyword">double</span> discount = <span class="number">0.0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>大多数类都只继承自一个类,这种形式的继承被称作“单继承”,</p>
 <blockquote>
 <p>派生类中的虚函数</p>
@@ -3419,7 +3419,7 @@
 <p>派生类对象及派生类向基类的类型转换</p>
 </blockquote>
 <p>一个派生类对象包含多个组成部分:一个含有<strong>派生类自己定义的(非静态)成员的子对象</strong>,以及一个与该派生类<strong>继承的基类对应的子对象</strong>,如果有多个基类,那么这样的子对象也有多个。</p>
-<p>因为在派生类对象中含有与其基类对应的组成部分,所以我们能把派生类的对象当成基类对象来使用,而且我们也能将基类的<strong>指针或引用</strong>绑定到派生类对象中的基类部分上</p>
+<p>因为在派生类对象中含有与其基类对应的组成部分,所以我们<strong>能把派生类的对象当成基类对象来使用</strong>,而且我们也能将基类的<strong>指针或引用</strong>绑定到派生类对象中的基类部分上</p>
 <p>这种转换通常称为派生类到基类的( derived-to-base)类型转换。和其他类型转换一样,编译器会隐式地执行派生类到基类的转专换</p>
 <blockquote>
 <p>派生类构造函数</p>
@@ -3454,13 +3454,13 @@
 <p>防止继承发生</p>
 </blockquote>
 <p>有时我们会定义这样一种类,我们不希望其他类继承它,或者不想考虑它是否适合作为一个基类。为了实现这一日的,C++11新标准提供了一种防止继承发生的方法,即在类名后跟一个关键字fina1:</p>
-<h3 id="类型转换与继承"><a href="#类型转换与继承" class="headerlink" title="类型转换与继承"></a>类型转换与继承</h3><p>通常情况下,如果我们想把引用或指针绑定到一个对象上,则引用或指针的类型应与对象的类型一致。存在继承关系的类是一个重要的意外</p>
+<h3 id="类型转换与继承"><a href="#类型转换与继承" class="headerlink" title="类型转换与继承"></a>类型转换与继承</h3><p>通常情况下,如果我们想把引用或指针绑定到一个对象上,则引用或指针的类型应与对象的类型一致。存在继承关系的类是一个重要的意外：<strong>我们可以把基类的指针或者应用绑定到派生类对象上</strong>。</p>
 <p>可以将基类的指针或引用绑定到派生类对象上有一层极为重要的含义:当使用基类的引用(或指针)时,实际上我们并不清楚该引用(或指针)所绑定对象的真实类型。该对象可能是基类的对象,也可能是派生类的对象。</p>
 <blockquote>
 <p>静态类型与动态类型</p>
 </blockquote>
 <p>当我们使用存在继承关系的类型时,必须<strong>将一个变量或其他表达式的静态类型</strong>( statictype)与该表达式表示对象的动态类型( dynamic type)区分开来。表达式的静态类型在编译时总是已知的,它是变量声明时的类型或表达式生成的类型:动态类型则是变量或表达式表示的内存中的对象的类型。动态类型直到运行时才可知。</p>
-<p>如果表达式既不是引用也不是指旨针,则它的动态类型永远与静态类型一致。</p>
+<p><strong>如果表达式既不是引用也不是指针,则它的动态类型永远与静态类型一致</strong>。</p>
 <blockquote>
 <p>不存在从基类向派生类的隐式类型转换</p>
 </blockquote>
@@ -3484,6 +3484,8 @@
 </blockquote>
 <p>派生类如果定义了一个函数与基类中虚函数的名字相同但是形参列表不同,这仍然是合法的行为。编译器将认为新定义的这个函数与基类中原有的函数是相互独立的。这时,派生类的函数并没有覆盖掉基类中的版本。就实际的编程习惯而言,这种声明往主往意味着发生了错误,因为我们可能原本希望派生类能覆盖掉基类中的虚函数,但是一不小心把形参列表弄错了。</p>
 <p>在C++11新标准中我们可以使用override关键字来说明派生类中的虚函数。这么做的好处是在使得程序员的意图更加清晰的同时让编译器可以为我们发现一些错误,后者在编程实践中显得更加重要。</p>
+<p>我们还能把某个函数指定为fina1,如果我们已经把函数定义成fina1了,则之后任何尝试覆盖该函数的操作都将引发错误</p>
+<p>同一个函数可以同时添加final和override说明符；</p>
 <blockquote>
 <p>虚函数和默认实参</p>
 </blockquote>
@@ -3500,7 +3502,7 @@
 </blockquote>
 <p>当我们不想让用户从一个类中创建一个对象时，我们可以使用纯虚函数。</p>
 <p>和普通的虚函数不一样,一个纯虚函数无须定义。我们通过在函数体的位置(即在声明语句的分号之前)书写=0就可以将一个虚函数说明为纯虚函数。其中,=0只能出现在类内部的虚函数声明语句处</p>
-<p><img src="https://data2.liuin.cn/2018-03-08-15205130777739.jpg" alt=""></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// 用于保存折扣值和购买量的类</span></div><div class="line"><span class="keyword">class</span> Disc_quote</div><div class="line">&#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">	Disc_quote() = <span class="keyword">default</span>;</div><div class="line">	Disc_quote(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; book, <span class="keyword">double</span> price, </div><div class="line">		<span class="built_in">std</span>::<span class="keyword">size_t</span> qty, <span class="keyword">double</span> dsc) :</div><div class="line">			Quote(book, price), quantity(qty), discount(disc) &#123; &#125;;</div><div class="line">	<span class="function"><span class="keyword">double</span> <span class="title">net_price</span><span class="params">(<span class="built_in">std</span>::<span class="keyword">size_t</span>)</span> <span class="keyword">const</span> </span>= <span class="number">0</span>;</div><div class="line"><span class="keyword">protected</span>:</div><div class="line">	<span class="built_in">std</span>::<span class="keyword">size_t</span> quantity = <span class="number">0</span>;</div><div class="line">	<span class="keyword">double</span> discount = <span class="number">0.0</span>;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
 <blockquote>
 <p>含有纯虚函数的类是抽象基类</p>
 </blockquote>
