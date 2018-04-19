@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-04-18T13:24:46.000Z</updated>
+  <updated>2018-04-19T01:28:53.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -16,11 +16,100 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>APUE 信号</title>
+    <link href="https://www.liuin.cn/2018/04/18/APUE-%E4%BF%A1%E5%8F%B7/"/>
+    <id>https://www.liuin.cn/2018/04/18/APUE-信号/</id>
+    <published>2018-04-18T13:37:51.000Z</published>
+    <updated>2018-04-19T01:28:53.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>《UNIX环境高级编程》第10章 信号 笔记</p>
+<a id="more"></a>
+<p>信号是软件中断。很多比较重要的应用程序都需处理信号。信号提供了一种<strong>处理异步事件</strong>的方法,例如,终端用户键入中断键,会通过信号机制停止一个程序,或及早终止管道中的下一个程序。</p>
+<h2 id="信号概念"><a href="#信号概念" class="headerlink" title="信号概念"></a>信号概念</h2><p>每个信号都有一个名字，这些名字都以3个字符SIG开头，比如：SIGINT中断信号、SIGABRT夭折信号、SIGALRM闹钟信号。</p>
+<p>产生信号的条件：</p>
+<ul>
+<li>当用户按某些终端键时,引发终端产生的信号。</li>
+<li>硬件异常产生信号:除数为0、无效的内存引用等。</li>
+<li>进程调用ki11(2)函数可将任意信号发送给另一个进程或进程组。</li>
+<li>用户可用ki11(1)命令将信号发送给其他进程</li>
+<li>当检测到某种软件条件已经发生,并应将其通知有关进程时也产生信号</li>
+</ul>
+<p>信号是异步事件的经典实例。产生信号的事件对进程而言是随机出现的。进程不能简单地测试一个变量(如 errno)来判断是否发生了一个信号,而是必须告诉内核“在此信号发生时,请执行下列操作”。</p>
+<p>在某个信号出现时,可以告诉内核按下列3种方式之一进行处理,我们称之为信号的处理或与信号相关的动作：</p>
+<ul>
+<li>忽略此信号，有两种信号不能被忽略，它们是 SIGKILL和 SIGSTOP。这两种信号不能被忽略的原因是:它们向内核和超级用户提供了使进程终止或停止的可靠方法。</li>
+<li>捕捉信号，通知内核在某种信号发生时,调用一个用户函数。在用户函数中,可执行用户希望对这种事件进行的处理。</li>
+<li>执行系统默认操作</li>
+</ul>
+<p><img src="https://data2.liuin.cn/2018-04-18-15240592901538.jpg" alt=""></p>
+<h2 id="函数signal"><a href="#函数signal" class="headerlink" title="函数signal"></a>函数signal</h2><p>UNX系统信号机制最简单的接口是 signa1函数，其用于捕获信号，并捕获以后发生什么事情。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">void</span> (*signal(<span class="keyword">int</span> signo, <span class="keyword">void</span> (*func)(<span class="keyword">int</span>)))(<span class="keyword">int</span>); </div><div class="line"></div><div class="line"><span class="comment">//Returns: previous disposition of signal (see following) if OK, SIG_ERR on error</span></div></pre></td></tr></table></figure>
+<p><code>signo</code>参数是信号名。<code>func</code>的值是常量SIG_IGN、常量SIG_DEL或当接到此信号后要调用的函数的地址。<code>SIG_IGN</code>表示向内核表示忽略此信号(记住有两个信号 SIGKILI和 SIGSTOP不能忽略)。SIG_DEL表示接到此信号后的动作是系统默认动作。</p>
+<p>当指定函数地址时，则在信号发生时，调用该函数，我们称这种处理为捕获该信号，称此函数为信号处理程序( signal handler)或信号捕捉函数 (signal-catching function)</p>
+<blockquote>
+<p>程序启动</p>
+</blockquote>
+<p>当执行一个程序时,所有信号的状态都是系统默认或忽略。通常所有信号都被设置为它们的默认动作,除非调用exec的进程忽略该信号。确切地讲,<strong>exec函数将原先设置为要捕捉的信号都更改为默认动作</strong>,其他信号的状态则不变(一个进程原先要捕捉的信号,当其执行一个新程序后,就不能再捕捉了,因为信号捕捉函数的地址很可能在所执行的新程序文件中已无意义)。</p>
+<blockquote>
+<p>进程创建</p>
+</blockquote>
+<p>当一个进程调用fork时,其子进程继承父进程的信号处理方式。因为子进程在开始时复制了父进程内存映像,所以信号捕捉函数的地址在子进程中是有意义的</p>
+<h2 id="不可靠信号"><a href="#不可靠信号" class="headerlink" title="不可靠信号"></a>不可靠信号</h2><p>在早期的UNX版本中(如V7),信号是不可靠的。不可靠在这里指的是,信号可能会丢失。一个信号发生了,但进程却可能一直不知道这一点。同时,进程对信号的控制能力也很差,它能捕捉信号或忽略它。有时用户希望通知内核阻塞某个信号:不要忽略该信号,在其发生时记住它然后在进程做好了准备时再通知它。这种阻塞信号的能力当时并不具备</p>
+<p>这些早期版本的另一个问题是:在进程不希望某种信号发生时,它不能关闭该信号。进程能做的一切就是忽略该信号。</p>
+<h2 id="中断的系统调用"><a href="#中断的系统调用" class="headerlink" title="中断的系统调用"></a>中断的系统调用</h2><p>早期UNX系统的一个特性是:如果进程在执行一个低速系统调用而阻塞期间捕捉到一个信号,则该系统调用就被中断不再继续执行。该系统调用返回出错,其erno设置为EINTR。</p>
+<p>为了支持这种特性,将系统调用分成两类:低速系统调用和其他系统调用。低速系统调用是可能会使进程永远阻塞的类系统调用。</p>
+<p>可以用中断系统调用这种方法来处理的一个例子是:一个进程启动了读终端操作,而使用该终端设备的用户却离开该终端很长时间。在这种情况下,进程可能处于阻塞状态几个小时甚至数天,除非系统停机,否则一直如此</p>
+<h2 id="可重入函数"><a href="#可重入函数" class="headerlink" title="可重入函数"></a>可重入函数</h2><p>进程捕捉到信号并对其进行处理时,进程正在执行的正常指令序列就被信号处理程序临时中断,它首先执行该信号处理程序中的指令。如果从信号处理程序返回,则继续执行在捕捉到信号时进程正在执行的正常指令序列(这类似于发生硬件中断时所做的)。但在信号处理程序中,<strong>不能判断捕捉到信号时进程执行到何处</strong>。</p>
+<p>在信号处理函数中保证调用安全的函数（可以被安全中断的函数），这些函数是<strong>可重入的</strong>并被称之为<strong>异步信号安全的</strong></p>
+<p>大多数函数是不可重入的,因为<br>(a)已知它们使用静态数据结构;<br>(b)它们调用mal1oc或free;<br>(c)它们是标准I/O函数。标准IO库的很多实现都以不可重入方式使用全局数据结构</p>
+<h2 id="可靠信号术语与语义"><a href="#可靠信号术语与语义" class="headerlink" title="可靠信号术语与语义"></a>可靠信号术语与语义</h2><p>我们需要先定义一些在讨论信号时会用到的术语。首先,当造成信号的事件发生时,为进程产生一个信号(或向一个进程发送一个信号)。事件可以是硬件异常(如除以0)、软件条件(如a1arm定时器超时)、终端产生的信号或调用ki11函数。当一个信号产生时,<strong>内核通常在进程表中以某种形式设置一个标志</strong>。</p>
+<p>当对信号采取了这种动作时,我们说向进程递送了一个信号。在信号产生(generation)和递送(delivery)之间的时间间隔内,称信号是<strong>未决的</strong>(pending)</p>
+<p>进程可以选用“阻塞信号递送”。如果为进程产生了一个阻塞的信号,而且对该信号的动作是系统默认动作或捕捉该信号,则为该进程将此信号保持为未决状态,直到该进程对此信号解除了阻塞,或者将对此信号的动作更改为忽略。内核在递送一个原来被阻塞的信号给进程时(而不是在产生该信号时),才决定对它的处理方式。于是进程在信号递送给它之前仍可改变对该信号的动作。进程调用<code>sigpending</code>函数来判定哪些信号是设置为阻塞并处于未决状态的。</p>
+<p>每个进程都有一个信号屏蔽字( signal mask.),它规定了当前要阻塞递送到该进程的信号集。对于每种可能的信号,该屏蔽字中都有一位与之对应。对于某种信号,若其对应位已设置,则它当前是被阻塞的。进程可以调用 <code>sigprocmask</code>来检测和更改其当前信号屏蔽字。</p>
+<h2 id="函数kill和raise"><a href="#函数kill和raise" class="headerlink" title="函数kill和raise"></a>函数kill和raise</h2><p>ki11函数将信号发送给进程或进程组。 ralse函数则允许进程向自身发送信号。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt; </span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">kill</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">int</span> signo)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">raise</span><span class="params">(<span class="keyword">int</span> signo)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>进程将信号发送给其他进程需要权限。超级用户可将信号发送给任一进程。对于非超级用户,其基本规则是发送者的实际用户DD或有效用户ID必须等于接收者的实际用户ID或有效用户ID。</p>
+<h2 id="函数alarm和pause"><a href="#函数alarm和pause" class="headerlink" title="函数alarm和pause"></a>函数alarm和pause</h2><p>使用alarm函数可以设置一个定时器(闹钟时间),在将来的某个时刻该定时器会超时。当定时器超时时,产生 SIGALRM信号。如果忽略或不捕捉此信号,则其默认动作是终止调用该a1arm函数的进程</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">alarm</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> seconds)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 or number of seconds until previously set alarm</span></div></pre></td></tr></table></figure>
+<p>每个进程只能有一个闹钟时间。如果在调用a1arm时,之前已为该进程注册的闹钟时间还没有超时,则该闹钟时间的余留值作为本次a1arm函数调用的值返回。以前注册的闹钟时间则被新值代替。</p>
+<p>如果有以前注册的尚未超过的闹钟时间,而且本次调用的 seconds值是0,则取消以前的闹钟时间,其余留值仍作为a1arm函数的返回值</p>
+<p>pause函数使调用进程挂起直至捕捉到一个信号</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pause</span><span class="params">(<span class="keyword">void</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: −1 with errno set to EINTR</span></div></pre></td></tr></table></figure>
+<p>只有执行了一个信号处理程序并返回时，pause才返回</p>
+<h2 id="信号集"><a href="#信号集" class="headerlink" title="信号集"></a>信号集</h2><p>我们需要有一个能表示多个信号—信号集(signal set)的数据类型。我们将在sigprocmask类函数中使用这种数据类型,以便告诉内核不允许发生该信号集中的信号。不同的信号的编号可能超过一个整型量所包含的位数,所以一般而言,不能用整型量中的一位代表一种信号,也就是不能用一个整型量表示信号集。POSIX 定义数据类型sigset_t以包含一个信号集,并且定义了下列5个处理信号集的函数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt; </span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigemptyset</span><span class="params">(<span class="keyword">sigset_t</span> *<span class="built_in">set</span>)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigfillset</span><span class="params">(<span class="keyword">sigset_t</span> *<span class="built_in">set</span>)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigaddset</span><span class="params">(<span class="keyword">sigset_t</span> *<span class="built_in">set</span>, <span class="keyword">int</span> signo)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigdelset</span><span class="params">(<span class="keyword">sigset_t</span> *<span class="built_in">set</span>, <span class="keyword">int</span> signo)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// All four return: 0 if OK, −1 on error int sigismember(const sigset_t *set, int signo); Returns: 1 if true, 0 if false, −1 on error</span></div></pre></td></tr></table></figure>
+<h2 id="函数sigprocmask"><a href="#函数sigprocmask" class="headerlink" title="函数sigprocmask"></a>函数sigprocmask</h2><p>调用函数<code>sigprocmask</code>可以检测或更改,或同时进行检测和更改进程的信号屏蔽字。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt; </span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigprocmask</span><span class="params">(<span class="keyword">int</span> how, <span class="keyword">const</span> <span class="keyword">sigset_t</span> *<span class="keyword">restrict</span> <span class="built_in">set</span>, <span class="keyword">sigset_t</span> *<span class="keyword">restrict</span> oset)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>如果oset为是非空指针，则进程当前的信号屏蔽字通过oset返回<br>其次,若ser是一个非空指针,则参数how指示如何修改当前信号屏蔽字。主要的操作有并集、交集、替代</p>
+<p>在调用<code>sigprocmask</code>后如果有任何未决的、不再阻塞的信号,则在<code>sigprocmask</code>返回前至少将其中之一递送给该进程</p>
+<h2 id="函数sigpending"><a href="#函数sigpending" class="headerlink" title="函数sigpending"></a>函数sigpending</h2><p><code>sigpending</code>函数返回一信号集,对于调用进程而言,其中的各信号是阻塞不能递送的,因而也一定是当前未决的。该信号集通过set参数返回</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigpending</span><span class="params">(<span class="keyword">sigset_t</span> *<span class="built_in">set</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<h2 id="函数sigaction"><a href="#函数sigaction" class="headerlink" title="函数sigaction"></a>函数sigaction</h2><p><code>sigaction</code>函数的功能是检查或修改(或检查并修改)与指定信号相关联的处理动作。此函数取代了UNX早期版本使用的 signa1函数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigaction</span><span class="params">(<span class="keyword">int</span> signo, <span class="keyword">const</span> <span class="keyword">struct</span> sigaction *<span class="keyword">restrict</span> act, <span class="keyword">struct</span> sigaction *<span class="keyword">restrict</span> oact)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>参数signo是要检测或修改其具体动作的信号编号。若act指针非空,则要修改其动作。如果oact指针非空,则系统经由oact指针返回该信号的上一个动作。</p>
+<h2 id="函数abort"><a href="#函数abort" class="headerlink" title="函数abort"></a>函数abort</h2><p>abort函数的功能是使程序异常终止，此函数将 SIGABRT信号发送给调用进程(进程不应忽略此信号)。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">abort</span><span class="params">(<span class="keyword">void</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// This function never returns</span></div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;《UNIX环境高级编程》第10章 信号 笔记&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Unix 进程间通信</title>
-    <link href="https://www.liuin.cn/2018/04/18/Unix-%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/"/>
-    <id>https://www.liuin.cn/2018/04/18/Unix-进程间通信/</id>
-    <published>2018-04-18T11:52:23.000Z</published>
-    <updated>2018-04-18T13:24:46.000Z</updated>
+    <link href="https://www.liuin.cn/2018/04/13/Unix-%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/"/>
+    <id>https://www.liuin.cn/2018/04/13/Unix-进程间通信/</id>
+    <published>2018-04-13T14:52:23.000Z</published>
+    <updated>2018-04-18T13:34:35.000Z</updated>
     
     <content type="html"><![CDATA[<p>总结Unix下进程间通信的几种方式及其特点</p>
 <a id="more"></a>
@@ -113,7 +202,7 @@
 </tbody>
 </table>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li>《Unix高级编程》</li>
+<li>《Unix环境高级编程》</li>
 <li>《Unix-Linux编程实践教程》</li>
 <li>《操作系统概念》</li>
 <li><a href="http://www.cnblogs.com/youngforever/p/3250270.html" target="_blank" rel="external">http://www.cnblogs.com/youngforever/p/3250270.html</a></li>
@@ -4014,126 +4103,6 @@
       <category term="LeetCode" scheme="https://www.liuin.cn/tags/LeetCode/"/>
     
       <category term="二分" scheme="https://www.liuin.cn/tags/%E4%BA%8C%E5%88%86/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>APUE 文件I/O</title>
-    <link href="https://www.liuin.cn/2018/03/06/APUE-%E6%96%87%E4%BB%B6I-O/"/>
-    <id>https://www.liuin.cn/2018/03/06/APUE-文件I-O/</id>
-    <published>2018-03-06T10:49:20.000Z</published>
-    <updated>2018-03-07T03:29:51.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>《UNIX环境高级编程》第2章 文件I/O 笔记</p>
-<a id="more"></a>
-<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>UNX系统中的大多数文件只需用到5个函数:open、read、 write、 lseek以及c1ose。</p>
-<p>本章描述的函数经常被称为不带缓冲的I/O( unbuffered I/O,与将在第5章中说明的标准I/O函数相对照)。术语不带缓冲指的是每个read和 write都调用内核中的一个系统调用。</p>
-<p>只要涉及在多个进程间共享资源,原子操作的概念就变得非常重要。我们将通过文件IO和open函数的参数来讨论此概念。</p>
-<h2 id="文件描述符"><a href="#文件描述符" class="headerlink" title="文件描述符"></a>文件描述符</h2><p>对于内核而言,<strong>所有打开的文件都通过文件描述符引用</strong>。文件描述符是一个非负整数。当打开一个现有文件或创建一个新文件时,内核向进程返回一个文件描述符。</p>
-<p>按照惯例,UNIX系统shell把<strong>文件描述符0与进程的标准输入关联,文件描述符1与标准输出关联,文件描述符2与标准错误关联</strong>。这是各种shel以及很多应用程序使用的惯例.</p>
-<h2 id="函数open和openat"><a href="#函数open和openat" class="headerlink" title="函数open和openat"></a>函数open和openat</h2><p>用于打开或者创建一个文件</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt; </span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *path, <span class="keyword">int</span> oﬂag, ... <span class="comment">/* mode_t mode */</span> )</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">openat</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span> *path, <span class="keyword">int</span> oﬂag, ... <span class="comment">/* mode_t mode */</span> )</span></span>; </div><div class="line"><span class="comment">//Both return: ﬁle descriptor if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>我们将最后一个参数写为…,ISO C用这种方法表明余下的参数的数量及其类型是可变的。对于open函数而言,仅当创建新文件时才使用最后这个参数(稍后将对此进行说明)。</p>
-<p>path参数是要打开或创建文件的名字。oflag参数可用来说明此函数的多个选项。用一个或者多个常量“或”运算构成oflag参数</p>
-<p>使用的常量可以参考原书</p>
-<h2 id="函数create"><a href="#函数create" class="headerlink" title="函数create"></a>函数create</h2><p>可以调用create函数创建一个文件：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">creat</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *path, <span class="keyword">mode_t</span> mode)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">//Returns: ﬁle descriptor opened for write-only if OK, −1 on error</span></div></pre></td></tr></table></figure></p>
-<p>此函数等效于<code>open(path, O_WRONLY | O_CREAT | O_TRUNC, mode);</code></p>
-<p>creat的一个不足之处是它以只写方式打开所创建的文件。</p>
-<h2 id="函数close"><a href="#函数close" class="headerlink" title="函数close"></a>函数close</h2><p>调用close函数关闭一个打开的文件：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">close</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">//Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure></p>
-<p>关闭一个文件时还会释放该进程加在该文件上的所有记录锁。</p>
-<p>当一个进程终止时,内核自动关闭它所有的打开文件。很多程序都利用了这一功能而不显式地用c1ose关闭打开文件。</p>
-<h2 id="函数lseek"><a href="#函数lseek" class="headerlink" title="函数lseek"></a>函数lseek</h2><p>每个打开文件都有一个与其相关联的“<strong>当前文件偏移量</strong>”( current file offset)。它通常是一个非负整数,用以度量从文件开始处计算的字节数。</p>
-<p>调用1seek显式地为一个打开文件设置偏移量：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="keyword">off_t</span> lseek(<span class="keyword">int</span> fd, <span class="keyword">off_t</span> offset, <span class="keyword">int</span> whence);</div><div class="line"></div><div class="line"><span class="comment">//Returns: new ﬁle offset if OK, −1 on error</span></div></pre></td></tr></table></figure></p>
-<p>对参数offet的解释与参数 whence的值有关。</p>
-<ul>
-<li>若 whence是 SEEK_SET,则将该文件的偏移量设置为距文件开始处 offset个字节。</li>
-<li>若 whence是 SEEK_CUR,则将该文件的偏移量设置为其当前值加 offset, offset可为正或负。</li>
-<li>若 whence是 SEEK_END,则将该文件的偏移量设置为文件长度加 offset, offset可正可负。</li>
-</ul>
-<p>通常,文件的当前偏移量应当是一个非负整数,但是,某些设备也可能允许负的偏移量。但对于普通文件,其偏移量必须是非负值。</p>
-<p>1seek仅将当前的文件偏移量记录在内核中,它并不引起任何IO操作。然后,该偏移量用于下一个读或写操作。</p>
-<p>文件偏移量可以大于文件的当前长度,在这种情况下,对该文件的下一次写将加长该文件,并在文件中构成一个空洞,这一点是允许的。位于文件中但没有写过的字节都被读为0</p>
-<p><strong>文件中的空洞并不要求在磁盘上占用存储区</strong>。具体处理方式与文件系统的实现有关,当定位到超出文件尾端之后写时,对于新写的数据需要分配磁盘块,但是对于原文件尾端和新开始写位置之间的部分则不需要分配磁盘块。</p>
-<p>创建一个具有空洞的文件：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"apue.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">char</span>	buf1[] = <span class="string">"abcdefghij"</span>;</div><div class="line"><span class="keyword">char</span>	buf2[] = <span class="string">"ABCDEFGHIJ"</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span></span></div><div class="line"><span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span>		fd;</div><div class="line"></div><div class="line">	<span class="comment">// 创建文件</span></div><div class="line">	<span class="keyword">if</span> ((fd = creat(<span class="string">"file.hole"</span>, FILE_MODE)) &lt; <span class="number">0</span>)</div><div class="line">		err_sys(<span class="string">"creat error"</span>);</div><div class="line"></div><div class="line">	<span class="comment">// 写入a-j，此时文件偏移量为10</span></div><div class="line">	<span class="keyword">if</span> (write(fd, buf1, <span class="number">10</span>) != <span class="number">10</span>)</div><div class="line">		err_sys(<span class="string">"buf1 write error"</span>);</div><div class="line">	<span class="comment">/* offset now = 10 */</span></div><div class="line"></div><div class="line">	<span class="comment">// 改变文件偏移量到16384</span></div><div class="line">	<span class="keyword">if</span> (lseek(fd, <span class="number">16384</span>, SEEK_SET) == <span class="number">-1</span>)</div><div class="line">		err_sys(<span class="string">"lseek error"</span>);</div><div class="line">	<span class="comment">/* offset now = 16384 */</span></div><div class="line"></div><div class="line">	<span class="comment">// 在新的文件偏移量下写入A-J</span></div><div class="line">	<span class="keyword">if</span> (write(fd, buf2, <span class="number">10</span>) != <span class="number">10</span>)</div><div class="line">		err_sys(<span class="string">"buf2 write error"</span>);</div><div class="line">	<span class="comment">/* offset now = 16394 */</span></div><div class="line"></div><div class="line">	<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>因为1seek使用的偏移量是用off_t类型表示的,所以允许具体实现根据各自特定的平台自行选择大小合适的数据类型。</p>
-<h2 id="函数read"><a href="#函数read" class="headerlink" title="函数read"></a>函数read</h2><p>调用read函数从打开文件中读数据<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"><span class="keyword">ssize_t</span> read(<span class="keyword">int</span> fd, <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> nbytes); </div><div class="line"></div><div class="line"><span class="comment">//Returns: number of bytes read, 0 if end of ﬁle, −1 on error</span></div></pre></td></tr></table></figure></p>
-<p>如read成功,则返回读到的字节数。如已到达文件的尾端,则返回0。</p>
-<p>有多种情况可使实际读到的字节数少于要求读的字节数</p>
-<ul>
-<li>读普通文件时,在读到要求字节数之前已到达了文件尾端。</li>
-<li>当从终端设备读时,通常一次最多读一行。</li>
-<li>当从网络读时,网络中的缓冲机制可能造成返回值小于所要求读的字节数</li>
-<li>当从管道或FIFO读时,如若管道包含的字节少于所需的数量,那么read将只返回实际可用的字节数</li>
-<li>当从某些面向记录的设备(如磁带)读时,一次最多返回一个记录。</li>
-<li>当一信号造成中断,而已经读了部分数据量时。</li>
-</ul>
-<h2 id="函数write"><a href="#函数write" class="headerlink" title="函数write"></a>函数write</h2><p>调用write函数想打开文件写数据<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"><span class="keyword">ssize_t</span> write(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> nbytes); </div><div class="line"></div><div class="line"><span class="comment">//Returns: number of bytes written if OK, −1 on error</span></div></pre></td></tr></table></figure></p>
-<p>其返回值通常与参数 nbytes的值相同,否则表示出错。 write出错的一个常见原因是磁盘已写满,或者超过了一个给定进程的文件长度限制</p>
-<h2 id="I-O效率"><a href="#I-O效率" class="headerlink" title="I/O效率"></a>I/O效率</h2><p>BUFFSIZE 一般选取与磁盘块相同大小的字节数，大多数情况问4096</p>
-<p>大多数文件系统为改善性能都采用某种预读( read ahead)技术。当检测到正进行顺序读取时,系统就试图读入比应用所要求的更多数据,并假想应用很快就会读这些数据。</p>
-<h2 id="文件共享"><a href="#文件共享" class="headerlink" title="文件共享"></a>文件共享</h2><p>UNIX系统支持在不同进程间共享打开文件。在介绍dup函数之前,先要说明这种共享。为此先介绍内核用于所有I/O的数据结构。</p>
-<p>内核使用3种数据结构表示打开文件,它们之间的关系决定了在文件共享方面一个进程对另个进程可能产生的影响。</p>
-<ol>
-<li><strong>每个进程在进程表中都有一个记录项,记录项中包含一张打开文件描述符表</strong>,可将其视为一个矢量,每个描述符占用一项。与每个文件描述符相关联的是文件描述符标志和指向一个文件表项的指针。</li>
-<li><strong>内核为所有打开文件维持一张文件表</strong>。每个文件表项包含文件状态标志(读、写、添写、同步和非阻塞等)、当前文件偏移量、指向该文件v节点表项的指针</li>
-<li>每个打开文件(或设备)都有一个v节点( v-node)结构。v节点包含了文件类型和对此文件进行各种操作函数的指针。对于大多数文件,v节点还包含了该文件的i节点(i-node,索引节点)。</li>
-</ol>
-<p><img src="https://data2.liuin.cn/2018-03-07-15203821021363.jpg" alt=""></p>
-<blockquote>
-<p>创建v节点结构的目的是对在一个计算机系统上的多文件系统类型提供支持。把与文件系统无关的i节点部分称为v节点。Linux没有将相关数据结构分为i节点和ⅴ节点,而是采用了一个与文件系统相关的i节点和个与文件系统无关的i节点。</p>
-</blockquote>
-<p>两个独立进程打开同一个文件</p>
-<p><img src="https://data2.liuin.cn/2018-03-07-15203822136634.jpg" alt=""></p>
-<p>文件描述符标志和文件状态标志在作用范围方面的区别,前者只用于一个进程的一个描述符,而后者则应用于指向该给定文件表项的任何进程中的所有描述符。</p>
-<h2 id="原子操作"><a href="#原子操作" class="headerlink" title="原子操作"></a>原子操作</h2><ol>
-<li>追加到一个文件</li>
-</ol>
-<p>多个进程同时使用这种方法将数据追加写到同一文件,则会产生问题</p>
-<p>问题出在逻辑操作“先定位到文件尾端,然后写”,它使用了两个分开的函数调用。解决问题的方法是使这两个操作对于其他进程而言成为一个原子操作。</p>
-<ol>
-<li>函数pread和pwrite</li>
-</ol>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"><span class="keyword">ssize_t</span> pread(<span class="keyword">int</span> fd, <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> nbytes, <span class="keyword">off_t</span> offset); </div><div class="line"></div><div class="line"><span class="comment">//Returns: number of bytes read, 0 if end of ﬁle, −1 on error</span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> pwrite(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> nbytes, <span class="keyword">off_t</span> offset); </div><div class="line"></div><div class="line"><span class="comment">//Returns: number of bytes written if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>调用 pread相当于调用1seek后调用read,但是 pread又与这种顺序调用有下列重要区别:1. 调用 pread时,无法中断其定位和读操作。2. 不更新当前文件偏移量。</p>
-<p>调用pwrite相当于调用1seek后调用 write,但也与它们有类似的区别。</p>
-<h2 id="函数dup和dup2"><a href="#函数dup和dup2" class="headerlink" title="函数dup和dup2"></a>函数dup和dup2</h2><p>下面两个用来复制一个文件描述符</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup2</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> fd2)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">//Both return: new ﬁle descriptor if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>由dup返回的新文件描述符一定是当前可用文件描述符中的最小数值。对于dup2,可以用fd2参数指定新描述符的值。如果fd2已经打开,则先将其关闭。如若fd等于fd2,则dup2返回fd2,而不关闭它。否则,fd2的 FD_CLOEXEO文件描述符标志就被清除,这样fd2在进程调用exec时是打开状态</p>
-<p>dup(1)以后的内核数据结构：<br><img src="https://data2.liuin.cn/2018-03-07-15203828993104.jpg" alt=""></p>
-<h2 id="函数sync、-fsync和-fdatasync"><a href="#函数sync、-fsync和-fdatasync" class="headerlink" title="函数sync、 fsync和 fdatasync"></a>函数sync、 fsync和 fdatasync</h2><p>传统的UNⅨ系统实现在内核中设有缓冲区高速缓存或页高速缓存,大多数磁盘I/O都通过缓冲区进行。当我们向文件写入数据时,内核通常先将数据复制到缓冲区中,然后排入队列,晚些时候再写入磁盘。这种方式被称为<strong>延迟写</strong>( delayed write)</p>
-<p>通常,当内核需要重用缓冲区来存放其他磁盘块数据时,它会把所有延迟写数据块写入磁盘为了保证磁盘上实际文件系统与缓冲区中内容的一致性,UNIX系统提供了sync、 fsync和Edatasync三个函数。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fsync</span><span class="params">(<span class="keyword">int</span> fd)</span></span>; </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fdatasync</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">//Returns: 0 if OK, −1 on error</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">sync</span><span class="params">(<span class="keyword">void</span>)</span></span>;</div></pre></td></tr></table></figure>
-<p>sync只是将所有修改过的块缓冲区排入写队列,然后就返回,它并不等待实际写磁盘操作结束。</p>
-<p>fsync函数只对由文件描述符/指定的一个文件起作用,并且等待写磁盘操作结束才返回fsync可用于数据库这样的应用程序,这种应用程序需要确保修改过的块立即写到磁盘上。</p>
-<p>fdatasync函数类似于 sync,但它只影响文件的数据部分。而除数据外, fsync还会同步更新文件的属性。</p>
-<h2 id="函数fcntl"><a href="#函数fcntl" class="headerlink" title="函数fcntl"></a>函数fcntl</h2><p>fcntl函数可以改变已经打开文件的属性。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt; </span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fcntl</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> cmd, ... <span class="comment">/* int arg */</span> )</span></span>; </div><div class="line"></div><div class="line"><span class="comment">//Returns: depends on cmd if OK (see following), −1 on error</span></div></pre></td></tr></table></figure>
-<p>fcnt1函数有以下5种功能</p>
-<ol>
-<li>复制一个已有的描述符(cmd= F_DUPFD或 F_DUPFD_CLOEXEC)。</li>
-<li>获取/设置文件描述符标志(cmd= E_GETED或 F_SETED)。</li>
-<li>获取/设置文件状态标志(cmd= F_GETEL或 F_SETEL)</li>
-<li>获取/设置异步IO所有权(cmd= F_GETOWN或F_SETOWN)。</li>
-<li>获取/设置记录锁(cmd= F_GETLK、 F_SETLK或 F_SETLKW)</li>
-</ol>
-<p>在修改文件描述符标志或文件状态标志时必须谨慎,先要获得现在的标志值,然后按照期望修改它,最后设置新标志值。不能只是执行 F_SETED或 E_SETEL命令,这样会关闭以前设置的标志位。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"apue.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span></span></div><div class="line"><span class="title">set_fl</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> flags)</span> <span class="comment">/* flags are file status flags to turn on */</span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span>		val;</div><div class="line"></div><div class="line">	<span class="comment">// 获取现在的文件标志位</span></div><div class="line">	<span class="keyword">if</span> ((val = fcntl(fd, F_GETFL, <span class="number">0</span>)) &lt; <span class="number">0</span>)</div><div class="line">		err_sys(<span class="string">"fcntl F_GETFL error"</span>);</div><div class="line"></div><div class="line">	<span class="comment">// 计算新的标志值</span></div><div class="line">	val |= flags;		<span class="comment">/* turn on flags */</span></div><div class="line">         </div><div class="line">	<span class="comment">// 设置新的标志值</span></div><div class="line">	<span class="keyword">if</span> (fcntl(fd, F_SETFL, val) &lt; <span class="number">0</span>)</div><div class="line">		err_sys(<span class="string">"fcntl F_SETFL error"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="函数ioctl"><a href="#函数ioctl" class="headerlink" title="函数ioctl"></a>函数ioctl</h2><p>每个设备驱动程序可以定义它自己专用的一组ioct1命令,系统则为不同种类的设备提供通用的 ioctl命令。</p>
-<h2 id="dev-fd"><a href="#dev-fd" class="headerlink" title="/dev/fd"></a>/dev/fd</h2><p>较新的系统都提供名为/aev/fd的目录,其目录项是名为0、1、2等的文件。打开文件/dev/fd/n等效于复制描述符n(假定描述符n是打开的)。</p>
-<p>大多数系统忽略它所指定的mode,而另外一些系统则要求mode必须是所引用的文件(在这里是标准输入)初始打开时所使用的打开模式的一个子集。</p>
-<p>某些系统提供路径名/dev/ stdin、/dev/stdoυt和/dev/ stderr,这些等效于dev/fd/0、/dev/fd/1和/dev/fd/2。</p>
-<p>dev/fd文件主要由shell使用,它允许使用路径名作为调用参数的程序,能用处理其他路径名的相同方式处理标准输入和输出。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;《UNIX环境高级编程》第2章 文件I/O 笔记&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
     
   </entry>
   
