@@ -157,7 +157,7 @@
 <meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_4_1520130502646.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_4_1520130696044.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_4_1520132049585.jpg">
-<meta property="og:updated_time" content="2018-03-08T02:35:38.000Z">
+<meta property="og:updated_time" content="2018-04-20T14:58:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《C++ Primer》笔记 C++标准库部分">
 <meta name="twitter:description" content="《C++ Primer》笔记 C++基础部分">
@@ -484,7 +484,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  14,317 字
+                  14,320 字
                 </span>
               
 
@@ -899,8 +899,8 @@
 <hr>
 <h1 id="动态内存"><a href="#动态内存" class="headerlink" title="动态内存"></a>动态内存</h1><p>动态对象的正确释放被证明是编程中极其容易出错的地方。为了更安全地使用动态对象,标准库定义了两个智能指针类型来管理动态分配的对象。<strong>当一个对象应该被释放时,指向它的智能指针可以确保自动地释放它</strong>。</p>
 <p>除了静态内存和栈内存,每个程序还拥有一个内存池。这部分内存被称作<strong>自由空间</strong>( free store)或<strong>堆</strong>(heap)。程序用堆来存储动态分配( dynamically allocate)的对象——即那些在程序运行时分配的对象。</p>
-<h2 id="动态内存和智能指针"><a href="#动态内存和智能指针" class="headerlink" title="动态内存和智能指针"></a>动态内存和智能指针</h2><p>在++中,动态内存的管理是通过一对运算符来完成的:new,在动态内存中为对象分配空间并返回一个指向该对象的指针,我们可以选择对对象进行初始化; delete,接受一个动态对象的指针,销毁该对象,并释放与之关联的内存</p>
-<p>为了更容易(同时也更安全)地使用动态内存,新的标准库提供了两种智能指针( smartpointer.)类型来管理动态对象。智能指针的行为类似常规指针,重要的区别是它<strong>负责自动释放所指向的对象</strong>。新标准库提供的这两种智能指针的区别在于管理底层指针的方式shared_ptr允许多个指针指向同一个对于象; unique_ptr则“独占”所指向的对象。标准库还定义了一个名为 weak_ptr的伴随类,它是一种弱引用,指向 shared_ptr所管理的对象。这三种类型都定义在 memory头文件中。</p>
+<h2 id="动态内存和智能指针"><a href="#动态内存和智能指针" class="headerlink" title="动态内存和智能指针"></a>动态内存和智能指针</h2><p>在C++中,动态内存的管理是通过一对运算符来完成的: <code>new</code>,在动态内存中为对象分配空间并返回一个指向该对象的指针,我们可以选择对对象进行初始化; <code>delete</code>,接受一个动态对象的指针,销毁该对象,并释放与之关联的内存</p>
+<p>为了更容易(同时也更安全)地使用动态内存,新的标准库提供了两种智能指针( smart pointer.)类型来管理动态对象。智能指针的行为类似常规指针,重要的区别是它<strong>负责自动释放所指向的对象</strong>。新标准库提供的这两种智能指针的区别在于管理底层指针的方式<code>shared_ptr</code>允许多个指针指向同一个对于象; <code>unique_ptr</code>则“独占”所指向的对象。标准库还定义了一个名为 <code>weak_ptr</code>的伴随类,它是一种弱引用,指向 <code>shared_ptr</code>所管理的对象。这三种类型都定义在 memory头文件中。</p>
 <h3 id="share-ptr类"><a href="#share-ptr类" class="headerlink" title="share_ptr类"></a>share_ptr类</h3><p>类似 vector,智能指针也是模板。因此,当我们创建一个智能指针十时,必须提供额外的信息—指针可以指向的类型。智能指针的使用方式与普通指针类似。解引用一个智能指针返回它指向的对象。</p>
 <p><img src="https://data2.liuin.cn/story-writer/2018_3_4_1520129716802.jpg" alt="enter description here"></p>
 <blockquote>
@@ -951,7 +951,7 @@
 <p>接受指针参数的智能指针构造函数是explicit的（禁止隐式转换）。因此,我们不能将一个内置指针隐式转换为一个智能指针,必须使用直接初始化形式</p>
 <p><img src="https://data2.liuin.cn/story-writer/2018_3_4_1520130371151.jpg" alt="enter description here"></p>
 <h3 id="智能指针和异常"><a href="#智能指针和异常" class="headerlink" title="智能指针和异常"></a>智能指针和异常</h3><p>如果使用智能指针,即使程序块过早结束,智能指针类也能确保在内存不再需要时将其释放</p>
-<h3 id="unique-ptr"><a href="#unique-ptr" class="headerlink" title="unique_ptr"></a>unique_ptr</h3><p>个 unique_ptr“拥有”它所指向的对象。与 shared_ptr不同,某个时刻只能有一个 unique_ptr指向一个给定对象。当 unique_ptr被销毁时,它所指向的对象也被销毁。</p>
+<h3 id="unique-ptr"><a href="#unique-ptr" class="headerlink" title="unique_ptr"></a>unique_ptr</h3><p>一个 <code>unique_ptr</code>“拥有”它所指向的对象。与 <code>shared_ptr</code>不同,某个时刻只能有一个 <code>unique_ptr</code>指向一个给定对象。当 <code>unique_ptr</code>被销毁时,它所指向的对象也被销毁。</p>
 <p><img src="https://data2.liuin.cn/story-writer/2018_3_4_1520130502646.jpg" alt="enter description here"></p>
 <h3 id="weak-ptr"><a href="#weak-ptr" class="headerlink" title="weak_ptr"></a>weak_ptr</h3><p>weak_ptr是一种不控制所指向对象生存期的智能指针,它指向由一个shared_ptr管理的对象。将一个 weak_ptr绑定到一个 shared_ptr不会改变shared_ptr的引用计数。</p>
 <p><img src="https://data2.liuin.cn/story-writer/2018_3_4_1520130696044.jpg" alt="enter description here"></p>
@@ -1032,7 +1032,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年3月8日 - 10时03分
+	2018年4月20日 - 22时04分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -1153,7 +1153,7 @@
             
               <a href="/archives">
             
-                <span class="site-state-item-count">147</span>
+                <span class="site-state-item-count">149</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1279,7 +1279,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      237.0k 字
+      242.7k 字
     </span>
   
 

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-04-19T01:28:53.000Z</updated>
+  <updated>2018-04-20T14:58:34.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,260 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>I/O多路复用之Select、Poll和Epoll</title>
+    <link href="https://www.liuin.cn/2018/04/20/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E4%B9%8BSelect%E3%80%81Poll%E5%92%8CEpoll/"/>
+    <id>https://www.liuin.cn/2018/04/20/I-O多路复用之Select、Poll和Epoll/</id>
+    <published>2018-04-20T12:45:23.000Z</published>
+    <updated>2018-04-20T14:58:34.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>近期写一个在线聊天室的时候接触到epoll，加上之前腾讯面试的时候面试官有问到这一题。这里就对select、poll和epoll做一个总结，目的是让自己更加深入地理解，大部分内容来自网上，可能存在错误，欢迎大家指正。</p>
+<a id="more"></a>
+<h2 id="I-O多路复用"><a href="#I-O多路复用" class="headerlink" title="I/O多路复用"></a>I/O多路复用</h2><p>之前在讲阻塞/非阻塞和同步/异步的理解的时候讲到，在Unix网络I/O中，有三种同步I/O方式：阻塞式I/O、非阻塞式I/O和I/O复用。</p>
+<p>I/O多路复用简单来说就是对多个文件进行操作，<strong>通过一种机制一个进程能同时等待多个文件描述符</strong>，而这些文件描述符（套接字描述符）其中的任意一个进入读就绪状态，select()函数就可以返回</p>
+<p>select，poll，epoll都是I/O多路复用的机制。I/O多路复用就是通过一种机制，一个进程可以监视多个描述符，一旦某个描述符就绪（一般是读就绪或者写就绪），能够通知程序进行相应的读写操作。但select，poll，epoll本质上都是同步I/O，因为他们都需要在读写事件就绪后自己负责进行读写，也就是说这个读写过程是阻塞的，而异步I/O则无需自己负责进行读写，异步I/O的实现会负责把数据从内核拷贝到用户空间。</p>
+<h2 id="select"><a href="#select" class="headerlink" title="select"></a>select</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, <span class="keyword">struct</span> timeval *timeout)</span></span>;</div></pre></td></tr></table></figure>
+<p>select 函数监视的文件描述符分3类，分别是writefds、readfds、和exceptfds。nfds表示所有监视的文件描述符中最高的数+1，同时可以定义时间timeout，超过时间将返回0。</p>
+<p>调用后select函数会阻塞，直到有描述副就绪（有数据 可读、可写、或者有except），或者超时（timeout指定等待时间，如果立即返回设为null即可），函数返回。当select函数返回后，可以通过遍历fdset，来找到就绪的描述符。</p>
+<p>select目前几乎在所有的平台上支持，其良好跨平台支持也是它的一个优点。select的一个缺点在于单个进程能够监视的文件描述符的数量存在最大限制，在Linux上一般为1024。</p>
+<h2 id="poll"><a href="#poll" class="headerlink" title="poll"></a>poll</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">poll</span><span class="params">(<span class="keyword">struct</span> pollfd *fds, <span class="keyword">nfds_t</span> nfds, <span class="keyword">int</span> timeout)</span></span>;</div></pre></td></tr></table></figure>
+<p>不同与select使用三个位图来表示三个fdset的方式，poll使用一个 pollfd的数组实现</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> pollfd &#123;</div><div class="line">   <span class="keyword">int</span>   fd;         <span class="comment">/* file descriptor */</span></div><div class="line">   <span class="keyword">short</span> events;     <span class="comment">/* requested events */</span></div><div class="line">   <span class="keyword">short</span> revents;    <span class="comment">/* returned events */</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>fd表示检测的文件描述符，要测试的条件由 events成员指定,函数在相应的 revents成员中返回该描述符的状态。</p>
+<p>pollfd并没有最大数量限制（但是数量过大后性能也是会下降）。 和select函数一样，poll返回后，需要轮询pollfd来获取就绪的描述符。</p>
+<h2 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h2><p>相对于select和poll来说，epoll更加灵活，没有描述符限制。epoll使用一个文件描述符管理多个描述符，将用户关系的文件描述符的事件存放到内核的一个事件表中，这样在用户空间和内核空间的copy只需一次。</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>epoll含有的接口有三个：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_create</span><span class="params">(<span class="keyword">int</span> size)</span></span>;   </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_ctl</span><span class="params">(<span class="keyword">int</span> epfd, <span class="keyword">int</span> op, <span class="keyword">int</span> fd, <span class="keyword">struct</span> epoll_event *event)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_wait</span><span class="params">(<span class="keyword">int</span> epfd, <span class="keyword">struct</span> epoll_event *events,</span></span></div><div class="line">                      <span class="keyword">int</span> maxevents, <span class="keyword">int</span> timeout);</div></pre></td></tr></table></figure>
+<blockquote>
+<p>epoll_create</p>
+</blockquote>
+<p>创建一个epoll的句柄，size用来告诉内核这个监听的数目一共有多大，这个参数不同于select()中的第一个参数，给出最大监听的fd+1的值，参数size并不是限制了epoll所能监听的描述符最大个数，只是对内核初始分配内部数据结构的一个建议。</p>
+<p>当创建好epoll句柄后，它就会占用一个fd值，在linux下如果查看/proc/进程id/fd/，是能够看到这个fd的，所以在使用完epoll后，必须调用close()关闭，否则可能导致fd被耗尽</p>
+<blockquote>
+<p>epoll_ctl</p>
+</blockquote>
+<p>对由<code>epfd</code>所引用的epoll实例进行操作，其中<code>op</code>表示操作类型(包含增删改)，<code>fd</code>表示操作的目标文件描述符，<code>event</code>和文件描述符相关联表示具体监听什么事件，以下是<code>event</code>的具体数据结构</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">union</span> epoll_data &#123;</div><div class="line">   <span class="keyword">void</span>        *ptr;</div><div class="line">   <span class="keyword">int</span>          fd;</div><div class="line">   <span class="keyword">uint32_t</span>     u32;</div><div class="line">   <span class="keyword">uint64_t</span>     u64;</div><div class="line">&#125; <span class="keyword">epoll_data_t</span>;</div><div class="line"></div><div class="line"><span class="keyword">struct</span> epoll_event &#123;</div><div class="line">   <span class="keyword">uint32_t</span>     events;      <span class="comment">/* 监听的事件属性，通常包含：读、写、出错、挂断等等 */</span></div><div class="line">   <span class="keyword">epoll_data_t</span> data;        <span class="comment">/* 事件信息 */</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>epoll_wait</p>
+</blockquote>
+<p>等待<code>epfd</code>所引用的epoll实例上的I/O就绪，同时用<code>events</code>来获得从内核得到的事件集合、<code>maxevents</code>表示传入的events有多少</p>
+<p>函数返回以后可以遍历event数组，对已经就绪的I/O进行处理。</p>
+<h3 id="工作模式"><a href="#工作模式" class="headerlink" title="工作模式"></a>工作模式</h3><p>在每个事件的属性中可以设置对文件描述符的工作模式，有两种模式：水平触发LT（level trigger）和边沿出发ET（edge trigger）。LT模式是默认模式。两种模式的区别如下：</p>
+<p>LT模式：当epoll_wait检测到描述符事件发生并将此事件通知应用程序，<strong>应用程序可以不立即处理该事件</strong>。下次调用epoll_wait时，会再次响应应用程序并通知此事件。</p>
+<p>ET模式：当epoll_wait检测到描述符事件发生并将此事件通知应用程序，<strong>应用程序必须立即处理该事件</strong>。如果不处理，下次调用epoll_wait时，不会再次响应应用程序并通知此事件。</p>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><p>在 select/poll中，进程只有在调用一定的方法后，内核才对所有监视的文件描述符进行扫描，而epoll事先通过epoll_ctl()来注册一个文件描述符，一旦基于某个文件描述符就绪时，内核会采用类似callback的回调机制，迅速激活这个文件描述符，当进程调用epoll_wait() 时便得到通知。(此处去掉了遍历文件描述符，而是通过监听回调的的机制。这正是epoll的魅力所在。)</p>
+<p>其优点主要有如下几点：</p>
+<ul>
+<li>监视的描述符数量不受限制，它所支持的FD上限是最大可以打开文件的数目，这个数字一般远大于1024</li>
+<li>IO的效率不会随着监视fd的数量的增长而下降。epoll不同于select和poll轮询的方式，而是通过每个fd定义的回调函数来实现的。只有就绪的fd才会执行回调函数。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
+<p>监视事件数量<br>select受限于1024（依据系统而定），poll虽然数量上没有收到限制，但是因为需要轮询数量非常大的时候性能会下降，epoll在数量和性能上面都没有限制</p>
+<p>实现方式<br>select，poll实现需要自己不断轮询所有fd集合，直到设备就绪，期间可能要睡眠和唤醒多次交替。而epoll其实也需要调用 epoll_ wait不断轮询就绪链表，期间也可能多次睡眠和唤醒交替，但是它是设备就绪时，调用回调函数，把就绪fd放入就绪链表中，并唤醒在 epoll_wait中进入睡眠的进程<br>虽然都要睡眠和交替，但是select和poll在“醒着”的时候要遍历整个fd集合，而epoll在“醒着”的 时候只要判断一下就绪链表是否为空就行了，这节省了大量的CPU时间，这就是回调机制带来的性能提升。</p>
+<p>开销<br>select，poll每次调用都要把fd集合从用户态往内核态拷贝一次，并且要把current往设备等待队列中挂一次，而epoll只要一次拷贝，而且把current往等待队列上挂也只挂一次（在epoll_wait的开始，注意这里的等待队列并不是设备等待队列，只是一个epoll内 部定义的等待队列），这也能节省不少的开销</p>
+</blockquote>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>《Unix网络编程》</li>
+<li><a href="https://segmentfault.com/a/1190000003063859#articleHeader9" target="_blank" rel="external">https://segmentfault.com/a/1190000003063859#articleHeader9</a></li>
+<li><a href="https://cloud.tencent.com/developer/article/1005481" target="_blank" rel="external">https://cloud.tencent.com/developer/article/1005481</a></li>
+<li><a href="http://www.cnblogs.com/Anker/p/3265058.html" target="_blank" rel="external">http://www.cnblogs.com/Anker/p/3265058.html</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;近期写一个在线聊天室的时候接触到epoll，加上之前腾讯面试的时候面试官有问到这一题。这里就对select、poll和epoll做一个总结，目的是让自己更加深入地理解，大部分内容来自网上，可能存在错误，欢迎大家指正。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="开发随笔" scheme="https://www.liuin.cn/categories/%E5%BC%80%E5%8F%91%E9%9A%8F%E7%AC%94/"/>
+    
+    
+      <category term="Unix" scheme="https://www.liuin.cn/tags/Unix/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《Effective C++》 笔记</title>
+    <link href="https://www.liuin.cn/2018/04/19/%E3%80%8AEffective-C-%E3%80%8B-%E7%AC%94%E8%AE%B0/"/>
+    <id>https://www.liuin.cn/2018/04/19/《Effective-C-》-笔记/</id>
+    <published>2018-04-19T08:18:10.000Z</published>
+    <updated>2018-04-20T14:53:13.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>《Effective C++》的副标题是改善程序与设计的55个具体做法。这本书用比较多的示例展示了很多改善C++程序的方法，值得一读。</p>
+<a id="more"></a>
+<h2 id="让自己习惯C"><a href="#让自己习惯C" class="headerlink" title="让自己习惯C++"></a>让自己习惯C++</h2><h3 id="条款01：视C-为一个语言联邦"><a href="#条款01：视C-为一个语言联邦" class="headerlink" title="条款01：视C++为一个语言联邦"></a>条款01：视C++为一个语言联邦</h3><p>C++高效编程守则视状况而变化,取决于你使用C++的哪一部分。</p>
+<h3 id="条款02：尽量以const，enum，inline替换-define"><a href="#条款02：尽量以const，enum，inline替换-define" class="headerlink" title="条款02：尽量以const，enum，inline替换#define"></a>条款02：尽量以const，enum，inline替换#define</h3><p>“宁可以编译器替换预处理器”</p>
+<p>当我们以常量替换<code>#defines</code>,有两种特殊情况值得说说。第一是定义常量指针( constant pointers)。由于常量定义式通常被放在头文件内(以便被不同的源码含入),因此有必要将指针(而不只是指针所指之物)声明为<code>const</code></p>
+<p>第二个值得注意的是<code>class</code>专属常量。为了将常量的作用域(scope)限制于<code>class</code>内,你必须让它成为 class一个成员(member);而为确保此常量至多只有一份实体,你必须让它成为一个<code>static</code>成员:</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>对于单纯常量,最好以 const对象或 enums替换#defines</li>
+<li>对于形似函数的宏( macros),最好改用 inline函数替换#defines</li>
+</ul>
+</blockquote>
+<h3 id="条款03：尽可能使用const"><a href="#条款03：尽可能使用const" class="headerlink" title="条款03：尽可能使用const"></a>条款03：尽可能使用const</h3><p>const的一件奇妙的事情是，它允许你指定一个语义约束，而编译器会强制执行这项约束。</p>
+<p>const语法虽然变化多端,但并不莫测高深。如果关键字const出现在星号左边,表示被指物是常量(底层const)；如果出现在星号右边,表示指针自身是常量(顶层const);如果出现在星号两边,表示被指物和指针两者都是常量。</p>
+<p>const最具威力的用法是面对函数声明时的应用。在一个函数声明式内, const可以和函数返回值、各参数、函数自身(如果是成员函数)产生关联。</p>
+<blockquote>
+<p>const 成员函数</p>
+</blockquote>
+<p>将 const实施于成员函数的目的,是为了确认该成员函数可作用于 const对象身上。这一类成员函数之所以重要,基于两个理由。第一,它们使 class接口比较容易被理解。这是因为,得知哪个函数可以改动对象内容而哪个函数不行,很是重要。第二,它们使“操作 const对象”成为可能。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>将某些东西声明为 const可帮助编译器侦测出错误用法。 const可被施加于任何作用域内的对象、函数参数、函数返回类型、成员函数本体</li>
+<li>当 const和non- const成员函数有着实质等价的实现时,令non- const版本调用 const版本可避免代码重复。</li>
+</ul>
+</blockquote>
+<h3 id="条款04：确认确认对象使用前已被初始化"><a href="#条款04：确认确认对象使用前已被初始化" class="headerlink" title="条款04：确认确认对象使用前已被初始化"></a>条款04：确认确认对象使用前已被初始化</h3><p>在某些语境下x保证被初始化(为0),但在其他语境中却不保证。<strong>读取未初始化的值会导致不明确行为</strong></p>
+<p>对于内置类型之外的东西，初始化的任务落在了构造函数的身上。我们要确保每一个构造函数都将对象的每一个成员初始化。但是我们很容易混淆复制和初始化的而例子，比如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">class</span> A &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    A(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; a, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; b);</div><div class="line"><span class="keyword">private</span>:</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> thea;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> theb;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">A::A(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; a, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; b)</div><div class="line">&#123;</div><div class="line">    thea = a;   <span class="comment">// 这些都是赋值，而非初始化</span></div><div class="line">    theb = b;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>C++规定,对象的成员变量的初始化动作发生在进入构造函数本体之前。所以构造函数最好使用成员初值列进行初始化。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>为内置型对象进行手工初始化,因为C++不保证初始化它们。</li>
+<li>构造函数最好使用成员初值列( member initialization list),而不要在构造函数本体内使用赋值操作( assignment)。初值列列出的成员变量,其排列次序应该和它们在 class中的声明次序相同。</li>
+</ul>
+</blockquote>
+<h2 id="构造-析构-赋值运算"><a href="#构造-析构-赋值运算" class="headerlink" title="构造/析构/赋值运算"></a>构造/析构/赋值运算</h2><h3 id="条款05：了解C-默默编写并调用哪些函数"><a href="#条款05：了解C-默默编写并调用哪些函数" class="headerlink" title="条款05：了解C++默默编写并调用哪些函数"></a>条款05：了解C++默默编写并调用哪些函数</h3><p>如果你自己没声明,编译器就会为它声明(编译器版本的)一个copy构造函数、一个 copy assignment操作符和一个析构函数。此外如果你没有声明任何构造函数,编译器也会为你声明一个 default构造函数。所有这些函数都是 public且in1ine。</p>
+<p>default构造函数和析构函数主要是给编译器一个地方用来放置“藏身幕后”的代码,像是调用 base classes和non-static成员变量的构造函数和析构函数。</p>
+<p>至于copy构造函数和 copy assignment操作符,编译器创建的版本只是单纯地将来源对象的每一个non- static成员变量拷贝到目标对象。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>编译器可以暗自为 class创建default构造函数、copy构造函数、 copy assignment操作符,以及析构函数。</li>
+</ul>
+</blockquote>
+<h3 id="条款06：若不想使用编译器自动生成的函数，就该明确拒绝"><a href="#条款06：若不想使用编译器自动生成的函数，就该明确拒绝" class="headerlink" title="条款06：若不想使用编译器自动生成的函数，就该明确拒绝"></a>条款06：若不想使用编译器自动生成的函数，就该明确拒绝</h3><p>如果你不希望 class支持某一特定机能,只要不声明对应函数就是了。但这个策略对copy构造函数和copy assignment操作符却不起作用</p>
+<p>所有编译器产出的函数都是 public.为阻止这些函数被创建出来,你得自行声明它们,但这里并没有什么需求使你必须将它们声明为 public。因此你可以将cory构造函数或 copy assignment操作符声明为 private。藉由明确声明一个成员函数,你阻止了编译器暗自创建其专属版本;而令这些函数为 private,使你得以成功组织别人调用他</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>为驳回编译器自动(暗自)提供的机能,可将相应的成员函数声明为 private并且不予实现。</li>
+</ul>
+</blockquote>
+<h3 id="条款07：为多态基类声明virtual析构函数"><a href="#条款07：为多态基类声明virtual析构函数" class="headerlink" title="条款07：为多态基类声明virtual析构函数"></a>条款07：为多态基类声明virtual析构函数</h3><p>C++明白指出,当 derived class对象经由一个base class指针被删除,而该 base class带着一个non- virtual析构函数,其结果未有定义实际执行时通常发生的是对象的 derived成分没被销毁。</p>
+<p>消除这个问题的做法很简单:给 base class一个 virtua析构函数</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>polymorphic(带多态性质的) base classes应该声明一个 virtual析构函数。如果class带有任何 virtual函数,它就应该拥有一个 virtual析构函数。</li>
+</ul>
+</blockquote>
+<h3 id="条款08：别让异常逃离析构函数"><a href="#条款08：别让异常逃离析构函数" class="headerlink" title="条款08：别让异常逃离析构函数"></a>条款08：别让异常逃离析构函数</h3><p>C++并不禁止析构函数吐出异常,但它不鼓励你这样做。理由是当有多个（比如在vector中）对象需要销毁的时候，第一个对象和第二个对象析构是都抛出异常，这种情况下程序不是结束执行就是导致未定义行为。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>析构函数绝对不要吐出异常。如果一个被析构函数调用的函数可能抛出异常,析构函数应该捕捉任何异常,然后吞下它们(不传播)或结束程序。</li>
+<li>如果客户需要对某个操作函数运行期间抛出的异常做出反应,那么 class应该提供一个普通函数(而非在析构函数中)执行该操作。</li>
+</ul>
+</blockquote>
+<h3 id="条款09：绝不要在构造函数和析构函数中调用virtual函数"><a href="#条款09：绝不要在构造函数和析构函数中调用virtual函数" class="headerlink" title="条款09：绝不要在构造函数和析构函数中调用virtual函数"></a>条款09：绝不要在构造函数和析构函数中调用virtual函数</h3><p>在base class构造期间，virtual函数不是virtual函数。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>在构造和析构期间不要调用 virtual函数,因为这类调用从不下降至 derived class(比起当前执行构造函数和析构函数的那层)</li>
+</ul>
+</blockquote>
+<h3 id="条款10：令operator-返回一个-reference-to-this"><a href="#条款10：令operator-返回一个-reference-to-this" class="headerlink" title="条款10：令operator= 返回一个 reference to *this"></a>条款10：令operator= 返回一个 reference to *this</h3><p>复制可以写成连锁形式：</p>
+<p><code>x = y = z = 15;</code></p>
+<p>同时赋值采用右结合律,所以上述连锁赋值被解析为:</p>
+<p><code>x = (y = (z = 15));</code></p>
+<p>为了实现“连锁赋值”,赋值操作符必须返回一个 reference指向操作符的左侧实参。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>令赋值( assignment)操作符返回一个 reference to *this。</li>
+</ul>
+</blockquote>
+<h3 id="条款11：在operator-中处理“自我赋值”"><a href="#条款11：在operator-中处理“自我赋值”" class="headerlink" title="条款11：在operator= 中处理“自我赋值”"></a>条款11：在operator= 中处理“自我赋值”</h3><p>“自我赋值“发生在对象赋值给自己时：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Widget &#123; ... &#125; ;</div><div class="line">Widget w;</div><div class="line">...</div><div class="line">w = w;</div></pre></td></tr></table></figure>
+<p>这看起来有点愚蠢,但它合法,所以不要认定客户绝不会那么做。</p>
+<p>自我赋值可能出现的一个问题是, operator=函数内的*this(赋值的目的端)和rhs有可能是同一个对象。果真如此 delete就不只是销毁当前对象的 bitmap,它也销毁rhs的 bitmap。</p>
+<p>欲阻止这种错误,传统做法是藉由 operator=最前面的一个“证同测试( identitytest)”达到“自我赋值”的检验目的:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Widget&amp; Widget::<span class="keyword">operator</span>=(<span class="keyword">const</span> Widget&amp; rhs)</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span>(<span class="keyword">this</span> == rhs) <span class="keyword">return</span> *<span class="keyword">this</span>;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>确保当对象自我赋值时 operator=有良好行为。其中技术包括比较“来源对象”和“目标对象”的地址、精心周到的语句顺序、以及 copy-and-swap。</li>
+<li>确定任何函数如果操作一个以上的对象,而其中多个对象是同一个对象时,其行为仍然正确。</li>
+</ul>
+</blockquote>
+<h3 id="条款12：复制对象时勿忘其每一个成分"><a href="#条款12：复制对象时勿忘其每一个成分" class="headerlink" title="条款12：复制对象时勿忘其每一个成分"></a>条款12：复制对象时勿忘其每一个成分</h3><blockquote>
+<p>重点</p>
+<ul>
+<li>Copying函数应该确保复制“对象内的所有成员变量”及“所有 base class成分”。</li>
+<li>不要尝试以某个 copying函数实现另一个 copying函数。应该将共同机能放进第三个函数中,并由两个 coping函数共同调用。</li>
+</ul>
+</blockquote>
+<h2 id="资源管理"><a href="#资源管理" class="headerlink" title="资源管理"></a>资源管理</h2><h3 id="条款13：以对象管理资源"><a href="#条款13：以对象管理资源" class="headerlink" title="条款13：以对象管理资源"></a>条款13：以对象管理资源</h3><p>有的时候我们我们使用工厂函数获得某个特定的对象的指针的时候，在使用完毕时候需要将其占用的空间释放，尽管我们有这个意识，但是在实际开发中，如果中间出现异常或者return可能会造成内存泄漏的现象。</p>
+<p>为了确保使用工厂函数返回的资源总是被释放,我们需要将资源放进对象内,当控制流离开f,<strong>该对象的析构函数会自动释放那些资源</strong>。实际上这正是隐身于本条款背后的半边想法:把资源放进对象内,我们便可倚赖C++的“析构函数自动调用机制”确保资源被释放。(稍后讨论另半边想法。)</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>为防止资源泄漏,请使用RAII对象,它们在构造函数中获得资源并在析构函数中释放资源</li>
+<li>两个常被使用的 RAII classes分别是trl::shared_ptr和 auto_ptr。前者通常是较佳选择,因为其copy行为比较直观。若选择 auto_ptr,复制动作会使它(被复制物)指向null</li>
+</ul>
+</blockquote>
+<h3 id="条款14：在资源管理类中小心coping行为"><a href="#条款14：在资源管理类中小心coping行为" class="headerlink" title="条款14：在资源管理类中小心coping行为"></a>条款14：在资源管理类中小心coping行为</h3><p>我们使用C API管理一个互斥对象的时候，有lock和unlock两个函数可以用；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">lock</span><span class="params">(Mutex* pm)</span></span>;     <span class="comment">// 锁定</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">unlock</span><span class="params">(Mutex* pm)</span></span>;   <span class="comment">// 解锁</span></div></pre></td></tr></table></figure>
+<p>为了确保不会忘记解锁一个互斥量，我们可以使用上一个条款的建议，创建一个对象来管理这个互斥量，使得“资源在构造期间获得，在析构期间释放”</p>
+<p>但是如果这个对象发生复制的时候怎么办？大多时候有以下两种可行的方案：</p>
+<ul>
+<li>禁止复制</li>
+<li>对底层资源祭出“引用计数法”（reference-count）</li>
+</ul>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>复制RAII对象必须一并复制它所管理的资源,所以资源的copying行为决定RAII对象的copying行为。</li>
+<li>普遍而常见的 Rail class copying行为是:抑制 copying、施行引用计数法( reference counting)。不过其他行为也都可能被实现</li>
+</ul>
+</blockquote>
+<h3 id="条款15：在资源管理类中提供对原始资源的访问"><a href="#条款15：在资源管理类中提供对原始资源的访问" class="headerlink" title="条款15：在资源管理类中提供对原始资源的访问"></a>条款15：在资源管理类中提供对原始资源的访问</h3><p>资源管理类( resource-managing classes)很棒。它们是你对抗资源泄漏的堡垒。排除此等泄漏是良好设计系统的根本性质。在一个完美世界中你将倚赖这样的classes来处理和资源之间的所有互动,而不是玷污双手直接处理原始资源(rawresources)。但这个世界并不完美。许多APIs直接指涉资源,所以除非你发誓(这其实是一种少有实际价值的举动)永不录用这样的APls,否则只得绕过资源管理对象( resource-managing objects)直接访问原始资源( raw resources)。</p>
+<p>由于有时候还是必须取得RAI对象内的原始资源,某些 RAII class设计者于是联想到“将油脂涂在滑轨上”,做法是提供一个显示转换函数或者隐式转换函数。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>APIs往往要求访问原始资源( raw resources),所以每一个 RAII class应该提供一个“取得其所管理之资源”的办法。</li>
+<li>对原始资源的访问可能经由显式转换或隐式转换。一般而言显式转换比较安全,但隐式转换对客户比较方便。</li>
+</ul>
+</blockquote>
+<h3 id="条款16：成对使用new和delete时要采取相同格式"><a href="#条款16：成对使用new和delete时要采取相同格式" class="headerlink" title="条款16：成对使用new和delete时要采取相同格式"></a>条款16：成对使用new和delete时要采取相同格式</h3><p>当你使用new(也就是通过new动态生成一个对象),有两件事发生。第内存被分配出来(通过名为 operator new的函数)。第二,针对此内存会有一个(或更多)构造函数被调用。</p>
+<p>当你使用 delete,也有两件事发生:针对此内存会有一个(或更多)析构函数被调用,然后内存才被释放(通过名为 operator delete的函数)。</p>
+<p>delete的最大问题在于:即将被删除的内存之内究竟存有多少对象?这个问题的答案决定了有多少个析构函数必须被调用起来。实际上这个问题可以更简单些:即将被删除的那个指针,所指的是单一对象或对象数组?这是个必不可缺的问题,因为单一对象的内存布局一般而言不同于数组的内存布局。</p>
+<p>所以在成对使用new和delete的时候要采取相同的形式</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>如果你在new表达式中使用[],必须在相应的de1ete表达式中也使用[]。如果你在new表达式中不使用[],一定不要在相应的 delete表达式中使用[]</li>
+</ul>
+</blockquote>
+<h3 id="条款17：以独立语句将newed对象置入智能指针"><a href="#条款17：以独立语句将newed对象置入智能指针" class="headerlink" title="条款17：以独立语句将newed对象置入智能指针"></a>条款17：以独立语句将newed对象置入智能指针</h3><blockquote>
+<p>重点</p>
+<ul>
+<li>以独立语句将 newed对象存储于(置入)智能指针内。如果不这样做,一旦异常被抛出,有可能导致难以察觉的资源泄漏。</li>
+</ul>
+</blockquote>
+<h2 id="设计与声明"><a href="#设计与声明" class="headerlink" title="设计与声明"></a>设计与声明</h2>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;《Effective C++》的副标题是改善程序与设计的55个具体做法。这本书用比较多的示例展示了很多改善C++程序的方法，值得一读。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="C/C++" scheme="https://www.liuin.cn/tags/C-C/"/>
+    
+  </entry>
   
   <entry>
     <title>APUE 信号</title>
@@ -4019,90 +4273,6 @@
       <category term="LeetCode" scheme="https://www.liuin.cn/tags/LeetCode/"/>
     
       <category term="贪心" scheme="https://www.liuin.cn/tags/%E8%B4%AA%E5%BF%83/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>LeetCode 题解——Regular Expression Matching</title>
-    <link href="https://www.liuin.cn/2018/03/09/LeetCode-%E9%A2%98%E8%A7%A3%E2%80%94%E2%80%94Regular-Expression-Matching/"/>
-    <id>https://www.liuin.cn/2018/03/09/LeetCode-题解——Regular-Expression-Matching/</id>
-    <published>2018-03-09T10:06:12.000Z</published>
-    <updated>2018-03-09T10:38:47.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>LeetCode 题解——Regular Expression Matching</p>
-<a id="more"></a>
-<h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>实现支持.和*正则匹配</p>
-<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>一开始的想法是从左向右进行模拟匹配，模拟的代码比较长，后面遇到这种情况：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">aaa</div><div class="line">a*a</div></pre></td></tr></table></figure></p>
-<p>就行不通了</p>
-<p>事实上，上面那种情况的我们在匹配a*的时候，要分是否匹配a这个东西分两种情况进行讨论，这个时候就有一种递归的思路：<br>首先判断第一个字符是否匹配，然后判断是否是*模式，是的话可以匹配这个字符也可以不匹配，如果不是*模式的话就判断后面。</p>
-<p>递归代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isMatch</span><span class="params">(<span class="built_in">string</span> s, <span class="built_in">string</span> p)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> plen = p.size(), slen = s.size();</div><div class="line">        <span class="keyword">if</span>(plen == <span class="number">0</span>) <span class="keyword">return</span> slen == <span class="number">0</span>;</div><div class="line">        <span class="comment">// 是否匹配第一个</span></div><div class="line">        <span class="keyword">bool</span> matchfirst = (slen != <span class="number">0</span> &amp;&amp; (s[<span class="number">0</span>] == p[<span class="number">0</span>] || p[<span class="number">0</span>] == <span class="string">'.'</span>));</div><div class="line">        <span class="comment">// 是否是*模式</span></div><div class="line">        <span class="keyword">if</span>(plen &gt;= <span class="number">2</span> &amp;&amp; p[<span class="number">1</span>] == <span class="string">'*'</span>)</div><div class="line">            <span class="keyword">return</span> (isMatch(s, p.substr(<span class="number">2</span>)) || (matchfirst &amp;&amp; isMatch(s.substr(<span class="number">1</span>), p)));</div><div class="line">        <span class="keyword">else</span></div><div class="line">            <span class="keyword">return</span> (matchfirst &amp;&amp; isMatch(s.substr(<span class="number">1</span>), p.substr(<span class="number">1</span>)));</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>这样的递归我们会发现有大量的重复调用，这个时候可以使用动态规划进行优化。<br><code>dp[i][j]</code>表示<code>isMatch(s.strsub(i), p.strsub(j))</code>，由上面的递归方案我们可以推得</p>
-<p><code>dp[i][j]</code>= </p>
-<ol>
-<li>dp[i][j+2],当前为*模式时不匹配的情况</li>
-<li>dp[i+1][j],当前为*模式，并且第一个字符匹配成功的情况</li>
-<li>dp[i+1][j],非*模式，第一个字符匹配成功的情况</li>
-</ol>
-<p>DP代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isMatch</span><span class="params">(<span class="built_in">string</span> s, <span class="built_in">string</span> p)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> plen = p.length(), slen = s.length();</div><div class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; &gt; dp(slen + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; (plen + <span class="number">1</span>, <span class="literal">false</span>));</div><div class="line">        dp[slen][plen] = <span class="literal">true</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=slen ;i&gt;=<span class="number">0</span>;--i)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=plen<span class="number">-1</span>;j&gt;=<span class="number">0</span>;--j)</div><div class="line">            &#123;</div><div class="line">                <span class="comment">// 判断第一个是否匹配</span></div><div class="line">                <span class="keyword">bool</span> match = (i&lt;slen &amp;&amp; (s[i] == p[j] || p[j] == <span class="string">'.'</span>));</div><div class="line">                <span class="comment">// 是*模式，两种方案，匹配/不匹配</span></div><div class="line">                <span class="keyword">if</span>(j+<span class="number">1</span> &lt; plen &amp;&amp; p[j+<span class="number">1</span>] == <span class="string">'*'</span>)</div><div class="line">                    dp[i][j] = dp[i][j+<span class="number">2</span>] || (match &amp;&amp; dp[i+<span class="number">1</span>][j]);</div><div class="line">                <span class="comment">// 非*模式</span></div><div class="line">                <span class="keyword">else</span></div><div class="line">                    dp[i][j] = (match &amp;&amp; dp[i+<span class="number">1</span>][j+<span class="number">1</span>]);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> dp[<span class="number">0</span>][<span class="number">0</span>];</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>更多LeetCode题解，欢迎查看我的<a href="https://github.com/Sixzeroo/LeetCode" target="_blank" rel="external">GitHub项目</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;LeetCode 题解——Regular Expression Matching&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="算法" scheme="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
-    
-    
-      <category term="DP" scheme="https://www.liuin.cn/tags/DP/"/>
-    
-      <category term="LeetCode" scheme="https://www.liuin.cn/tags/LeetCode/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>LeetCode 题解——Median of Two Sorted Arrays</title>
-    <link href="https://www.liuin.cn/2018/03/08/LeetCode-%E9%A2%98%E8%A7%A3%E2%80%94%E2%80%94Median-of-Two-Sorted-Arrays/"/>
-    <id>https://www.liuin.cn/2018/03/08/LeetCode-题解——Median-of-Two-Sorted-Arrays/</id>
-    <published>2018-03-08T06:42:12.000Z</published>
-    <updated>2018-03-09T10:38:52.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>LeetCode 题解——Median of Two Sorted Arrays</p>
-<a id="more"></a>
-<h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>给定两个有序数组，求这两个有序数组中所有数的中位数</p>
-<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>首先理解什么是中位数，中位数把这两个数组中的所有的数有序放到一起，排在中间的那一个数（或者两个数）就是中位数，我们也可以从另外一个角度去看，中位数作为边界把这些数分割成两半。这两边的数的个数是相等的。</p>
-<p>对于这两个数组就相当于每个数组都有一个数把这个数组分割成两半：</p>
-<p><img src="https://data2.liuin.cn/2018-03-08-15204918440445.jpg" alt=""></p>
-<p>这里考虑使用二分法求解，对于两个数组，两边的数的个数是相等的。由此，考虑一种分割情况，我们可以假设A数组从i点分割，这样因为两边的数的个数相等很容易算得B数组的分割点<code>j=(n+m+1)/2-i</code>，对于每一种分割有三种情况：</p>
-<ol>
-<li><code>A[i]&gt;=B[j-1] &amp;&amp; B[j]&gt;=A[i-1]</code>这种情况下，刚好取得中位数</li>
-<li><code>A[i]&lt;B[j-1]</code> 这种情况下，表示我们选取的i点过小，可以通过二分进一步缩减范围</li>
-<li><code>B[j]&lt;A[i-1]</code> 这种情况下，表示我们选取的i点过大，可以通过二分进一步缩减范围</li>
-</ol>
-<p>除此之外另外还要注意几点：</p>
-<ol>
-<li>我们选取的i要从数组数量较小的那个数组中选取，因为如果从数组数量大的数组中选取的话，可能导致选取的i较小，使得计算出的j值大于B数组中的元素个数</li>
-<li>存在一些特殊情况在端点分割的特殊情况，比如i=0，i=n，j=0，j=m的这些情况。在这样的情况下，我们可以只需要计算左边数的最大值，和右边数的最小值即可。</li>
-<li>最后的结果要对总数是奇数还是偶数进行讨论，如果是奇数的话，表示中位数是左边那一堆中的最大值；如果是偶数的话，中位数中左边一堆数的最大值和右边一堆书的最小值的平均值。</li>
-</ol>
-<h2 id="代码（C-）"><a href="#代码（C-）" class="headerlink" title="代码（C++）"></a>代码（C++）</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">double</span> <span class="title">findMedianSortedArrays</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums1, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums2)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> n = nums1.size(), m = nums2.size();</div><div class="line">        <span class="comment">// 对小的数组进行分割</span></div><div class="line">        <span class="keyword">if</span>(n &gt; m)</div><div class="line">        &#123;</div><div class="line">            swap(nums1, nums2);</div><div class="line">            swap(n,m);</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 二分法确定两个界限</span></div><div class="line">        <span class="keyword">int</span> i, j, iMin = <span class="number">0</span>, iMax = n;</div><div class="line">        <span class="keyword">while</span>(iMin &lt;= iMax)</div><div class="line">        &#123;</div><div class="line">            i = (iMin + iMax)/<span class="number">2</span> ;</div><div class="line">            j = (m+n+<span class="number">1</span>)/<span class="number">2</span> - i;</div><div class="line">            <span class="comment">// i的取值过大</span></div><div class="line">            <span class="keyword">if</span>(i &gt; iMin &amp;&amp; nums1[i<span class="number">-1</span>] &gt; nums2[j])</div><div class="line">            &#123;</div><div class="line">                iMax = i - <span class="number">1</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// i的取值过小的情况</span></div><div class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(i &lt; iMax &amp;&amp; nums1[i] &lt; nums2[j<span class="number">-1</span>]) </div><div class="line">            &#123;</div><div class="line">                iMin = i + <span class="number">1</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// 找到中位数</span></div><div class="line">            <span class="keyword">else</span>&#123;</div><div class="line">                <span class="keyword">int</span> left = <span class="number">0</span>;</div><div class="line">                <span class="keyword">if</span>(i == <span class="number">0</span>) left = nums2[j<span class="number">-1</span>];</div><div class="line">                <span class="keyword">else</span> <span class="keyword">if</span>(j == <span class="number">0</span>) left = nums1[i<span class="number">-1</span>];</div><div class="line">                <span class="keyword">else</span> left = max(nums1[i<span class="number">-1</span>], nums2[j<span class="number">-1</span>]);</div><div class="line">                <span class="comment">// 总数是奇数的时候</span></div><div class="line">                <span class="keyword">if</span> ( (m + n) % <span class="number">2</span>) <span class="keyword">return</span> left;</div><div class="line">                </div><div class="line">                <span class="keyword">int</span> right = <span class="number">0</span>;</div><div class="line">                <span class="keyword">if</span>(i == n) right = nums2[j];</div><div class="line">                <span class="keyword">else</span> <span class="keyword">if</span>(j == m) right = nums1[i];</div><div class="line">                <span class="keyword">else</span> right = min(nums1[i], nums2[j]);</div><div class="line">                <span class="keyword">return</span> (left + right)/<span class="number">2.0</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="number">0.0</span>;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>更多LeetCode题解，欢迎查看我的<a href="https://github.com/Sixzeroo/LeetCode" target="_blank" rel="external">GitHub项目</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;LeetCode 题解——Median of Two Sorted Arrays&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="算法" scheme="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
-    
-    
-      <category term="LeetCode" scheme="https://www.liuin.cn/tags/LeetCode/"/>
-    
-      <category term="二分" scheme="https://www.liuin.cn/tags/%E4%BA%8C%E5%88%86/"/>
     
   </entry>
   
