@@ -10,17 +10,41 @@
 <h2 id="I-O多路复用"><a href="#I-O多路复用" class="headerlink" title="I/O多路复用"></a>I/O多路复用</h2><p>之前在讲阻塞/非阻塞和同步/异步的理解的时候讲到，在Unix网络I/O中，有三种同步I/O方式：阻塞式I/O、非阻塞式I/O和I/O复用。</p>
 <p>I/O多路复用简单来说就是对多个文件进行操作，<strong>通过一种机制一个进程能同时等待多个文件描述符</strong>，而这些文件描述符（套接字描述符）其中的任意一个进入读就绪状态，select()函数就可以返回</p>
 <p>select，poll，epoll都是I/O多路复用的机制。I/O多路复用就是通过一种机制，一个进程可以监视多个描述符，一旦某个描述符就绪（一般是读就绪或者写就绪），能够通知程序进行相应的读写操作。但select，poll，epoll本质上都是同步I/O，因为他们都需要在读写事件就绪后自己负责进行读写，也就是说这个读写过程是阻塞的，而异步I/O则无需自己负责进行读写，异步I/O的实现会负责把数据从内核拷贝到用户空间。</p>
-<h2 id="select"><a href="#select" class="headerlink" title="select"></a>select</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, <span class="keyword">struct</span> timeval *timeout)</span></span>;</div></pre></td></tr></table></figure>
+<h2 id="Linux内核的wakeup-callback机制"><a href="#Linux内核的wakeup-callback机制" class="headerlink" title="Linux内核的wakeup callback机制"></a>Linux内核的wakeup callback机制</h2><p>Linux内核的wakeup callback机制是I/O多路复用存在的本质。Linux内核通过睡眠队列来组织所有等待某个事件的task，而wakeup机制则可以异步唤醒整个睡眠队列上的task，每一个睡眠队列上的节点都拥有一个callback，wakeup逻辑在唤醒睡眠队列时，会遍历该队列链表上的每一个节点，调用每一个节点的callback，如果遍历过程中遇到某个节点是排他节点，则终止遍历，不再继续遍历后面的节点。</p>
+<p>总体有两个逻辑：（1）睡眠等待逻辑；（2）唤醒逻辑。</p>
+<blockquote>
+<p>睡眠等待逻辑</p>
+</blockquote>
+<ul>
+<li>select、poll、epoll_wait陷入内核，判断监控的fd是否有关心的事件发生了，如果没，则为当前task构建一个wait_entry节点，然后插入到监控fd的sleep_list</li>
+<li>进入循环的schedule直到关心的事件发生了</li>
+<li>关心的事件发生后，将当前task的wait_entry节点从socket的sleep_list中删除</li>
+</ul>
+<blockquote>
+<p>唤醒逻辑</p>
+</blockquote>
+<ul>
+<li>fd监听的事件发生了，然后fd顺序遍历其睡眠队列，依次调用每个wait_entry节点的callback函数</li>
+<li>直到完成队列的遍历或遇到某个wait_entry节点是排他的才停止</li>
+<li>一般情况下callback包含两个逻辑：1.wait_entry自定义的私有逻辑；2.唤醒的公共逻辑，主要用于将该wait_entry的task放入CPU的就绪队列，让CPU随后可以调度其执行。</li>
+</ul>
+<h2 id="select"><a href="#select" class="headerlink" title="select"></a>select</h2><h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, <span class="keyword">struct</span> timeval *timeout)</span></span>;</div></pre></td></tr></table></figure>
 <p>select 函数监视的文件描述符分3类，分别是writefds、readfds、和exceptfds。nfds表示所有监视的文件描述符中最高的数+1，同时可以定义时间timeout，超过时间将返回0。</p>
 <p>调用后select函数会阻塞，直到有描述副就绪（有数据 可读、可写、或者有except），或者超时（timeout指定等待时间，如果立即返回设为null即可），函数返回。当select函数返回后，可以通过遍历fdset，来找到就绪的描述符。</p>
-<p>select目前几乎在所有的平台上支持，其良好跨平台支持也是它的一个优点。select的一个缺点在于单个进程能够监视的文件描述符的数量存在最大限制，在Linux上一般为1024。</p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>当用户进程调用select的时候，select会将需要监控的readfds集合拷贝到内核空间（假设监控的仅仅是fd可读），然后遍历自己监控的fd_sk，挨个调用sk的poll逻辑以便检查该sk是否有可读事件，遍历完所有的sk后，如果没有任何一个sk可读，那么select会调用schedule_timeout进入schedule循环，使得process进入睡眠。如果在timeout时间内某个sk上有数据可读了，或者等待timeout了，则调用select的process会被唤醒，接下来select就是遍历监控的sk集合，挨个收集可读事件并返回给用户了</p>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><p>select目前几乎在所有的平台上支持，其良好跨平台支持也是它的一个优点。</p>
+<p>但是通过上面实现的分析，select还存在的问题是：</p>
+<ul>
+<li>被监控的fds需要从用户空间拷贝到内核空间。为了减少数据拷贝带来的性能损坏，内核对被监控的fds集合大小做了限制，并且这个是通过宏控制的，大小不可改变(限制为1024)。</li>
+<li>被监控的fds集合中，只要有一个有数据可读，整个socket集合就会被遍历一次调用sk的poll函数收集可读事件。由于当初的需求是朴素，仅仅关心是否有数据可读这样一个事件，当事件通知来的时候，由于数据的到来是异步的，我们不知道事件来的时候，有多少个被监控的socket有数据可读了，于是，只能挨个遍历每个socket来收集可读事件，但是我们希望的是能够从通知中得到有可读事件的fds列表，而不是需要遍历整个fds来收集</li>
+</ul>
 <h2 id="poll"><a href="#poll" class="headerlink" title="poll"></a>poll</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">poll</span><span class="params">(<span class="keyword">struct</span> pollfd *fds, <span class="keyword">nfds_t</span> nfds, <span class="keyword">int</span> timeout)</span></span>;</div></pre></td></tr></table></figure>
 <p>不同与select使用三个位图来表示三个fdset的方式，poll使用一个 pollfd的数组实现</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> pollfd &#123;</div><div class="line">   <span class="keyword">int</span>   fd;         <span class="comment">/* file descriptor */</span></div><div class="line">   <span class="keyword">short</span> events;     <span class="comment">/* requested events */</span></div><div class="line">   <span class="keyword">short</span> revents;    <span class="comment">/* returned events */</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>fd表示检测的文件描述符，要测试的条件由 events成员指定,函数在相应的 revents成员中返回该描述符的状态。</p>
-<p>pollfd并没有最大数量限制（但是数量过大后性能也是会下降）。 和select函数一样，poll返回后，需要轮询pollfd来获取就绪的描述符。</p>
+<p>fd表示检测的文件描述符，要测试的条件由 events成员指定,函数在相应的 revents成员中返回该描述符的状态。和select函数一样，poll返回后，需要轮询pollfd来获取就绪的描述符。</p>
+<p>poll虽然解决了fds集合大小1024的限制问题，但是，它并没改变大量描述符数组被整体复制于用户态和内核态的地址空间之间，以及个别描述符就绪触发整体描述符集合的遍历的低效问题。poll随着监控的socket集合的增加性能线性下降，poll不适合用于大并发场景。</p>
 <h2 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h2><p>相对于select和poll来说，epoll更加灵活，没有描述符限制。epoll使用一个文件描述符管理多个描述符，将用户关系的文件描述符的事件存放到内核的一个事件表中，这样在用户空间和内核空间的copy只需一次。</p>
-<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>epoll含有的接口有三个：</p>
+<h3 id="使用-1"><a href="#使用-1" class="headerlink" title="使用"></a>使用</h3><p>epoll含有的接口有三个：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_create</span><span class="params">(<span class="keyword">int</span> size)</span></span>;   </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_ctl</span><span class="params">(<span class="keyword">int</span> epfd, <span class="keyword">int</span> op, <span class="keyword">int</span> fd, <span class="keyword">struct</span> epoll_event *event)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_wait</span><span class="params">(<span class="keyword">int</span> epfd, <span class="keyword">struct</span> epoll_event *events,</span></span></div><div class="line">                      <span class="keyword">int</span> maxevents, <span class="keyword">int</span> timeout);</div></pre></td></tr></table></figure>
 <blockquote>
 <p>epoll_create</p>
@@ -40,17 +64,35 @@
 <h3 id="工作模式"><a href="#工作模式" class="headerlink" title="工作模式"></a>工作模式</h3><p>在每个事件的属性中可以设置对文件描述符的工作模式，有两种模式：水平触发LT（level trigger）和边沿出发ET（edge trigger）。LT模式是默认模式。两种模式的区别如下：</p>
 <p>LT模式：当epoll_wait检测到描述符事件发生并将此事件通知应用程序，<strong>应用程序可以不立即处理该事件</strong>。下次调用epoll_wait时，会再次响应应用程序并通知此事件。</p>
 <p>ET模式：当epoll_wait检测到描述符事件发生并将此事件通知应用程序，<strong>应用程序必须立即处理该事件</strong>。如果不处理，下次调用epoll_wait时，不会再次响应应用程序并通知此事件。</p>
-<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><p>在 select/poll中，进程只有在调用一定的方法后，内核才对所有监视的文件描述符进行扫描，而epoll事先通过epoll_ctl()来注册一个文件描述符，一旦基于某个文件描述符就绪时，内核会采用类似callback的回调机制，迅速激活这个文件描述符，当进程调用epoll_wait() 时便得到通知。(此处去掉了遍历文件描述符，而是通过监听回调的的机制。这正是epoll的魅力所在。)</p>
+<p>对于可读事件而言，在ET模式下，如果某个socket有新的数据到达，那么该sk就会被排入epoll的ready_list，从而epoll_wait就一定能收到可读事件的通知(调用sk的poll逻辑一定能收集到可读事件)。于是，我们通常理解的缓冲区状态变化(从无到有)的理解是不准确的，准确的理解应该是是否有新的数据达到缓冲区。</p>
+<p>而在LT模式下，某个sk被探测到有数据可读，那么该sk会被重新加入到read_list，那么在该sk的数据被全部取走前，下次调用epoll_wait就一定能够收到该sk的可读事件(调用sk的poll逻辑一定能收集到可读事件)，从而epoll_wait就能返回。</p>
+<h3 id="实现-1"><a href="#实现-1" class="headerlink" title="实现"></a>实现</h3><blockquote>
+<p>fds集合拷贝问题的解决</p>
+</blockquote>
+<p>细看select或poll的函数原型，我们会发现，每次调用select或poll都在重复地准备(集中处理)整个需要监控的fds集合。然而对于频繁调用的select或poll而言，fds集合的变化频率要低得多，我们没必要每次都重新准备(集中处理)整个fds集合。</p>
+<p>于是，epoll引入了epoll_ctl系统调用，将高频调用的epoll_wait和低频的epoll_ctl隔离开。同时，epoll_ctl通过(EPOLL_CTL_ADD、EPOLL_CTL_MOD、EPOLL_CTL_DEL)三个操作来分散对需要监控的fds集合的修改，做到了有变化才变更，将select或poll高频、大块内存拷贝(集中处理)变成epoll_ctl的低频、小块内存的拷贝(分散处理)，避免了大量的内存拷贝。同时，对于高频epoll_wait的可读就绪的fd集合返回的拷贝问题，epoll通过内核与用户空间mmap(内存映射)同一块内存来解决。mmap将用户空间的一块地址和内核空间的一块地址同时映射到相同的一块物理内存地址（不管是用户空间还是内核空间都是虚拟地址，最终要通过地址映射映射到物理地址），使得这块物理内存对内核和对用户均可见，减少用户态和内核态之间的数据交换。</p>
+<p>另外，epoll通过epoll_ctl来对监控的fds集合来进行增、删、改，那么必须涉及到fd的快速查找问题，于是，一个低时间复杂度的增、删、改、查的数据结构来组织被监控的fds集合是必不可少的了。在linux 2.6.8之前的内核，epoll使用hash来组织fds集合，于是在创建epoll fd的时候，epoll需要初始化hash的大小。于是epoll_create(int size)有一个参数size，以便内核根据size的大小来分配hash的大小。在linux 2.6.8以后的内核中，epoll使用红黑树来组织监控的fds集合，于是epoll_create(int size)的参数size实际上已经没有意义了。</p>
+<blockquote>
+<p>按需遍历就绪的fds集合</p>
+</blockquote>
+<h3 id="特点-1"><a href="#特点-1" class="headerlink" title="特点"></a>特点</h3><p>在 select/poll中，进程只有在调用一定的方法后，内核才对所有监视的文件描述符进行扫描，而epoll事先通过epoll_ctl()来注册一个文件描述符，一旦基于某个文件描述符就绪时，内核会采用类似callback的回调机制，迅速激活这个文件描述符，当进程调用epoll_wait() 时便得到通知。(此处去掉了遍历文件描述符，而是通过监听回调的的机制。这正是epoll的魅力所在。)</p>
 <p>其优点主要有如下几点：</p>
 <ul>
 <li>监视的描述符数量不受限制，它所支持的FD上限是最大可以打开文件的数目，这个数字一般远大于1024</li>
 <li>IO的效率不会随着监视fd的数量的增长而下降。epoll不同于select和poll轮询的方式，而是通过每个fd定义的回调函数来实现的。只有就绪的fd才会执行回调函数。</li>
 </ul>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
-<p>监视事件数量<br>select受限于1024（依据系统而定），poll虽然数量上没有收到限制，但是因为需要轮询数量非常大的时候性能会下降，epoll在数量和性能上面都没有限制</p>
-<p>实现方式<br>select，poll实现需要自己不断轮询所有fd集合，直到设备就绪，期间可能要睡眠和唤醒多次交替。而epoll其实也需要调用 epoll_ wait不断轮询就绪链表，期间也可能多次睡眠和唤醒交替，但是它是设备就绪时，调用回调函数，把就绪fd放入就绪链表中，并唤醒在 epoll_wait中进入睡眠的进程<br>虽然都要睡眠和交替，但是select和poll在“醒着”的时候要遍历整个fd集合，而epoll在“醒着”的 时候只要判断一下就绪链表是否为空就行了，这节省了大量的CPU时间，这就是回调机制带来的性能提升。</p>
-<p>开销<br>select，poll每次调用都要把fd集合从用户态往内核态拷贝一次，并且要把current往设备等待队列中挂一次，而epoll只要一次拷贝，而且把current往等待队列上挂也只挂一次（在epoll_wait的开始，注意这里的等待队列并不是设备等待队列，只是一个epoll内 部定义的等待队列），这也能节省不少的开销</p>
+<p>监视事件数量</p>
 </blockquote>
+<p>select受限于1024（依据系统而定），poll虽然数量上没有收到限制，但是因为需要轮询数量非常大的时候性能会下降，epoll在数量和性能上面都没有限制</p>
+<blockquote>
+<p>实现方式</p>
+</blockquote>
+<p>select，poll实现需要自己不断轮询所有fd集合，直到设备就绪，期间可能要睡眠和唤醒多次交替。而epoll其实也需要调用 epoll_wait不断轮询就绪链表，期间也可能多次睡眠和唤醒交替，但是它是设备就绪时，调用回调函数，把就绪fd放入就绪链表中，并唤醒在 epoll_wait中进入睡眠的进程<br>虽然都要睡眠和交替，但是select和poll在“醒着”的时候要遍历整个fd集合，而epoll在“醒着”的 时候只要判断一下就绪链表是否为空就行了，这节省了大量的CPU时间，这就是回调机制带来的性能提升。</p>
+<blockquote>
+<p>开销</p>
+</blockquote>
+<p>select，poll每次调用都要把fd集合从用户态往内核态拷贝一次，并且要把current往设备等待队列中挂一次，而epoll只要一次拷贝，而且把current往等待队列上挂也只挂一次（在epoll_wait的开始，注意这里的等待队列并不是设备等待队列，只是一个epoll内 部定义的等待队列），这也能节省不少的开销</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li>《Unix网络编程》</li>
 <li><a href="https://segmentfault.com/a/1190000003063859#articleHeader9" target="_blank" rel="external">https://segmentfault.com/a/1190000003063859#articleHeader9</a></li>
