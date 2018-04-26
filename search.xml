@@ -3,6 +3,174 @@
   
     
     <entry>
+      <title><![CDATA[APUE 文件和目录]]></title>
+      <url>/2018/04/26/APUE-%E6%96%87%E4%BB%B6%E5%92%8C%E7%9B%AE%E5%BD%95/</url>
+      <content type="html"><![CDATA[<p>《UNIX环境高级编程》第4章 文件和目录 笔记</p>
+<a id="more"></a>
+<h2 id="函数stat、fstat、fstatat和lstat"><a href="#函数stat、fstat、fstatat和lstat" class="headerlink" title="函数stat、fstat、fstatat和lstat"></a>函数stat、fstat、fstatat和lstat</h2><p>返回文件信息的主要有4个函数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">stat</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *<span class="keyword">restrict</span> pathname, <span class="keyword">struct</span> stat *<span class="keyword">restrict</span> buf )</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fstat</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">struct</span> stat *buf )</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">lstat</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *<span class="keyword">restrict</span> pathname, <span class="keyword">struct</span> stat *<span class="keyword">restrict</span> buf )</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fstatat</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span> *<span class="keyword">restrict</span> pathname,<span class="keyword">struct</span> stat *<span class="keyword">restrict</span> buf, <span class="keyword">int</span> ﬂag)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// All four return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>一旦给出pathname：</p>
+<ul>
+<li>stat将返回与此命名文件有关的信息结构：</li>
+<li>fstat函数获得已在描述符fd上打开文件的有关信息</li>
+<li>1stat函数类似于stat,但是当命名的文件是一个符号链接时,1stat返回该符号链接的有关信息,而不是由该符号链接引用的文件的信息。</li>
+<li>fstatat函数为一个相对于当前打开目录(由fd参数指向)的路径名返回文件统计信息。</li>
+</ul>
+<p>第二个参数buf是一个指针，其指向一个我们必须提供的结构。函数来填充由buf指向的结构。其基本格式如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> stat &#123; </div><div class="line">    <span class="keyword">mode_t</span> st_mode; <span class="comment">/* file type &amp; mode (permissions) */</span> </div><div class="line">    <span class="keyword">ino_t</span> st_ino; <span class="comment">/* i-node number (serial number) */</span> </div><div class="line">    <span class="keyword">dev_t</span> st_dev; <span class="comment">/* device number (file system) */</span> </div><div class="line">    <span class="keyword">dev_t</span> st_rdev; <span class="comment">/* device number for special files */</span> </div><div class="line">    <span class="keyword">nlink_t</span> st_nlink; <span class="comment">/* number of links */</span> </div><div class="line">    <span class="keyword">uid_t</span> st_uid; <span class="comment">/* user ID of owner */</span> </div><div class="line">    <span class="keyword">gid_t</span> st_gid; <span class="comment">/* group ID of owner */</span> </div><div class="line">    <span class="keyword">off_t</span> st_size; <span class="comment">/* size in bytes, for regular files */</span> </div><div class="line">    <span class="keyword">struct</span> timespec st_atim; <span class="comment">/* time of last access */</span> </div><div class="line">    <span class="keyword">struct</span> timespec st_mtim; <span class="comment">/* time of last modification */</span> </div><div class="line">    <span class="keyword">struct</span> timespec st_ctim; <span class="comment">/* time of last file status change */</span> </div><div class="line">    <span class="keyword">blksize_t</span> st_blksize; <span class="comment">/* best I/O block size */</span> </div><div class="line">    <span class="keyword">blkcnt_t</span> st_blocks; <span class="comment">/* number of disk blocks allocated */</span> </div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h2 id="文件类型"><a href="#文件类型" class="headerlink" title="文件类型"></a>文件类型</h2><p>UNIX系统的大多数文件是普通文件或目录,但是也有另外一些文件类型。文件类型包括如下几种：</p>
+<ol>
+<li>普通文件（regular file）文本文件或者二进制文件</li>
+<li>目录文件（directory file），对一个目录文件具有读权限的任一进程都可以读该目录的内容,但只有内核可以直接写目录文件。</li>
+<li>块特殊文件（block special file），这种类型的文件提供对设备(如磁盘)带缓冲的访问,</li>
+<li>字符特殊文件(character special file)。这种类型的文件提供对设备不带缓冲的访问</li>
+<li>FIFO，用于进程间通信的命名管道</li>
+<li>套接字（socket），用于网络间进程通信</li>
+<li>符号链接（symbol link），这种类型的文件指向另一个文件</li>
+</ol>
+<p>文件类型信息包含在stat结构的 st_mode成员中。也可以使用自带的宏确定的文件类型</p>
+<h2 id="设置用户ID和设置组ID"><a href="#设置用户ID和设置组ID" class="headerlink" title="设置用户ID和设置组ID"></a>设置用户ID和设置组ID</h2><p>和一个进程相关联的ID有6个：</p>
+<p><img src="https://data2.liuin.cn/2018-04-26-15247249639065.jpg" alt=""></p>
+<ul>
+<li>实际用户ID和实际组ID标识我们究竟是谁。这两个字段在登录时取自口令文件中的登录项。通常,在一个登录会话期间这些值并不改变,但是超级用户进程有办法改变</li>
+<li>有效用户ID、有效组IDD以及附属组ID决定了我们的文件访问权限</li>
+<li>保存的设置用户ID和保存的设置组ID在执行一个程序时包含了有效用户ID和有效组ID的副本</li>
+</ul>
+<p>通常,有效用户ID等于实际用户ID,有效组ID等于实际组ID</p>
+<p>每个文件有一个所有者和组所有者,所有者由stat结构中的<code>st_uid</code>指定,组所有者则由<code>st_gid</code>指定</p>
+<h2 id="文件访问权限"><a href="#文件访问权限" class="headerlink" title="文件访问权限"></a>文件访问权限</h2><p>st_mode值也包含了对文件的访问权限位。当提及文件时,指的是前面所提到的任何类型的文件。所有文件类型(目录、字符特别文件等)都有访问权限( access permission)。</p>
+<p><img src="https://data2.liuin.cn/2018-04-26-15247252761376.jpg" alt=""></p>
+<p>3类访问权限的使用方式如下：</p>
+<ul>
+<li>我们用名字打开任一类型的文件时,对该名字中包含的每一个目录,包括它可能隐含的当前工作目录都应具有执行权限。这就是为什么对于目录其执行权限位常被称为搜索位的原因</li>
+<li>对于一个文件的读权限决定了我们是否能够打开现有文件进行读操作</li>
+<li>对于一个文件的写权限决定了我们是否能够打开现有文件进行写操作</li>
+<li>为了在open函数中对一个文件指定O_TRUNC标志,必须对该文件具有写权限</li>
+<li>为了在一个目录中创建一个新文件,必须对该目录具有写权限和执行权限</li>
+<li>为了删除一个现有文件,必须对包含该文件的目录具有写权限和执行权限。</li>
+</ul>
+<p>进程每次打开、创建或者删除一个文件的时候，内核就对文件进行访问权限测试。</p>
+<p>内核测试的具体内容：</p>
+<ol>
+<li>若进程的有效用户ID是0(超级用户),则允许访问。这给予了超级用户对整个文件系统进行处理的最充分的自由</li>
+<li>若进程的有效用户ID等于文件的所有者ID(也就是进程拥有此文件),那么如果所有者适当的访问权限位被设置,则允许访问;否则拒绝访问。</li>
+<li>若进程的有效组ID或进程的附属组ID之一等于文件的组ID,那么如果组适当的访问权限位被设置,则允许访问;否则拒绝访问。</li>
+<li>若其他用户适当的访问权限位被设置,则允许访问;否则拒绝访问</li>
+</ol>
+<h2 id="新文件和目录的所有权"><a href="#新文件和目录的所有权" class="headerlink" title="新文件和目录的所有权"></a>新文件和目录的所有权</h2><p>新文件的用户ID设置为进程的有效用户ID。</p>
+<p>关于组ID，POSIX实现有两种方案：</p>
+<ul>
+<li>进程有效组ID</li>
+<li>所在目录的组ID</li>
+</ul>
+<h2 id="函数access和faccessat"><a href="#函数access和faccessat" class="headerlink" title="函数access和faccessat"></a>函数access和faccessat</h2><p>正如前面所说,当用open函数打开一个文件时,内核以进程的有效用户ID和有效组ID为基础执行其访问权限测试。有时,进程也希望按其实际用户ID和实际组ID来测试其访问能力。</p>
+<p><code>access</code>和 <code>faccessat</code>函数是按实际用户ID和实际组ID进行访问权限测试的。(该测试也分成4步）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">access</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">int</span> mode)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">faccessat</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">int</span> mode, <span class="keyword">int</span> ﬂag)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p><code>flag</code>参数可以用于改变<code>faccessat</code>的行为,如果<code>fag</code>设置为<code>AT_EACCESS</code>,访问检查用的是调用进程的有效用户ID和有效组D,而不是实际用户ID和实际组ID</p>
+<h2 id="函数umask"><a href="#函数umask" class="headerlink" title="函数umask"></a>函数umask</h2><p><code>umask</code>函数为进程设置文件模式创建屏蔽字,并返回之前的值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">mode_t</span> umask(<span class="keyword">mode_t</span> cmask);</div><div class="line"></div><div class="line"><span class="comment">// Returns: previous ﬁle mode creation mask</span></div></pre></td></tr></table></figure>
+<p><code>cmask</code>是9个权限访问为常量（S_IRUSR、S_IWUSR）的若干个或组成的</p>
+<p>在进程创建一个新文件或新目录时,就一定会使用文件模式创建屏蔽字</p>
+<p>UNX系统的大多数用户从不处理他们的 umask值。通常在登录时,由 shell的启动文件设置一次,然后,再不改变。</p>
+<p>用户可以设置 umask值以控制他们所创建文件的默认权限。该值表示成八进制数,一位代表一种要屏蔽的权限,这示于图4-10中。设置了相应位后,它所对应的权限就会被拒绝常用的几种 umask值是002、022和027。002阻止其他用户写入你的文件,022阻止同组成员和其他用户写入你的文件,027阻止同组成员写你的文件以及其他用户读、写或执行你的文件。</p>
+<p><img src="https://data2.liuin.cn/2018-04-26-15247265122569.jpg" alt=""></p>
+<h2 id="函数chmod、fchmod和fchmodat"><a href="#函数chmod、fchmod和fchmodat" class="headerlink" title="函数chmod、fchmod和fchmodat"></a>函数chmod、fchmod和fchmodat</h2><p>chmod、fchmod和fchmodat这3个函数使我们可以更改现有文件的访问权限</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">chmod</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">mode_t</span> mode)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fchmod</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">mode_t</span> mode)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fchmodat</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">mode_t</span> mode, <span class="keyword">int</span> ﬂag)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// All three return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>chmod函数在指定的文件上进行操作,而fchmod函数则对已打开的文件进行操作。fchmodat函数与chmod函数在下面两种情况下是相同的:一种是 pathname参数为绝对路径另一种是/参数取值为 AT_FDCWD而 pathname参数为相对路径。</p>
+<p>为了改变一个文件的权限位,进程的有效用户ID必须等于文件的所有者ID,或者该进程必须具有超级用户权限。</p>
+<h2 id="粘着位"><a href="#粘着位" class="headerlink" title="粘着位"></a>粘着位</h2><p>在UNIX尚未使用请求分页式技术的早期版本中, S_ISVTX位被称为粘着位( sticky bit)。如果一个可执行程序文件的这一位被设置了,那么当该程序第一次被执行,在其终止时,程序正文部分的一个副本仍被保存在交换区(程序的正文部分是机器指令)。这使得下次执行该程序时能较快地将其装载入内存。</p>
+<p>后来的UNIX版本称它为保存正文位( saved-text bit),因此也就有了常量S_ISVTX。现今较新的UNX系统大多数都配置了虚拟存储系统以及快速文件系统,所以不再需要使用这种技术</p>
+<p>现在粘着位的使用方法是：<br>如果对一个目录设置了粘着位,只有对该目录具有写权限的用户并且满足下列条件之一,才能删除或重命名该目录下的文件</p>
+<ul>
+<li>拥有此文件</li>
+<li>拥有此目录</li>
+<li>是超级用户</li>
+</ul>
+<h2 id="函数chown、fchown、fchownat和lchown"><a href="#函数chown、fchown、fchownat和lchown" class="headerlink" title="函数chown、fchown、fchownat和lchown"></a>函数chown、fchown、fchownat和lchown</h2><p>下面几个chown函数可用于更改文件的用户ID和组ID。如果两个参数 owner或 group中的任意一个是-1,则对应的ID不变</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">chown</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">uid_t</span> owner, <span class="keyword">gid_t</span> group)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fchown</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">uid_t</span> owner, <span class="keyword">gid_t</span> group)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fchownat</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">uid_t</span> owner, <span class="keyword">gid_t</span> group, <span class="keyword">int</span> ﬂag)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">lchown</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">uid_t</span> owner, <span class="keyword">gid_t</span> group)</span></span>; All four <span class="keyword">return</span>: </div><div class="line"></div><div class="line"><span class="comment">// 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>基于BSD的系统一直规定只有超级用户才能更改一个文件的所有者这样做的原因是防止用户改变其文件的所有者从而摆脱磁盘空间限额对他们的限制。 System V则允许任一用户更改他们所拥有的文件的所有者。</p>
+<h2 id="文件长度"><a href="#文件长度" class="headerlink" title="文件长度"></a>文件长度</h2><p><code>stat</code>结构成员<code>st_size</code>表示以字节为单位的文件的长度。此字段只对普通文件、目录文件和符号链接有意义。</p>
+<p>对于普通文件,其文件长度可以是0；对于目录,文件长度通常是一个数(如16或512)的整倍数；对于符号链接,文件长度是在文件名中的实际字节数。</p>
+<p>现今,大多数现代的UNIⅨ系统提供字段stb1ks1ze和st_b1ocks。其中,第一个是对文件I/O较合适的块长度,第二个是所分配的实际512字节块块数。</p>
+<blockquote>
+<p>文件空洞</p>
+</blockquote>
+<p>空洞是由所设置的文件偏移量超过文件尾端，并写入了某些数据造成的。</p>
+<h2 id="文件截断"><a href="#文件截断" class="headerlink" title="文件截断"></a>文件截断</h2><p>有时我们需要在文件尾端处截去一些数据以缩短文件。将一个文件的长度截断为0是一个特例,在打开文件时使用 O_TRUNC标志可以做到这一点。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">truncate</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">off_t</span> length)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">ftruncate</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">off_t</span> length)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>这两个函数将一个现有文件长度截断为 length。如果该文件以前的长度大于 length,则超过length以外的数据就不再能访问。如果以前的长度小于 length,文件长度将增加,在以前的文件尾端和新的文件尾端之间的数据将读作0(也就是可能在文件中创建了一个空洞)</p>
+<h2 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h2><p>目前,正在使用的UNIX文件系统有多种实现。例如, Solaris支持多种不同类型的磁盘文件系统:传统的基于BSD的UNIX文件系统(称为UFS),读、写DOS格式软盘的文件系统(称为PCFS),以及读CD的文件系统(称为HSFS)。</p>
+<p>我们可以把一个磁盘分成一个或多个分区。每个分区可以包含一个文件系统，i节点是固定长度的记录项,它包含有关文件的大部分信息。</p>
+<p><img src="https://data2.liuin.cn/2018-04-26-15247278022212.jpg" alt=""></p>
+<p>更仔细地观察一个柱面组的i节点和数据块部分：</p>
+<p><img src="https://data2.liuin.cn/2018-04-26-15247278729393.jpg" alt=""></p>
+<p>在图中有两个目录项指向同一个i节点。每个i节点中都有一个链接计数,其值是指向该i节点的目录项数。只有当链接计数减少至0时,才可删除该文件(也就是可以释放该文件占用的数据块)。这就是为什么“解除对一个文件的链接”操作并不总是意味着“释放该文件占用的磁盘块”的原因。这也是为什么删除一个目录项的函数被称之为<code>un1ink</code></p>
+<p>另外一种链接类型称为符号链接( symbolic link)。符号链接文件的实际内容(在数据块中)包含了该符号链接所指向的文件的名字。</p>
+<p>节点包含了文件有关的所有信息:文件类型、文件访问权限位、文件长度和指向文件数据块的指针等。stat结构中的大多数信息都取自i节点。只有两项重要数据存放在目录项中:文件名和节点编号。</p>
+<p>因为目录项中的i节点编号指向同一文件系统中的相应i节点,<strong>一个目录项不能指向另个文件系统的i节点</strong>。这就是为什么1n(1)命令不能跨越文件系统的原因</p>
+<p>当在不更换文件系统的情况下为一个文件重命名时,该文件的实际内容并未移动,只需构造一个指向现有i节点的新目录项,并删除老的目录项。链接计数不会改变。</p>
+<p>我们说明了普通文件链接计数的概念，对于目录的链接计数相关方法如下：</p>
+<p>任何一个叶目录(不包含任何其他目录的目录)的链接计数总是2,数值2来自于命名该目录( testdir)的目录项以及在该目录中的.项。在父目录中的每一个子目录都使该父目录的链接计数增加1</p>
+<h2 id="函数link、linkat、unlink、unlinkat和remove"><a href="#函数link、linkat、unlink、unlinkat和remove" class="headerlink" title="函数link、linkat、unlink、unlinkat和remove"></a>函数link、linkat、unlink、unlinkat和remove</h2><p>创建一个指向现有文件的链接的方法是使用linke或者linkat函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">link</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *existingpath, <span class="keyword">const</span> <span class="keyword">char</span> *newpath)</span></span>; </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">linkat</span><span class="params">(<span class="keyword">int</span> efd, <span class="keyword">const</span> <span class="keyword">char</span> *existingpath, <span class="keyword">int</span> nfd, <span class="keyword">const</span> <span class="keyword">char</span> *newpath, <span class="keyword">int</span> ﬂag)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>这两个函数创建一个新目录项<code>newpath</code>,它引用现有文件 <code>existingpath</code></p>
+<p>为了删除一个现有的目录项、可以调用unlink函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">unlink</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">unlinkat</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">int</span> ﬂag)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>这两个函数删除目录项,并将由pathname所引用文件的链接计数减1。如果对该文件还有其他链接,则仍可通过其他链接访问该文件的数据。如果出错,则不对该文件做任何更改。</p>
+<p>我们在前面已经提及,为了解除对文件的链接,必须对包含该目录项的目录具有写和执行权限。如果对该目录设置了粘着位,则对该目录必须具有写权限,并且具备下面三个条件之一:拥有该文件、拥有该目录或者具有超级用户权限</p>
+<p>只有当链接计数达到0时,该文件的内容才可被删除。另一个条件也会阻止删除文件的内容——<strong>只要有进程打开了该文件,其内容也不能删除</strong>。关闭一个文件时,内核首先检查打开该文件的进程个数;如果这个计数达到0,内核再去检查其链接计数;如果计数也是0,那么就删除该文件的内容。</p>
+<p>ulink的这种特性经常被程序用来确保即使是在程序崩溃时,它所创建的临时文件也不会遗留下来。进程用open或 creat创建一个文件,然后立即调用 unlink,因为该文件仍旧是打开的,所以不会将其内容删除。只有当进程关闭该文件或终止时，该文件的内容才被删除。</p>
+<p>我们也可以用<code>remove</code>函数解除对一个文件或目录的链接。对于文件,<code>remove</code>的功能与<code>unlink</code>相同。对于目录,<code>remove</code>的功能与<code>rmdir</code>相同</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">remove</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<h2 id="函数rename和renameat"><a href="#函数rename和renameat" class="headerlink" title="函数rename和renameat"></a>函数rename和renameat</h2><p>文件或目录可以用 rename函数或者 renameat函数进行重命名</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">rename</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *oldname, <span class="keyword">const</span> <span class="keyword">char</span> *newname)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">renameat</span><span class="params">(<span class="keyword">int</span> oldfd, <span class="keyword">const</span> <span class="keyword">char</span> *oldname, <span class="keyword">int</span> newfd,<span class="keyword">const</span> <span class="keyword">char</span> *newname)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<h2 id="符号链接"><a href="#符号链接" class="headerlink" title="符号链接"></a>符号链接</h2><p>符号链接是对一个文件的间接指针,它与上一节所述的硬链接有所不同,硬链接直接指向文件的i节点。引入符号链接的原因是为了避开硬链接的一些限制：</p>
+<ul>
+<li>硬链接通常要求链接和文件位于同一文件系统中。</li>
+<li>只有超级用户才能创建指向目录的硬链接(在底层文件系统支持的情况下)。</li>
+</ul>
+<p>对符号链接以及它指向何种对象并无任何文件系统限制,任何用户都可以创建指向目录的符号链接。符号链接一般用于将一个文件或整个目录结构移到系统中另一个位置</p>
+<h2 id="创建和读取符号链接"><a href="#创建和读取符号链接" class="headerlink" title="创建和读取符号链接"></a>创建和读取符号链接</h2><p>可以用symlink或symlikat函数创建一个符号链接。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">symlink</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *actualpath, <span class="keyword">const</span> <span class="keyword">char</span> *sympath)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">symlinkat</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *actualpath, <span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span> *sympath)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>因为open函数跟随符号链接,所以需要有一种方法打开该链接本身,并读该链接中的名字read1ink和 readlinkat函数提供了这种功能。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> readlink(<span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> pathname, <span class="keyword">char</span> *<span class="keyword">restrict</span> buf, <span class="keyword">size_t</span> bufsize); </div><div class="line"><span class="keyword">ssize_t</span> readlinkat(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> pathname, <span class="keyword">char</span> *<span class="keyword">restrict</span> buf, <span class="keyword">size_t</span> bufsize); </div><div class="line"></div><div class="line"><span class="comment">// Both return: number of bytes read if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<h2 id="文件的时间"><a href="#文件的时间" class="headerlink" title="文件的时间"></a>文件的时间</h2><p>每个文件属性所保存的实际精度依赖于文件系统的实现。对于把时间戳记录在秒级的文件系统来说,纳秒这个字段就会被填充为0。对于时间戳的记录精度高于秒级的文件系统来说,不足秒的值被转换成纳秒并记录在纳秒这个字段中。</p>
+<p>每个文件维护3个时间字段：<br><img src="https://data2.liuin.cn/2018-04-26-15247296049968.jpg" alt=""></p>
+<p>注意修改时间( st_mtim)和状态更改时间( st_ctim)之间的区别。修改时间是文件内容最后一次被修改的时间。状态更改时间是该文件的i节点最后一次被修改的时间。系统并不维护对一个i节点的最后一次访问时间,所以 access和stat函数并不更改这3个时间中的任一个。</p>
+<h2 id="函数futimens、utimensat和utimes"><a href="#函数futimens、utimensat和utimes" class="headerlink" title="函数futimens、utimensat和utimes"></a>函数futimens、utimensat和utimes</h2><p>一个文件的访问和修改时间可以用以下几个函数更改。<code>futimens</code>和<code>utimensat</code>函数可以指定纳秒级精度的时间戳。用到的数据结构是与stat函数族相同的timespec结构。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">futimens</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">struct</span> timespec times[<span class="number">2</span>])</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">utimensat</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span> *path, <span class="keyword">const</span> <span class="keyword">struct</span> timespec times[<span class="number">2</span>], <span class="keyword">int</span> ﬂag)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<h2 id="函数mkdir、mkdirat和rmdir"><a href="#函数mkdir、mkdirat和rmdir" class="headerlink" title="函数mkdir、mkdirat和rmdir"></a>函数mkdir、mkdirat和rmdir</h2><p>用 mkdir和 mkdirat函数创建目录,用rmdir函数删除目录</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">mkdir</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">mode_t</span> mode)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">mkdirat</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">mode_t</span> mode)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>这两个函数创建一个新的空目录。其中,.和..目录项是自动创建的。所指定的文件访问权限mode由进程的文件模式创建屏蔽字修改。</p>
+<p>用 <code>rmdir</code>函数可以删除一个空目录。空目录是只包含.和..这两项的目录</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">rmdir</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<h2 id="读目录"><a href="#读目录" class="headerlink" title="读目录"></a>读目录</h2><p>对某个目录具有访问权限的任一用户都可以读该目录,但是,为了防止文件系统产生混乱只有内核才能写目录。</p>
+<p>读目录相关的系统调用</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dirent.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function">DIR *<span class="title">opendir</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname)</span></span>; </div><div class="line"><span class="function">DIR *<span class="title">fdopendir</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: pointer if OK, NULL on error</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">struct</span> dirent *<span class="title">readdir</span><span class="params">(DIR *dp)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer if OK, NULL at end of directory or error </span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">rewinddir</span><span class="params">(DIR *dp)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">closedir</span><span class="params">(DIR *dp)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error </span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">long</span> <span class="title">telldir</span><span class="params">(DIR *dp)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: current location in directory associated with dp </span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">seekdir</span><span class="params">(DIR *dp, <span class="keyword">long</span> loc)</span></span>;</div></pre></td></tr></table></figure>
+<h2 id="函数chdir、fchdir和getcwd"><a href="#函数chdir、fchdir和getcwd" class="headerlink" title="函数chdir、fchdir和getcwd"></a>函数chdir、fchdir和getcwd</h2><p>每个进程都有一个当前工作目录,此目录是搜索所有相对路径名的起点(不以斜线开始的路径名为相对路径名)。当用户登录到UNIX系统时,其当前工作目录通常是口令文件(/etc/ passwd)中该用户登录项的第6个字段——用户的起始目录( home directory)。当前工作目录是进程的一个属性,起始目录则是登录名的一个属性</p>
+<p>进程调用chdir和fchdir函数可以改变当前工作目录</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">chdir</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fchdir</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>我们需要一个函数,它从当前工作目录(.)开始,用.找到其上一级目录,然后读其目录项,直到该目录项中的i节点编号与工作目录i节点编号相同,这样地就找到了其对应的文件名按照这种方法,逐层上移,直到遇到根,这样就得到了当前工作目录完整的绝对路径名。很幸运,函数 getcwd就提供了这种功能</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">getcwd</span><span class="params">(<span class="keyword">char</span> *buf, <span class="keyword">size_t</span> size)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: buf if OK, NULL on error</span></div></pre></td></tr></table></figure>
+<h2 id="文件访问权限位小结"><a href="#文件访问权限位小结" class="headerlink" title="文件访问权限位小结"></a>文件访问权限位小结</h2><p><img src="https://data2.liuin.cn/2018-04-26-15247306715849.jpg" alt=""></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 读书笔记 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> APUE </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[I/O多路复用之Select、Poll和Epoll]]></title>
       <url>/2018/04/20/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E4%B9%8BSelect%E3%80%81Poll%E5%92%8CEpoll/</url>
       <content type="html"><![CDATA[<p>近期写一个在线聊天室的时候接触到epoll，加上之前腾讯面试的时候面试官有问到这一题。这里就对select、poll和epoll做一个总结，目的是让自己更加深入地理解，大部分内容来自网上，可能存在错误，欢迎大家指正。</p>
@@ -277,7 +445,10 @@
 <li>以独立语句将 newed对象存储于(置入)智能指针内。如果不这样做,一旦异常被抛出,有可能导致难以察觉的资源泄漏。</li>
 </ul>
 </blockquote>
-<h2 id="设计与声明"><a href="#设计与声明" class="headerlink" title="设计与声明"></a>设计与声明</h2>]]></content>
+<h2 id="设计与声明"><a href="#设计与声明" class="headerlink" title="设计与声明"></a>设计与声明</h2><h3 id="条款18：让接口容易被正确使用，不容易被误用"><a href="#条款18：让接口容易被正确使用，不容易被误用" class="headerlink" title="条款18：让接口容易被正确使用，不容易被误用"></a>条款18：让接口容易被正确使用，不容易被误用</h3><blockquote>
+<p>重点</p>
+</blockquote>
+]]></content>
       
         <categories>
             
@@ -3284,9 +3455,9 @@
         
         <tags>
             
-            <tag> LeetCode </tag>
-            
             <tag> DP </tag>
+            
+            <tag> LeetCode </tag>
             
         </tags>
         
@@ -4295,9 +4466,9 @@
         
         <tags>
             
-            <tag> LeetCode </tag>
-            
             <tag> DP </tag>
+            
+            <tag> LeetCode </tag>
             
         </tags>
         
@@ -6119,49 +6290,6 @@
     </entry>
     
     <entry>
-      <title><![CDATA[APUE 笔记目录]]></title>
-      <url>/2018/02/08/APUE-%E7%AC%94%E8%AE%B0%E7%9B%AE%E5%BD%95/</url>
-      <content type="html"><![CDATA[<p>APUE是《Unix环境高级编程》的简称，在此立flag：大三把这本书啃完，完成笔记</p>
-<a id="more"></a>
-<p>第1章 <a href="https://www.liuin.cn/2018/02/06/APUE-Unix-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">Unix 基础知识</a></p>
-<p>第2章 <a href="">Unix 标准及实现</a></p>
-<p>第3章 <a href="https://www.liuin.cn/2018/03/06/APUE-%E6%96%87%E4%BB%B6I-O/">文件 I/O</a></p>
-<p>第4章 <a href="">文件和目录</a></p>
-<p>第5章 <a href="">标准I/O库</a></p>
-<p>第6章 <a href="">系统数据文件和信息</a></p>
-<p>第7章 <a href="">进程环境</a></p>
-<p>第8章 <a href="">进程控制</a></p>
-<p>第9章 <a href="">进程关系</a></p>
-<p>第10章 <a href="https://www.liuin.cn/2018/04/18/APUE-%E4%BF%A1%E5%8F%B7/">信号</a></p>
-<p>第11章 <a href="">线程</a></p>
-<p>第12章 <a href="">线程控制</a></p>
-<p>第13章 <a href="">守护进程</a></p>
-<p>第14章 <a href="">高级I/O</a></p>
-<p>第15章 <a href="">进程间通信</a></p>
-<p>第16章 <a href="">网络ICP：套接字</a></p>
-<p>第17章 <a href="">高级进程间通信</a></p>
-<p>第18章 <a href="">终端I/O</a></p>
-<p>第19章 <a href="">伪终端</a></p>
-<p>第20章 <a href="">数据库函数库</a></p>
-<p>第21章 <a href="">与网络打印机通信</a></p>
-]]></content>
-      
-        <categories>
-            
-            <category> 读书笔记 </category>
-            
-        </categories>
-        
-        
-        <tags>
-            
-            <tag> APUE </tag>
-            
-        </tags>
-        
-    </entry>
-    
-    <entry>
       <title><![CDATA[服务器上的Git && 分布式Git]]></title>
       <url>/2018/02/07/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84Git-%E5%88%86%E5%B8%83%E5%BC%8FGit/</url>
       <content type="html"><![CDATA[<p>《Pro Git》读书笔记</p>
@@ -6310,6 +6438,49 @@
 <p>例如,每当一个进程执行一个系统服务时,如read或wrte,在内核内执行该服务所花费的时间就计入该进程的系统CPU时间。用户CPU时间和系统CPU时间之和常被称为CPU 时间。</p>
 <h2 id="系统调用和函数库"><a href="#系统调用和函数库" class="headerlink" title="系统调用和函数库"></a>系统调用和函数库</h2><p>所有的操作系统都有提供多种服务的入口点，这些入口点被称为系统调用（system call）</p>
 <p><img src="https://data2.liuin.cn/story-writer/2018_2_6_1517923519865.jpg" alt="enter description here"></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 读书笔记 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> APUE </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[APUE 笔记目录]]></title>
+      <url>/2018/02/05/APUE-%E7%AC%94%E8%AE%B0%E7%9B%AE%E5%BD%95/</url>
+      <content type="html"><![CDATA[<p>APUE是《Unix环境高级编程》的简称，在此立flag：大三把这本书啃完，完成笔记</p>
+<a id="more"></a>
+<p>第1章 <a href="https://www.liuin.cn/2018/02/06/APUE-Unix-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">Unix 基础知识</a></p>
+<p>第2章 <a href="">Unix 标准及实现</a></p>
+<p>第3章 <a href="https://www.liuin.cn/2018/03/06/APUE-%E6%96%87%E4%BB%B6I-O/">文件 I/O</a></p>
+<p>第4章 <a href="">文件和目录</a></p>
+<p>第5章 <a href="">标准I/O库</a></p>
+<p>第6章 <a href="">系统数据文件和信息</a></p>
+<p>第7章 <a href="">进程环境</a></p>
+<p>第8章 <a href="">进程控制</a></p>
+<p>第9章 <a href="">进程关系</a></p>
+<p>第10章 <a href="https://www.liuin.cn/2018/04/18/APUE-%E4%BF%A1%E5%8F%B7/">信号</a></p>
+<p>第11章 <a href="">线程</a></p>
+<p>第12章 <a href="">线程控制</a></p>
+<p>第13章 <a href="">守护进程</a></p>
+<p>第14章 <a href="">高级I/O</a></p>
+<p>第15章 <a href="">进程间通信</a></p>
+<p>第16章 <a href="">网络ICP：套接字</a></p>
+<p>第17章 <a href="">高级进程间通信</a></p>
+<p>第18章 <a href="">终端I/O</a></p>
+<p>第19章 <a href="">伪终端</a></p>
+<p>第20章 <a href="">数据库函数库</a></p>
+<p>第21章 <a href="">与网络打印机通信</a></p>
 ]]></content>
       
         <categories>
@@ -8478,7 +8649,7 @@ function doDecrypt(pwd, onError) {
    document.getElementById("enc_passwd").style.display = "none";
 }
 </script>
-<div id="enc_content" style="display:none">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</div><div id="enc_passwd"> <input id="enc_pwd_input" type="password" style="border-radius: 5px;border-style: groove;height: 30px;width: 50%;cursor: auto;font-size: 102%;color: currentColor;outline: none;text-overflow: initial;padding-left: 5px;" onkeydown="if (event.keyCode == 13) { decrypt(); return false;}"> <input type="submit" value="解&nbsp;密" onclick="decrypt()" style="width: 58px;height: 34px;border-radius: 5px;background-color: white;border-style: solid;color: currentColor;"><div id="enc_error" style="display: inline-block;color: #d84527;margin-left: 10px"></div>
+<div id="enc_content" style="display:none">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</div><div id="enc_passwd"> <input id="enc_pwd_input" type="password" style="border-radius: 5px;border-style: groove;height: 30px;width: 50%;cursor: auto;font-size: 102%;color: currentColor;outline: none;text-overflow: initial;padding-left: 5px;" onkeydown="if (event.keyCode == 13) { decrypt(); return false;}"> <input type="submit" value="解&nbsp;密" onclick="decrypt()" style="width: 58px;height: 34px;border-radius: 5px;background-color: white;border-style: solid;color: currentColor;"><div id="enc_error" style="display: inline-block;color: #d84527;margin-left: 10px"></div>
 <script>
 var onError = function(error) {
 	document.getElementById("enc_error").innerHTML = "password error!"
