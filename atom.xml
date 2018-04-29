@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-04-26T08:17:53.000Z</updated>
+  <updated>2018-04-29T11:05:54.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,122 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>APUE 标准I/O库</title>
+    <link href="https://www.liuin.cn/2018/04/27/APUE-%E6%A0%87%E5%87%86I-O%E5%BA%93/"/>
+    <id>https://www.liuin.cn/2018/04/27/APUE-标准I-O库/</id>
+    <published>2018-04-27T15:31:13.000Z</published>
+    <updated>2018-04-29T11:05:54.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>《UNIX环境高级编程》第5章 标准I/O库 笔记</p>
+<a id="more"></a>
+<h2 id="流和FILE对象"><a href="#流和FILE对象" class="headerlink" title="流和FILE对象"></a>流和FILE对象</h2><p>之前所描述的所有I/O函数都是围绕文件描述符的。当打开一个文件时,即返回一个文件描述符,然后该文件描述符就用于后续的I/O操作。而对于标准I/O库,它们的操作是围绕流(stream)进行。当标准I/O库打开或者创建一个文件时，我们已使一个流与一个文件相关联</p>
+<p>对于ASCI字符集,一个字符用一个字节表示。对于国际字符集,一个字符可用多个字节表示。标准IO文件流可用于单字节或多字节(“宽”)字符集。流的定向( stream’s orientation)决定了所读、写的字符是单字节还是多字节的。fwide函数用于设置流的定向</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt; </span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;wchar.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fwide</span><span class="params">(FILE *fp, <span class="keyword">int</span> mode)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: positive if stream is wide oriented, negative if stream is byte oriented, or 0 if stream has no orientation</span></div></pre></td></tr></table></figure>
+<p><code>mode</code>参数设置为负时为字节定向、为正时为宽定向、为0时不设置流的定向、但是返回该流定向的值</p>
+<p>当打开一个流时,标准IO函数 fopen返回一个指向FILE对象的指针。为了引用一个流，需将FILE指针作为参数传给每个标准I/O函数。</p>
+<h2 id="标准输入、标准输出和标准错误"><a href="#标准输入、标准输出和标准错误" class="headerlink" title="标准输入、标准输出和标准错误"></a>标准输入、标准输出和标准错误</h2><p>对一个进程预定义了3个流,并且这3个流可以自动地被进程使用,它们是:标准输入、标准输出和标准错误。这些流引用的文件与文件描述符 STDIN_FILENO、 STDOUT_FILENO和STDERR_FILENO所引用的相同。</p>
+<h2 id="缓冲"><a href="#缓冲" class="headerlink" title="缓冲"></a>缓冲</h2><p>标准I/O库提供缓冲的目的是尽可能减少使用read和write调用的次数。标准I/O库最令人迷人的也是其缓冲：</p>
+<p>标准I/O提供了以下3种类型的缓冲：</p>
+<ol>
+<li>全缓冲。在这种情况下,在填满标准I/O缓冲区后才进行实际I/O操作。</li>
+</ol>
+<p>术语冲洗(flush)说明标准I/O缓冲区的写操作。缓冲区可由标准I/O例程自动地冲洗,或者可以调用函数ff1ush冲洗一个流。</p>
+<ol>
+<li>行缓冲，在这种情况下,当在输入和输出中遇到换行符时,标准I/O库执行I/O操作。当流涉及一个终端时(如标准输入和标准输出),通常使用行缓冲。</li>
+</ol>
+<p>对于行缓冲有两个限制。第一,因为标准/O库用来收集每一行的缓冲区的长度是固定的,所以只要填满了缓冲区,那么即使还没有写一个换行符,也进行O操作。第二,任何时候只要通过标准I/O库要求从(a)一个不带缓冲的流,或者(b)一个行缓冲的流(它从内核请求需要数据)得到输入数据,那么就会冲洗所有行缓冲输出流。</p>
+<ol>
+<li>不带缓冲。标准I/O库不对字符进行缓冲存储。</li>
+</ol>
+<p>对任何一个给定的流,如果我们并不喜欢这些系统默认,则可调用下列两个函数中的一个更改缓冲类型：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">setbuf</span><span class="params">(FILE *<span class="keyword">restrict</span> fp, <span class="keyword">char</span> *<span class="keyword">restrict</span> buf )</span></span>;   <span class="comment">// 打开或者关闭缓冲机制</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setvbuf</span><span class="params">(FILE *<span class="keyword">restrict</span> fp, <span class="keyword">char</span> *<span class="keyword">restrict</span> buf, <span class="keyword">int</span> mode, <span class="keyword">size_t</span> size)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, nonzero on error</span></div></pre></td></tr></table></figure>
+<p>使用setvbuf，我们可以精确说明所需的缓冲类型。这是用<code>mode</code>参数实现的：_IOFBF 全缓冲  _IOLBF  行缓冲  _IONBF  不带缓冲</p>
+<p><img src="https://data2.liuin.cn/2018-04-26-15247582189497.jpg" alt=""></p>
+<p>任何时候，我们可以强制冲洗一个流：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fflush</span><span class="params">(FILE *fp)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, EOF on error</span></div></pre></td></tr></table></figure></p>
+<h2 id="打开流"><a href="#打开流" class="headerlink" title="打开流"></a>打开流</h2><p>下列3个函数打开一个标准I/O流</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function">FILE *<span class="title">fopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *<span class="keyword">restrict</span> pathname, <span class="keyword">const</span> <span class="keyword">char</span> *<span class="keyword">restrict</span> type)</span></span>; </div><div class="line"><span class="function">FILE *<span class="title">freopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *<span class="keyword">restrict</span> pathname, <span class="keyword">const</span> <span class="keyword">char</span> *<span class="keyword">restrict</span> type, FILE *<span class="keyword">restrict</span> fp)</span></span>; </div><div class="line"><span class="function">FILE *<span class="title">fdopen</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span> *type)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// All three return: ﬁle pointer if OK, NULL on error</span></div></pre></td></tr></table></figure>
+<p>3个函数的区别如下：</p>
+<ol>
+<li>fopen函数打开路径名为pathname的一个指定的文件。</li>
+<li>freopen函数在一个指定的流上打开一个指定的文件,如若该流已经打开,则先关闭该流。若该流已经定向,则使用 freopen清除该定向。此函数一般用于将一个指定的文件打开为一个预定义的流:标准输入、标准输出或标准错误。</li>
+<li>fopen函数取一个已有的文件描述符，并使一个标准的I/O流与改描述符相结合</li>
+</ol>
+<p><code>type</code>参数指定对该流的读写方式</p>
+<p><img src="https://data2.liuin.cn/2018-04-29-15249858189861.jpg" alt=""></p>
+<p>使用字符b作为type的部分,这使得标准I/O系统可以区分文本文件和二进制文件。因为UNIX内核并不对这两种文件进行区分,所以在UNIX系统环境下指定字符b作为type的部分实际上并无作用。</p>
+<p>调用<code>fclose</code>关闭一个打开的流：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fclose</span><span class="params">(FILE *fp)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, EOF on error</span></div></pre></td></tr></table></figure>
+<h2 id="读和写流"><a href="#读和写流" class="headerlink" title="读和写流"></a>读和写流</h2><p>一旦打开了流,则可在3种不同类型的非格式化I/O中进行选择,对其进行读、写操作：</p>
+<ol>
+<li>每次一个字符I/O</li>
+<li>每次一行I/O</li>
+<li>直接I/O</li>
+</ol>
+<blockquote>
+<p>输入函数</p>
+</blockquote>
+<p>以下3个函数可以用于一次读一个字符：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getc</span><span class="params">(FILE *fp)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fgetc</span><span class="params">(FILE *fp)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getchar</span><span class="params">(<span class="keyword">void</span>)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// All three return: next character if OK, EOF on end of ﬁle or error</span></div></pre></td></tr></table></figure>
+<p>函数getchar等同于getc(stdin)。前两个函数的区别是，getc可以被实现为宏，而fgetc不能被实现为宏</p>
+<p>注意,不管是出错还是到达文件尾端,这3个函数都返回同样的值。为了区分这两种不同的情况,必须调用 ferror或feof。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">ferror</span><span class="params">(FILE *fp)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">feof</span><span class="params">(FILE *fp)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: nonzero (true) if condition is true, 0 (false) otherwise </span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">clearerr</span><span class="params">(FILE *fp)</span></span>;</div></pre></td></tr></table></figure>
+<p>大多数情况下，每一个流的FILE对象中都维护了两个标志：出错标志和文件结束标志。调用clearerr可以清楚这些标志。</p>
+<p>从流中读取数据以后,可以调用 ungetc将字符再压送回流中</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">ungetc</span><span class="params">(<span class="keyword">int</span> c, FILE *fp)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: c if OK, EOF on error</span></div></pre></td></tr></table></figure>
+<blockquote>
+<p>输出函数</p>
+</blockquote>
+<p>对应于上面每一个输入函数都有一个输出函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">putc</span><span class="params">(<span class="keyword">int</span> c, FILE *fp)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fputc</span><span class="params">(<span class="keyword">int</span> c, FILE *fp)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">putchar</span><span class="params">(<span class="keyword">int</span> c)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// All three return: c if OK, EOF on error</span></div></pre></td></tr></table></figure>
+<h2 id="每一行-I-O"><a href="#每一行-I-O" class="headerlink" title="每一行 I/O"></a>每一行 I/O</h2><p>以下两个函数提供每次输入一行的功能</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">fgets</span><span class="params">(<span class="keyword">char</span> *<span class="keyword">restrict</span> buf, <span class="keyword">int</span> n, FILE *<span class="keyword">restrict</span> fp)</span></span>; </div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">gets</span><span class="params">(<span class="keyword">char</span> *buf )</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: buf if OK, NULL on end of ﬁle or error</span></div></pre></td></tr></table></figure>
+<p>这两个函数都指定了缓冲区的地址,读入的行将送入其中。gets从标准输入读,而fgets从指定的流读</p>
+<p>对于 fgets,必须指定缓冲的长度n。此函数一直读到下一个换行符为止,但是不超过n个字符,读入的字符被送入缓冲区。</p>
+<p>gets是一个不推荐使用的函数。其问题是调用者在使用qets时不能指定缓冲区的长度。这样就可能造成缓冲区溢出(如若该行长于缓冲区长度),写到缓冲区之后的存储空间中,从而产生不可预料的后果。这种缺陷可以被利用制作蠕虫病毒。</p>
+<p>fputs和puts提供每次输出一行的功能</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fputs</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *<span class="keyword">restrict</span> str, FILE *<span class="keyword">restrict</span> fp)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">puts</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *str)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: non-negative value if OK, EOF on error</span></div></pre></td></tr></table></figure>
+<p>函数 fputs将一个以nul字节终止的字符串写到指定的流,尾端的终止符nu不写出。</p>
+<h2 id="二进制I-O"><a href="#二进制I-O" class="headerlink" title="二进制I/O"></a>二进制I/O</h2><p>之前提到的I/O函数函数以一次一个字符或一次一行的方式进行操作。如果进行二进制I/O操作,那么我们更愿意一次读或写一个完整的结构。</p>
+<p>有下面两个函数提供二进制的I/O操作：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">size_t</span> fread(<span class="keyword">void</span> *<span class="keyword">restrict</span> ptr, <span class="keyword">size_t</span> size, <span class="keyword">size_t</span> nobj, FILE *<span class="keyword">restrict</span> fp);</div><div class="line"></div><div class="line"><span class="keyword">size_t</span> fwrite(<span class="keyword">const</span> <span class="keyword">void</span> *<span class="keyword">restrict</span> ptr, <span class="keyword">size_t</span> size, <span class="keyword">size_t</span> nobj, FILE *<span class="keyword">restrict</span> fp);</div><div class="line"></div><div class="line"><span class="comment">// Both return: number of objects read or written</span></div></pre></td></tr></table></figure>
+<p>这些函数有两个用法：</p>
+<ol>
+<li>读写二进制数组</li>
+<li>读写自定义的一个结构体</li>
+</ol>
+<p>其中参数<code>nobj</code>表示要读写的对象的个数</p>
+<p>使用二进制I/O的基本问题是,它只能用于读在同一系统上已写的数据。这样就导致了一个问题：在一个系统写的数据要在另一个系统上进行处理。在这种环境下,这两个函数可能就不能正常工作,其原因是:</p>
+<ol>
+<li>在一个结构中,同一成员的偏移量可能随编译程序和系统的不同而不同(由于不同的对齐要求)。</li>
+<li>用来存储多字节整数和浮点值的二进制格式在不同的系统结构间也可能不同</li>
+</ol>
+<h2 id="实现细节"><a href="#实现细节" class="headerlink" title="实现细节"></a>实现细节</h2><p>在UNIX中,标准I/O库最终都要调用I/O例程来实现（read、write）。每个标准I/O流都有一个与其相关联的文件描述符,可以对一个流调用<code>fi1eno</code>函数以获得其描述符。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fileno</span><span class="params">(FILE *fp)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: the ﬁle descriptor associated with the stream</span></div></pre></td></tr></table></figure>
+<h2 id="临时文件"><a href="#临时文件" class="headerlink" title="临时文件"></a>临时文件</h2><p>标准I/O库提供两个函数来创建临时文件：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">tmpnam</span><span class="params">(<span class="keyword">char</span> *ptr)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to unique pathname</span></div><div class="line"></div><div class="line"><span class="function">FILE *<span class="title">tmpfile</span><span class="params">(<span class="keyword">void</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: ﬁle pointer if OK, NULL on error</span></div></pre></td></tr></table></figure>
+<p>tmpnam函数产生一个与现有文件名不同的一个有效路径名字符串。每次调用它时,都产生个不同的路径名,最多调用次数是 TMP_MAX</p>
+<p>若ptr是NULL,则所产生的路径名存放在一个静态区中,指向该静态区的指针作为函数值返回。</p>
+<p>tmpfile创建一个临时二进制文件(类型wb+),在关闭该文件或程序结束时将自动删除这种文件</p>
+<p>tmpfi1e函数经常使用的标准UNIX技术是先调用 tmpnam产生一个唯一的路径名,然后用该路径名创建一个文件,并立即un1ink它。</p>
+<h2 id="内存流"><a href="#内存流" class="headerlink" title="内存流"></a>内存流</h2><p>标准I/O库把数据缓存在内存中,因此每次一字符和每次一行的I/O更有效。我们也可以通过调用 setbuf或 setvbuf函数让IO库使用我们自己的缓冲区。</p>
+<p>有3个函数可以用于内存流的创建，第一个函数是fmemopen函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function">FILE *<span class="title">fmemopen</span><span class="params">(<span class="keyword">void</span> *<span class="keyword">restrict</span> buf, <span class="keyword">size_t</span> size, <span class="keyword">const</span> <span class="keyword">char</span> *<span class="keyword">restrict</span> type)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: stream pointer if OK, NULL on error</span></div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;《UNIX环境高级编程》第5章 标准I/O库 笔记&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
+    
+  </entry>
   
   <entry>
     <title>APUE 文件和目录</title>
@@ -3806,657 +3922,6 @@
     
     
       <category term="机器学习" scheme="https://www.liuin.cn/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《C++ Primer》笔记 类设计者的工具部分</title>
-    <link href="https://www.liuin.cn/2018/03/11/%E3%80%8AC-Primer%E3%80%8B%E7%AC%94%E8%AE%B0-%E7%B1%BB%E8%AE%BE%E8%AE%A1%E8%80%85%E7%9A%84%E5%B7%A5%E5%85%B7%E9%83%A8%E5%88%86/"/>
-    <id>https://www.liuin.cn/2018/03/11/《C-Primer》笔记-类设计者的工具部分/</id>
-    <published>2018-03-11T11:58:50.000Z</published>
-    <updated>2018-04-18T08:32:13.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>《C++ Primer》笔记 类设计者的工具部分</p>
-<a id="more"></a>
-<h1 id="拷贝控制"><a href="#拷贝控制" class="headerlink" title="拷贝控制"></a>拷贝控制</h1><p>当定义一个类时,我们显式地或隐式地指定在此类型的对象拷贝、移动、赋值和销毁时做什么。一个类通过定义五种特殊的成员函数来控制这些操作,包括:拷贝构造函数( copy constructor)、拷贝赋值运算符( copy-assignment operator)、移动构造函数(moveconstructor)、移动赋值运算符(move-assignment operator)和析构函数( destructor)。</p>
-<h2 id="拷贝、赋值与销毁"><a href="#拷贝、赋值与销毁" class="headerlink" title="拷贝、赋值与销毁"></a>拷贝、赋值与销毁</h2><h3 id="拷贝构造函数"><a href="#拷贝构造函数" class="headerlink" title="拷贝构造函数"></a>拷贝构造函数</h3><p>如果一个构造函数的第一个参数是自身类类型的引用,且任何额外参数都有默认值,则此构造函数是拷贝构造函数。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Foo&#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    Foo();      <span class="comment">// 默认构造函数</span></div><div class="line">    Foo(<span class="keyword">const</span> Foo&amp;);  <span class="comment">// 拷贝构造函数</span></div></pre></td></tr></table></figure>
-<p>拷贝构造函数的第一个参数必须是一个引用类型,原因我们稍后解释。虽然我们可以定义个接受非 const引用的拷贝构造函数,但此参数几乎总是一个 const的引用。拷贝构造函数在几种情况下都会被隐式地使用。因此,拷贝构造函数通常不应该是 explicit（抑制构造函数定义的隐式转换）的</p>
-<blockquote>
-<p>合成拷贝构造函数</p>
-</blockquote>
-<p>对某些类来说,合成拷贝构造函数( synthesized copy constructor)用来阻止我们拷贝该类类型的对象。而一般情况,<strong>合成的拷贝构造函数会将其参数的成员逐个拷贝到正在创建的对象中</strong>。</p>
-<blockquote>
-<p>拷贝初始化</p>
-</blockquote>
-<p>当使用直接初始化时,我们实际上是要求编译器使用普通的函数匹配来选择与我们提供的参数最匹配的构造函数。当我们使用拷贝初始化(copy initialization)时,我们要求<strong>编译器将右侧运算对象拷贝到正在创建的对象中,如果需要的话还要进行类型转换</strong>。</p>
-<blockquote>
-<p>拷贝初始化使用场景</p>
-</blockquote>
-<p>拷贝初始化不仅在我们用=定义变量时会发生,在下列情况下也会发生</p>
-<ul>
-<li>将一个对象作为实参传递给一个非引用类型的形参</li>
-<li>从一个返回类型为非引用类型的函数返回一个对象</li>
-<li>用花括号列表初始化一个数组中的元素或一个聚合类中的成员</li>
-</ul>
-<blockquote>
-<p>参数和返回值</p>
-</blockquote>
-<p>在函数调用过程中,具有非引用类型的参数要进行拷贝初始化。类似的,当一个函数具有非引用的返回类型时,返回值会被用来初始化调用方的结果。</p>
-<h3 id="拷贝赋值运算符"><a href="#拷贝赋值运算符" class="headerlink" title="拷贝赋值运算符"></a>拷贝赋值运算符</h3><blockquote>
-<p>重载赋值运算符</p>
-</blockquote>
-<p>重载运算符本质上是函数,其名字由 operator关键字后接表示要定义的运算符的符号组成。因此,赋值运算符就是一个名为 operator=的函数。类似于任何其他函数,运算符函数也有一个返回类型和一个参数列表。</p>
-<p>重载运算符的参数表示运算符的运算对象。某些运算符,包括赋值运算符,必须定义为成员函数。如果一个运算符是一个成员函数,其左侧运算对象就绑定到隐式的this参数。对于一个二元运算符,例如赋值运算符,其右侧运算对象作为显式参数传递。</p>
-<p>为了与内置类型的赋值保持一致,<strong>赋值运算符通常返回一个指向其左侧运算对象的引用</strong>。另外值得注意的是,标准库通常要求保存在容器中的类型要具</p>
-<blockquote>
-<p>合成拷贝赋值运算符</p>
-</blockquote>
-<p>与处理拷贝构造函数一样,如果一个类未定义自己的拷贝赋值运算符,编译器会为它生成一个合成拷贝赋值运算符</p>
-<p>等价合成拷贝赋值运算符：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Sales_data&amp; Sales_data::<span class="keyword">operator</span>=(<span class="keyword">const</span> Sales_data &amp;rhs)</div><div class="line">&#123;</div><div class="line">    bookNo = rhs.bookNo;</div><div class="line">    revenue = rhs.revenur;</div><div class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h3 id="析构函数"><a href="#析构函数" class="headerlink" title="析构函数"></a>析构函数</h3><p>析构函数执行与构造函数相反的操作:构造函数初始化对象的非 static数据成员还可能做一些其他工作;析构函数释放对象使用的资源,并销毁对象的非 static数据成员</p>
-<blockquote>
-<p>析构函数完成什么工作</p>
-</blockquote>
-<p>如同构造函数有一个初始化部分和一个函数体,析构函数也有一个函数体和一个析构部分。在一个构造函数中,成员的初始化是在函数体执行之前完成的,且按照它们在类中出现的顺序进行初始化。<strong>在一个析构函数中,首先执行函数体,然后销毁成员。成员按初始化顺序的逆序销毁</strong>。</p>
-<blockquote>
-<p>什么时候用到析构函数</p>
-</blockquote>
-<p>无论何时一个对象被销毁,就会自动调用其析构函数:</p>
-<ol>
-<li>变量在离开其作用域时被销毁。</li>
-<li>当一个对象被销毁时,其成员被销毁。</li>
-<li>容器(无论是标准库容器还是数组)被销毁时,其元素被销毁。</li>
-<li>对于动态分配的对象,当对指向它的指针应用 delete运算符时被销毁</li>
-<li>对于临时对象,当创建它的完整表达式结束时被销毁。</li>
-</ol>
-<blockquote>
-<p>合成析构函数</p>
-</blockquote>
-<p>当一个类未定义自己的析构函数时,编译器会为它定义一个合成析构函数( synthesizeddestructor)。类似拷贝构造函数和拷贝赋值运算符,对于某些类,合成析构函数被用来阻止该类型的对象被销毁。如果不是这种情况，合成析构函数就为空</p>
-<p>认识到析构函数体自身并不直接销毁成员是非常重要的。<strong>成员是在析构函数体之后隐含的析构阶段中被销毁的</strong>。在整个对象销毁过程中,析构函数体是作为成员销毁步骤之外的另一部分而进行的。</p>
-<h3 id="三-五法则"><a href="#三-五法则" class="headerlink" title="三/五法则"></a>三/五法则</h3><p>如前所述,有三个基本操作可以控制类的拷贝操作:拷贝构造函数、拷贝赋值运算符和析构函数。</p>
-<blockquote>
-<p>需要析构函数的类也需要拷贝和赋值操作</p>
-</blockquote>
-<p>当我们决定一个类是否要定义它自己版本的拷贝控制成员时,一个基本原则是<strong>首先确定这个类是否需要一个析构函数。通常,对析构函数的需求要比对拷贝枃造函数或赋偵运算符的需求更为明显</strong>。如果这个类需要一个析构函数,我们几乎可以肯定它也需要一个拷贝构造函数和一个拷贝赋值运算符。</p>
-<blockquote>
-<p>需要拷贝操作的类也需要赋值操作，反之亦然</p>
-</blockquote>
-<p>虽然很多类需要定义所有(或是不需要定义任何)拷贝控制成员,但某些类所要完成的工作,只需要拷贝或赋值操作,不需要析构函数。</p>
-<p>这个例子引出了第二个基本原则:如果一个类需要一个拷贝构造函数,几乎可以肯定它也需要一个拷贝赋值运算符。反之亦然—如果一个类需要一个拷贝赋值运篁符,几平可以肯定它也需要一个拷贝构造函数。然而,无论是需要拷贝构造函数还是需要拷贝赋值运算符都不必然意味着也需要析构函数。</p>
-<h3 id="使用-default"><a href="#使用-default" class="headerlink" title="使用=default"></a>使用=default</h3><p>我们可以通过将拷贝控制成员定义为= defau1t来显式地要求编译器生成合成的版本</p>
-<p><img src="https://data2.liuin.cn/2018-03-05-15202146959452.jpg" alt=""></p>
-<h3 id="阻止拷贝"><a href="#阻止拷贝" class="headerlink" title="阻止拷贝"></a>阻止拷贝</h3><p>虽然大多数类应该定义(而且通常也的确定义了)拷贝构造函数和拷贝赋值运算符,但对某些类来说,这些操作没有合理的意义。在此情况下,定义类时必须采用某种机制阻止拷贝或赋值。</p>
-<blockquote>
-<p>定义删除的函数</p>
-</blockquote>
-<p>在新标准下,我们可以通过将拷贝构造函数和拷贝赋值运算符定义为删除的函数( deletedfunction)来阻止拷贝。删除的函数是这样一种函数:我们虽然声明了它们,但不能以任何方式使用它们]。在函数的参数列表后面加上=de1ete来指出我们希望将它定义为删除的:</p>
-<blockquote>
-<p>析构函数不能是删除的成员</p>
-</blockquote>
-<p>值得注意的是,我不能删除析构函数。如果析构函数被删除,就无法销毁此类型的对象了。对于一个删除了析构函数的类型,编译器将不允许定义该类型的变量或创建该类的临时对象。而且,如果一个类有某个成员的类型删除了析构函数,我们也不能定义该类</p>
-<blockquote>
-<p>private 拷贝控制</p>
-</blockquote>
-<p>在新标准发布之前,类是通过将其拷贝构造函数和拷贝赋值运算符声明为 private的来阻止拷贝:</p>
-<p><img src="https://data2.liuin.cn/2018-03-05-15202148530112.jpg" alt=""></p>
-<p>友元和成员函数仍旧可以拷贝对象。为了阻止友元和成员函数进行拷贝,我们将这些拷贝控制成员声明为 private的,但并不定义它们。</p>
-<h2 id="拷贝控制和资源管理"><a href="#拷贝控制和资源管理" class="headerlink" title="拷贝控制和资源管理"></a>拷贝控制和资源管理</h2><p>通常,管理类外资源的类必须定义拷贝控制成员。某些类需要通过析构函数来释放对象所分配的资源。一旦一个类需要析构函数,那么它几乎肯定也需要一个拷贝构造函数和一个拷贝赋值运算符。为了定义这些成员,我首先必须确定此类型对象的拷贝语义。一般来说,有两种选择:可以定义拷贝操作,<strong>使类的行为看起来像一个值或者像一个指针</strong>。</p>
-<p>类的行为像一个值,意味着它应该也有自己的状态。当我们拷贝一个像值的对象时,副本和原对象是完全独立的。改变副本不会对原对象有任何影响,反之亦然。</p>
-<p>行为像指针的类则共享状态。当我们拷贝一个这种类的对象时,副本和原对象使用相同的底层数据。改变副本也会改变原对象,反之亦然</p>
-<h3 id="行为像值的类"><a href="#行为像值的类" class="headerlink" title="行为像值的类"></a>行为像值的类</h3><p>为了提供类值的行为,对于类管理的资源,每个对象都应该拥有一份自己的拷贝。这意味着对于ps指向的 string,每个 Hasptr对象都必须有自己的拷贝。</p>
-<blockquote>
-<p>类值拷贝赋值运算符</p>
-</blockquote>
-<p>赋值运算符通常组合了析构函数和构造函数的操作。类似析构函数,赋值操作会销毁左侧运算对象的资源。类似拷贝构造函数,赋值操作会从右侧运算对象拷贝数据。</p>
-<h3 id="定义行为像指针的类"><a href="#定义行为像指针的类" class="headerlink" title="定义行为像指针的类"></a>定义行为像指针的类</h3><p>对于行为类似指针的类,我们需要为其定义拷贝构造函数和拷贝赋值运算符,来拷贝指针成员本身而不是它指向的 string。我们的类仍然需要自己的析构函数来释放接受string参数的构造函数分配的内存。</p>
-<p>令一个类展现类似指针的行为的最好方法是使用 share_ptr来管理类中的资源</p>
-<p>但是,有时我们希望直接管理资源。在这种情况下,使用<strong>引用计数</strong>( reference count)就很有用了。</p>
-<blockquote>
-<p>定义一个使用引用计数的类</p>
-</blockquote>
-<p><img src="https://data2.liuin.cn/2018-03-05-15202156946283.jpg" alt=""></p>
-<h2 id="交换操作"><a href="#交换操作" class="headerlink" title="交换操作"></a>交换操作</h2><p>除了定义拷贝控制成员,管理资源的类通常还定义一个名为swap的函数。对于那些与重排元素顺序的算法一起使用的类,定义swap是非常重要的。这类算法在需要交换两个元素时会调用swap。</p>
-<p>为了交换两个对象，我们需要一次拷贝和两次赋值</p>
-<blockquote>
-<p>在赋值运算符中使用swap</p>
-</blockquote>
-<p>定义swap的类通常用swap来定义它们的赋值运算符。这些运算符使用了一种名为拷贝并交换( copy and swap)的技术。这种技术将左侧运算对象与右侧运算对象的一个副本进行交换</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// rhs按值传递，使用HasPtr的拷贝构造函数</span></div><div class="line">HasPtr&amp; HasPtr::<span class="keyword">operator</span>=(HasPtr rhs)</div><div class="line">&#123;</div><div class="line">    <span class="comment">// 交换左侧运算对象和局部变量rhs的内容</span></div><div class="line">    swap(*<span class="keyword">this</span>, rhs);</div><div class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="动态内存管理类"><a href="#动态内存管理类" class="headerlink" title="动态内存管理类"></a>动态内存管理类</h2><p>某些类需要在运行时分配可变大小的内存空间。这种类通常可以(并且如果它们确实可以的话,一般应该)使用标准库容器来保存它们的数据。</p>
-<p>但是,这一策略并不是对每个类都适用:某些类需要自己进行内存分配。这些类一般来说必须定义自己的拷贝控制成员来管理所分配的内存</p>
-<h2 id="对象移动"><a href="#对象移动" class="headerlink" title="对象移动"></a>对象移动</h2><p>新标准的一个最主要的特性是可以移动而非拷贝对象的能力。在某些情况下,移动而非拷贝对象会大幅度提升性能。</p>
-<p>在旧C++标准中,没有直接的方法移动对象。因此,即使不必拷贝对象的情况下,我们也不得不拷贝。如果对象较大,或者是对象本身要求分配内存空间(如 string),进行不必要的拷贝代价非常高。</p>
-<h3 id="右值引用"><a href="#右值引用" class="headerlink" title="右值引用"></a>右值引用</h3><p>为了支持移动操作,新标准引入了一种新的引用类型——<strong>右值引用</strong>( rvalue reference)。所谓右值引用就是必须绑定到右值的引用。我们通过&amp;&amp;而不是&amp;来获得右值引用。如我们将要看到的,右值引用有一个重要的性质——一只能绑定到一个将要销毁的对象。</p>
-<p>一般而言,一个左值表达式表示的是一个对象的身份,而一个右值表达式表示的是对象的值</p>
-<p>类似任何引用,一个右值引用也不过是某个对象的另一个名字而已。如我们所知,对于常规引|用(为了与右值引用区分开来,我们可以称之为左值引用( Ivalue reference),我们不能将其绑定到要求转换的表达式、字面常量或是返回右值的表达式。右值引用有着完全相反的绑定特性:<strong>我们可以将一个右值引用绑定到这类表达式上,但不能将一个右值引用直接绑定到一个左值上</strong></p>
-<p><img src="https://data2.liuin.cn/2018-03-05-15202204986268.jpg" alt=""></p>
-<blockquote>
-<p>左值持久，右值短暂</p>
-</blockquote>
-<p>考察左值和右值表达式的列表,两者相互区别之处就很明显了:左值有持久的状态而右值要么是字面常量,要么是在表达式求值过程中创建的临时对象。</p>
-<p>由于右值引用只能绑定到临时对象,我们得知</p>
-<ul>
-<li>所引用的对象将要被销毁</li>
-<li>该对象没有其他用户</li>
-</ul>
-<p>这两个特性意味着:使用右值引用的代码可以自由地接管所引用的对象的资源</p>
-<blockquote>
-<p>标准库move函数</p>
-</blockquote>
-<p>虽然不能将一个右值引用直接绑定到一个左值上,但我们可以显式地将一个左值转换为对应的右值引用类型。我们还可以通过调用一个名为move的新标准库函数来获得绑定到左值上的右值引用,此函数定义在头文件uti1ity中。</p>
-<h3 id="移动构造函数和移动赋值运算符"><a href="#移动构造函数和移动赋值运算符" class="headerlink" title="移动构造函数和移动赋值运算符"></a>移动构造函数和移动赋值运算符</h3><p>类似拷贝构造函数,移动构造函数的第一个参数是该类类型的一个引用。不同于拷贝构造函数的是,这个引用参数在移动构造函数中是一个右值引用。与拷贝构造函数一样,任何额外的参数都必须有默认实参。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">StrVec::StrVec(StrVec &amp;&amp;s) <span class="keyword">noexcept</span>   <span class="comment">// 移动操作不应抛出异常</span></div><div class="line">: elements(s.elements), first_free(s.first_free), cap(s.cap)</div><div class="line">&#123;</div><div class="line">    <span class="comment">// s这种状态对于运行析构函数式安全的</span></div><div class="line">    s.elements = s.first_fiee = s.cap = <span class="literal">nullptr</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>除了完成资源移动,移动构造函数还必须确保移后源对象处于这样一个状态——销毁它是无害的。特别是,一旦资源完成移动,源对象必须不再指向被移动的资源——这些资源的所有权已经归属新创建的对象</p>
-<blockquote>
-<p>移动赋值运算符</p>
-</blockquote>
-<p>移动赋值运算符执行与析构函数和移动构造函数相同的工作。与移动构造函数一样如果我们的移动赋值运算符不抛出任何异常,我们就应该将它标记为 except。</p>
-<hr>
-<h1 id="操作重载和类型转换"><a href="#操作重载和类型转换" class="headerlink" title="操作重载和类型转换"></a>操作重载和类型转换</h1><p>当运算符被用于类类型的对象时,C+语言允许我们为其指定新的含义:同时,我们也能自定义类类型之间的转换规则。</p>
-<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>重载的运算符是具有特殊名字的函数:它们的名字由关键字 operator和其后要定义的运算符号共同组成。和其他函数一样,重载的运算符也包含返回类型、参数列表以及函数体。</p>
-<p>重载运算符函数的参数数量与该运算符作用的运算对象数量一样多。一元运算符有个参数,二元运算符有两个。</p>
-<p>如果一个运算符函数是成员函数,则它的第一个(左侧)运算对象绑定到隐式的this指针上。</p>
-<p>可以被重载的运算符：<br><img src="https://data2.liuin.cn/2018-03-06-15202996380435.jpg" alt=""></p>
-<p>我们只能重载已有的运算符,而无权发明新的运算符号。对于一个重载的运算符来说,其优先级和结合律与对应的内置运算符保持一致。</p>
-<blockquote>
-<p>直接调用重载运算符函数</p>
-</blockquote>
-<p>我们也能像调用普通函数一样直接调用运算符函数,先指定函数名字,然后传入数量正确、类型适当的实参:</p>
-<p><img src="https://data2.liuin.cn/2018-03-06-15202997181932.jpg" alt=""></p>
-<blockquote>
-<p>某些运算符不应该被重载</p>
-</blockquote>
-<p>回忆之前介绍过的,某些运算符指定了运算对象求值的顺序。因为使用重载的运算符本质上是一次函数调用,所以这些<strong>关于运算对象求值顺序的规则无法应用到重载的运算符上</strong>。特别是,逻辑与运算符、逻辑或运算符和逗号运算符的运算对又象求值顺序规则无法保留下来。除此之外,&amp;&amp;和||运算符的重载版本也无法保留内置运算符的短路求值属性,两个运算对象总是会被求值。</p>
-<p>还有一个原因使得我们一般不重载逗号运算符和取地址运篁符:C+语言已经<strong>定义了这两种运算符用于类类型对象时的特殊含义</strong>,这一点与大多数运算符都不相同。因为这两种运算符已经有了内置的含义,所以一般来说它们不应该被重载,否则它们的行为将异于常态,从而导致类的用户无法适应。</p>
-<blockquote>
-<p>赋值和复合赋值运算符</p>
-</blockquote>
-<p>赋值运算符的行为与复合版本的类似:赋值之后,左侧运算对象和右侧运算对象的值相等,并且运算符应该返回它左侧运算对象的一个引用。<strong>重载的赋值运算应该继承而非违背其内置版本的含义</strong>。</p>
-<blockquote>
-<p>选择作为成员还是非成员</p>
-</blockquote>
-<p>当我们定义重载的运算符时,必须首先决定是将其声明为类的成员函数还是声明为一个普通的非成员函数。</p>
-<p>下面的准则有助于我们在将运算符定义为成员函数还是普通的非成员函数做出抉择：</p>
-<ul>
-<li>赋值(=)、下标([])、调用(())和成员访问箭头(-&gt;)运算符必须是成员。</li>
-<li>复合赋值运算符一般来说应该是成员,但并非必须,这一点与赋值运算符略有不同。</li>
-<li>改变对象状态的运算符或者与给定类型密切相关的运算符,如递增、递减和解引用运算符,通常应该是成员。</li>
-<li>具有对称性的运算符可能转换任意一端的运算对象,例如算术、相等性、关系和位运算符等,因此它们通常应该是普通的非成员函数。</li>
-</ul>
-<h2 id="输入和输出运算符"><a href="#输入和输出运算符" class="headerlink" title="输入和输出运算符"></a>输入和输出运算符</h2><p>IO标准库分别使用&gt;&gt;和&lt;&lt;执行输入和输出操作。</p>
-<h3 id="重载输出运算符-lt-lt"><a href="#重载输出运算符-lt-lt" class="headerlink" title="重载输出运算符&lt;&lt;"></a>重载输出运算符&lt;&lt;</h3><p>输出运算符的<strong>第一个形参是一个非常量 ostream对象的引用</strong>。之所以ostream是非常量是因为向流写入内容会改变其状态;而该形参是引用是因为我们无法直接复制一个 ostream对象。</p>
-<p><strong>第二个形参一般来说是一个常量的引用,该常量是我们想要打印的类类型</strong>。第二个形参是引用的原因是我们希望避免复制实参;而之所以该形参可以是常量是因为(通常情况下)打印对象不会改变对象的内容。</p>
-<p>为了与其他输出运算符保持一致, operator&lt;&lt;一般要返回它的 ostream形参。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">ostream &amp;<span class="keyword">operator</span>&lt;&lt;(ostream &amp;os, <span class="keyword">const</span> Sale_data &amp;item)</div><div class="line">&#123;</div><div class="line">    os &lt;&lt; item.isbon() &lt;&lt; <span class="string">" "</span> &lt;&lt; item.units_old ;</div><div class="line">    <span class="keyword">return</span> os;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>输入运算符尽量减少格式化操作</p>
-</blockquote>
-<p>用于内置类型的输出运算符不太考虑格式化操作,尤其不会打印换行符,用户希望类的输出运算符也像如此行事。如果运算符打印了换行符,则用户就无法在对象的同一行内接着打印一些描述性的文本了。</p>
-<blockquote>
-<p>输入输出函数必须为非成员函数</p>
-</blockquote>
-<p>与 iostream标准库兼容的输入输出运算符必须是普通的非成员函数,而不能是类的成员函数。否则,它们的左侧运算对象将是我们的类的一个对象</p>
-<p>因此,<strong>如果我们希望为类自定义IO运算符,则必须将其定义成非成员函数</strong>。当然,IO运算符通常需要读写类的非公有数据成员,所以IO运算符一般被声明为友元</p>
-<h3 id="重载输入运算符-gt-gt"><a href="#重载输入运算符-gt-gt" class="headerlink" title="重载输入运算符&gt;&gt;"></a>重载输入运算符&gt;&gt;</h3><p>通常情况下,输入运算符的<strong>第一个形参是运算符将要读取的流的引用</strong>,<strong>第二个形参是将要读入到的(非常量)对象的引用</strong>。该运算符通常会返回某个给定流的引|用。第二个形参之所以必须是个非常量是因为输入运算符本身的目的就是将数据读入到这个对象中。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">istream &amp;<span class="keyword">operator</span>&gt;&gt;(istream &amp;is, Sales_data &amp;item)</div><div class="line">&#123;</div><div class="line">    <span class="keyword">double</span> price;</div><div class="line">    is &gt;&gt; item.bokNo &gt;&gt; item.units_sold &gt;&gt; price;</div><div class="line">    item.revence = item.units_sold * price;</div><div class="line">    <span class="keyword">return</span> is;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>输入时的错误</p>
-</blockquote>
-<ul>
-<li>当流含有错误类型的数据时读取操作可能失败。</li>
-<li>当读取操作到达文件末尾或者遇到输入流的其他错误时也会失败。</li>
-</ul>
-<h2 id="算术和关系运算符"><a href="#算术和关系运算符" class="headerlink" title="算术和关系运算符"></a>算术和关系运算符</h2><p>我们把<strong>算术和关系运算符定义成非成员函数以允许对左侧或右侧的运算对象进行转换</strong>。因为这些运算符一般不需要改变运算对象的状态,所以形参都是常量的引用</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Sales_data <span class="keyword">operator</span>+(Sales_data &amp;lhs, Sales_data &amp;rhs)</div><div class="line">&#123;</div><div class="line">    Sale_data sum = lhs;</div><div class="line">    sum += rhs;</div><div class="line">    <span class="keyword">return</span> sum;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="相等运算符"><a href="#相等运算符" class="headerlink" title="相等运算符"></a>相等运算符</h3><p>C++中的类通过定义相等运算符来检验两个对象是否相等。</p>
-<p><img src="https://data2.liuin.cn/2018-03-06-15203006569640.jpg" alt=""></p>
-<p>设计准则：</p>
-<ol>
-<li>如果一个类含有判断两个对象是否相等的操作,则它显然应该把函数定义成oprator=而非一个普通的命名函数:因为用户肯定希望能使用==比较对象,所以提供了==就意味着用户无须再费时费力地学习并记忆一个全新的函数名字此外,类定义了==运算符之后也更容易使用标准库容器和算法。</li>
-<li>如果类定义了 perator==,则该运算符应该能判断一组给定的对象中是否含有重复数据。</li>
-<li>通常情况下,相等运算符应该具有传递性</li>
-<li>如果类定义了 operator==,则这个类也应该定义 operator!=。对于用户来说当他们能使用==时肯定也希望能使用!=,反之亦然</li>
-<li>相等运算符和不相等运算符中的一个应该把工作委托给另外一个</li>
-</ol>
-<h3 id="关系运算符"><a href="#关系运算符" class="headerlink" title="关系运算符"></a>关系运算符</h3><p>定义了相等运算符的类也常常(但不总是)包含关系运算符。特别是,因为关联容器和一些算法要用到小于运算符,所以定义。 operator&lt;会比较有用。</p>
-<ol>
-<li>定义顺序关系，令其与关联容器中对关键词的要求一致</li>
-<li>如果类同时含有==运算符的话，则定义一种关系令其与==保持一致</li>
-</ol>
-<h2 id="赋值运算符"><a href="#赋值运算符" class="headerlink" title="赋值运算符"></a>赋值运算符</h2><p>之前已经介绍过拷贝赋值和移动赋值运算符,它们可以把<strong>类的一个对象赋值给该类的另一个对象</strong>。此外,类还可以定义其他赋值运算符以使用别的类型作为右侧运算对象。</p>
-<p>复合赋值运算符不非得是类的成员,不过我们还是倾向于把包括复合赋值在内的所有赋值运算都定义在类的内部。为了与内置类型的复合赋值保持一致,类中的复合赋值运算符也要返回其左侧运算对象的引用。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">Sale_data &amp;Sale_data::<span class="keyword">operator</span>+=(<span class="keyword">const</span> Sale_data &amp;rhs)</div><div class="line">&#123;</div><div class="line">    units_sold += rhs.units_sold;</div><div class="line">    revenue += rhs.revenus;</div><div class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="下标运算符"><a href="#下标运算符" class="headerlink" title="下标运算符"></a>下标运算符</h2><p>表示容器的类通常可以通过元素在容器中的位置访问元素,这些类一般会定义下标运算符 operator[]。</p>
-<p><strong>下标运算符必须是成员函数</strong></p>
-<p>为了与下标的原始定义兼容,<strong>下标运算符通常以所访问元素的引用作为返回值</strong>,这样做的好处是下标可以出现在赋值运算符的任意一端。进一步,我们最好<strong>同时定义下标运算符的常量版本和非常量版本</strong>,当作用于一个常量对象时,下标运算符返回常量引用以确保我们不会给返回的对象赋值</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">class</span> StrVec &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">string</span>&amp; <span class="keyword">operator</span>[](<span class="built_in">std</span>::<span class="keyword">size_t</span> n)</div><div class="line">    &#123; <span class="keyword">return</span> element[n]; &#125;</div><div class="line">    <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; <span class="keyword">operator</span>[](<span class="built_in">std</span>::<span class="keyword">size_t</span> n) <span class="keyword">const</span></div><div class="line">    &#123; <span class="keyword">return</span> element[n]; &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="递增和递减运算符"><a href="#递增和递减运算符" class="headerlink" title="递增和递减运算符"></a>递增和递减运算符</h2><p>在迭代器类中通常会实现递増运算符(++)和递减运算符(–),这两种运算符使得类可以在元素的序列中前后移动。</p>
-<blockquote>
-<p>定义前置递增/递减运算符</p>
-</blockquote>
-<p>递增和递减运算符的工作机理非常相似:它们首先调用 check函数检验Strblobptr是否有效,如果是,接着检查给定的索引值是否有效。如果 check函数没有抛出异常,则运算符返回对象的引用。</p>
-<p><img src="https://data2.liuin.cn/2018-03-06-15203036806102.jpg" alt=""></p>
-<blockquote>
-<p>区分前置和后置运算符</p>
-</blockquote>
-<p>要想同时定义前置和后置运算符,必须首先解决一个问题,即普通的重载形式无法区分这两种情况。前置和后置版本使用的是同一个符号,意味着其重载版本所用的名字将是相同的,并且运算对象的数量和类型也相同。</p>
-<p>为了解决这个问题,<strong>后置版本接受一个额外的(不被使用)int类型的形参</strong>。</p>
-<p><img src="https://data2.liuin.cn/2018-03-06-15203037487660.jpg" alt=""></p>
-<h2 id="成员访问运算符"><a href="#成员访问运算符" class="headerlink" title="成员访问运算符"></a>成员访问运算符</h2><p>在迭代器类及智能指针类中常常用到解引用运算符(*)和箭头运算符(-&gt;)。</p>
-<p><img src="https://data2.liuin.cn/2018-03-06-15203038781378.jpg" alt=""></p>
-<blockquote>
-<p>对箭头运算符返回值的限定</p>
-</blockquote>
-<p>和大多数其他运算符一样(尽管这么做不太好),我们能令 operator*完成任何我们指定的操作。换句话说,我们可以让 operator*返回一个固定值42,或者打印对象的内容,或者其他。<strong>箭头运算符则不是这样,它永远不能丢掉成员访问这个最基本的含义</strong>。当我们重载箭头时,可以改变的是箭头从哪个对象当中获取成员,而箭头获取成员这一事实则永远不变。</p>
-<h2 id="函数调用运算符"><a href="#函数调用运算符" class="headerlink" title="函数调用运算符"></a>函数调用运算符</h2><p>如果类重载了函数调用运算符,则我们可以像使用函数一样使用该类的对象</p>
-<h3 id="lambda-是函数对象"><a href="#lambda-是函数对象" class="headerlink" title="lambda 是函数对象"></a>lambda 是函数对象</h3><p>当我们编写了一个 lambda后,编译器将该表达式翻译成一个未命名类的未命名对象。在 lambda表达式产生的类中含有一个重载的函数调用运算符</p>
-<h2 id="重载、类型转换与运算符"><a href="#重载、类型转换与运算符" class="headerlink" title="重载、类型转换与运算符"></a>重载、类型转换与运算符</h2><p>我们同样能定义对于类类型的类型转换,通过定义类型转换运算符可以做到这一点。转换构造函数和类型转换运算符共同定义了<strong>类类型转换</strong>( class-type conversions),这样的转换有时也被称作用户定义的类型转换(user- defined conversions)</p>
-<h3 id="类型转换运算符"><a href="#类型转换运算符" class="headerlink" title="类型转换运算符"></a>类型转换运算符</h3><p>类型转换运算符( conversion operator)是类的一种特殊成员函数,它负责将一个类类型的值转换成其他类型。类型转换函数的一般形式如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">operator type()const;</div></pre></td></tr></table></figure></p>
-<p>其中type表示某种类型。类型转换运算符可以面向任意类型(除了void之外)进行定义,只要该类型能作为函数的返回类型。因此,我们不允许转换成数组或者函数类型,但允许转换成指针(包括数组指针及函数指针)或者引用类型类型</p>
-<p>转换运算符既没有显式的返回类型,也没有形参,而且必须定义成类的成员函数。类型转换运算符通常不应该改变待转换对象的内容,因此,类型转换运算符一般被定义成const成员。</p>
-<p><img src="https://data2.liuin.cn/2018-03-06-15203046723464.jpg" alt=""></p>
-<h3 id="避免有二义性的类型转换"><a href="#避免有二义性的类型转换" class="headerlink" title="避免有二义性的类型转换"></a>避免有二义性的类型转换</h3><p>如果类中包含一个或多个类型转换,则必须确保在类类型和目标类型之间只存在唯一一种转换方式。否则的话,我们编写的代码将很可能会具有二义性在两种情况下可能产生多重转换路径。</p>
-<p>第一种情况是<strong>两个类提供相同的类型转换</strong>;例如,当A类定义了一个接受B类对象的转换构造函数,同时B类定义了一个转换目标是A类的类型转换运算符时,我们就说它们提供了相同的类型转换</p>
-<p>第二种情况是<strong>类定义了多个转换规则,而这些转换涉及的类型本身可以通过其他类型转换联系在一起</strong>。最典型的例子是算术运算符,对某个给定的类来说,最好只定义最多个与算术类型有关的转换规则。</p>
-<hr>
-<h1 id="面向对象程序设计"><a href="#面向对象程序设计" class="headerlink" title="面向对象程序设计"></a>面向对象程序设计</h1><h2 id="OOP：概述"><a href="#OOP：概述" class="headerlink" title="OOP：概述"></a>OOP：概述</h2><p>面向对象程序设计( object-oriented programmin)的核心思想是<strong>数据抽象、继承和动态绑定</strong>。通过使用数据抽象,我们可以将类的接口与实现分离(见第7章);使用继承,可以定义相似的类型并对其相似关系建模;使用动态绑定,可以在一定程度上忽略相似类型的区别,而以统一的方式使用它们的对象。</p>
-<h3 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h3><p>通过继承( inheritance)联系在一起的类构成一种层次关系。通常在层次关系的根部有一个<strong>基类</strong>( base class),其他类则直接或间接地从基类继承而来,这些继承得到的类称为<strong>派生类</strong>( derived class)。</p>
-<p>在C++语言中,基类将<strong>类型相关的函数与派生类不做改变直接继承的函数区分对待</strong>。对于某些函数,<strong>基类希望它的派生类各自定义适合自身的版本,此时基类就将这些函数声明成虚函数</strong>( virtual function)。</p>
-<p>派生类必须通过使用<strong>类派生列表</strong>( class derivation list)明确指出它是从哪个(哪些)基类继承而来的。类派生列表的形式是:首先是一个冒号,后面紧跟以逗号分隔的基类列表其中每个基类前面可以有访问说明符:</p>
-<p><img src="https://data2.liuin.cn/2018-03-08-15204752450638.jpg" alt=""></p>
-<p>派生类必须在其内部对所有重新定义的虚函数进行声明。派生类可以在这样的函数之前加上 virtua1关键字,但是并不是非得这么做。</p>
-<h3 id="动态绑定"><a href="#动态绑定" class="headerlink" title="动态绑定"></a>动态绑定</h3><p>通过使用动态绑定( dynamic binding),我们们能用同一段代码分别处理 Quote和Bu1k_quote的对象(Bulk_quote 继承Quote）</p>
-<p><img src="https://data2.liuin.cn/2018-03-08-15204753653946.jpg" alt=""></p>
-<p>因为函数 print_tota1的item形参是基类Quote的一个引用,我们既能使用基类Quote的对象调用该函数,也能使用派生类Bu1k_quote的对象调用它;</p>
-<p>因为在上述过程中函数的运行版本由实参决定,即在运行时选择函数的版本,所以动态绑定有时又被称为运行时绑定(run-time binding)。</p>
-<h2 id="定义基类和派生类"><a href="#定义基类和派生类" class="headerlink" title="定义基类和派生类"></a>定义基类和派生类</h2><h3 id="定义基类"><a href="#定义基类" class="headerlink" title="定义基类"></a>定义基类</h3><p>基类通常都应该定义一个虚析构函数,即使该函数不执行任何实际操作也是如</p>
-<blockquote>
-<p>成员函数与继承</p>
-</blockquote>
-<p>在C++语言中,基类必须将它的两种成员函数区分开来:一种是<strong>基类希望其派生类进行覆盖的函数</strong>:另一种是<strong>基类希望派生类直接继承而不要改变的函数</strong>。对于前者,基类通常将其定义为<strong>虚函数</strong>( virtual)。当我们使用指针或引用调用虚函数时,该调用将被动态绑定。根据引用或指针所绑定的对象类型不同,该调用可能执行基类的版本,也可能执行某个派生类的版本。</p>
-<p>任何构造函数之外的非静态函数都可以是虚函数。关键字V1rtua1只能出现在类内部的声明语句之前而不能用于类外部的函数定义。如果基类把个函数声明成虚函数,则该函数在派生类中隐式地也是虚函数。</p>
-<p>成员函数如果没被声明为虚函数,则其解析过程发生在编译时而非运行时。</p>
-<blockquote>
-<p>访问控制和继承</p>
-</blockquote>
-<p>派生类可以继承定义在基类中的成员,但是派生类的成员函数不一定有权访问从基类继承而来的成员。和其他使用基类的代码一样,派生类能访问公有成员,而不能访问私有成员。不过在某些时候基类中还有这样一种成员,基类希望它的派生类有权访问该成员,同时禁止其他用户访向。我们用受保护的( protected)访向运算符说明这样的成员。</p>
-<h3 id="定义派生类"><a href="#定义派生类" class="headerlink" title="定义派生类"></a>定义派生类</h3><p>派生类必须通过使用类派生列表( class derivation list)明确指出它是从哪个(哪些)基类继承而来的。类派生列表的形式是:首先是一个冒号,后面紧跟以逗号分隔的基类列表,其中每个基类前面可以有以下三种访问说明符中的一个:<strong>pub1ic、 protected或者private</strong></p>
-<p>派生类必须将其继承而来的成员函数中需要覆盖的那些重新声明,因此,我们的Bulk_quote类必须包含一个 net_price成员:</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Bulk_quote : <span class="keyword">public</span> Quote &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    Bulk_quote() = <span class="keyword">default</span>;</div><div class="line">    Bulk_quote(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp;, <span class="keyword">double</span>, <span class="built_in">std</span>::<span class="keyword">size_t</span>, <span class="keyword">double</span>);</div><div class="line">    <span class="comment">// 覆盖基类函数</span></div><div class="line">    <span class="function"><span class="keyword">double</span> <span class="title">net_price</span><span class="params">(<span class="built_in">std</span>::<span class="keyword">size_t</span>)</span> <span class="keyword">const</span> override</span>;</div><div class="line"><span class="keyword">private</span>:</div><div class="line">    <span class="built_in">std</span>::<span class="keyword">size_t</span> min_qty = <span class="number">0</span>;</div><div class="line">    <span class="keyword">double</span> discount = <span class="number">0.0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>大多数类都只继承自一个类,这种形式的继承被称作“单继承”,</p>
-<blockquote>
-<p>派生类中的虚函数</p>
-</blockquote>
-<p>派生类经常(但不总是)覆盖它继承的虚函数。如果派生类没有覆盖其基类中的某个虚函数,则该虚函数的行为类似于其他的普通成员,派生类会直接继承其在基类中的版本。</p>
-<p>派生类可以在它覆盖的函数前使用 virtua1关键字,但不是非得这么做。</p>
-<blockquote>
-<p>派生类对象及派生类向基类的类型转换</p>
-</blockquote>
-<p>一个派生类对象包含多个组成部分:一个含有<strong>派生类自己定义的(非静态)成员的子对象</strong>,以及一个与该派生类<strong>继承的基类对应的子对象</strong>,如果有多个基类,那么这样的子对象也有多个。</p>
-<p>因为在派生类对象中含有与其基类对应的组成部分,所以我们<strong>能把派生类的对象当成基类对象来使用</strong>,而且我们也能将基类的<strong>指针或引用</strong>绑定到派生类对象中的基类部分上</p>
-<p>这种转换通常称为派生类到基类的( derived-to-base)类型转换。和其他类型转换一样,编译器会隐式地执行派生类到基类的转专换</p>
-<blockquote>
-<p>派生类构造函数</p>
-</blockquote>
-<p>尽管在派生类对象中含有从基类继承而来的成员,但是派生类并不能直接初始化这些成员。和其他创建了基类对象的代码一样,派生类也必须使用基类的构造函数来初始化它的基类部分</p>
-<p>派生类对象的基类部分与派生类对象自己的数据成员都是在构造函数的初始化阶段执行初始化操作的。类似于我们初始化成员的过程,派生类构造函数同样是<strong>通过构造函数初始化列表来将实参传递给基类构造函数的</strong>。</p>
-<p>除非我们特别指出,否则派生类对象的基类部分会像数据成员一样执行默认初始化。如果想使用其他的基类构造函数,我们需要以类名加圆括号内的实参列表的形式为构造函数提供初始值。</p>
-<blockquote>
-<p>派生类使用基类成员</p>
-</blockquote>
-<p>派生类可以访问基类的公有成员和受保护成员:</p>
-<p>目前只需要了解<strong>派生类的作用域嵌套在基类的作用域之内</strong>。因此,对于派生类的一个成员来说,它使用派生类成员(例如min aty和 discount)的方式与使用基类成员(例如 price)的方式没什么不同。</p>
-<blockquote>
-<p>继承与静态成员</p>
-</blockquote>
-<p>如果基类定义了一个静态成员,则在<strong>整个继承体系中只存在该成员的唯一定义</strong>。不论从基类中派生出来多少个派生类,对于每个静态成员来说都只存在唯一的实例。</p>
-<p>静态成员遵循通用的访问控制规则,如果基类中的成员是pr⊥Vate的,则派生类无权访问它。假设某静态成员是可访问的,则我们既能通过基类使用它也能通过派生类使用它</p>
-<blockquote>
-<p>派生类的声明</p>
-</blockquote>
-<p>派生类的声明与其他类差别不大(参见7.3.3节,第250页),声明中包含类名但是不包含它的派生列表:</p>
-<p><img src="https://data2.liuin.cn/2018-03-08-15204772352734.jpg" alt=""></p>
-<blockquote>
-<p>被用作基类的类</p>
-</blockquote>
-<p>如果我们想将某个类用作基类,则该类必须已经定义而非仅仅声明:</p>
-<p>这一规定的原因显而易见:派生类中包含并且可以使用它从基类继承而来的成员,为了使用这些成员,派生类当然要知道它们是什十么。</p>
-<p><img src="https://data2.liuin.cn/2018-03-08-15204772841857.jpg" alt=""></p>
-<p>在这个继承关系中,Base是D1的直接基类( direct base),同时是D2的间接基类( indirectbase)。直接基类出现在派生列表中,而间接基类由派生类通过其直接基类继承而来</p>
-<p>最终的派生类将包含它的直接基类的子对象以及每个间接基类的子对象。</p>
-<blockquote>
-<p>防止继承发生</p>
-</blockquote>
-<p>有时我们会定义这样一种类,我们不希望其他类继承它,或者不想考虑它是否适合作为一个基类。为了实现这一日的,C++11新标准提供了一种防止继承发生的方法,即在类名后跟一个关键字fina1:</p>
-<h3 id="类型转换与继承"><a href="#类型转换与继承" class="headerlink" title="类型转换与继承"></a>类型转换与继承</h3><p>通常情况下,如果我们想把引用或指针绑定到一个对象上,则引用或指针的类型应与对象的类型一致。存在继承关系的类是一个重要的意外：<strong>我们可以把基类的指针或者应用绑定到派生类对象上</strong>。</p>
-<p>可以将基类的指针或引用绑定到派生类对象上有一层极为重要的含义:当使用基类的引用(或指针)时,实际上我们并不清楚该引用(或指针)所绑定对象的真实类型。该对象可能是基类的对象,也可能是派生类的对象。</p>
-<blockquote>
-<p>静态类型与动态类型</p>
-</blockquote>
-<p>当我们使用存在继承关系的类型时,必须<strong>将一个变量或其他表达式的静态类型</strong>( statictype)与该表达式表示对象的动态类型( dynamic type)区分开来。表达式的静态类型在编译时总是已知的,它是变量声明时的类型或表达式生成的类型:动态类型则是变量或表达式表示的内存中的对象的类型。动态类型直到运行时才可知。</p>
-<p><strong>如果表达式既不是引用也不是指针,则它的动态类型永远与静态类型一致</strong>。</p>
-<blockquote>
-<p>不存在从基类向派生类的隐式类型转换</p>
-</blockquote>
-<p>之所以存在派生类向基类的类型转换是因为每个派生类对象都包含一个基类部分,而基类的引用或指针可以绑定到该基类部分上。一个基类的对象既可以以独立的形式存在,也可以作为派生类对象的一部分存在。如果基类对象不是派生类对象的一部分,则它只含有基类定义的成员,而不含有派生类定义的成员。</p>
-<blockquote>
-<p>对象之间不存在转换</p>
-</blockquote>
-<p>派生类向基类的自动类型转换只对指针或引用类型有效,在派生类类型和基类类型之间不存在这样的转换。</p>
-<h2 id="虚函数"><a href="#虚函数" class="headerlink" title="虚函数"></a>虚函数</h2><blockquote>
-<p>对虚函数的调用可能在运行时才被解析</p>
-</blockquote>
-<p>当某个虚函数通过指针或引用调用时,编译器产生的代码直到运行时才能确定应该调用哪个版本的函数。被调用的函数是与绑定到指针或引用上的对象的动态类型相匹配的那一个</p>
-<p>必须要搞清楚的一点是,动态绑定只有当我们通过指针或引用调用虚函数时才会发生。当我们通过一个具有普通类型(非引用非指针)的表达式调用虚函数时,在编译时就会将调用的版本确定下来。</p>
-<blockquote>
-<p>派生类中的虚函数</p>
-</blockquote>
-<p>当我们在派生类中覆盖了某个虚函数时,可以再一次使用 virtua1关键字指出该函数的性质。然而这么做并非必须,因为<strong>一旦某个函数被声明成虚函数,则在所有派生类中它都是虚函数</strong>。</p>
-<p>一个派生类的函数如果覆盖了某个继承而来的虚函数,则它的形参类型必须与被它覆盖的基类函数完全一致。</p>
-<blockquote>
-<p>final 和 override说明符</p>
-</blockquote>
-<p>派生类如果定义了一个函数与基类中虚函数的名字相同但是形参列表不同,这仍然是合法的行为。编译器将认为新定义的这个函数与基类中原有的函数是相互独立的。这时,派生类的函数并没有覆盖掉基类中的版本。就实际的编程习惯而言,这种声明往主往意味着发生了错误,因为我们可能原本希望派生类能覆盖掉基类中的虚函数,但是一不小心把形参列表弄错了。</p>
-<p>在C++11新标准中我们可以使用override关键字来说明派生类中的虚函数。这么做的好处是在使得程序员的意图更加清晰的同时让编译器可以为我们发现一些错误,后者在编程实践中显得更加重要。</p>
-<p>我们还能把某个函数指定为fina1,如果我们已经把函数定义成fina1了,则之后任何尝试覆盖该函数的操作都将引发错误</p>
-<p>同一个函数可以同时添加final和override说明符；</p>
-<blockquote>
-<p>虚函数和默认实参</p>
-</blockquote>
-<p>和其他函数一样,虚函数也可以拥有默认实参。如果某次函数调用使用了默认实参,则该实参值由本次调用的静态类型决定。</p>
-<p>换句话说,如果我们通过基类的引用或指针调用函数,则使用基类中定义的默认实参,即使实际运行的是派生类中的函数版本也是如此匕。此时,传入派生类函数的将是基类函数定义的默认实参。</p>
-<blockquote>
-<p>回避虚函数的机制</p>
-</blockquote>
-<p>在某些情况下,我们希望对虚函数的调用不要进行动态绑定,而是强迫其执行虚函数的某个特定版本。</p>
-<p><img src="https://data2.liuin.cn/2018-03-08-15204936697970.jpg" alt=""></p>
-<p>什么时候我们需要回避虚函数的默认机制呢?通常是当一个派生类的虚函数调用它覆盖的基类的虚函数版本时。</p>
-<h2 id="抽象基类"><a href="#抽象基类" class="headerlink" title="抽象基类"></a>抽象基类</h2><blockquote>
-<p>纯虚函数</p>
-</blockquote>
-<p>当我们不想让用户从一个类中创建一个对象时，我们可以使用纯虚函数。</p>
-<p>和普通的虚函数不一样,一个纯虚函数无须定义。我们通过在函数体的位置(即在声明语句的分号之前)书写=0就可以将一个虚函数说明为纯虚函数。其中,=0只能出现在类内部的虚函数声明语句处</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// 用于保存折扣值和购买量的类</span></div><div class="line"><span class="keyword">class</span> Disc_quote</div><div class="line">&#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">	Disc_quote() = <span class="keyword">default</span>;</div><div class="line">	Disc_quote(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; book, <span class="keyword">double</span> price, </div><div class="line">		<span class="built_in">std</span>::<span class="keyword">size_t</span> qty, <span class="keyword">double</span> dsc) :</div><div class="line">			Quote(book, price), quantity(qty), discount(disc) &#123; &#125;;</div><div class="line">	<span class="function"><span class="keyword">double</span> <span class="title">net_price</span><span class="params">(<span class="built_in">std</span>::<span class="keyword">size_t</span>)</span> <span class="keyword">const</span> </span>= <span class="number">0</span>;</div><div class="line"><span class="keyword">protected</span>:</div><div class="line">	<span class="built_in">std</span>::<span class="keyword">size_t</span> quantity = <span class="number">0</span>;</div><div class="line">	<span class="keyword">double</span> discount = <span class="number">0.0</span>;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>含有纯虚函数的类是抽象基类</p>
-</blockquote>
-<p>含有(或者未经覆盖直接继承)纯虚函数的类是抽象基类( abstract base class)。<strong>抽象基类负责定义接口,而后续的其他类可以覆盖该接口。我们不能(直接)创建一个抽象基类的对象</strong>。</p>
-<blockquote>
-<p>重构</p>
-</blockquote>
-<p>重构负责重新设计类的体系以便将操作和/或数据从一个类移动到另一个类中。对于面向对象的应用程序来说,重构是一种很普遍的现象。</p>
-<h2 id="访问控制与继承"><a href="#访问控制与继承" class="headerlink" title="访问控制与继承"></a>访问控制与继承</h2><blockquote>
-<p>受保护成员</p>
-</blockquote>
-<p>一个类使用 protected关键字来声明那些它希望与派生类分享但是不想被其他公共访问使用的成员。 </p>
-<blockquote>
-<p>公有、私有和受保护继承</p>
-</blockquote>
-<p>某个类对其继承而来的成员的访问权限受到两个因素影响:一是在<strong>基类中该成员的访问说明符</strong>,二是在<strong>派生类的派生列表中的访问说明符</strong>。</p>
-<p>派生访问说明符对于派生类的成员(及友元)能否访问其直接基类的成员没什么影响。对基类成员的访问权限只与基类中的访问说明符有关。 </p>
-<p>派生访问说明符的目的是<strong>控制派生类用户(包括派生类的派生类在内)对于基类成员的访问权限</strong>:</p>
-<p>假设我们之前还定义了一个名为 Prot_derv的类,它采用受保护继承,则Base的所有公有成员在新定义的类中都是受保护的。 Prot_Derv的用户不能访间 pub_mem,但是 Prot_derv的成员和友元可以访问那些继承而来的成员</p>
-<blockquote>
-<p>友元和继承</p>
-</blockquote>
-<p>就像友元关系不能传递一样,友元关系同样也不能继承。<strong>基类的友元在访问派生类成员时不具有特殊性</strong></p>
-<p>当一个类将另一个类声明为友元时,这种友元关系只对做出声明的类有效。对于原来那个类来说,其友元的基类或者派生类不具有特殊的访问能力</p>
-<blockquote>
-<p>改变个别成员的可访问性</p>
-</blockquote>
-<p>有时我们需要改变派生类继承的某个名字的访问级别,通过使用 using声明。</p>
-<p><img src="https://data2.liuin.cn/2018-03-08-15205140838880.jpg" alt=""></p>
-<p>因为 Derived使用了私有继承,所以继承而来的成员s1ze和n(在默认情况下)是Derived的私有成员。然而,我们使用us1ng声明语句改变了这些成员的可访问性。改变之后, Derived的用户将可以使用size成员,而 Derived的派生类将能使用n</p>
-<blockquote>
-<p>默认的继承保护级别</p>
-</blockquote>
-<p>我们曾经介绍过使用 struct和c1asS关键字定义的类具有不同的默认访问说明符。类似的,默认派生运算符也由定义派生类所用的关键字来决定默认情况下,<strong>使用c1ass关键字定义的派生类是私有继承的;而使用 struct关键字定义的派生类是公有继承的:</strong></p>
-<p>两者的差别只有这一个。</p>
-<h2 id="继承中的类作用域"><a href="#继承中的类作用域" class="headerlink" title="继承中的类作用域"></a>继承中的类作用域</h2><p>每个类定义自己的作用域,在这个作用域内我们定义类的成员。当存在继承关系时,<strong>派生类的作用域嵌套在其基类的作用域之内</strong>。如果一个名字在派生类的作用域内无法正确解析,则编译器将继续在外层的基类作用域中寻找该名字的定义</p>
-<blockquote>
-<p>在编译时进行名字查找</p>
-</blockquote>
-<p>一个对象、引用或指针的静态类型决定了该对象的哪些成员是可见的。即使静态类型与动态类型可能不一致(当使用基类的引用或指针时会发生这种情况),但是我们能使用哪些成员仍然是由静态类型决定的。</p>
-<blockquote>
-<p>名字冲突和继承</p>
-</blockquote>
-<p>和其他作用域一样,派生类也能重用定义在其直接基类或间接基类中的名字,此时<strong>定义在内层作用域(即派生类)的名字将隐藏定义在外层作用域(即基类)的名字</strong></p>
-<blockquote>
-<p>通过作用域运算符来使用隐藏的成员</p>
-</blockquote>
-<p>我们可以通过作用域运算符来使用一个被隐藏的基类成员:</p>
-<p><img src="https://data2.liuin.cn/2018-03-08-15205150138642.jpg" alt=""></p>
-<p>作用域运算符将覆盖掉原有的査找规则,并指示编译器从BaSe类的作用域开始査找mem</p>
-<blockquote>
-<p>一如既往，名字查找先于类型检查</p>
-</blockquote>
-<p>如前所述,<strong>声明在内层作用域的函数并不会重载声明在外层作用域的函数</strong>。因此,定义派生类中的函数也不会重载其基类中的成员。和其他作用域样,如果派生类(即内层作用域)的成员与基类(即外层作用域)的某个成员同名,则派生类将在其作用域内隐藏该基类成员。即使派生类成员和基类成员的形参列表不一致,基类成员也仍然会被隐藏掉</p>
-<blockquote>
-<p>虚函数与作用域</p>
-</blockquote>
-<p>我们现在可以理解为什么基类与派生类中的虚函数必须有相同的形参列表了。<strong>假如基类与派生类的虚函数接受的实参不同,则我们就无法通过基类的引用或指针调用派生类的虚函数了</strong>。例如:</p>
-<p><img src="https://data2.liuin.cn/2018-03-08-15205151324990.jpg" alt=""></p>
-<blockquote>
-<p>覆盖重载的函数</p>
-</blockquote>
-<p>如果派生类希望所有的重载版本对于它来说都是可见的,那么它就需要覆盖所有的版本,或者一个也不覆盖。有时一个类仅需覆盖重载集合中的一些而非全部函数</p>
-<h2 id="构造函数与拷贝控制"><a href="#构造函数与拷贝控制" class="headerlink" title="构造函数与拷贝控制"></a>构造函数与拷贝控制</h2><h3 id="虚析构函数"><a href="#虚析构函数" class="headerlink" title="虚析构函数"></a>虚析构函数</h3><p>继承关系对基类拷贝控制最直接的影响是<strong>基类通常应该定义一个虚析构函数</strong>,这样我们就能动态分配继承体系中的对象了。如前所述,当我们de1ete一个动态分配的对象的指针时将执行析构函数。如果该指针指向继承体系中的某个类型,则有可能出现指针的静态类型与被删除对象的动态类型不符的情况</p>
-<p>我们通过在基类中将析构函数定义成虚函数以确保执行正确的析构函数版本:</p>
-<p>和其他虚函数一样,析构函数的虚属性也会被继承。</p>
-<p><strong>如果一个类需要析构函数,那么它也同样需要拷贝和赋值操作。基类的析构函数并不遵循上述准则</strong>,它是个重要的例外。一个基类总是需要析构函数,而且它能将析构函数设定为虚函数。</p>
-<blockquote>
-<p>虚析构函数将阻止合成移动操作</p>
-</blockquote>
-<p>基类需要一个虚析构函数这一事实还会对基类和派生类的定义产生另外一个间接的影响:如果一个类定义了析构函数,即使它通过= defau1t的形式使用了合成的版本,编译器也不会为这个类合成移动操作</p>
-<h3 id="合成拷贝控制与继承"><a href="#合成拷贝控制与继承" class="headerlink" title="合成拷贝控制与继承"></a>合成拷贝控制与继承</h3><p>基类或派生类的合成拷贝控制成员的行为与其他合成的构造函数、赋值运算符或析构函数类似:它们对类本身的成员依次进行初始化、赋值或销毁的操作。此外,这些合成的成员还负责使用直接基类中对应的操作对一个对象的直接基类部分进行初始化、赋值或销毁的操作。</p>
-<ul>
-<li>合成的Bu1k_quote默认构造函数运行 Disc_quote的默认构造函数,后者又运行 Quote的默认构造函数。</li>
-</ul>
-<p>无论基类成员是合成的版本(如ρuote继承体系的例子)还是自定义的版本都没有太大影响。唯一的要求是相应的成员应该可访问并且不是一个被删除的函数。</p>
-<blockquote>
-<p>派生类中的删除的拷贝控制与基类的关系</p>
-</blockquote>
-<p>基类或派生类也能出于同样的原因将其合成的默认构造函数或者任何一个拷贝控制成员定义成被删除的函数</p>
-<ul>
-<li>·如果基类中的默认构造函数、拷贝构造函数、拷贝赋值运算符或析构函数是被删除的函数或者不可访问,则派生类中对应的成员将是被删除的,原因是编译器不能使用基类成员来执行派生类对象基类部分的构造、赋值或销毁操作</li>
-<li>·如果在基类中有一个不可访问或删除掉的析构函数,则派生类中合成的默认和拷贝构造函数将是被删除的,因为编译器无法销毁派生类对象的基类部分。</li>
-</ul>
-<blockquote>
-<p>移动操作与继承</p>
-</blockquote>
-<p>大多数基类都会定义一个虚析构函数。因此在默认情况下,基类通常不含有合成的移动操作,而且在它的派生类中也没有合成的移动操作。</p>
-<h3 id="派生类的拷贝控制成员"><a href="#派生类的拷贝控制成员" class="headerlink" title="派生类的拷贝控制成员"></a>派生类的拷贝控制成员</h3><p>派生类构造函数在其初始化阶段中不但要初始化派生类自己的成员,还负责初始化派生类对象的基类部分。因此,派生类的拷贝和移动构造函数在拷贝和移动自有成员的同时,也要拷贝和移动基类部分的成员。类似的,派生类赋值运算符也必须为其基类部分的成员赋值。</p>
-<blockquote>
-<p>定义派生类的拷贝和移动构造函数</p>
-</blockquote>
-<p>当为派生类定义拷贝或移动构造函数时,我们通常使用对应的基类构造函数初始化对象的基类部分</p>
-<p><img src="https://data2.liuin.cn/2018-03-09-15205965427434.jpg" alt=""></p>
-<blockquote>
-<p>派生类赋值运算符</p>
-</blockquote>
-<p>与拷贝和移动构造函数一样,派生类的赋值运算符也必须显式地为其基类部分赋值:</p>
-<p>值得注意的是,无论基类的构造函数或赋值运算符是自定义的版本还是合成的版本,派生类的对应操作都能使用它们。</p>
-<blockquote>
-<p>派生类析构函数</p>
-</blockquote>
-<p>在析构函数体执行完成后,对象的成员会被隐式销毁。类似的,对象的基类部分也是隐式销毁的。因此,和构造函数及赋值运算符不同的是,派生类析构函数只负责销毁由派生类自己分配的资源:</p>
-<p>对象销毁的顺序正好与其创建的顺序相反:派生类析构函数首先执行,然后是基类的析构函数,以此类推,沿着继承体系的反方向直至最后。</p>
-<blockquote>
-<p>在构造函数和析构函数中调用虚函数</p>
-</blockquote>
-<p>派生类对象的基类部分将首先被构建。当执行基类的构造函数时,该对象的派生类部分是未被初始化的状态。类似的,销毁派生类对象的次序正好相反,因此当执行基类的析构函数时,派生类部分已经被销毁掉了。</p>
-<p>为了能够正确地处理这种未完成状态,编译器认为对象的类型在构造或析构的过程中仿佛发生了改变一样。也就是说,<strong>当我们构建一个对象时,需要把对象的类和构造函数的类看作是同一个;对虚函数的调用绑定正好符合这种把对象的类和构造函数的类看成同一个的要求;对于析构函数也是同样的道理。</strong></p>
-<h3 id="继承的构造函数"><a href="#继承的构造函数" class="headerlink" title="继承的构造函数"></a>继承的构造函数</h3><p>在C++11新标准中,派生类能够重用其直接基类定义的构造函数。尽管如我们所知,这些构造函数并非以常规的方式继承而来,但是为了方便,我们不妨姑且称其为“继承”的。一个类只初始化它的直接基类,出于同样的原因,一个类也只继承其直接基类的构造函数。类不能继承默认、拷贝和移动构造函数。如果派生类没有直接定义这些构造函数,则编译器将为派生类合成它们。</p>
-<p>派生类继承基类构造函数的方式是提供一条注明了(直接)基类名的uS1ng声明语句。举个例子,我们可以重新定义Bu1k_quote类,令其继承Disc_quote类的构造函数:</p>
-<p><img src="https://data2.liuin.cn/2018-03-09-15205968035260.jpg" alt=""></p>
-<blockquote>
-<p>继承的构造函数的特点</p>
-</blockquote>
-<p>和普通成员的 using声明不一样构造函数的 using声明不会改变该构造函数的访问级别。</p>
-<h2 id="容器与继承"><a href="#容器与继承" class="headerlink" title="容器与继承"></a>容器与继承</h2><p>当我们使用容器存放继承体系中的对象时,通常必须采取间接存储的方式。因为不允许在容器中保存不同类型的元素,所以我们不能把具有继承关系的多种类型的对象直接在放在容器当中。</p>
-<blockquote>
-<p>在容器中放置（智能）指针而非对象</p>
-</blockquote>
-<p>当我们希望在容器中存放具有继承关系的对象时,我们实际上存放的通常是基类的指针(更好的选择是智能指针。和往常一样,这些指针所指对象的动态类型可能是基类类型,也可能是派生类类型</p>
-<h3 id="编写Basket类"><a href="#编写Basket类" class="headerlink" title="编写Basket类"></a>编写Basket类</h3><p>对于C++面向对象的编程来说,一个悖论是我们无法直接使用对象进行面向对象编程。相反,我们必须使用指针和引用。因为指针会增加程序的复杂性,所以我们经常定义一些辅助的类来处理这种复杂情况。</p>
-<hr>
-<h1 id="模板与泛型编程"><a href="#模板与泛型编程" class="headerlink" title="模板与泛型编程"></a>模板与泛型编程</h1><p>面向对象编程(OOP)和泛型编程都能处理在编写程序时不知道类型的情况。不同之处在于:OOP能处理类型在程序运行之前都未知的情况;而在泛型编程中,在编译时就能获知类型了。</p>
-<p>模板是C++中泛型编程的基础。一个模板就是一个创建类或函数的蓝图或者说公式。</p>
-<h2 id="定义模板"><a href="#定义模板" class="headerlink" title="定义模板"></a>定义模板</h2><h3 id="函数模板"><a href="#函数模板" class="headerlink" title="函数模板"></a>函数模板</h3><p>我们可以定义一个通用的函数模板( function template),而不是为每个类型都定义一个新函数。一个函数模板就是一个公式,可用来生成针对特定类型的函数版本。 compare的模板版本可能像下面这样</p>
-<p><img src="https://data2.liuin.cn/2018-03-10-15206810494191.jpg" alt=""></p>
-<p>模板定义以关键字 template开始,后跟一个模板参数列表( template parameter list.,这是一个逗号分隔的一个或多个模板参数( template parameter)的列表,用小于号(&lt;)和大于号(&gt;)包围起来。<strong>在模板定义中，模板参数列表不能为空</strong>。</p>
-<p>模板参数表示在类或函数定义中用到的类型或值。当使用模板时,我们(隐式地或显式地)指定模板实参( template argument),将其绑定到模板参数上。</p>
-<blockquote>
-<p>实例化函数模板</p>
-</blockquote>
-<p>当我们调用一个函数模板时!,<strong>编译器(通常)用函数实参来为我们推断模板实参</strong>。</p>
-<p>编译器用推断出的模板参数来为我们实例化( instantiate)一个特定版本的函数。当编译器实例化一个模板时,它使用实际的模板实参代替对应的模板参数来创建出模板的一个新“实例”。</p>
-<blockquote>
-<p>模板类型参数</p>
-</blockquote>
-<p>我们的 compare函数有一个模板<strong>类型参数</strong>( type parameter.)。一般来说,我们可以<strong>将类型参数看作类型说明符</strong>,就像内置类型或类类型说明符一样使用。特别是,类型参数可以用来指定返回类型或函数的参数类型,以及在函数体内用于变量声明或类型转换</p>
-<p><img src="https://data2.liuin.cn/2018-03-10-15206812431993.jpg" alt=""></p>
-<blockquote>
-<p>非类型模板参数</p>
-</blockquote>
-<p>除了定义类型参数,还可以在模板中定义非类型参数( nontype parameter)。<strong>一个非类型参数表示一个值而非一个类型</strong>。我通过一个特定的类型名而非关键字c1ass或typename来指定非类型参数。</p>
-<p>当一个模板被实例化时,非类型参数被一个用户提供的或编译器推断出的值所代替。</p>
-<blockquote>
-<p>inline 和constexpr 的函数模板</p>
-</blockquote>
-<p>函数模板可以声明为in1ine或 constexpr的,如同非模板函数一样。in1ine或constexpr说明符放在模板参数列表之后,返回类型之前:</p>
-<blockquote>
-<p>编写类型无关的代码</p>
-</blockquote>
-<p>我们最初的 compare函数虽然简单,但它说明了编写泛型代码的两个重要原则:</p>
-<ul>
-<li>模板中的函数参数是 const的引用</li>
-<li>函数体中的条件判断仅使用&lt;比较运算</li>
-</ul>
-<p>通过将函数参数设定为 const的引用,我们保证了函数可以用于不能拷贝的类型。</p>
-<p>如果编写代码时只使用&lt;运算符,我们就降低了 compare函数对要处理的类型的要求。这些类型必须支持&lt;,但不必同时支持&gt;。</p>
-<blockquote>
-<p>模板编译</p>
-</blockquote>
-<p>当编译器遇到一个模板定义时,它并不生成代码。<strong>只有当我们实例化出模板的一个特定版本时,编译器才会生成代码</strong>。当我们使用(而不是定义)模板时,编译器才生成代码特性影响了我们如何组织代码以及错误何时被检测到。</p>
-<p>为了生成一个实例化版本,编译器需要掌握函数模板或类模板成员函数的定义。因此,与非模板代码不同,模板的头文件通常既包括声明也包括定义。</p>
-<h3 id="类模板"><a href="#类模板" class="headerlink" title="类模板"></a>类模板</h3><p>类模板( class template)是用来生成类的蓝图的。与函数模板的不同之处是,<strong>编译器不能为类模板推断模板参数类型</strong>。如我们已经多次看到的,<strong>为了使用类模板,我们必须在模板名后的尖括号中提供额外信息</strong>——用来代替模板参数的模板实参列表。</p>
-<blockquote>
-<p>定义类模板</p>
-</blockquote>
-<p>类似函数模板,类模板以关键字 template开始,后跟模板参数列表。在类模板(及其成员)的定义中,我们将模板参数当作替身,代替使用模板时用户需要提供的类型或值:</p>
-<p><img src="https://data2.liuin.cn/2018-03-10-15206822514896.jpg" alt=""></p>
-<blockquote>
-<p>实例化类模板</p>
-</blockquote>
-<p>当使用一个类模板时,我们必须提供额外信息。我们现在知道这些额外信息是显式模板实参( explicit template argument)列表,它们被绑定到模板参数。编译器使用这些模板实参来实例化出特定的类。</p>
-<blockquote>
-<p>在模板作用域中引用模板类型</p>
-</blockquote>
-<p>为了阅读模板类代码,应该记住类<strong>模板的名字不是一个类型名</strong>。类模板用来实例化类型,而一个实例化的类型总是包含模板参数的可能令人迷惑的是,<strong>一个类模板中的代码如果使用了另外一个模板,通常不将一个实际类型(或值)的名字用作其模板实参。相反的,我们通常将模板自己的参数当作被使用模板的实参</strong>。</p>
-<p>例如,我们的data成员使用了两个模板, vector和 shared_ptr。我们知道,无论何时使用模板都必须提供模板实参。在本例中,我们提供的模板实参就是Bob的模板参数。因此,data的定义如下</p>
-<p><img src="https://data2.liuin.cn/2018-03-10-15206823729019.jpg" alt=""></p>
-<blockquote>
-<p>类模板的成员函数</p>
-</blockquote>
-<p>与其他任何类相同,我们既可以在类模板内部,也可以在类模板外部为其定义成员函数,且<strong>定义在类模板内的成员函数被隐式声明为内联函数</strong>。</p>
-<p>类模板的成员函数本身是一个普通函数。但是,类模板的每个实例都有其自己版本的成员函数。因此,类模板的成员函数具有和模板相同的模板参数。因而,定义在类模板之外的成员函数就必须以关键字temp1ate开始,后接类模板参数列表。</p>
-<p>当我们在类外定义一个成员时,必须说明成员属于哪个类。而且,<strong>从一个模板生成的类的名字中必须包含其模板实参</strong>。</p>
-<blockquote>
-<p>类模板成员函数的实例化</p>
-</blockquote>
-<p>默认情况下,一个类模板的成员函数只有当程序用到它时才进行实例化。</p>
-<p>如果一个成员函数没有被使用,则它不会被实例化。成员函数只有在被用到时才进行实例化,这一特性使得即使某种类型不能完全符合模板操作的要求。</p>
-<blockquote>
-<p>在类代码内简化模板类名的使用</p>
-</blockquote>
-<p>当我们使用一个类模板类型时必须提供模板实参,但这一规则有一个例外。<strong>在类模板自己的作用域中,我们可以直接使用模板名而不提供实参</strong></p>
-<blockquote>
-<p>在类模板外使用类模板名</p>
-</blockquote>
-<p>当我们在类模板外定义其成员时,必须记住,我们并不在类的作用域中,直到遇到类名才表示进入类的作用域(参见</p>
-<blockquote>
-<p>模板类和友元</p>
-</blockquote>
-<p>当一个类包含一个友元声明时,类与友元各自是否是模板是相互无关的。如果一个类模板包含一个非模板友元,则友元被授权可以访问所有模板实例。如果友元自身是模板,类可以授权给所有友元模板实例,也可以只授权给特定实例</p>
-<blockquote>
-<p>一对一友好关系</p>
-</blockquote>
-<p><strong>类模板与另一个(类或函数)模板间友好关系的最常见的形式是建立对应实例及其友元间的友好关系</strong>。</p>
-<p><img src="https://data2.liuin.cn/2018-03-10-15206826958070.jpg" alt=""></p>
-<blockquote>
-<p>通用和特定的友好关系</p>
-</blockquote>
-<p>一个类也可以将另一个模板的每个实例都声明为自己的友元,或者限定特定的实例为友元</p>
-<p>为了让所有实例成为友元,友元声明中必须使用与类模板本身不同的模板参数</p>
-<blockquote>
-<p>模板类型别名</p>
-</blockquote>
-<p>类模板的一个实例定义了一个类类型,与任何其他类类型一样,我们可以定义一个typedef来引用实例化的类:</p>
-<p><code>typedef Blob&lt;string&gt; StrBlob;</code></p>
-<blockquote>
-<p>类模板的static成员</p>
-</blockquote>
-<p>与任何其他 static数据成员相同,模板类的每个 static数据成员必须有且仅有个定义。但是,类模板的每个实例都有一个独有的 static对象。因此,与定义模板的成员函数类似,我们将 static数据成员也定义为模板</p>
-<p>与非模板类的静态成员相同,我们可以通过类类型对象来访问一个类模板的 statio成员,也可以使用作用域运算符直接访问成员。当然,为了通过类来直接访问 static成员,我们必须引用一个特定的实例</p>
-<h3 id="模板参数"><a href="#模板参数" class="headerlink" title="模板参数"></a>模板参数</h3><p>类似函数参数的名字,一个模板参数的名字也没有什么内在含义。我们通常将类型参数命名为T,但实际上我们们可以使用任何名字:</p>
-<blockquote>
-<p>模板参数与作用域</p>
-</blockquote>
-<p>模板参数遵循普通的作用域规则。<strong>一个模板参数名的可用范围是在其声明之后,至模板声明或定义结束之前</strong>。与任何其他名字一样,模板参数会隐藏外层作用域中声明的相同名字。</p>
-<blockquote>
-<p>模板声明</p>
-</blockquote>
-<p>模板声明必须包含模板参数，一个给定模板的每个声明和定义必须有相同数量和种类(即,类型或非类型)的参数。</p>
-<blockquote>
-<p>使用类的类型成员</p>
-</blockquote>
-<p>假定T是一个模板类型参数,当编译器遇到类似里T::mem这样的代码时,它不会知道mem是一个类型成员还是一个 static数据成员,直至实例化时才会知道。但是,为了处理模板,编译器必须知道名字是否表示一个类型。</p>
-<p>默认情况下,<strong>C++语言假定通过作用域运算符访问的名字不是类型</strong>。因此,如果我们希望使用一个模板类型参数的类型成员,就必须显式告诉编译器该名字是一个类型。</p>
-<blockquote>
-<p>默认模板实参</p>
-</blockquote>
-<p>就像我们能为函数参数提供默认实参一样,我们也可以提供默认模板实参( default template argument)。</p>
-<blockquote>
-<p>模板默认实参与类模板</p>
-</blockquote>
-<p>无论何时使用一个类模板,我们都必须在模板名之后接上尖括号。尖括号指出类必须从一个模板实例化而来。特别是,如果一个类模板为其所有模板参数都提供了默认实参,且我们希望使用这些默认实参,就必须在模板名之后跟一个空尖括号对:</p>
-<h3 id="成员模板"><a href="#成员模板" class="headerlink" title="成员模板"></a>成员模板</h3><p>一个类(无论是普通类还是类模板)可以包含本身是模板的成员函数。这种成员被称为成员模板( member template)。成员模板不能是虚函数。</p>
-<blockquote>
-<p>普通（非模板）类的成员模板</p>
-</blockquote>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208165159357.jpg" alt=""></p>
-<blockquote>
-<p>类模板的成员模板</p>
-</blockquote>
-<p>对于类模板,我们也可以为其定义成员模板。在此情况下,类和成员各自有自己的、独立的模板参数。</p>
-<p>与类模板的普通函数成员不同,成员模板是函数模板。当我们在类模板外定义一个成员模板时,必须同时为类模板和成员模板提供模板参数列表。类模板的参数列表在前,后跟成员自己的模板参数列表:</p>
-<blockquote>
-<p>实例化与成员模板</p>
-</blockquote>
-<p>为了实例化一个类模板的成员模板,我们必须同时提供类和函数模板的实参。与往常样,我们在哪个对象上调用成员模板,编译器就根据该对象的类型来推断类模板参数的实参。</p>
-<h3 id="控制实例化"><a href="#控制实例化" class="headerlink" title="控制实例化"></a>控制实例化</h3><p>当模板被使用时才会进行实例化这一特性意味着,<strong>相同的实例可能出现在多个对象文件中</strong>。当两个或多个独立编译的源文件使用了相同的模板并提供了相同的模板参数时,每个文件中就都会有该模板的一个实例。</p>
-<p>在大系统中,在多个文件中实例化相同模板的额外开销可能非常严重。在新标准中,我们可以通过显式实例化( explicit instantiation)来避免这种开销。一个显式实例化有如下：</p>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208167547457.jpg" alt=""></p>
-<p>当编译器遇到 extern模板声明时,它不会在本文件中生成实例化代码。将一个实例化声明为 extern就表示承诺在程序其他位置有该实例化的一个非 extern声明(定义)。</p>
-<blockquote>
-<p>实例化定义会实例化所有成员</p>
-</blockquote>
-<p><strong>一个类模板的实例化定义会实例化该模板的所有成员,包括内联的成员函数</strong>。当编译器遇到一个实例化定义时,它不了解程序使用哪些成员函数。因此,与处理类模板的普通实例化不同,编译器会实例化该类的所有成员。即使我们不使用某个成员,它也会被实例化。因此,我们用来显式实例化一个类模板的类型,必须能用于模板的所有成员</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;《C++ Primer》笔记 类设计者的工具部分&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="C/C++" scheme="https://www.liuin.cn/tags/C-C/"/>
     
   </entry>
   
