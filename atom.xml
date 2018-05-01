@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-04-29T11:05:54.000Z</updated>
+  <updated>2018-05-01T02:38:36.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,419 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>APUE 进程控制</title>
+    <link href="https://www.liuin.cn/2018/04/30/APUE-%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6/"/>
+    <id>https://www.liuin.cn/2018/04/30/APUE-进程控制/</id>
+    <published>2018-04-30T08:07:20.000Z</published>
+    <updated>2018-05-01T02:38:36.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>《UNIX环境高级编程》第8章 进程控制 笔记</p>
+<a id="more"></a>
+<h2 id="进程标识"><a href="#进程标识" class="headerlink" title="进程标识"></a>进程标识</h2><p>每个进程都有一个非负整型表示的唯一进程ID。因为进程ID标识符总是唯一的,常将其用作其他标识符的一部分以保证其唯一性。</p>
+<p>虽然是唯一的,但是<strong>进程ID是可复用的</strong>。当一个进程终止后,其进程ID就成为复用的候选者。大多数UNIX系统实现延迟复用算法,使得赋予新建进程的DD不同于最近终止进程所使用的ID。这防止了将新进程误认为是使用同一ID的某个已终止的先前进程。</p>
+<p>系统中有一些专用进程,但具体细节随实现而不同。<strong>ID为0的进程通常是调度进程,常常被称为交换进程</strong>(swapper)。该进程是内核的一部分,它并不执行任何磁盘上的程序,因此也被称为系统进程。</p>
+<p>进程ID为1通常是init进程,在自举过程结束时由内核调用。该进程的程序文件在UNIX的早期版本中是/etc/init,在较新版本中是/sbin/init。此进程负责在自举内核后启动一个UNIX系统。init通常读取与系统有关的初始化文件(/etc/rc*文件或/etc/inittab文件,以及在/etc/init.d中的文件),并将系统引导到一个状态(如多用户)。init进程决不会终止。它是一个普通的用户进程(与交换进程不同,它不是内核中的系统进程),但是它以超级用户特权运行。</p>
+<p>每个UNIX系统实现都有它自己的一套提供操作系统服务的内核进程,例如,在某些UNIX的虚拟存储器实现中,进程ID2是页守护进程( page daemon),此进程负责支持虚拟存储器系统的分页操作。</p>
+<p>返回进程标识符的函数如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> getpid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: process ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> getppid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: parent process ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">uid_t</span> getuid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: real user ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">uid_t</span> geteuid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: effective user ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">gid_t</span> getgid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: real group ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">gid_t</span> getegid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: effective group ID of calling process</span></div></pre></td></tr></table></figure>
+<h2 id="函数fork"><a href="#函数fork" class="headerlink" title="函数fork"></a>函数fork</h2><p>一个现有进程调用fork函数创建一个新的进程</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> fork(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 in child, process ID of child in parent, −1 on error</span></div></pre></td></tr></table></figure>
+<p>由fork创建的新进程被称为子进程( child process) fork函数被调用一次,但返回两次。两次返回的区别是子进程的返回值是0,而父进程的返回值则是新建子进程的进程ID。</p>
+<p>将子进程ID返回给父进程的理由是:因为一个进程的子进程可以有多个,<strong>并且没有一个函数使一个进程可以获得其所有子进程的进程ID</strong>。fork使子进程得到返回值0的理由是:一个进程只会有一个父进程,所以子进程总是可以调用 getppid以获得其父进程的进程ID(进程ID0总是由内核交换进程使用,所以一个子进程的进程ID不可能为0)</p>
+<p>子进程和父进程继续执行fork调用之后的指令。子进程是父进程的副本。</p>
+<p>由于在fork之后经常跟随着exec,所以现在的很多实现并不执行一个父进程数据段栈和堆的完全副本。作为替代,使用了<strong>写时复制</strong>( copy-on-write,COW)技术。这些区域由父进程和子进程共享,而且内核将它们的访问权限改变为只读。如果父进程和子进程中的任一个试图修改这些区域,则内核只为修改区域的那块内存制作一个副本,通常是虚拟存储系统中的一“页”。</p>
+<p>一般来说,在fork之后是父进程先执行还是子进程先执行是不确定的,这取决于内核所使用的调度算法。如果要求父进程和子进程之间相互同步,则要求某种形式的进程间通信。</p>
+<blockquote>
+<p>strlen 和 sizeof 的区别</p>
+</blockquote>
+<p>str1en计算不包含终止nul字节的字符串长度,而sizeof则计算包括终止nul字节的缓冲区长度。两者之间的另一个差别是,使用strlen需进行一次函数调用,而对于sizeof而言,因为缓冲区已用已知字符串进行初始化,其长度是固定的,所以 sizeof是在编译时计算缓冲区长度。</p>
+<blockquote>
+<p>文件共享</p>
+</blockquote>
+<p>fork的一个特性是父进程的所有打开文件描述符都被复制到子进程中。我们说“复制”是因为对每个文件描述符来说,就好像执行了dup函数。<strong>父进程和子进程每个相同的打开描述符共享一个文件表项</strong>，因此他们共享的是一个文件偏移量。</p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15250766871953.jpg" alt=""></p>
+<p>如果父进程和子进程写同一描述符指向的文件,但又没有任何形式的同步(如使父进程等待子进程),那么它们的输出就会相互混合(假定所用的描述符是在foxk之前打开的)。</p>
+<p>在fork之后处理文件描述符有以下两种情况：</p>
+<ol>
+<li>父进程等待子进程完成</li>
+<li>父进程和子进程各自执行不同的程序段</li>
+</ol>
+<p>除了打开文件之外,<strong>子进程继承父进程的属性</strong>有：</p>
+<ul>
+<li>实际用户ID、实际组ID、有效用户ID、有效组ID</li>
+<li>附属组ID</li>
+<li>进程组ID</li>
+<li>会话ID</li>
+<li>控制终端</li>
+<li>设置用户ID标志和设置组ID标志</li>
+<li>当前工作目录</li>
+<li>根目录</li>
+<li>文件模式创建屏蔽字</li>
+<li>信号屏蔽和安排</li>
+<li>对任一打开文件描述符的执行时关闭( close-on-exec)标志</li>
+<li>环境</li>
+<li>连接的共享存储段</li>
+<li>存储映像</li>
+<li>资源限制</li>
+</ul>
+<p>父进程和子进程的区别如下：</p>
+<ul>
+<li>fork的返回值不同</li>
+<li>进程ID不同</li>
+<li>这两个进程的父进程ID不同:子进程的父进程ID是创建它的进程的ID,而父进程的父进程ID则不变。</li>
+<li>进程的 tms_utime、 tms_stime、 tms_cutime和tms_ultime的值设置为0</li>
+<li>子进程不继承父进程设置的文件锁</li>
+<li>子进程的未处理闹钟被清除</li>
+<li>子进程的未处理信号集设置为空集</li>
+</ul>
+<p>使fork失败的原因主要有以下几个：</p>
+<ol>
+<li>系统中已经有了太多的进程</li>
+<li>该实际用户ID的进程总数超过了系统限制</li>
+</ol>
+<p>fork有如下两种用法：</p>
+<ol>
+<li>一个父进程希望复制自己,使父进程和子进程同时执行不同的代码段</li>
+<li>一个进程要执行一个不同的程序</li>
+</ol>
+<h2 id="函数vfork"><a href="#函数vfork" class="headerlink" title="函数vfork"></a>函数vfork</h2><p>vfork函数的调用序列和返回值与fork相同,但两者的语义不同</p>
+<p>vfork函数用于创建一个新进程,而该新进程的目的是exec一个新程序。但是它并不将父进程的地址空间完全复制到子进程中,因为子进程会立即调用exec(或exit),于是也就<strong>不会引用该地址空间</strong>。不过在子进程调用exec或exit之前,它在父进程的空间中运行。这种优化工作方式在某些UNIX系统的实现中提高了效率,但如果子进程修改数据(除了用于存放 vfork返回值的变量)、进行函数调用、或者没有调用exec或exit就返回都可能会带来未知的结果。(就像上一节中提及的,实现采用写时复制技术以提高fork之后跟随exec操作的效率,但是不复制比部分复制还是要快一些)</p>
+<p>vfork和fork之间的另一个区别是: vfork保证子进程先运行,在它调用exec或exit之后父进程才可能被调度运行,当子进程调用这两个函数中的任意一个时,父进程会恢复运行。</p>
+<h2 id="函数exit"><a href="#函数exit" class="headerlink" title="函数exit"></a>函数exit</h2><p>进程有5种正常终止和3种异常终止的方式，5种正常终止的方式如下：</p>
+<ol>
+<li>从main返回</li>
+<li>调用exit</li>
+<li>调用_exit或_Exit</li>
+<li>最后一个线程从其启动例程返回</li>
+<li>从最后一个线程调用 pthread_exit</li>
+</ol>
+<p>3种异常终止方式：</p>
+<ol>
+<li>调用 abort</li>
+<li>接到一个信号</li>
+<li>最后一个线程对取消请求做出响应</li>
+</ol>
+<p>不管进程如何终止,最后都会执行内核中的同一段代码。这段代码为相应进程关闭所有打开描述符,释放它所使用的存储器等。</p>
+<p>对上述任意一种终止情形,我们都希望终止进程能够通知其父进程它是如何终止的。对于3个终止函数(exit、_exit和_Exit),实现这一点的方法是,将其退出状态( exit status)作为参数传送给函数。在异常终止情况,内核(不是进程本身)<strong>产生一个指示其异常终止原因的终止状态</strong>( termination status)。在任意一种情况下,该终止进程的父进程都能用wait或wa1tpid函数(将在下一节说明)取得其终止状态。</p>
+<p>上面说明了子进程将其终止状态返回给其父进程，但是如果父进程在子进程之前终止,又将如何呢?其回答是:<strong>对于父进程已经终止的所有进程,它们的父进程都改变为init进程</strong>。我们称这些进程由init进程收养。其操作过程大致是:在一个进程终止时,内核逐个检查所有活动进程,以判断它是否是正要终止进程的子进程,如果是,则该进程的父进程ID就更改为1(init进程的ID)。这种处理方法保证了每个进程有一个父进程。</p>
+<p>如果子进程在父进程之前终止,那么父进程又如何能在做相应检查时得到子进程的终止状态呢?如果子进程完全消失了,父进程在最终准备好检查子进程是否终止时是无法获取它的终止状态的。内核为每个终止子进程保存了一定量的信息,所以当终止进程的父进程调用wait或 waitpid时,可以得到这些信息。</p>
+<p>在UNIX术语中,一个已经终止、但是其父进程尚未对其进行善后处理(获取终止子进程的有关信息、释放它仍占用的资源)的进程被称为<strong>僵死进程</strong>( zombie.)。Ps()命令将僵死进程的状态打印为Z。如果编写一个长期运行的程序,它fork了很多子进程,那么除非父进程等待取得子进程的终止状态,不然这些子进程终止后就会变成僵死进程</p>
+<p>最后一个要考虑的问题是:一个由init进程收养的进程终止时会发生什么?它会不会变成一个僵死进程?对此问题的回答是“否”,因为init被编写成无论何时只要有一个子进程终止,init就会调用一个wait函数取得其终止状态。这样也就防止了在系统中塞满僵死进程。</p>
+<h2 id="函数wait-和-waitpid"><a href="#函数wait-和-waitpid" class="headerlink" title="函数wait 和 waitpid"></a>函数wait 和 waitpid</h2><p>当一个进程正常或异常终止时,内核就向其父进程发送 SIGCHLD信号。因为子进程终止是个异步事件(这可以在父进程运行的任何时候发生),所以这种信号也是内核向父进程发的异步通知。父进程可以选择忽略该信号,或者提供一个该信号发生时即被调用执行的函数(信号处理程序)。对于这种信号的系统默认动作是忽略它。</p>
+<p>现在我们要知道的是调用wait和waitpid时进程都发生什么：</p>
+<ul>
+<li>如果其所有子进程都还在运行,则阻塞。</li>
+<li>如果一个子进程已终止,正等待父进程获取其终止状态,则取得该子进程的终止状态立即返回</li>
+<li>如果它没有任何子进程,则立即出错返回。</li>
+</ul>
+<p>如果进程由于接收到 SIGCHLD信号而调用wait,我们期望wait会立即返回。但是如果在间点调用wait,则进程可能会阻塞</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> wait(<span class="keyword">int</span> *statloc); </div><div class="line"><span class="keyword">pid_t</span> waitpid(<span class="keyword">pid_t</span> pid, <span class="keyword">int</span> *statloc, <span class="keyword">int</span> options); </div><div class="line"></div><div class="line"><span class="comment">// Both return: process ID if OK, 0 (see later), or −1 on error</span></div></pre></td></tr></table></figure>
+<p>两个函数的区别如下：</p>
+<ul>
+<li>在一个子进程终止前,wait使其调用者阻塞,而 waitpid有一选项,可使调用者不阻塞</li>
+<li>waitpid并不等待在其调用之后的第一个终止子进程,它有若千个选项,可以控制它所等待的进程</li>
+</ul>
+<p>这两个函数的参数statloc是一个整型指针。如果statloc不是一个空指针,则终止进程的终止状态就存放在它所指向的单元内。如果不关心终止状态,则可将该参数指定为空指针</p>
+<p>对于waitpid函数中pid参数的作用解释如下。</p>
+<ul>
+<li>pid == -1  等待任一子进程。此种情况下, waitpid与wait等效</li>
+<li>pid &gt; 0  等待进程ID与pid相等的子进程</li>
+<li>pid == 0  等待组ID等于调用进程组ID的任一子进程。</li>
+<li>pid &lt; -1  等待组ID等于pid绝对值的任一子进程</li>
+</ul>
+<p>waitpid函数返回终止子进程的进程ID,并将该子进程的终止状态存放在由saoc指向的存储单元中。</p>
+<p>options参数可以使我们能够进一步控制waitpid函数的操作</p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15250876888707.jpg" alt=""></p>
+<h2 id="函数waitid"><a href="#函数waitid" class="headerlink" title="函数waitid"></a>函数waitid</h2><p>另一个取得进程终止状态的函数waited,此函数类似于 waitpid,但提供了更多的灵活性。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">waitid</span><span class="params">(<span class="keyword">idtype_t</span> idtype, <span class="keyword">id_t</span> id, <span class="keyword">siginfo_t</span> *infop, <span class="keyword">int</span> options)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>与 waitpid相似, waitid允许一个进程指定要等待的子进程。但它使用两个单独的参数表示要等待的子进程所属的类型,而不是将此与进程DD或进程组ID组合成一个参数。</p>
+<p>idtype参数：</p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15250878149783.jpg" alt=""></p>
+<p>options参数：</p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15250878305949.jpg" alt=""></p>
+<h2 id="函数wait3和wait4"><a href="#函数wait3和wait4" class="headerlink" title="函数wait3和wait4"></a>函数wait3和wait4</h2><p>wait3和wait4提供的功能比上面的函数多一个，该参数允许内核返回由终止进程及其所有子进程使用的资源概况。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt; </span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt; </span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/resource.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> wait3(<span class="keyword">int</span> *statloc, <span class="keyword">int</span> options, <span class="keyword">struct</span> rusage *rusage);</div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> wait4(<span class="keyword">pid_t</span> pid, <span class="keyword">int</span> *statloc, <span class="keyword">int</span> options, <span class="keyword">struct</span> rusage *rusage);</div><div class="line"></div><div class="line"><span class="comment">// Both return: process ID if OK, 0, or −1 on error</span></div></pre></td></tr></table></figure>
+<p>资源统计信息包括用户CPU时间总量、系统CPU时间总量、缺页次数、接收到信号的次数等。</p>
+<h2 id="竞争条件"><a href="#竞争条件" class="headerlink" title="竞争条件"></a>竞争条件</h2><p>当多个进程都企图对共享数据进行某种处理,而最后的结果又取决于进程运行的顺序时,我们认为发生了竞争条件(race condition)。如果在fork之后的某种逻辑显式或隐式地依赖于在fork之后是父进程先运行还是子进程先运行,那么fork函数就会是竞争条件活跃的滋生地</p>
+<p>如果一个进程希望等待一个子进程终止,则它必须调用wait函数中的一个。如果一个进程要等待其父进程终止,则可使用下列形式的循环</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">while</span>(getppid() != <span class="number">1</span>)</div><div class="line">    sleep(<span class="number">1</span>);</div></pre></td></tr></table></figure>
+<p>这种形式的循环称为轮询( polling),它的问题是浪费了CPU时间,因为调用者每隔1s都被唤醒,然后进行条件测试</p>
+<p>为了避免竞争条件和轮询,在多个进程之间需要有某种形式的信号发送和接收的方法。在UNIX中可以使用信号机制。各种形式的进程间通信(IPC)也可使用。</p>
+<h2 id="函数exec"><a href="#函数exec" class="headerlink" title="函数exec"></a>函数exec</h2><p>用fork函数创建新的子进程后,子进程往往要调用一种exec函数以执行另个程序。当进程调用一种exec函数时,该进程执行的程序完全替换为新程序,而新程序则从其main函数开始执行。因为调用exec并不创建新进程,所以前后的进程ID并未改变。<strong>exec只是用磁盘上的一个新程序替换了当前进程的正文段、数据段、堆段和栈段</strong>。</p>
+<p>有7中不同的exec函数可以使用：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">execl</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">const</span> <span class="keyword">char</span> *arg0, ... <span class="comment">/* (char *)0 */</span> )</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">execv</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">char</span> *<span class="keyword">const</span> argv[])</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">execle</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">const</span> <span class="keyword">char</span> *arg0, ...<span class="comment">/* (char *)0, char *const envp[] */</span> )</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">execve</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">char</span> *<span class="keyword">const</span> argv[], <span class="keyword">char</span> *<span class="keyword">const</span> envp[])</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">execlp</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *ﬁlename, <span class="keyword">const</span> <span class="keyword">char</span> *arg0, ... <span class="comment">/* (char *)0 */</span> )</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">execvp</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *ﬁlename, <span class="keyword">char</span> *<span class="keyword">const</span> argv[])</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fexecve</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">char</span> *<span class="keyword">const</span> argv[], <span class="keyword">char</span> *<span class="keyword">const</span> envp[])</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// All seven return: −1 on error, no return on success</span></div></pre></td></tr></table></figure></p>
+<p>这些函数之间的第一个区别是前4个函数取路径名作为参数,后两个函数则取文件名作为参数,最后一个取文件描述符作为参数。</p>
+<p>第二个区别与参数表的传递有关(1表示列表list,v表示矢量vector)。函数exec1、exec1p和 execle要求将新程序的每个命令行参数都说明为一个单独的参数。这种参数表以空指针结尾。对于另外4个函数( execv、 execvp、execve和 fexecve),则应先构造一个指向各参数的指针数组,然后将该数组地址作为这4个函数的参数。</p>
+<p>最后一个区别与向新程序传递环境表相关。以e结尾的3个函数(eXec1e、 execve和 fexecve)可以传递一个指向环境字符串指针数组的指针。其他4个函数则使用调用进程中的 environ变量为新程序复制现有的环境</p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15251006856272.jpg" alt=""></p>
+<p>前面曾提及,在执行exec后,进程ID没有改变。但新程序从调用进程继承了的下列属性:</p>
+<ul>
+<li>进程ID和父进程ID</li>
+<li>实际用户ID和实际组ID</li>
+<li>附属组ID</li>
+<li>进程组ID</li>
+<li>会话ID</li>
+<li>控制终端</li>
+<li>闹钟尚余留的时间</li>
+<li>当前工作目录</li>
+<li>根目录</li>
+<li>文件模式创建屏蔽字</li>
+<li>文件锁</li>
+<li>进程信号屏蔽</li>
+<li>未处理信号</li>
+<li>资源限制</li>
+<li>nice值</li>
+<li>tms_utime、tms_stime、tms_cutime以及tms_ctime值</li>
+</ul>
+<p>在很多UNIX实现中,这7个函数中只有<code>execve</code>是内核的系统调用。另外6个只是库函数它们最终都要调用该系统调用。</p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15251008959267.jpg" alt=""></p>
+<h2 id="更改用户ID和更改组ID"><a href="#更改用户ID和更改组ID" class="headerlink" title="更改用户ID和更改组ID"></a>更改用户ID和更改组ID</h2><p>在UNIX系统中,特权(如能改变当前日期的表示法)以及访问控制(如熊否读、写一个特定文件),是基于用户ID和组ID的。当程序需要增加特权,或需要访问当前并不允许访问的资源时,我们需要更换自己的用户ID或组ID,使得新ID具有合适的特权或访问权限。与此类似当程序需要降低其特权或阻止对某些资源的访问时,也需要更换用户ID或组ID,新ID不具有相应特权或访问这些资源的能力</p>
+<p>在设计应用时,我们总是试图使用<strong>最小特权( least privilege)模型</strong>。依照此模型我们的程序应当只具有为完成给定任务所需的最小特权。这降低了由恶意用户试图哄骗我们的程序以未预料的方式使用特权造成的安全性风险</p>
+<p>设置用户ID和组ID的函数如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setuid</span><span class="params">(<span class="keyword">uid_t</span> uid)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setgid</span><span class="params">(<span class="keyword">gid_t</span> gid)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>使用时注意如下：</p>
+<ul>
+<li>若进程具有超级用户特权,则 setuid函数将实际用户ID、有效用户ID以及保存的设置用户ID设置为uid</li>
+<li>若进程没有超级用户特权,但是uid等于实际用户ID或保存的设置用户ID,则 setid只将有效用户ID设置为uid。不更改实际用户ID和保存的设置用户ID</li>
+<li>如果上面两个条件都不满足,则 errno设置为 EPERM,并返回-1</li>
+</ul>
+<p>关于内核所维护的3个ID，需要注意的事项如下：</p>
+<ul>
+<li>只有超级用户才可以更改实际用户ID，通常,实际用户ID是在用户登录时,由1ogin(1)程序设置的,而且决不会改变它。</li>
+<li>仅当对程序文件设置了设置用户ID位时,exec函数才设置有效用户ID</li>
+<li>保存的设置用户ID是由exec复制有效用户ID而得到的</li>
+</ul>
+<p><img src="https://data2.liuin.cn/2018-04-30-15251013810789.jpg" alt=""></p>
+<ol>
+<li>函数setreuid和setregid</li>
+</ol>
+<p>其功能是交换实际用户ID和有效用户ID的值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setreuid</span><span class="params">(<span class="keyword">uid_t</span> ruid, <span class="keyword">uid_t</span> euid)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setregid</span><span class="params">(<span class="keyword">gid_t</span> rgid, <span class="keyword">gid_t</span> egid)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<ol>
+<li>函数seteuid和setegid</li>
+</ol>
+<p>它们类似于 setuid和 setgid,但只更改有效用户ID和有效组ID</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">seteuid</span><span class="params">(<span class="keyword">uid_t</span> uid)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setegid</span><span class="params">(<span class="keyword">gid_t</span> gid)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>各个函数之间的区别</p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15251015827722.jpg" alt=""></p>
+<h2 id="解释器文件"><a href="#解释器文件" class="headerlink" title="解释器文件"></a>解释器文件</h2><p>所有现今的UNIX系统都支持解释器文件(interpreter file)。这种文件是文本文件,其起始行的形式是：</p>
+<p><code>#! pathname [optional-argument]</code></p>
+<p>最常见的如下：</p>
+<p><code>#! /bin/sh</code></p>
+<p>对这种文件的识别是由内核作为exec系统调用处理的一部分来完成的。内核使调用exec函数的进程<strong>实际执行的并不是该解释器文件,而是在该解释器文件第一行中 pathname所指定的文件</strong>。一定要将解释器文件(文本文件,它以#!开头)和解释器(由该解释器文件第一行中的 pathname指定)区分开来</p>
+<p>当内核exec解释器(/home/sar/bin/echoarg)时,argv[0]是该解释器的 pathname,argv[1]是解释器文件中的可选参数</p>
+<h2 id="函数system"><a href="#函数system" class="headerlink" title="函数system"></a>函数system</h2><p>ISO C定义了system函数,但是其操作对系统的依赖性很强</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">system</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *cmdstring)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: (see below)</span></div></pre></td></tr></table></figure>
+<p>如果 cmdstring是一个空指针,则仅当命令处理程序可用时, system返回非0值,这一特征可以确定在一个给定的操作系统上是否支持 system函数。在UNIX中, system总是可用的。</p>
+<p>因为 system在其实现中调用了fork、exec和 waitpid,因此有3种返回值<br>(1)fork失败或者 waitpid返回除 EINTR之外的出错,则 system返回-1,并且设置errno以指示错误类型。<br>(2)如果 exec失败(表示不能执行shel1),则其返回值如同 shell执行了exit(127)一样<br>(3)否则所有3个函数(fork、exec和 waitpid)都成功,那么 system的返回值是 shell的终止状态,其格式已在 waitpid中说明。</p>
+<p>使用 system而不是直接使用fork和exec的优点是: system进行了所需的各种出错处理以及各种信号处理</p>
+<h2 id="进程会计"><a href="#进程会计" class="headerlink" title="进程会计"></a>进程会计</h2><p>大多数UNIX系统提供了一个选项以进行进程会计( process accounting)处理。启用该选项后,每当进程结束时内核就写一个会计记录。典型的会计记录包含总量较小的二进制数据,一般包括命令名、所使用的CPU时间总量、用户ID和组ID、启动时间等。</p>
+<p>一个至今没有说明的函数(acct)启用和禁用进程会计。唯一使用这一函数的是 accton(8)命令(这是在几种平台上都类似的少数几条命令中的一条)。超级用户执行一个带路径名参数的accton命令启用会计处理。会计记录写到指定的文件中</p>
+<p>会计记录结构定义在头文件<sys acct.h="">中，每个系统都有不同，但是基本样式如下：</sys></p>
+<p><img src="https://data2.liuin.cn/2018-05-01-15251417041152.jpg" alt=""></p>
+<p>会计记录所需的各个数据(各CPU时间、传输的字符数等)都由内核保存在进程表中,并在个新进程被创建时初始化(如fork之后在子进程中)。进程终止时写一个会计记录。</p>
+<p>这产生两个后果:</p>
+<p>第一,我们不能获取永远不终止的进程的会计记录。像init这样的进程在系统生命周期中直在运行,并不产生会计记录。这也同样适合于内核守护进程,它们通常不会终止<br>第二,在会计文件中记录的顺序对应于进程终止的顺序,而不是它们启动的顺序。</p>
+<h2 id="用户标识"><a href="#用户标识" class="headerlink" title="用户标识"></a>用户标识</h2><p>任一进程都可以得到其实际用户ID和有效用户ID及组ID。但是,我们有时希望找到运行该程序用户的登录名。</p>
+<p>系统通常记录用户登录时使用的名字(见68节),用get1ogin函数可以获取此登录名。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">getlogin</span><span class="params">(<span class="keyword">void</span>)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to string giving login name if OK, NULL on error</span></div></pre></td></tr></table></figure>
+<p>如果调用此函数的进程没有连接到用户登录时所用的终端,则函数会失败。通常称这些进程为守护进程(daemon)</p>
+<h2 id="进程调度"><a href="#进程调度" class="headerlink" title="进程调度"></a>进程调度</h2><p>UNX系统历史上对进程提供的只是基于调度优先级的粗粒度的控制。调度策略和调度优先级是由内核确定的。<strong>进程可以通过调整nice值选择以更低优先级运行</strong>(通过调整nice值降低它对CPU的占有,因此该进程是“友好的”)。只有特权进程允许提高调度权限</p>
+<p>Single UNIX Specification中nice值的范围在0~(2*NZERO)-1之间,有些实现支持0~2*NERO。nice值越小,优先级越高。虽然这看起来有点倒退,但实际上是有道理的:你越友好,你的调度优先级就越低。 NERO是系统默认的nice值。</p>
+<p>进程可以通过nice函数获取或更改它的nice值。使用这个函数,进程只能影响自己的nce值,不能影响任何其他进程的nice值</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">nice</span><span class="params">(<span class="keyword">int</span> incr)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: new nice value − NZERO if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>getpriority函数可以像nice函数那样用于获取进程的nice值,但是 getpriority还可以获取一组相关进程的nice值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/resource.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getpriority</span><span class="params">(<span class="keyword">int</span> which, <span class="keyword">id_t</span> who)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: nice value between −NZERO and NZERO−1 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>setpriority函数可用于为进程、进程组和属于特定用户ID的所有进程设置优先级</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/resource.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setpriority</span><span class="params">(<span class="keyword">int</span> which, <span class="keyword">id_t</span> who, <span class="keyword">int</span> value)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<h2 id="进程时间"><a href="#进程时间" class="headerlink" title="进程时间"></a>进程时间</h2><p>我们可以度量的3个时间:墙上时钟时间、用户CPU时间和系统CPU时间。任一进程都可调用 times函数获得它自己以及已终止子进程的土述值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/times.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">clock_t</span> times(<span class="keyword">struct</span> tms *buf );</div><div class="line"></div><div class="line"><span class="comment">// Returns: elapsed wall clock time in clock ticks if OK, −1 on error</span></div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;《UNIX环境高级编程》第8章 进程控制 笔记&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>APUE 进程环境</title>
+    <link href="https://www.liuin.cn/2018/04/29/APUE-%E8%BF%9B%E7%A8%8B%E7%8E%AF%E5%A2%83/"/>
+    <id>https://www.liuin.cn/2018/04/29/APUE-进程环境/</id>
+    <published>2018-04-29T10:30:25.000Z</published>
+    <updated>2018-04-30T08:06:52.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>《UNIX环境高级编程》第7章 进程环境 笔记</p>
+<a id="more"></a>
+<h2 id="main函数"><a href="#main函数" class="headerlink" title="main函数"></a>main函数</h2><p>C程序总是从main函数开始执行，main函数的原型是：</p>
+<p><code>int main(int argc, char *argv);</code></p>
+<p>其中，argc是命令行参数的数目，argv是指向参数的各个指针所构成的数组</p>
+<p>当内核执行C程序时(使用一个exec函数),在调用main前先调用一个特殊的启动例程。可执行程序文件将此启动例程指定为程序的起始地址—这是由连接编辑器设置的,而连接编辑器则由C编译器调用。启动例程从内核取得命令行参数和环境变量值,然后为按上述方式调用main函数做好安排。</p>
+<h2 id="进程终止"><a href="#进程终止" class="headerlink" title="进程终止"></a>进程终止</h2><p>有8种方法使得进程终止(termination)，其中5种为正常终止：</p>
+<ol>
+<li>从main返回</li>
+<li>调用exit</li>
+<li>调用_exit或_Exit</li>
+<li>最后一个线程从其启动例程返回</li>
+<li>从最后一个线程调用 pthread_exit</li>
+</ol>
+<p>异常终止有3种方式,它们是:</p>
+<ol>
+<li>调用 abort</li>
+<li>接到一个信号</li>
+<li>最后一个线程对取消请求做出响应</li>
+</ol>
+<blockquote>
+<p>退出函数</p>
+</blockquote>
+<p>3个函数用于正常终止一个程序:_exit和_Exit立即进入内核,exit则先执行一些清理处理,然后返回内核。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">exit</span><span class="params">(<span class="keyword">int</span> status)</span></span>; </div><div class="line"><span class="keyword">void</span> _Exit(<span class="keyword">int</span> status);</div><div class="line"> </div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">void</span> _exit(<span class="keyword">int</span> status);</div></pre></td></tr></table></figure>
+<p><code>exit</code>函数总是执行一个标准I/O库的清理关闭操作:对于所有打开流调用fc1ose函数。这造成输出缓冲中的所有数据都被冲洗(写到文件上)</p>
+<p>3个退出函数都带一个整型参数,称为终止状态(或退出状态, exit status)。大多数UNIX系统 shell都提供检查进程终止状态的方法。</p>
+<blockquote>
+<p>函数atexit</p>
+</blockquote>
+<p>按照ISO C的规定,一个进程可以登记多至32个函数,这些函数将由exit自动调用。我们称这些函数为终止处理程序( exit handler),并调用 atexit函数来登记这些函数。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdlib.h&gt;</div><div class="line"></div><div class="line">int atexit(void (*func)(void));</div><div class="line"></div><div class="line">// Returns: 0 if OK, nonzero on error</div></pre></td></tr></table></figure>
+<p>其中, <code>atexit</code>的参数是一个函数地址,当调用此函数时无需向它传递任何参数,也不期望它返回一个值。exit调用这些函数的顺序与它们登记时候的顺序相反。同一函数如若登记多次也会被调用多次。</p>
+<p>exit首先调用各终止程序，然后关闭（通过fclose）所有打开的流</p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15250569958373.jpg" alt=""></p>
+<p>注意,内核使程序执行的唯一方法是调用一个eXec函数。进程自愿终止的唯一方法是显式或隐式地(通过调用exit)调用exit或Exit。进程也可非自愿地由一个信号使其终止</p>
+<p>atexit函数有点像析构函数的意思</p>
+<h2 id="命令行参数"><a href="#命令行参数" class="headerlink" title="命令行参数"></a>命令行参数</h2><p>当执行一个程序时,调用exec的进程可将命令行参数传递给该新程序。</p>
+<p>ISO C和POSIX.1都要求argv[argc]是一个空指针。这就使我们可以将参数处理循环改写为</p>
+<p><code>for(i = 0; argv[i] != NULL; i++)</code></p>
+<h2 id="环境表"><a href="#环境表" class="headerlink" title="环境表"></a>环境表</h2><p>每个程序都接收到一张环境表。与参数表一样,<strong>环境表也是一个字符指针数组</strong>,其中每个指针包含一个以null结束的C字符串的地址。全局变量 environ则包含了该指针数组的地址</p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15250572321583.jpg" alt=""></p>
+<h2 id="C程序的存储空间布局"><a href="#C程序的存储空间布局" class="headerlink" title="C程序的存储空间布局"></a>C程序的存储空间布局</h2><p>C程序一直由以下几个部分组成：</p>
+<ul>
+<li>正文段。这是由CPU执行的机器指令部分。通常,正文段是可共享的</li>
+<li>初始化数据段。通常将此段称为数据段,它包含了程序中需明确地赋初值的变量</li>
+<li>未初始化数据段。通常将此段称为bss段,这一名称来源于早期汇编程序一个操作符,意思是“由符号开始的块”( block started by symbol),在程序开始执行之前,<strong>内核将此段中的数据初始化为0或空指针</strong>。</li>
+<li>栈。自动变量以及每次函数调用时所需保存的信息都存放在此段中。</li>
+<li>堆。通常在堆中进行动态存储分配。</li>
+</ul>
+<p><img src="https://data2.liuin.cn/2018-04-30-15250574049036.jpg" alt=""></p>
+<p>栈顶和堆顶的虚拟地址空间很大。</p>
+<p>未初始化数据段的内容并不存放在磁盘程序文件中。其原因是,内核在程序开始运行前将它们都设置为0。需要存放在磁盘程序文件中的段只有正文段和初始化数据段</p>
+<h2 id="共享库"><a href="#共享库" class="headerlink" title="共享库"></a>共享库</h2><p>共享库使得<strong>可执行文件中不再需要包含公用的库函数</strong>,而只需在所有进程都可引用的存储区中保存这种库例程的一个副本。程序第一次执行或者第一次调用某个库函数时,<strong>用动态链接方法将程序与共享库函数相链接</strong>。这减少了每个可执行文件的长度,但增加了一些运行时间开销。这种时间开销发生在该程序第一次被执行时,或者每个共享库函数第一次被调用时。共享库的另一个优点是<strong>可以用库函数的新版本代替老版本而无需对使用该库的程序重新连接编辑</strong>(假定参数的数目和类型都没有发生改变)</p>
+<h2 id="存储空间分配"><a href="#存储空间分配" class="headerlink" title="存储空间分配"></a>存储空间分配</h2><p>ISO C说明了3个用于存储空间动态分配的函数</p>
+<ol>
+<li>ma11oc,分配指定字节数的存储区。此存储区中的初始值不确定。</li>
+<li>cal1oc,为指定数量指定长度的对象分配存储空间。该空间中的每一位(bit)都初始化为0</li>
+<li>rea11oc,增加或减少以前分配区的长度。当增加长度时,可能需将以前分配区的内容移到另一个足够大的区域,以便在尾端提供增加的存储区,而新增区域内的初始值则不确定。</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> *<span class="title">malloc</span><span class="params">(<span class="keyword">size_t</span> size)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> *<span class="title">calloc</span><span class="params">(<span class="keyword">size_t</span> nobj, <span class="keyword">size_t</span> size)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> *<span class="title">realloc</span><span class="params">(<span class="keyword">void</span> *ptr, <span class="keyword">size_t</span> newsize)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// All three return: non-null pointer if OK, NULL on error</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">free</span><span class="params">(<span class="keyword">void</span> *ptr)</span></span>;</div></pre></td></tr></table></figure>
+<p>这3个分配函数所返回的指针一定是适当对齐的,使其可用于任何数据对象。</p>
+<p>函数free释放ptr指向的存储空间。被释放的空间通常被送入可用存储区池,以后,可在用上述3个分配函数时再分配。</p>
+<p>这些分配例程通常用sbrk(2)系统调用实现。该系统调用扩充(或缩小)进程的堆。</p>
+<h2 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h2><p>环境字符串的形式是 <code>name=value</code></p>
+<p>UNIX内核并不查看这些字符串,它们的解释完全取决于各个应用程序。</p>
+<p>可以使用getenv函数获得环境变量的值：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">getenv</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to value associated with name, NULL if not found</span></div></pre></td></tr></table></figure>
+<p>此函数返回一个指针,它指向<code>name=value</code>字符串中的 value。</p>
+<p>设置环境变量的三个函数:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">putenv</span><span class="params">(<span class="keyword">char</span> *str)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, nonzero on error</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setenv</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">const</span> <span class="keyword">char</span> *value, <span class="keyword">int</span> rewrite)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">unsetenv</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>用法：</p>
+<ul>
+<li>putenv取形式为<code>name=value</code>的字符串,将其放到环境表中。如果name已经存在,则先删除其原来的定义。</li>
+<li>setenv将name设置为value。</li>
+<li>unsetenv删除name的定义</li>
+</ul>
+<h2 id="函数setjmp和longjmp"><a href="#函数setjmp和longjmp" class="headerlink" title="函数setjmp和longjmp"></a>函数setjmp和longjmp</h2><p>在C中,goto语句是不能跨越函数的,而执行这种类型跳转功能的是函数 setjmp和1ongjmp两个函数对于处理发生在很深层嵌套函数调用中的出错情况是非常有用的</p>
+<p>setjmp和1ongjmp函数可以看成一个非局部goto函数。非局部指的是这不是由普通的C语言goto语句在一个函数内实施的跳转,而是在栈上跳过若于调用帧,返回到当前函数调用路径上的某一个函数中。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;setjmp.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setjmp</span><span class="params">(jmp_buf env)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if called directly, nonzero if returning from a call to longjmp</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">longjmp</span><span class="params">(jmp_buf env, <span class="keyword">int</span> val)</span></span>;</div></pre></td></tr></table></figure>
+<h2 id="函数getrlimit和setrlimit"><a href="#函数getrlimit和setrlimit" class="headerlink" title="函数getrlimit和setrlimit"></a>函数getrlimit和setrlimit</h2><p>每个进程都有一组资源限制,其中一些可以用getrlimit和 setrlimit函数查询和更改。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/resource.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getrlimit</span><span class="params">(<span class="keyword">int</span> resource, <span class="keyword">struct</span> rlimit *rlptr)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setrlimit</span><span class="params">(<span class="keyword">int</span> resource, <span class="keyword">const</span> <span class="keyword">struct</span> rlimit *rlptr)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;《UNIX环境高级编程》第7章 进程环境 笔记&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>APUE 系统数据文件和信息</title>
+    <link href="https://www.liuin.cn/2018/04/28/APUE-%E7%B3%BB%E7%BB%9F%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6%E5%92%8C%E4%BF%A1%E6%81%AF/"/>
+    <id>https://www.liuin.cn/2018/04/28/APUE-系统数据文件和信息/</id>
+    <published>2018-04-28T11:26:36.000Z</published>
+    <updated>2018-04-30T08:06:56.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>《UNIX环境高级编程》第6章 系统数据文件和信息 笔记</p>
+<a id="more"></a>
+<h2 id="口令文件"><a href="#口令文件" class="headerlink" title="口令文件"></a>口令文件</h2><p>UNX系统口令文件(POSX1则将其称为用户数据库)包含了如下图所示的各字段,这些字段包含在<pwd.h>中定义的 passwd结构中。</pwd.h></p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15250520434469.jpg" alt=""></p>
+<p>由于历史原因,口令文件是<code>/etc/passwd</code>,而且是一个ASCII文件。字段之间用冒号分隔。</p>
+<p>关于这些信息有以下这些注意事项：</p>
+<ul>
+<li>通常有一个用户名为root的登录项,其用户ID是0(超级用户）</li>
+<li>加密口令包含一个字段，现在出于安全的考虑把加密口令存放在另一个文件中</li>
+<li>口令文件项中的某些字段可能是空。如果加密口令字段为空,这通常就意味着该用户没有口令(不推荐这样做)。 </li>
+<li>shel字段包含了一个可执行程序名,它被用作该用户的登录 shell.若该字段为空,则取系统默认值,通常是<code>/bin/sh</code>。</li>
+<li>为了阻止一个特定用户登录系统,除使用/dev/nu11外,还有若干种替代方法。</li>
+</ul>
+<p>有两个获取口令文件项的函数。在给出用户登录名或数值用户ID后,这两个函数就能查看相关项。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pwd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">struct</span> passwd *<span class="title">getpwuid</span><span class="params">(<span class="keyword">uid_t</span> uid)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">struct</span> passwd *<span class="title">getpwnam</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: pointer if OK, NULL on error</span></div></pre></td></tr></table></figure>
+<p>如果想要查看整个口令文件，下面3个函数可以用于此目的：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pwd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">struct</span> passwd *<span class="title">getpwent</span><span class="params">(<span class="keyword">void</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer if OK, NULL on error or end of ﬁle</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">setpwent</span><span class="params">(<span class="keyword">void</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">endpwent</span><span class="params">(<span class="keyword">void</span>)</span></span>;</div></pre></td></tr></table></figure>
+<p>调用<code>getpwent</code>时,它返回口令文件中的下一个记录项。函数<code>setpwent</code>反绕它所使用的文件（倒回到所有口令文件的开始）, <code>endpwent</code>则关闭这些文件</p>
+<h2 id="阴影口令"><a href="#阴影口令" class="headerlink" title="阴影口令"></a>阴影口令</h2><p>加密口令是经单向加密算法处理过的用户口令副本。因为此算法是单向的,所以不能从加密口令猜测到原来的口令。</p>
+<p>现在,某些系统将加密口令存放在另个通常称为阴影口令( shadow password)的文件中。该文件至少要包含用户名和加密囗令。</p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15250527613967.jpg" alt=""></p>
+<p>阴影口令文件不应是一般用户可以读取的。仅有少数几个程序需要访问加密口令,如1ogin(1)和 passwd(1),这些程序常常是设置用户ID为root的程序。</p>
+<h2 id="组文件"><a href="#组文件" class="headerlink" title="组文件"></a>组文件</h2><p>UNIX组文件中包含如下的字段，这些字段在<grp.h>所定义的group的数据结构中</grp.h></p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15250528423155.jpg" alt=""></p>
+<p>查看组名或数值组ID：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;grp.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">struct</span> group *<span class="title">getgrgid</span><span class="params">(<span class="keyword">gid_t</span> gid)</span></span>; </div><div class="line"><span class="function"><span class="keyword">struct</span> group *<span class="title">getgrnam</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: pointer if OK, NULL on error</span></div></pre></td></tr></table></figure>
+<p>和用户信息一样查看所有组文件函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;grp.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">struct</span> group *<span class="title">getgrent</span><span class="params">(<span class="keyword">void</span>)</span></span>; </div><div class="line"><span class="comment">// Returns: pointer if OK, NULL on error or end of ﬁle</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">setgrent</span><span class="params">(<span class="keyword">void</span>)</span></span>; </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">endgrent</span><span class="params">(<span class="keyword">void</span>)</span></span>;</div></pre></td></tr></table></figure>
+<h2 id="附属组ID"><a href="#附属组ID" class="headerlink" title="附属组ID"></a>附属组ID</h2><p>我们不仅可以属于口令文件记录项中组ID所对应的组,也可属于多至16个另外的组。文件访问权限检查相应被修改为:不仅将进程的有效组ID与文件的组ID相比较,而且也将所有附属组ID与文件的组ID进行比较</p>
+<p>使用附属组ID的优点是不必再显式地经常更改组。一个用户会参与多个项目,因此也就要同时属于多个组,此类情况是常有的。</p>
+<p>以下3个函数用于获取和设置附属组ID</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getgroups</span><span class="params">(<span class="keyword">int</span> gidsetsize, <span class="keyword">gid_t</span> grouplist[])</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: number of supplementary group IDs if OK, −1 on error</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;grp.h&gt; /* on Linux */ </span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; /* on FreeBSD, Mac OS X, and Solaris */ </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setgroups</span><span class="params">(<span class="keyword">int</span> ngroups, <span class="keyword">const</span> <span class="keyword">gid_t</span> grouplist[])</span></span>; </div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;grp.h&gt; /* on Linux and Solaris */ </span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; /* on FreeBSD and Mac OS X */ </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">initgroups</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *username, <span class="keyword">gid_t</span> basegid)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p><code>getgroups</code>将进程所属用户的各附属组ID填写到数组<code>grouplist</code>中,填写入该数组的附属组ID数最多为 <code>gidsetsize</code>个。实际填写到数组中的附属组ID数由函数返回。</p>
+<p><code>setgroups</code>可由超级用户调用以便为调用进程设置附属组ID表。<code>grouplist</code>是组ID数组,而 <code>ngroups</code>说明了数组中的元素数。 <code>ngroups</code>的值不能大于 NGROUPS_MAX.</p>
+<h2 id="登录账户记录"><a href="#登录账户记录" class="headerlink" title="登录账户记录"></a>登录账户记录</h2><p>大多数UNIX系统都提供下列两个数据文件:utmp文件记录当前登录到系统的各个用户;wtmp文件跟踪各个登录和注销事件。</p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15250533552178.jpg" alt=""></p>
+<h2 id="系统标识"><a href="#系统标识" class="headerlink" title="系统标识"></a>系统标识</h2><p>有一个uname函数,它返回与主机和操作系统有关的信息</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/utsname.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">uname</span><span class="params">(<span class="keyword">struct</span> utsname *name)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: non-negative value if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<h2 id="时间和日期例程"><a href="#时间和日期例程" class="headerlink" title="时间和日期例程"></a>时间和日期例程</h2><p>由UNIX内核提供的基本时间服务是计算自协调世界时公元1970年1月1日00：00：00这一特定时间以来经过的秒数。</p>
+<p>用数据结构<code>time_t</code>表示，据类型 time_t表示的,我们称它们为日历时间。日历时间包括时间和日期。UNIX在这方面与其他操作系统的区别是:(a)以协调统一时间而非本地时间计时;(b)可自动进行转换,如变换到夏令时;(c)将时间和日期作为一个量值保存。</p>
+<p><code>time</code>函数返回当前时间和日期</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">time_t</span> time(<span class="keyword">time_t</span> *calptr);</div><div class="line"></div><div class="line"><span class="comment">// Returns: value of time if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>时间值作为函数值返回。如果参数非空,则时间值也存放在由calptr指向的单元内</p>
+<p>关于日期和时间，有许多相关的函数，以下列出其中一些函数的关系：</p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15250538112744.jpg" alt=""></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;《UNIX环境高级编程》第6章 系统数据文件和信息 笔记&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
+    
+  </entry>
   
   <entry>
     <title>APUE 标准I/O库</title>
@@ -422,7 +835,7 @@
     <link href="https://www.liuin.cn/2018/04/19/%E3%80%8AEffective-C-%E3%80%8B-%E7%AC%94%E8%AE%B0/"/>
     <id>https://www.liuin.cn/2018/04/19/《Effective-C-》-笔记/</id>
     <published>2018-04-19T08:18:10.000Z</published>
-    <updated>2018-04-25T15:03:08.000Z</updated>
+    <updated>2018-04-29T11:30:54.000Z</updated>
     
     <content type="html"><![CDATA[<p>《Effective C++》的副标题是改善程序与设计的55个具体做法。这本书用比较多的示例展示了很多改善C++程序的方法，值得一读。</p>
 <a id="more"></a>
@@ -451,7 +864,7 @@
 <li>当 const和non- const成员函数有着实质等价的实现时,令non- const版本调用 const版本可避免代码重复。</li>
 </ul>
 </blockquote>
-<h3 id="条款04：确认确认对象使用前已被初始化"><a href="#条款04：确认确认对象使用前已被初始化" class="headerlink" title="条款04：确认确认对象使用前已被初始化"></a>条款04：确认确认对象使用前已被初始化</h3><p>在某些语境下x保证被初始化(为0),但在其他语境中却不保证。<strong>读取未初始化的值会导致不明确行为</strong></p>
+<h3 id="条款04：确认对象使用前已被初始化"><a href="#条款04：确认对象使用前已被初始化" class="headerlink" title="条款04：确认对象使用前已被初始化"></a>条款04：确认对象使用前已被初始化</h3><p>在某些语境下x保证被初始化(为0),但在其他语境中却不保证。<strong>读取未初始化的值会导致不明确行为</strong></p>
 <p>对于内置类型之外的东西，初始化的任务落在了构造函数的身上。我们要确保每一个构造函数都将对象的每一个成员初始化。但是我们很容易混淆复制和初始化的而例子，比如：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">class</span> A &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    A(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; a, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; b);</div><div class="line"><span class="keyword">private</span>:</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> thea;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> theb;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">A::A(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; a, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; b)</div><div class="line">&#123;</div><div class="line">    thea = a;   <span class="comment">// 这些都是赋值，而非初始化</span></div><div class="line">    theb = b;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>C++规定,对象的成员变量的初始化动作发生在进入构造函数本体之前。所以构造函数最好使用成员初值列进行初始化。</p>
@@ -582,8 +995,42 @@
 <li>以独立语句将 newed对象存储于(置入)智能指针内。如果不这样做,一旦异常被抛出,有可能导致难以察觉的资源泄漏。</li>
 </ul>
 </blockquote>
-<h2 id="设计与声明"><a href="#设计与声明" class="headerlink" title="设计与声明"></a>设计与声明</h2><h3 id="条款18：让接口容易被正确使用，不容易被误用"><a href="#条款18：让接口容易被正确使用，不容易被误用" class="headerlink" title="条款18：让接口容易被正确使用，不容易被误用"></a>条款18：让接口容易被正确使用，不容易被误用</h3><blockquote>
+<h2 id="设计与声明"><a href="#设计与声明" class="headerlink" title="设计与声明"></a>设计与声明</h2><h3 id="条款18：让接口容易被正确使用，不容易被误用"><a href="#条款18：让接口容易被正确使用，不容易被误用" class="headerlink" title="条款18：让接口容易被正确使用，不容易被误用"></a>条款18：让接口容易被正确使用，不容易被误用</h3><p>欲开发一个“容易被正确使用,不容易被误用”的接口,首先必须考虑客户可能做出什么样的错误。</p>
+<p>预防客户错误的另一个办法是,限制类型内什么事可做,什么事不能做。常见的限制是加上 const。例如，以const修饰operator* 的返回类型可以阻止客户因“用户自定义类型”而犯错：</p>
+<p><code>if( a * b = c ) ...</code>原意应该为做一次比较动作</p>
+<p>下面是另一个一般性准则“让 types容易被正确使用,不容易被误用”的表现形式“除非有好理由,否则应该尽量令你的 types的行为与内置 types一致”。客户已经知道像int这样的type有些什么行为,所以你应该努力让你的 types在合样合理的前提下也有相同表现。</p>
+<blockquote>
 <p>重点</p>
+<ul>
+<li>好的接口很容易被正确使用,不容易被误用。你应该在你的所有接口中努力达成这些性质。</li>
+<li>“促进正确使用”的办法包括接口的一致性,以及与内置类型的行为兼容。</li>
+<li>“阻止误用”的办法包括建立新类型、限制类型上的操作,束缚对象值,以及消除客户的资源管理责任</li>
+</ul>
+</blockquote>
+<h3 id="条款19：设计class犹如设计type"><a href="#条款19：设计class犹如设计type" class="headerlink" title="条款19：设计class犹如设计type"></a>条款19：设计class犹如设计type</h3><p>设计优秀的 classes是一项艰巨的工作,因为设计好的 types是一项艰巨的工作。好的 types有自然的语法,直观的语义,以及一或多个高效实现品。在C++中,一个不良规划下的 class定义恐怕无法达到上述任何一个目标。甚至 class的成员函数的效率都有可能受到它们“如何被声明”的影响。</p>
+<p>设计一个class需要思考如下的一些问题：</p>
+<ul>
+<li>新type的对象应该如何被创建和销毁?这会影响到你的 class的构造函数和析构函数以及内存分配函数和释放函数( operator new, operator new[], operator delete和 operator delete[])的设计,当然前提是如果你打算撰写它们。</li>
+<li>对象的初始化和对象的赋值该有什么样的差别?这个答案决定你的构造函数和赋值操作符的行为,以及其间的差异。</li>
+<li>新type的对象如果被 passed by value(以值传递),意味着什么?记住,copy构造函数用来定义一个type的 pass-by-value该如何实现。</li>
+<li>什么是新“type”的合法值</li>
+<li>你的新type需要配合某个继承图系( inheritance graph)吗?</li>
+</ul>
+<h3 id="条款20：宁以pass-by-reference-to-const-替换-pass-by-value"><a href="#条款20：宁以pass-by-reference-to-const-替换-pass-by-value" class="headerlink" title="条款20：宁以pass-by-reference-to-const 替换 pass-by-value"></a>条款20：宁以pass-by-reference-to-const 替换 pass-by-value</h3><p>一般情况下，使用pass-by-reference-to-const能够调用更少的构造函数和析构函数，从而使得程序更加高效。</p>
+<p>以by reference方式传递参数也可以避免 slicing(对象切割)问题。当一个 derived class对象以 by value方式传递并被视为一个 base class对象, base class的copy构造函数会被调用,而“造成此对象的行为像个 derived class对象”的那些特化性质全被切割掉了,仅仅留下一个 base class对象。</p>
+<p>但是如果你有个对象属于内置类型(例如int), pass by value往往比 pass by reference的效率高些。对内置类型而言,当你有机会选择采用 pass-by-value或 pass-by-reference-to-const时,选择 pass-by-value并非没有道理。这个忠告也适用于STL的迭代器和函数对象,因为习惯上它们都被设计为passed by value。迭代器和函数对象的实践者有责任看看它们是否高效且不受切割问题</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>尽量以 pass-by-reference-to-const替换 pass-by-value。前者通常比较高效,并可避免切割问题( slicing problem)</li>
+<li>以上规则并不适用于内置类型,以及STL的迭代器和函数对象。对它们而言,pas- by-value往往比较适当。</li>
+</ul>
+</blockquote>
+<h3 id="条款21：必须返回对象的时，别妄想返回其reference"><a href="#条款21：必须返回对象的时，别妄想返回其reference" class="headerlink" title="条款21：必须返回对象的时，别妄想返回其reference"></a>条款21：必须返回对象的时，别妄想返回其reference</h3><blockquote>
+<p>重点</p>
+<ul>
+<li></li>
+</ul>
 </blockquote>
 ]]></content>
     
@@ -3621,307 +4068,6 @@
       <category term="DP" scheme="https://www.liuin.cn/tags/DP/"/>
     
       <category term="LeetCode" scheme="https://www.liuin.cn/tags/LeetCode/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>LaTeX 数学公式</title>
-    <link href="https://www.liuin.cn/2018/03/16/LaTeX-%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F/"/>
-    <id>https://www.liuin.cn/2018/03/16/LaTeX-数学公式/</id>
-    <published>2018-03-16T09:16:44.000Z</published>
-    <updated>2018-03-16T11:03:38.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>平时写Markdown的时候难免会遇到一些用数学公式的情况，这里总结一些常用数学公式的写法。</p>
-<a id="more"></a>
-<h2 id="数学结构"><a href="#数学结构" class="headerlink" title="数学结构"></a>数学结构</h2><h3 id="上下标"><a href="#上下标" class="headerlink" title="上下标"></a>上下标</h3><p>常用的上下标结构</p>
-<p><img src="https://data2.liuin.cn/2018-03-16-15211921156811.jpg" alt=""></p>
-<table>
-<thead>
-<tr>
-<th>公式</th>
-<th>符号</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>$A_{ij} = 2^{i+j}$</code></td>
-<td>$A_{ij} = 2^{i+j}$</td>
-</tr>
-<tr>
-<td><code>$A = 90^\circ$</code></td>
-<td>$A = 90^\circ$</td>
-</tr>
-<tr>
-<td><code>$\int_0^1 f(t) \dif t = \iint_D g(x, y) \dif x \dif y$</code></td>
-<td>$\int_0^1 f(t) \cos t = \iint_D g(x, y) \cos x \sin y$</td>
-</tr>
-</tbody>
-</table>
-<h3 id="上下画线与花括号"><a href="#上下画线与花括号" class="headerlink" title="上下画线与花括号"></a>上下画线与花括号</h3><ul>
-<li>\overline和\underline命令可用来在公式的上方和下方划横线</li>
-<li>\overbrace和\underbrace带上花括号</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>公式</th>
-<th>符号</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>$\overline{a+b} = \overline a \overline b$</code></td>
-<td>$\overline{a+b} = \overline a \overline b$</td>
-</tr>
-<tr>
-<td><code>$\overbrace {a+b+c} = \underbrace{1+2+3}$</code></td>
-<td>$\overbrace {a+b+c} = \underbrace{1+2+3}$</td>
-</tr>
-</tbody>
-</table>
-<h3 id="分式"><a href="#分式" class="headerlink" title="分式"></a>分式</h3><p>分式使用<code>\face{分子}{分母}</code>得到</p>
-<table>
-<thead>
-<tr>
-<th>公式</th>
-<th>符号</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>$\frac{1}{\frac 12 (a+b)} = \frac{2}{a+b}$</code></td>
-<td>$\frac{1}{\frac 12 (a+b)} = \frac{2}{a+b}$</td>
-</tr>
-</tbody>
-</table>
-<h3 id="根式"><a href="#根式" class="headerlink" title="根式"></a>根式</h3><p>根式是又一种常见的数学结构,用单参数的命令<code>\sqrt</code>得到,同时可以带一个可选参数,表示开方的次数</p>
-<table>
-<thead>
-<tr>
-<th>公式</th>
-<th>符号</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>$\sqrt[n] {\frac{x^2 + \sqrt 2}{x+y}}$</code></td>
-<td>$\sqrt[n] {\frac{x^2 + \sqrt 2}{x+y}}$</td>
-</tr>
-</tbody>
-</table>
-<h3 id="矩阵"><a href="#矩阵" class="headerlink" title="矩阵"></a>矩阵</h3><p>各种外括号不同的矩阵：</p>
-<p><img src="https://data2.liuin.cn/2018-03-16-15211932205959.jpg" alt=""></p>
-<p>在矩阵环境中,不同的列用符号&amp;分隔,行用\分隔,矩阵每列中元素居中对齐</p>
-<table>
-<thead>
-<tr>
-<th>公式</th>
-<th>符号</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>$ A = \begin{pmatrix} a &amp; b &amp; c \\ 0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; a \end{pmatrix}$</code></td>
-<td>$ A = \begin {pmatrix} a &amp; b &amp; c \\ 0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; a \end {pmatrix}$</td>
-</tr>
-<tr>
-<td><code>$ A = \begin{bmatrix} a_{11} &amp; \dots &amp; a_{1n} \\  &amp; \ddots &amp; \vdots \\ 0 &amp; &amp; a_{nn} \end{bmatrix} $</code></td>
-<td>$ A = \begin{bmatrix} a_{11} &amp; \dots &amp; a_{1n} \\  &amp; \ddots &amp; \vdots \\ 0 &amp; &amp; a_{nn} \end{bmatrix} $</td>
-</tr>
-</tbody>
-</table>
-<h2 id="符号与类型"><a href="#符号与类型" class="headerlink" title="符号与类型"></a>符号与类型</h2><h3 id="字母表和普通符号"><a href="#字母表和普通符号" class="headerlink" title="字母表和普通符号"></a>字母表和普通符号</h3><p><img src="https://data2.liuin.cn/2018-03-16-15211956280206.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-03-16-15211956379753.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-03-16-15211956477483.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-03-16-15211956663623.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-03-16-15211956803907.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-03-16-15211956929506.jpg" alt=""></p>
-<h3 id="数学算子"><a href="#数学算子" class="headerlink" title="数学算子"></a>数学算子</h3><p><img src="https://data2.liuin.cn/2018-03-16-15211957120206.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-03-16-15211957244734.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-03-16-15211957348221.jpg" alt=""></p>
-<h3 id="二元运算符与关系符"><a href="#二元运算符与关系符" class="headerlink" title="二元运算符与关系符"></a>二元运算符与关系符</h3><p><img src="https://data2.liuin.cn/2018-03-16-15211957624199.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-03-16-15211957708521.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-03-16-15211957833150.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-03-16-15211957967157.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-03-16-15211958049898.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-03-16-15211958460225.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-03-16-15211958550071.jpg" alt=""></p>
-<h3 id="括号与定界符"><a href="#括号与定界符" class="headerlink" title="括号与定界符"></a>括号与定界符</h3><p><img src="https://data2.liuin.cn/2018-03-16-15211959051369.jpg" alt=""></p>
-<h3 id="标点"><a href="#标点" class="headerlink" title="标点"></a>标点</h3><p><img src="https://data2.liuin.cn/2018-03-16-15211959300033.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-03-16-15211959403756.jpg" alt=""></p>
-<h2 id="在Hexo中使用LaTeX编辑数学公式"><a href="#在Hexo中使用LaTeX编辑数学公式" class="headerlink" title="在Hexo中使用LaTeX编辑数学公式"></a>在Hexo中使用LaTeX编辑数学公式</h2><p>在Hexo中编辑数学公式一般用的是<a href="https://github.com/hexojs/hexo-math" target="_blank" rel="external">这个</a>插件</p>
-<p>其中有一个比较坑的点就是，不能够识别<code>\</code>和<code>_</code>这些符号，因为其在Markdown语法中也有一些意义，所以在某些情况下使用的时候还要在前面加一个<code>\</code>进行转义：</p>
-<ul>
-<li>后面接<code>,</code> 各种括号的时候，前面<code>_</code>所表示符号前面要加<code>\</code>转义</li>
-</ul>
-<p>另外可以更换markdown的渲染引擎，参考<a href="https://jdhao.github.io/2017/10/06/hexo-markdown-latex-equation/" target="_blank" rel="external">这里</a></p>
-<p>主要参考：《LaTeX 入门》</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;平时写Markdown的时候难免会遇到一些用数学公式的情况，这里总结一些常用数学公式的写法。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="开发随笔" scheme="https://www.liuin.cn/categories/%E5%BC%80%E5%8F%91%E9%9A%8F%E7%AC%94/"/>
-    
-    
-      <category term="LaTeX" scheme="https://www.liuin.cn/tags/LaTeX/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>LeetCode 题解——Substring with Concatenation of All Words</title>
-    <link href="https://www.liuin.cn/2018/03/15/LeetCode-%E9%A2%98%E8%A7%A3%E2%80%94%E2%80%94Substring-with-Concatenation-of-All-Words/"/>
-    <id>https://www.liuin.cn/2018/03/15/LeetCode-题解——Substring-with-Concatenation-of-All-Words/</id>
-    <published>2018-03-15T03:21:04.000Z</published>
-    <updated>2018-03-15T03:22:04.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>LeetCode 题解——Substring with Concatenation of All Words</p>
-<a id="more"></a>
-<h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>给定一个字符串，和一组匹配字符串（vector），其中每一个字符串的长度是相同的，后面的这一组字符串可以形成一个组合，比如[“ab”,”cd”]可以组合成的字符串有：”abcd” “cdab”。题目要求我们在给定的这个字符串中查找出现后面这些组合的子串的位置（给出首字母位置）</p>
-<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>题目中给出的匹配字符串组中每一个字符串的长度是相同的这个条件降低了题目的难度，如果从普通的字符串匹配的思路下手的话，就是每次从原串截取对比的长度是一样的，然后截取的字符串可以分割成几个长度相同的子字符串，我们只要判断这几个字符子串是否都在给出的这组匹配字符串中就行了。</p>
-<p>这里使用两个unordered_map(Hash实现，性能更优)来判断是否都在这组字符串中，第一个map存储匹配字符串组中的字符串和出现的次数（都是1），第二个map存储截取的字符串分割以后的子串（并且在匹配字符串组中）以及其出现的次数，如果其次数大于1，表示截取的这段不符合条件，进行下一次匹配。</p>
-<p>map有两个作用：查找字符串；记录出现次数</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; findSubstring(<span class="built_in">string</span> s, <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt;&amp; words) &#123;</div><div class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; res;</div><div class="line">        <span class="comment">// 用来进行对比的map</span></div><div class="line">        <span class="built_in">unordered_map</span>&lt;<span class="built_in">string</span>, <span class="keyword">int</span>&gt; contrast;</div><div class="line">        <span class="keyword">for</span>(<span class="built_in">string</span> s : words)</div><div class="line">        &#123;</div><div class="line">            contrast[s]++;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">int</span> slen = s.length(), wlen = words[<span class="number">0</span>].length(), wsize = words.size();</div><div class="line">        <span class="comment">// 依次截取一定长度的字符串进行匹配</span></div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;slen-wsize*wlen+<span class="number">1</span>; i++)</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">unordered_map</span>&lt;<span class="built_in">string</span>, <span class="keyword">int</span>&gt; tem;</div><div class="line">            <span class="keyword">int</span> j=<span class="number">0</span>;</div><div class="line">            <span class="keyword">for</span>(; j&lt;wsize; j++)</div><div class="line">            &#123;</div><div class="line">                <span class="comment">// 分割以后的每一个字符串</span></div><div class="line">                <span class="built_in">string</span> stem = s.substr(i+j*wlen, wlen);</div><div class="line">                <span class="comment">// 判断是否在匹配字符串组中</span></div><div class="line">                <span class="keyword">if</span>(contrast.find(stem) != contrast.end())</div><div class="line">                &#123;</div><div class="line">                    tem[stem]++;</div><div class="line">                    <span class="comment">// 出现次数超过1，放弃</span></div><div class="line">                    <span class="keyword">if</span>(tem[stem] &gt; contrast[stem])</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">else</span></div><div class="line">                    <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span>(j == wsize)</div><div class="line">                res.push_back(i);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>更多LeetCode题解，欢迎查看我的<a href="https://github.com/Sixzeroo/LeetCode" target="_blank" rel="external">GitHub项目</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;LeetCode 题解——Substring with Concatenation of All Words&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="算法" scheme="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
-    
-    
-      <category term="LeetCode" scheme="https://www.liuin.cn/tags/LeetCode/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Coursera 吴恩达机器学习 课程笔记</title>
-    <link href="https://www.liuin.cn/2018/03/13/Coursera-%E5%90%B4%E6%81%A9%E8%BE%BE%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/"/>
-    <id>https://www.liuin.cn/2018/03/13/Coursera-吴恩达机器学习-课程笔记/</id>
-    <published>2018-03-13T06:27:40.000Z</published>
-    <updated>2018-03-16T11:01:37.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>Coursera 吴恩达机器学习 课程笔记</p>
-<a id="more"></a>
-<h1 id="监督学习和无监督学习"><a href="#监督学习和无监督学习" class="headerlink" title="监督学习和无监督学习"></a>监督学习和无监督学习</h1><h2 id="监督学习"><a href="#监督学习" class="headerlink" title="监督学习"></a>监督学习</h2><p>维基百科中的定义：</p>
-<blockquote>
-<p>监督式学习（英语：Supervised learning），是一个机器学习中的方法，可以由训练资料中学到或建立一个模式（函数 / learning model），并依此模式推测新的实例。训练资料是由输入物件（通常是向量）和预期输出所组成。函数的输出可以是一个连续的值（称为回归分析），或是预测一个分类标签（称作分类）</p>
-</blockquote>
-<p>在监督学习中, 我们的预测结果可以是连续值, 也可以是离散值. 我们根据这样的属性将监督学习氛围回归问题和分类问题.</p>
-<h3 id="监督学习举例"><a href="#监督学习举例" class="headerlink" title="监督学习举例"></a>监督学习举例</h3><blockquote>
-<p>回归问题</p>
-</blockquote>
-<p>通过给定的一个房子的面积来预测这个房子在市场中的价格. 这里的房子的面积就是特征, 房子的价格就是一个输出值. 为了解决这个问题, 我们获取了大量的房地产数据, 每一条数据都包含房子的面积及其对应价格. 第一, 我们的数据不仅包含房屋的面积, 还包含其对应的价格, 而我们的目标就是通过面积预测房价. 所以这应该是一个监督学习; 其次, 我们的输出数据房价可以看做是连续的值, 所以这个问题是一个回归问题.</p>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208368350754.jpg" alt=""></p>
-<blockquote>
-<p>分类问题</p>
-</blockquote>
-<p>我们的目标应该是要对数据进行分类. 现在我们的数据是有关乳腺癌的医学数据, 它包含了肿瘤的大小以及该肿瘤是良性的还是恶性的. 我们的目标是给定一个肿瘤的大小来预测它是良性还是恶性. 我们可以用0代表良性，1代表恶性. 这就是一个分类问题, 因为我们要预测的是一个离散值. </p>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208368814648.jpg" alt=""></p>
-<p>在这个例子中特征只有一个即瘤的大小。 对于大多数机器学习的问题, 特征往往有多个(上面的房价问题也是, 实际中特征不止是房子的面积). 例如下图， 有“年龄”和“肿瘤大小”两个特征。</p>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208369551948.jpg" alt=""></p>
-<h2 id="无监督学习"><a href="#无监督学习" class="headerlink" title="无监督学习"></a>无监督学习</h2><p>在无监督学习中, 我们的数据并没有给出特定的标签, 例如上面例子中的房价或者是良性还是恶性. 我们目标也从预测某个值或者某个分类变成了寻找数据集中特殊的或者对我们来说有价值结构. </p>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208370522571.jpg" alt=""></p>
-<h3 id="无监督学习举例"><a href="#无监督学习举例" class="headerlink" title="无监督学习举例"></a>无监督学习举例</h3><blockquote>
-<p>新闻分类</p>
-</blockquote>
-<p>Google News搜集网上的新闻，并且根据新闻的主题将新闻分成许多簇, 然后将在同一个簇的新闻放在一起。如图中红圈部分都是关于BP Oil Well各种新闻的链接，当打开各个新闻链接的时候，展现的都是关于BP Oil Well的新闻。</p>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208370968972.jpg" alt=""></p>
-<blockquote>
-<p>根据给定基因将人群分类</p>
-</blockquote>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208371698906.jpg" alt=""></p>
-<h1 id="单变量线性回归"><a href="#单变量线性回归" class="headerlink" title="单变量线性回归"></a>单变量线性回归</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="训练集"><a href="#训练集" class="headerlink" title="训练集"></a>训练集</h3><p>由训练样例(training example)组成的集合就是训练集(training set)</p>
-<h3 id="假设函数"><a href="#假设函数" class="headerlink" title="假设函数"></a>假设函数</h3><p>使用某种学习算法对训练集的数据进行训练, 我们可以得到假设函数(Hypothesis Function)</p>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208382454378.jpg" alt=""></p>
-<p>我们使用如下方法表示假设函数，</p>
-<p>$$ {h_\theta(x)=\theta_0+\theta_1x} $$</p>
-<p>以上这个模型就叫做单变量的线性回归(Linear Regression with One Variable).</p>
-<h2 id="代价函数"><a href="#代价函数" class="headerlink" title="代价函数"></a>代价函数</h2><h3 id="什么是代价函数"><a href="#什么是代价函数" class="headerlink" title="什么是代价函数"></a>什么是代价函数</h3><p>只要我们知道了假设函数, 我们就可以进行预测了. 关键是, 假设函数中有两个未知的量$\theta_0$,$\theta_1$. 当选择不同的$\theta_0$和$\theta_1$时, 我们模型的效果肯定是不一样的. 我们的想法是选择某个$\theta_0$和$\theta_1$，使得对于训练样例$(x,y)$，$h_\theta(x)$最“接近”$y$。越是接近, 代表这个假设函数越是准确, 这里我们选择均方误差来作为衡量标准, 即我们想要每个样例的估计值与真实值之间差的平方的均值最小:（其中$1/2$只是为了我们后面计算方便）</p>
-<p>$$<br>{\mathop{min}\limits_{\theta_0,\theta_1}\frac{1}{2m}\sum_{i=0}^m\left(h_\theta(x^{(i)})-y^{(i)}\right)^2}<br>$$</p>
-<p>记作：</p>
-<p>$${J(\theta_0,\theta_1) = \frac{1}{2m}\sum_{i=0}^m\left(h_\theta(x^{(i)})-y^{(i)}\right)^2 }$$</p>
-<p>这样就得到了我们的代价函数(cost function), 也就是我们的优化目标, 我们想要代价函数最小:</p>
-<p>$$ \mathop{min}\limits_{\theta_0,\theta_1}J(\theta_0,\theta_1)$$</p>
-<h3 id="代价函数和假设函数"><a href="#代价函数和假设函数" class="headerlink" title="代价函数和假设函数"></a>代价函数和假设函数</h3><p>对于不同的$\theta_1$，对应着不同的假设函数$h_\theta(x)$，于是就有了不同的代价函数$J (\theta_1)$的值。将这些点连接起来就可以得到$J(\theta_1)$和$\theta_1$关系的图像：</p>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208395529904.jpg" alt=""></p>
-<p>我们的目标是找到一个$\theta$使得$J(\theta_1)$最小</p>
-<p>如果我们考虑两个变量，能够绘制$J(\theta_0,\theta_1)$的图形如下</p>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208397051963.jpg" alt=""></p>
-<p>由于3D图形不太方便我们研究，我们就使用二维的等高线(上图右上角教授写的contour plots/figures)，这样看上去比较清楚一些。越靠近中心表示$J(\theta_0,\theta_1)$值越小</p>
-<h2 id="梯度下降算法"><a href="#梯度下降算法" class="headerlink" title="梯度下降算法"></a>梯度下降算法</h2><h3 id="梯度下降"><a href="#梯度下降" class="headerlink" title="梯度下降"></a>梯度下降</h3><p>梯度下降算法是一种优化算法, 它可以帮助我们找到一个函数的局部极小值点. 它不仅仅可以用在线性回归模型中, 在机器学习许多其他的模型中也可以使用它. 对于我们现在研究的单变量线性回归来说, 我们想要使用梯度下降来找到最优的$\theta_0$,$\theta_1$。</p>
-<p>它的思想是，首先随机选择两个$\theta_0$,$\theta_1$，不断改变他们的值使得$J(\theta)$最小，最终找到$J(\theta)$的最小点</p>
-<p>可以把梯度下降的过程想象成下山坡, 如果想要尽可能快的下坡, 应该每次都往坡度最大的方向下山.</p>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208400482188.jpg" alt=""></p>
-<p>算法过程：（要注意的是，算法是每次同时改变$\theta_0$和$\theta_1$的值）</p>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208401837391.jpg" alt=""></p>
-<h3 id="梯度和学习率"><a href="#梯度和学习率" class="headerlink" title="梯度和学习率"></a>梯度和学习率</h3><p>学习率$\alpha$会影响梯度下降的幅度。如果$\alpha$的值太小，$\theta$的值每次会变化很小，那么梯度下降就会比较慢；相反，如果$\alpha$过大，$\theta$的值每次就会变化很大，有可能超过最低点，可能导致永远没法到达最低点。</p>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208404559020.jpg" alt=""></p>
-<p>由于随着越来越接近最低点, 相应的梯度(绝对值)也会逐渐减小，所以每次下降程度就会越来越小, 我们并不需要减小$\alpha$的值来减小下降程度。</p>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208404858375.jpg" alt=""></p>
-<h3 id="计算梯度"><a href="#计算梯度" class="headerlink" title="计算梯度"></a>计算梯度</h3><p>将偏导计算出来就得到了完整梯度下降算法：</p>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208405675961.jpg" alt=""></p>
-<p>事实上，用于线性回归的代价函数总是一个凸函数(Convex Function)。这样的函数没有局部最优解，只有一个全局最优解。所以我们在使用梯度下降的时候，总会得到一个全局最优解。</p>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208406207656.jpg" alt=""></p>
-<h1 id="多变量线性回归"><a href="#多变量线性回归" class="headerlink" title="多变量线性回归"></a>多变量线性回归</h1><h2 id="假设函数-1"><a href="#假设函数-1" class="headerlink" title="假设函数"></a>假设函数</h2><p>在之前的单变量线性回归中, 我们的问题只涉及到了房子面积这一个特征。在实际问题中, 会有很多特征. 例如, 除了房子面积, 还有房子的卧室数量, 房子的楼层数, 房子建筑年龄.</p>
-<p>在单变量线性回归中假设函数为：</p>
-<p>$${h_\theta(x)=\theta_0+\theta_1x}$$</p>
-<p>现在对于多变量，可以设其假设函数为：</p>
-<p>$${h_\theta(x)=\theta_0+\theta_1x_1+\theta_2x_2+…+\theta_nx_n}$$</p>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208613808836.jpg" alt=""></p>
-<p>得到其向量表示：</p>
-<p>$${h_\theta(x)=\theta_0x_0+\theta_1x_1+\theta_2x_2+…+\theta_nx_n= \theta^Tx}$$</p>
-<h2 id="梯度下降-1"><a href="#梯度下降-1" class="headerlink" title="梯度下降"></a>梯度下降</h2><p>多变量情况下的梯度下降其实没有区别, 只需要把对应的偏导数项换掉即可</p>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208618844580.jpg" alt=""></p>
-<h2 id="特征处理"><a href="#特征处理" class="headerlink" title="特征处理"></a>特征处理</h2><h3 id="特征缩放"><a href="#特征缩放" class="headerlink" title="特征缩放"></a>特征缩放</h3><p>如果每个特征的范围相差的很大, 梯度下降会很慢. 为了解决这个问题, 我们在梯度下降之前应该对数据做特征归缩放(Feature Scaling)处理, 从而将所有的特征的数量级都在一个差不多的范围之内, 以加快梯度下降的速度.</p>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208619474872.jpg" alt=""></p>
-<p>通常我们需要把特征都缩放到$[-1,1]$(附近)这个范围</p>
-<p><img src="https://data2.liuin.cn/2018-03-12-15208619856026.jpg" alt=""></p>
-<h3 id="均值均一化"><a href="#均值均一化" class="headerlink" title="均值均一化"></a>均值均一化</h3><p>还有一个特征处理的方法就是均值归一化(Mean normalization)</p>
-<p>$${x_i=\frac{x_i-\mu_i}{max-min}}$$</p>
-<h2 id="代价函数与学习率"><a href="#代价函数与学习率" class="headerlink" title="代价函数与学习率"></a>代价函数与学习率</h2><p>我们可以通过画出$\mathop{min}\limits_{\theta}J(\theta)$与迭代次数的关系来观察梯度下降的运行情况，</p>
-<p><img src="https://data2.liuin.cn/2018-03-13-15209095236343.jpg" alt=""></p>
-<p>出现下面两种情况，应该选择更小的学习率$\alpha$，</p>
-<p><img src="https://data2.liuin.cn/2018-03-13-15209096625766.jpg" alt=""></p>
-<p>注意：</p>
-<ul>
-<li>如果$\alpha$足够小，，那么$J(\theta)$在每次迭代之后都会减小</li>
-<li>如果$\alpha$太小， 梯度下降会进行的非常缓慢.</li>
-</ul>
-<p>进行尝试的值：<br><img src="https://data2.liuin.cn/2018-03-13-15209097782077.jpg" alt=""></p>
-<h2 id="多项式回归"><a href="#多项式回归" class="headerlink" title="多项式回归"></a>多项式回归</h2><p>多项式回归(Polynomial Regression)是研究一个因变量与一个或多个自变量间多项式的回归分析方法。如果自变量只有一个时，称为一元多项式回归；如果自变量有多个时，称为多元多项式回归。</p>
-<p>我们可以将房屋的面积作为第一个特征, 面积的平方作为第二个特征, 面积的立方作为第三个特征:</p>
-<p><img src="https://data2.liuin.cn/2018-03-13-15209102744925.jpg" alt=""></p>
-<p>除了三次函数模型, 这里也可以选择平方根函数模型, 如下图所示</p>
-<p><img src="https://data2.liuin.cn/2018-03-13-15209107024350.jpg" alt=""></p>
-<h2 id="正规方程"><a href="#正规方程" class="headerlink" title="正规方程"></a>正规方程</h2><h3 id="正规方程介绍"><a href="#正规方程介绍" class="headerlink" title="正规方程介绍"></a>正规方程介绍</h3><p>之前我们一直是用的梯度下降求解最优值. 它的缺点就是需要进行很多次迭代才能得到全局最优解. 有没有更好的方法呢? 我们先来看一个最简单的例子, 假设现在的代价函数为$J(\theta)=a\theta^2+b\theta+c$，在导数等于0的时候取到最优解。</p>
-<p><img src="https://data2.liuin.cn/2018-03-13-15209111273173.jpg" alt=""></p>
-<p>下面我们介绍一种向量化的求解方法。首先, 在数据集前加上一列$X_0$，值都为1，然后将所有的变量都放入矩阵$X$中（包括加上的$x_0$）；再将输出值放入向量$y$中. 最后通过公式$$\theta=(X^TX)^{-1}X^Ty$$就可以算出最优解</p>
-<p><img src="https://data2.liuin.cn/2018-03-13-15209221924071.jpg" alt=""></p>
-<p>更通用的表达方式</p>
-<p><img src="https://data2.liuin.cn/2018-03-13-15209222169590.jpg" alt=""></p>
-<h3 id="梯度下降和正规方程的比较"><a href="#梯度下降和正规方程的比较" class="headerlink" title="梯度下降和正规方程的比较"></a>梯度下降和正规方程的比较</h3><p><img src="https://data2.liuin.cn/2018-03-13-15209222993254.jpg" alt=""></p>
-<h3 id="正规方程不可逆的情况"><a href="#正规方程不可逆的情况" class="headerlink" title="正规方程不可逆的情况"></a>正规方程不可逆的情况</h3><p>使用正规方程还有一个问题就是$X^TX$可能存在不可逆的情况. 这个时候, 可能是因为我们使用了冗余的特征, 还有一个原因是我们使用了太多的特征(特征的数量超过了样本的数量). 对于这种情况我们可以删掉一些特征或者使用正则化(正则化在后面的课中讲).</p>
-<p><img src="https://data2.liuin.cn/2018-03-13-15209223711085.jpg" alt=""></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Coursera 吴恩达机器学习 课程笔记&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="机器学习" scheme="https://www.liuin.cn/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
   </entry>
   

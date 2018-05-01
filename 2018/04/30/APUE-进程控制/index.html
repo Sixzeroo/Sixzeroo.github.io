@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="unDM_uE8uu2mZxh8kTTsrR_tk8grv9nQAz6QQoaIOcU" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="APUE," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sixzeroo" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="https://data1.liuin.cn/bitbug_favicon2.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="《UNIX环境高级编程》第8章 进程控制 笔记">
+<meta name="keywords" content="APUE">
+<meta property="og:type" content="article">
+<meta property="og:title" content="APUE 进程控制">
+<meta property="og:url" content="https://www.liuin.cn/2018/04/30/APUE-进程控制/index.html">
+<meta property="og:site_name" content="Sixzeroo">
+<meta property="og:description" content="《UNIX环境高级编程》第8章 进程控制 笔记">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://data2.liuin.cn/2018-04-30-15250766871953.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-04-30-15250876888707.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-04-30-15250878149783.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-04-30-15250878305949.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-04-30-15251006856272.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-04-30-15251008959267.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-04-30-15251013810789.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-04-30-15251015827722.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-01-15251417041152.jpg">
+<meta property="og:updated_time" content="2018-05-01T02:38:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="APUE 进程控制">
+<meta name="twitter:description" content="《UNIX环境高级编程》第8章 进程控制 笔记">
+<meta name="twitter:image" content="https://data2.liuin.cn/2018-04-30-15250766871953.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.liuin.cn/2018/04/30/APUE-进程控制/"/>
+
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "4a50fc75"
+    });
+  daovoice('update');
+  </script>
+
+
+  <title>APUE 进程控制 | Sixzeroo</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?eb51bd4c48350fa08cbc200aead6109f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+	
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sixzeroo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-taiwan">
+          <a href="/categories/台湾" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+            
+            台湾
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-link">
+          <a href="/link" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            友链
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2018/04/30/APUE-进程控制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sixzeroo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://data1.liuin.cn/ava1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sixzeroo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">APUE 进程控制</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-30T16:07:20+08:00">
+                2018-04-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/04/30/APUE-进程控制/" class="leancloud_visitors" data-flag-title="APUE 进程控制">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  6,669 字
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>《UNIX环境高级编程》第8章 进程控制 笔记</p>
+<a id="more"></a>
+<h2 id="进程标识"><a href="#进程标识" class="headerlink" title="进程标识"></a>进程标识</h2><p>每个进程都有一个非负整型表示的唯一进程ID。因为进程ID标识符总是唯一的,常将其用作其他标识符的一部分以保证其唯一性。</p>
+<p>虽然是唯一的,但是<strong>进程ID是可复用的</strong>。当一个进程终止后,其进程ID就成为复用的候选者。大多数UNIX系统实现延迟复用算法,使得赋予新建进程的DD不同于最近终止进程所使用的ID。这防止了将新进程误认为是使用同一ID的某个已终止的先前进程。</p>
+<p>系统中有一些专用进程,但具体细节随实现而不同。<strong>ID为0的进程通常是调度进程,常常被称为交换进程</strong>(swapper)。该进程是内核的一部分,它并不执行任何磁盘上的程序,因此也被称为系统进程。</p>
+<p>进程ID为1通常是init进程,在自举过程结束时由内核调用。该进程的程序文件在UNIX的早期版本中是/etc/init,在较新版本中是/sbin/init。此进程负责在自举内核后启动一个UNIX系统。init通常读取与系统有关的初始化文件(/etc/rc*文件或/etc/inittab文件,以及在/etc/init.d中的文件),并将系统引导到一个状态(如多用户)。init进程决不会终止。它是一个普通的用户进程(与交换进程不同,它不是内核中的系统进程),但是它以超级用户特权运行。</p>
+<p>每个UNIX系统实现都有它自己的一套提供操作系统服务的内核进程,例如,在某些UNIX的虚拟存储器实现中,进程ID2是页守护进程( page daemon),此进程负责支持虚拟存储器系统的分页操作。</p>
+<p>返回进程标识符的函数如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> getpid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: process ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> getppid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: parent process ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">uid_t</span> getuid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: real user ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">uid_t</span> geteuid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: effective user ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">gid_t</span> getgid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: real group ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">gid_t</span> getegid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: effective group ID of calling process</span></div></pre></td></tr></table></figure>
+<h2 id="函数fork"><a href="#函数fork" class="headerlink" title="函数fork"></a>函数fork</h2><p>一个现有进程调用fork函数创建一个新的进程</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> fork(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 in child, process ID of child in parent, −1 on error</span></div></pre></td></tr></table></figure>
+<p>由fork创建的新进程被称为子进程( child process) fork函数被调用一次,但返回两次。两次返回的区别是子进程的返回值是0,而父进程的返回值则是新建子进程的进程ID。</p>
+<p>将子进程ID返回给父进程的理由是:因为一个进程的子进程可以有多个,<strong>并且没有一个函数使一个进程可以获得其所有子进程的进程ID</strong>。fork使子进程得到返回值0的理由是:一个进程只会有一个父进程,所以子进程总是可以调用 getppid以获得其父进程的进程ID(进程ID0总是由内核交换进程使用,所以一个子进程的进程ID不可能为0)</p>
+<p>子进程和父进程继续执行fork调用之后的指令。子进程是父进程的副本。</p>
+<p>由于在fork之后经常跟随着exec,所以现在的很多实现并不执行一个父进程数据段栈和堆的完全副本。作为替代,使用了<strong>写时复制</strong>( copy-on-write,COW)技术。这些区域由父进程和子进程共享,而且内核将它们的访问权限改变为只读。如果父进程和子进程中的任一个试图修改这些区域,则内核只为修改区域的那块内存制作一个副本,通常是虚拟存储系统中的一“页”。</p>
+<p>一般来说,在fork之后是父进程先执行还是子进程先执行是不确定的,这取决于内核所使用的调度算法。如果要求父进程和子进程之间相互同步,则要求某种形式的进程间通信。</p>
+<blockquote>
+<p>strlen 和 sizeof 的区别</p>
+</blockquote>
+<p>str1en计算不包含终止nul字节的字符串长度,而sizeof则计算包括终止nul字节的缓冲区长度。两者之间的另一个差别是,使用strlen需进行一次函数调用,而对于sizeof而言,因为缓冲区已用已知字符串进行初始化,其长度是固定的,所以 sizeof是在编译时计算缓冲区长度。</p>
+<blockquote>
+<p>文件共享</p>
+</blockquote>
+<p>fork的一个特性是父进程的所有打开文件描述符都被复制到子进程中。我们说“复制”是因为对每个文件描述符来说,就好像执行了dup函数。<strong>父进程和子进程每个相同的打开描述符共享一个文件表项</strong>，因此他们共享的是一个文件偏移量。</p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15250766871953.jpg" alt=""></p>
+<p>如果父进程和子进程写同一描述符指向的文件,但又没有任何形式的同步(如使父进程等待子进程),那么它们的输出就会相互混合(假定所用的描述符是在foxk之前打开的)。</p>
+<p>在fork之后处理文件描述符有以下两种情况：</p>
+<ol>
+<li>父进程等待子进程完成</li>
+<li>父进程和子进程各自执行不同的程序段</li>
+</ol>
+<p>除了打开文件之外,<strong>子进程继承父进程的属性</strong>有：</p>
+<ul>
+<li>实际用户ID、实际组ID、有效用户ID、有效组ID</li>
+<li>附属组ID</li>
+<li>进程组ID</li>
+<li>会话ID</li>
+<li>控制终端</li>
+<li>设置用户ID标志和设置组ID标志</li>
+<li>当前工作目录</li>
+<li>根目录</li>
+<li>文件模式创建屏蔽字</li>
+<li>信号屏蔽和安排</li>
+<li>对任一打开文件描述符的执行时关闭( close-on-exec)标志</li>
+<li>环境</li>
+<li>连接的共享存储段</li>
+<li>存储映像</li>
+<li>资源限制</li>
+</ul>
+<p>父进程和子进程的区别如下：</p>
+<ul>
+<li>fork的返回值不同</li>
+<li>进程ID不同</li>
+<li>这两个进程的父进程ID不同:子进程的父进程ID是创建它的进程的ID,而父进程的父进程ID则不变。</li>
+<li>进程的 tms_utime、 tms_stime、 tms_cutime和tms_ultime的值设置为0</li>
+<li>子进程不继承父进程设置的文件锁</li>
+<li>子进程的未处理闹钟被清除</li>
+<li>子进程的未处理信号集设置为空集</li>
+</ul>
+<p>使fork失败的原因主要有以下几个：</p>
+<ol>
+<li>系统中已经有了太多的进程</li>
+<li>该实际用户ID的进程总数超过了系统限制</li>
+</ol>
+<p>fork有如下两种用法：</p>
+<ol>
+<li>一个父进程希望复制自己,使父进程和子进程同时执行不同的代码段</li>
+<li>一个进程要执行一个不同的程序</li>
+</ol>
+<h2 id="函数vfork"><a href="#函数vfork" class="headerlink" title="函数vfork"></a>函数vfork</h2><p>vfork函数的调用序列和返回值与fork相同,但两者的语义不同</p>
+<p>vfork函数用于创建一个新进程,而该新进程的目的是exec一个新程序。但是它并不将父进程的地址空间完全复制到子进程中,因为子进程会立即调用exec(或exit),于是也就<strong>不会引用该地址空间</strong>。不过在子进程调用exec或exit之前,它在父进程的空间中运行。这种优化工作方式在某些UNIX系统的实现中提高了效率,但如果子进程修改数据(除了用于存放 vfork返回值的变量)、进行函数调用、或者没有调用exec或exit就返回都可能会带来未知的结果。(就像上一节中提及的,实现采用写时复制技术以提高fork之后跟随exec操作的效率,但是不复制比部分复制还是要快一些)</p>
+<p>vfork和fork之间的另一个区别是: vfork保证子进程先运行,在它调用exec或exit之后父进程才可能被调度运行,当子进程调用这两个函数中的任意一个时,父进程会恢复运行。</p>
+<h2 id="函数exit"><a href="#函数exit" class="headerlink" title="函数exit"></a>函数exit</h2><p>进程有5种正常终止和3种异常终止的方式，5种正常终止的方式如下：</p>
+<ol>
+<li>从main返回</li>
+<li>调用exit</li>
+<li>调用_exit或_Exit</li>
+<li>最后一个线程从其启动例程返回</li>
+<li>从最后一个线程调用 pthread_exit</li>
+</ol>
+<p>3种异常终止方式：</p>
+<ol>
+<li>调用 abort</li>
+<li>接到一个信号</li>
+<li>最后一个线程对取消请求做出响应</li>
+</ol>
+<p>不管进程如何终止,最后都会执行内核中的同一段代码。这段代码为相应进程关闭所有打开描述符,释放它所使用的存储器等。</p>
+<p>对上述任意一种终止情形,我们都希望终止进程能够通知其父进程它是如何终止的。对于3个终止函数(exit、_exit和_Exit),实现这一点的方法是,将其退出状态( exit status)作为参数传送给函数。在异常终止情况,内核(不是进程本身)<strong>产生一个指示其异常终止原因的终止状态</strong>( termination status)。在任意一种情况下,该终止进程的父进程都能用wait或wa1tpid函数(将在下一节说明)取得其终止状态。</p>
+<p>上面说明了子进程将其终止状态返回给其父进程，但是如果父进程在子进程之前终止,又将如何呢?其回答是:<strong>对于父进程已经终止的所有进程,它们的父进程都改变为init进程</strong>。我们称这些进程由init进程收养。其操作过程大致是:在一个进程终止时,内核逐个检查所有活动进程,以判断它是否是正要终止进程的子进程,如果是,则该进程的父进程ID就更改为1(init进程的ID)。这种处理方法保证了每个进程有一个父进程。</p>
+<p>如果子进程在父进程之前终止,那么父进程又如何能在做相应检查时得到子进程的终止状态呢?如果子进程完全消失了,父进程在最终准备好检查子进程是否终止时是无法获取它的终止状态的。内核为每个终止子进程保存了一定量的信息,所以当终止进程的父进程调用wait或 waitpid时,可以得到这些信息。</p>
+<p>在UNIX术语中,一个已经终止、但是其父进程尚未对其进行善后处理(获取终止子进程的有关信息、释放它仍占用的资源)的进程被称为<strong>僵死进程</strong>( zombie.)。Ps()命令将僵死进程的状态打印为Z。如果编写一个长期运行的程序,它fork了很多子进程,那么除非父进程等待取得子进程的终止状态,不然这些子进程终止后就会变成僵死进程</p>
+<p>最后一个要考虑的问题是:一个由init进程收养的进程终止时会发生什么?它会不会变成一个僵死进程?对此问题的回答是“否”,因为init被编写成无论何时只要有一个子进程终止,init就会调用一个wait函数取得其终止状态。这样也就防止了在系统中塞满僵死进程。</p>
+<h2 id="函数wait-和-waitpid"><a href="#函数wait-和-waitpid" class="headerlink" title="函数wait 和 waitpid"></a>函数wait 和 waitpid</h2><p>当一个进程正常或异常终止时,内核就向其父进程发送 SIGCHLD信号。因为子进程终止是个异步事件(这可以在父进程运行的任何时候发生),所以这种信号也是内核向父进程发的异步通知。父进程可以选择忽略该信号,或者提供一个该信号发生时即被调用执行的函数(信号处理程序)。对于这种信号的系统默认动作是忽略它。</p>
+<p>现在我们要知道的是调用wait和waitpid时进程都发生什么：</p>
+<ul>
+<li>如果其所有子进程都还在运行,则阻塞。</li>
+<li>如果一个子进程已终止,正等待父进程获取其终止状态,则取得该子进程的终止状态立即返回</li>
+<li>如果它没有任何子进程,则立即出错返回。</li>
+</ul>
+<p>如果进程由于接收到 SIGCHLD信号而调用wait,我们期望wait会立即返回。但是如果在间点调用wait,则进程可能会阻塞</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> wait(<span class="keyword">int</span> *statloc); </div><div class="line"><span class="keyword">pid_t</span> waitpid(<span class="keyword">pid_t</span> pid, <span class="keyword">int</span> *statloc, <span class="keyword">int</span> options); </div><div class="line"></div><div class="line"><span class="comment">// Both return: process ID if OK, 0 (see later), or −1 on error</span></div></pre></td></tr></table></figure>
+<p>两个函数的区别如下：</p>
+<ul>
+<li>在一个子进程终止前,wait使其调用者阻塞,而 waitpid有一选项,可使调用者不阻塞</li>
+<li>waitpid并不等待在其调用之后的第一个终止子进程,它有若千个选项,可以控制它所等待的进程</li>
+</ul>
+<p>这两个函数的参数statloc是一个整型指针。如果statloc不是一个空指针,则终止进程的终止状态就存放在它所指向的单元内。如果不关心终止状态,则可将该参数指定为空指针</p>
+<p>对于waitpid函数中pid参数的作用解释如下。</p>
+<ul>
+<li>pid == -1  等待任一子进程。此种情况下, waitpid与wait等效</li>
+<li>pid &gt; 0  等待进程ID与pid相等的子进程</li>
+<li>pid == 0  等待组ID等于调用进程组ID的任一子进程。</li>
+<li>pid &lt; -1  等待组ID等于pid绝对值的任一子进程</li>
+</ul>
+<p>waitpid函数返回终止子进程的进程ID,并将该子进程的终止状态存放在由saoc指向的存储单元中。</p>
+<p>options参数可以使我们能够进一步控制waitpid函数的操作</p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15250876888707.jpg" alt=""></p>
+<h2 id="函数waitid"><a href="#函数waitid" class="headerlink" title="函数waitid"></a>函数waitid</h2><p>另一个取得进程终止状态的函数waited,此函数类似于 waitpid,但提供了更多的灵活性。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">waitid</span><span class="params">(<span class="keyword">idtype_t</span> idtype, <span class="keyword">id_t</span> id, <span class="keyword">siginfo_t</span> *infop, <span class="keyword">int</span> options)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>与 waitpid相似, waitid允许一个进程指定要等待的子进程。但它使用两个单独的参数表示要等待的子进程所属的类型,而不是将此与进程DD或进程组ID组合成一个参数。</p>
+<p>idtype参数：</p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15250878149783.jpg" alt=""></p>
+<p>options参数：</p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15250878305949.jpg" alt=""></p>
+<h2 id="函数wait3和wait4"><a href="#函数wait3和wait4" class="headerlink" title="函数wait3和wait4"></a>函数wait3和wait4</h2><p>wait3和wait4提供的功能比上面的函数多一个，该参数允许内核返回由终止进程及其所有子进程使用的资源概况。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt; </span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt; </span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/resource.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> wait3(<span class="keyword">int</span> *statloc, <span class="keyword">int</span> options, <span class="keyword">struct</span> rusage *rusage);</div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> wait4(<span class="keyword">pid_t</span> pid, <span class="keyword">int</span> *statloc, <span class="keyword">int</span> options, <span class="keyword">struct</span> rusage *rusage);</div><div class="line"></div><div class="line"><span class="comment">// Both return: process ID if OK, 0, or −1 on error</span></div></pre></td></tr></table></figure>
+<p>资源统计信息包括用户CPU时间总量、系统CPU时间总量、缺页次数、接收到信号的次数等。</p>
+<h2 id="竞争条件"><a href="#竞争条件" class="headerlink" title="竞争条件"></a>竞争条件</h2><p>当多个进程都企图对共享数据进行某种处理,而最后的结果又取决于进程运行的顺序时,我们认为发生了竞争条件(race condition)。如果在fork之后的某种逻辑显式或隐式地依赖于在fork之后是父进程先运行还是子进程先运行,那么fork函数就会是竞争条件活跃的滋生地</p>
+<p>如果一个进程希望等待一个子进程终止,则它必须调用wait函数中的一个。如果一个进程要等待其父进程终止,则可使用下列形式的循环</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">while</span>(getppid() != <span class="number">1</span>)</div><div class="line">    sleep(<span class="number">1</span>);</div></pre></td></tr></table></figure>
+<p>这种形式的循环称为轮询( polling),它的问题是浪费了CPU时间,因为调用者每隔1s都被唤醒,然后进行条件测试</p>
+<p>为了避免竞争条件和轮询,在多个进程之间需要有某种形式的信号发送和接收的方法。在UNIX中可以使用信号机制。各种形式的进程间通信(IPC)也可使用。</p>
+<h2 id="函数exec"><a href="#函数exec" class="headerlink" title="函数exec"></a>函数exec</h2><p>用fork函数创建新的子进程后,子进程往往要调用一种exec函数以执行另个程序。当进程调用一种exec函数时,该进程执行的程序完全替换为新程序,而新程序则从其main函数开始执行。因为调用exec并不创建新进程,所以前后的进程ID并未改变。<strong>exec只是用磁盘上的一个新程序替换了当前进程的正文段、数据段、堆段和栈段</strong>。</p>
+<p>有7中不同的exec函数可以使用：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">execl</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">const</span> <span class="keyword">char</span> *arg0, ... <span class="comment">/* (char *)0 */</span> )</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">execv</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">char</span> *<span class="keyword">const</span> argv[])</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">execle</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">const</span> <span class="keyword">char</span> *arg0, ...<span class="comment">/* (char *)0, char *const envp[] */</span> )</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">execve</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">char</span> *<span class="keyword">const</span> argv[], <span class="keyword">char</span> *<span class="keyword">const</span> envp[])</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">execlp</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *ﬁlename, <span class="keyword">const</span> <span class="keyword">char</span> *arg0, ... <span class="comment">/* (char *)0 */</span> )</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">execvp</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *ﬁlename, <span class="keyword">char</span> *<span class="keyword">const</span> argv[])</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fexecve</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">char</span> *<span class="keyword">const</span> argv[], <span class="keyword">char</span> *<span class="keyword">const</span> envp[])</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// All seven return: −1 on error, no return on success</span></div></pre></td></tr></table></figure></p>
+<p>这些函数之间的第一个区别是前4个函数取路径名作为参数,后两个函数则取文件名作为参数,最后一个取文件描述符作为参数。</p>
+<p>第二个区别与参数表的传递有关(1表示列表list,v表示矢量vector)。函数exec1、exec1p和 execle要求将新程序的每个命令行参数都说明为一个单独的参数。这种参数表以空指针结尾。对于另外4个函数( execv、 execvp、execve和 fexecve),则应先构造一个指向各参数的指针数组,然后将该数组地址作为这4个函数的参数。</p>
+<p>最后一个区别与向新程序传递环境表相关。以e结尾的3个函数(eXec1e、 execve和 fexecve)可以传递一个指向环境字符串指针数组的指针。其他4个函数则使用调用进程中的 environ变量为新程序复制现有的环境</p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15251006856272.jpg" alt=""></p>
+<p>前面曾提及,在执行exec后,进程ID没有改变。但新程序从调用进程继承了的下列属性:</p>
+<ul>
+<li>进程ID和父进程ID</li>
+<li>实际用户ID和实际组ID</li>
+<li>附属组ID</li>
+<li>进程组ID</li>
+<li>会话ID</li>
+<li>控制终端</li>
+<li>闹钟尚余留的时间</li>
+<li>当前工作目录</li>
+<li>根目录</li>
+<li>文件模式创建屏蔽字</li>
+<li>文件锁</li>
+<li>进程信号屏蔽</li>
+<li>未处理信号</li>
+<li>资源限制</li>
+<li>nice值</li>
+<li>tms_utime、tms_stime、tms_cutime以及tms_ctime值</li>
+</ul>
+<p>在很多UNIX实现中,这7个函数中只有<code>execve</code>是内核的系统调用。另外6个只是库函数它们最终都要调用该系统调用。</p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15251008959267.jpg" alt=""></p>
+<h2 id="更改用户ID和更改组ID"><a href="#更改用户ID和更改组ID" class="headerlink" title="更改用户ID和更改组ID"></a>更改用户ID和更改组ID</h2><p>在UNIX系统中,特权(如能改变当前日期的表示法)以及访问控制(如熊否读、写一个特定文件),是基于用户ID和组ID的。当程序需要增加特权,或需要访问当前并不允许访问的资源时,我们需要更换自己的用户ID或组ID,使得新ID具有合适的特权或访问权限。与此类似当程序需要降低其特权或阻止对某些资源的访问时,也需要更换用户ID或组ID,新ID不具有相应特权或访问这些资源的能力</p>
+<p>在设计应用时,我们总是试图使用<strong>最小特权( least privilege)模型</strong>。依照此模型我们的程序应当只具有为完成给定任务所需的最小特权。这降低了由恶意用户试图哄骗我们的程序以未预料的方式使用特权造成的安全性风险</p>
+<p>设置用户ID和组ID的函数如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setuid</span><span class="params">(<span class="keyword">uid_t</span> uid)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setgid</span><span class="params">(<span class="keyword">gid_t</span> gid)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>使用时注意如下：</p>
+<ul>
+<li>若进程具有超级用户特权,则 setuid函数将实际用户ID、有效用户ID以及保存的设置用户ID设置为uid</li>
+<li>若进程没有超级用户特权,但是uid等于实际用户ID或保存的设置用户ID,则 setid只将有效用户ID设置为uid。不更改实际用户ID和保存的设置用户ID</li>
+<li>如果上面两个条件都不满足,则 errno设置为 EPERM,并返回-1</li>
+</ul>
+<p>关于内核所维护的3个ID，需要注意的事项如下：</p>
+<ul>
+<li>只有超级用户才可以更改实际用户ID，通常,实际用户ID是在用户登录时,由1ogin(1)程序设置的,而且决不会改变它。</li>
+<li>仅当对程序文件设置了设置用户ID位时,exec函数才设置有效用户ID</li>
+<li>保存的设置用户ID是由exec复制有效用户ID而得到的</li>
+</ul>
+<p><img src="https://data2.liuin.cn/2018-04-30-15251013810789.jpg" alt=""></p>
+<ol>
+<li>函数setreuid和setregid</li>
+</ol>
+<p>其功能是交换实际用户ID和有效用户ID的值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setreuid</span><span class="params">(<span class="keyword">uid_t</span> ruid, <span class="keyword">uid_t</span> euid)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setregid</span><span class="params">(<span class="keyword">gid_t</span> rgid, <span class="keyword">gid_t</span> egid)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<ol>
+<li>函数seteuid和setegid</li>
+</ol>
+<p>它们类似于 setuid和 setgid,但只更改有效用户ID和有效组ID</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">seteuid</span><span class="params">(<span class="keyword">uid_t</span> uid)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setegid</span><span class="params">(<span class="keyword">gid_t</span> gid)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>各个函数之间的区别</p>
+<p><img src="https://data2.liuin.cn/2018-04-30-15251015827722.jpg" alt=""></p>
+<h2 id="解释器文件"><a href="#解释器文件" class="headerlink" title="解释器文件"></a>解释器文件</h2><p>所有现今的UNIX系统都支持解释器文件(interpreter file)。这种文件是文本文件,其起始行的形式是：</p>
+<p><code>#! pathname [optional-argument]</code></p>
+<p>最常见的如下：</p>
+<p><code>#! /bin/sh</code></p>
+<p>对这种文件的识别是由内核作为exec系统调用处理的一部分来完成的。内核使调用exec函数的进程<strong>实际执行的并不是该解释器文件,而是在该解释器文件第一行中 pathname所指定的文件</strong>。一定要将解释器文件(文本文件,它以#!开头)和解释器(由该解释器文件第一行中的 pathname指定)区分开来</p>
+<p>当内核exec解释器(/home/sar/bin/echoarg)时,argv[0]是该解释器的 pathname,argv[1]是解释器文件中的可选参数</p>
+<h2 id="函数system"><a href="#函数system" class="headerlink" title="函数system"></a>函数system</h2><p>ISO C定义了system函数,但是其操作对系统的依赖性很强</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">system</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *cmdstring)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: (see below)</span></div></pre></td></tr></table></figure>
+<p>如果 cmdstring是一个空指针,则仅当命令处理程序可用时, system返回非0值,这一特征可以确定在一个给定的操作系统上是否支持 system函数。在UNIX中, system总是可用的。</p>
+<p>因为 system在其实现中调用了fork、exec和 waitpid,因此有3种返回值<br>(1)fork失败或者 waitpid返回除 EINTR之外的出错,则 system返回-1,并且设置errno以指示错误类型。<br>(2)如果 exec失败(表示不能执行shel1),则其返回值如同 shell执行了exit(127)一样<br>(3)否则所有3个函数(fork、exec和 waitpid)都成功,那么 system的返回值是 shell的终止状态,其格式已在 waitpid中说明。</p>
+<p>使用 system而不是直接使用fork和exec的优点是: system进行了所需的各种出错处理以及各种信号处理</p>
+<h2 id="进程会计"><a href="#进程会计" class="headerlink" title="进程会计"></a>进程会计</h2><p>大多数UNIX系统提供了一个选项以进行进程会计( process accounting)处理。启用该选项后,每当进程结束时内核就写一个会计记录。典型的会计记录包含总量较小的二进制数据,一般包括命令名、所使用的CPU时间总量、用户ID和组ID、启动时间等。</p>
+<p>一个至今没有说明的函数(acct)启用和禁用进程会计。唯一使用这一函数的是 accton(8)命令(这是在几种平台上都类似的少数几条命令中的一条)。超级用户执行一个带路径名参数的accton命令启用会计处理。会计记录写到指定的文件中</p>
+<p>会计记录结构定义在头文件<sys acct.h="">中，每个系统都有不同，但是基本样式如下：</sys></p>
+<p><img src="https://data2.liuin.cn/2018-05-01-15251417041152.jpg" alt=""></p>
+<p>会计记录所需的各个数据(各CPU时间、传输的字符数等)都由内核保存在进程表中,并在个新进程被创建时初始化(如fork之后在子进程中)。进程终止时写一个会计记录。</p>
+<p>这产生两个后果:</p>
+<p>第一,我们不能获取永远不终止的进程的会计记录。像init这样的进程在系统生命周期中直在运行,并不产生会计记录。这也同样适合于内核守护进程,它们通常不会终止<br>第二,在会计文件中记录的顺序对应于进程终止的顺序,而不是它们启动的顺序。</p>
+<h2 id="用户标识"><a href="#用户标识" class="headerlink" title="用户标识"></a>用户标识</h2><p>任一进程都可以得到其实际用户ID和有效用户ID及组ID。但是,我们有时希望找到运行该程序用户的登录名。</p>
+<p>系统通常记录用户登录时使用的名字(见68节),用get1ogin函数可以获取此登录名。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">getlogin</span><span class="params">(<span class="keyword">void</span>)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to string giving login name if OK, NULL on error</span></div></pre></td></tr></table></figure>
+<p>如果调用此函数的进程没有连接到用户登录时所用的终端,则函数会失败。通常称这些进程为守护进程(daemon)</p>
+<h2 id="进程调度"><a href="#进程调度" class="headerlink" title="进程调度"></a>进程调度</h2><p>UNX系统历史上对进程提供的只是基于调度优先级的粗粒度的控制。调度策略和调度优先级是由内核确定的。<strong>进程可以通过调整nice值选择以更低优先级运行</strong>(通过调整nice值降低它对CPU的占有,因此该进程是“友好的”)。只有特权进程允许提高调度权限</p>
+<p>Single UNIX Specification中nice值的范围在0~(2*NZERO)-1之间,有些实现支持0~2*NERO。nice值越小,优先级越高。虽然这看起来有点倒退,但实际上是有道理的:你越友好,你的调度优先级就越低。 NERO是系统默认的nice值。</p>
+<p>进程可以通过nice函数获取或更改它的nice值。使用这个函数,进程只能影响自己的nce值,不能影响任何其他进程的nice值</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">nice</span><span class="params">(<span class="keyword">int</span> incr)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: new nice value − NZERO if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>getpriority函数可以像nice函数那样用于获取进程的nice值,但是 getpriority还可以获取一组相关进程的nice值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/resource.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getpriority</span><span class="params">(<span class="keyword">int</span> which, <span class="keyword">id_t</span> who)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: nice value between −NZERO and NZERO−1 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>setpriority函数可用于为进程、进程组和属于特定用户ID的所有进程设置优先级</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/resource.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setpriority</span><span class="params">(<span class="keyword">int</span> which, <span class="keyword">id_t</span> who, <span class="keyword">int</span> value)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<h2 id="进程时间"><a href="#进程时间" class="headerlink" title="进程时间"></a>进程时间</h2><p>我们可以度量的3个时间:墙上时钟时间、用户CPU时间和系统CPU时间。任一进程都可调用 times函数获得它自己以及已终止子进程的土述值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/times.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">clock_t</span> times(<span class="keyword">struct</span> tms *buf );</div><div class="line"></div><div class="line"><span class="comment">// Returns: elapsed wall clock time in clock ticks if OK, −1 on error</span></div></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://data1.liuin.cn/wechat_pay.png" alt="Sixzeroo WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="https://data1.liuin.cn/alipay.jpg" alt="Sixzeroo Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Sixzeroo
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.liuin.cn/2018/04/30/APUE-进程控制/" title="APUE 进程控制">https://www.liuin.cn/2018/04/30/APUE-进程控制/</a>
+  </li>
+  <li class="post-copyright-author">
+	<strong>发布时间: </strong>
+	2018年4月30日 - 16时04分
+  </li>
+  <li class="post-copyright-author">
+	<strong>最后更新: </strong>
+	2018年5月1日 - 10时05分
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/APUE/" rel="tag"># APUE</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/29/APUE-进程环境/" rel="next" title="APUE 进程环境">
+                <i class="fa fa-chevron-left"></i> APUE 进程环境
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMTYzMi84MTk2"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://data1.liuin.cn/ava1.jpg"
+               alt="Sixzeroo" />
+          <p class="site-author-name" itemprop="name">Sixzeroo</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">155</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">40</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Sixzeroo" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="tencent://message/?menu=yes&uin=1790798600&websitename=im.qq.com" target="_blank" title="QQ">
+                  
+                    <i class="fa fa-fw fa-qq"></i>
+                  
+                    
+                      QQ
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#进程标识"><span class="nav-number">1.</span> <span class="nav-text">进程标识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数fork"><span class="nav-number">2.</span> <span class="nav-text">函数fork</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数vfork"><span class="nav-number">3.</span> <span class="nav-text">函数vfork</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数exit"><span class="nav-number">4.</span> <span class="nav-text">函数exit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数wait-和-waitpid"><span class="nav-number">5.</span> <span class="nav-text">函数wait 和 waitpid</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数waitid"><span class="nav-number">6.</span> <span class="nav-text">函数waitid</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数wait3和wait4"><span class="nav-number">7.</span> <span class="nav-text">函数wait3和wait4</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#竞争条件"><span class="nav-number">8.</span> <span class="nav-text">竞争条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数exec"><span class="nav-number">9.</span> <span class="nav-text">函数exec</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更改用户ID和更改组ID"><span class="nav-number">10.</span> <span class="nav-text">更改用户ID和更改组ID</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解释器文件"><span class="nav-number">11.</span> <span class="nav-text">解释器文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数system"><span class="nav-number">12.</span> <span class="nav-text">函数system</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程会计"><span class="nav-number">13.</span> <span class="nav-text">进程会计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户标识"><span class="nav-number">14.</span> <span class="nav-text">用户标识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程调度"><span class="nav-number">15.</span> <span class="nav-text">进程调度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程时间"><span class="nav-number">16.</span> <span class="nav-text">进程时间</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sixzeroo</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">共</span>
+    
+    <span title="Site words total count">
+      263.7k 字
+    </span>
+  
+
+  <span> | </span>
+  <span id="showDays"></span>
+</div>
+
+
+
+  <div class="powered-by">皖ICP备17000842号</div>
+  <span class="post-meta-divider">|</span>                    
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+<script>
+	var birthDay = new Date('09/1/2016');
+	var now = new Date();
+	var duration = now.getTime() - birthDay.getTime();
+	var total= Math.floor(duration / (1000 * 60 * 60 * 24));
+	document.getElementById('showDays').innerHTML='本站已运行' + total + '天';
+</script>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  var $article = $(".post-body");
+  var count = [0, 0, 0, 0, 0, 0];
+  var mark = [0, 0, 0, 0, 0, 0];
+
+  (function setMark(){
+    var hTag = ["h1", "h2", "h3", "h4", "h5", "h6"];
+    var index = 0;
+    for (var i = 0; i < 6; ++i) {
+      if ($article.children(hTag[i]).length > 0) {
+        ++index;
+        mark[i] = index;
+      }
+    }
+  })();
+
+  $article.children(":header").each(function(){
+    var t = $(this);
+    var pos = 0;
+    switch (t[0].tagName) {
+      case "H1": pos = 0; break;
+      case "H2": pos = 1; break;
+      case "H3": pos = 2; break;
+      case "H4": pos = 3; break;
+      case "H5": pos = 4; break;
+      case "H6": pos = 5; break;
+    }
+
+    var len = mark[pos];
+    if (len < 6) { count[len] = 0; }
+    count[len - 1]++;
+
+    var listStr = count[0] + "";
+    for (var i = 1; i < len; ++i) { listStr += "." + count[i]; }
+    listStr += " ";
+    t.html(listStr + t.html());
+  });
+});
+</script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("3YyBK9PnKj86xfGt1vr8ps6Q-gzGzoHsz", "Sf6vsslcm0nwqrxAcm1MMwRM");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
