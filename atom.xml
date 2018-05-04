@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-05-03T13:33:25.000Z</updated>
+  <updated>2018-05-04T01:35:02.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,73 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>APUE 守护进程</title>
+    <link href="https://www.liuin.cn/2018/05/04/APUE-%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/"/>
+    <id>https://www.liuin.cn/2018/05/04/APUE-守护进程/</id>
+    <published>2018-05-04T01:06:24.000Z</published>
+    <updated>2018-05-04T01:35:02.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>《UNIX环境高级编程》第13章 守护进程 笔记</p>
+<a id="more"></a>
+<p>守护进程(daemon)是生存期长的一种进程。它们常常在系统引导装入时启动,仅在系统关闭时才终止。因为它们没有控制终端,所以说它们是在后台运行的。UNIX系统有很多守护进程,它们执行日常事务活动。</p>
+<h2 id="守护进程的特征"><a href="#守护进程的特征" class="headerlink" title="守护进程的特征"></a>守护进程的特征</h2><p>系统进程依赖于操作系统实现。父进程ID为0的各进程通常是内核进程,它们作为系统引导装入过程的一部分而启动。(init是个例外,它是一个由内核在引导装入时启动的用户层次的命令。)内核进程是特殊的,通常存在于系统的整个生命期中。它们以超级用户特权运行,无控制终端,无命令行。</p>
+<p>对于需要在进程上下文执行工作但却不被用户层进程上下文调用的每一个内核组件,通常有它自己的内核守护进程。例如,在Linux中</p>
+<ul>
+<li><code>kswapd</code>守护进程也称为内存换页守护进程。它支持虚拟内存子系统在经过一段时间后将脏页面慢慢地写回磁盘来回收这些页面</li>
+<li><code>f1ush</code>守护进程在可用内存达到设置的最小阅值时将脏页面冲洗至磁盘。它也定期地将脏页面冲洗回磁盘来减少在系统出现故障时发生的数据丢失。多个冲洗守护进程可以同时存在,每个写回的设备都有一个冲洗守护进程。</li>
+<li><code>sync_supers</code>守护进程定期将文件系统元数据冲洗至磁盘。</li>
+<li><code>jbd</code>守护进程帮助实现了ext4文件系统中的日志功能。</li>
+<li><code>cron</code>守护进程在定期安排的日期和时间执行命令。许多系统管理任务是通过<code>cron</code>每隔一段固定的时间就运行相关程序而得以实现的。</li>
+<li><code>atd</code>守护进程与cron类似,它允许用户在指定的时间执行任务,但是每个任务它只执行一次,而非在定期安排的时间反复执行。</li>
+<li><code>cupsa</code>守护进程是个打印假脱机进程,它处理对系统提出的各个打印请求。</li>
+<li><code>sshd</code>守护进程提供了安全的远程登录和执行设施注意,大多数守护进程都以超级用户(root)特权运行。所有的守护进程都没有控制终端其终端名设置为问号。</li>
+</ul>
+<p>内核守护进程以无控制终端方式启动。用户层守护进程缺少控制终端可能是守护进程调用了 setid的结果。</p>
+<h2 id="编程规则"><a href="#编程规则" class="headerlink" title="编程规则"></a>编程规则</h2><p>在编写守护进程程序时需遵循一些基本规则,以防止产生不必要的交互作用。下面先说明这些规则,</p>
+<ol>
+<li>首先要做的是调用<code>umask</code>将文件模式创建屏蔽字设置为一个已知值(通常是0)。由继承得来的文件模式创建屏蔽字可能会被设置为拒绝某些权限。如果守护进程要创建文件,那么它可能要设置特定的权限。</li>
+<li>调用fork,然后使父进程exit。这样做实现了下面几点。第一,如果该守护进程是作为一条简单的shell命令启动的,那么父进程终止会让shell认为这条命令已经执行完毕。第二,虽然子进程继承了父进程的进程组ID,但获得了一个新的进程ID,这就保证了子进程不是一个进程组的组长进程。这是下面将要进行的setid调用的先决条件。</li>
+<li>调用setid创建一个新会话，执行3步：成为新会话的首进程、成为新进程组的组长进程、没有控制终端</li>
+<li>将当前工作目录更改为根目录</li>
+<li>关闭不再需要的文件描述符</li>
+<li>某些守护进程打开<code>/dev/null</code>使其具有文件描述符0、1和2,这样,任何一个试图读标准输入、写标准输出或标准错误的库例程都不会产生任何效果。因为守护进程并不与终端设备相关联所以其输出无处显示,也无处从交互式用户那里接收输入。</li>
+</ol>
+<h2 id="出错记录"><a href="#出错记录" class="headerlink" title="出错记录"></a>出错记录</h2><p>守护进程存在的一个问题是如何处理出错消息。因为它本就不应该有控制终端,所以不能只是简单地写到标准错误上。我们不希望所有守护进程都写到控制台设备上,因为在很多工作站上控制台设备都运行着一个窗口系统。我们也不希望每个守护进程将它自己的出错消息写到一个单独的文件中。对任何一个系统管理人员而言,如果要关心哪一个守护进程写到哪一个记录文件中并定期地检查这些文件,那么一定会使他感到头痛。所以,需要有一个集中的守护进程出错记录设施。</p>
+<p>BSD的<code>sys1og</code>设施得到了广泛的应用。大多数守护进程都使用这一设施</p>
+<p>有下面3种产生日志消息的方法：</p>
+<ol>
+<li>内核例程可以调用log函数</li>
+<li>大多数用户进程(守护进程)调用sys1og(3)函数来产生日志消息</li>
+<li>无论一个用户进程是在此主机上,还是在通过TCP/IP网络连接到此主机的其他主机上,都可将日志消息发向UDP端口514。</li>
+</ol>
+<p><img src="https://data2.liuin.cn/2018-05-04-15253968653919.jpg" alt=""></p>
+<p>通常, syslogd守护进程读取所有3种格式的日志消息。此守护进程在启动时读一个配置文件,其文件名一般为<code>/etc/sys1og.conf</code>,该文件决定了不同种类的消息应送向何处。例如,紧急消息可发送至系统管理员(若已登录),并在控制台上打印,而警告消息则可记录到一个文件中。</p>
+<p>该设施的接口是：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;syslog.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">openlog</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *ident, <span class="keyword">int</span> option, <span class="keyword">int</span> facility)</span></span>; </div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">syslog</span><span class="params">(<span class="keyword">int</span> priority, <span class="keyword">const</span> <span class="keyword">char</span> *format, ...)</span></span>; </div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">closelog</span><span class="params">(<span class="keyword">void</span>)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setlogmask</span><span class="params">(<span class="keyword">int</span> maskpri)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: previous log priority mask value</span></div></pre></td></tr></table></figure></p>
+<h2 id="单实例守护进程"><a href="#单实例守护进程" class="headerlink" title="单实例守护进程"></a>单实例守护进程</h2><p>为了正常运作,某些守护进程会实现为,在任一时刻只运行该守护进程的一个副本。例如,这种守护进程可能需要排它地访问一个设备。对cron守护进程而言,如果同时有多个实例运行,那么每个副本都可能试图开始某个预定的操作,于是造成该操作的重复执行,这很可能导致出错。</p>
+<p>文件和记录锁机制为一种方法提供了基础,该方法保证一个守护进程只有一个副本在运行。</p>
+<h2 id="守护进程的惯例"><a href="#守护进程的惯例" class="headerlink" title="守护进程的惯例"></a>守护进程的惯例</h2><p>在UNIX系统中,守护进程遵循下列通用惯例：</p>
+<ol>
+<li>若守护进程使用锁文件,那么该文件通常存储在<code>/var/run</code>目录中</li>
+<li>若守护进程支持配置选项,那么配置文件通常存放在<code>/etc</code>目录中</li>
+<li>守护进程可用命令行启动,但通常它们是由系统初始化脚本之一(<code>/etc/rc*</code>或<code>etc/init.d/*</code>)启动的。如果在守护进程终止时,应当自动地重新启动它,则我们可在<code>/etc/inittab</code>中为该守护进程包括 respawn记录项,这样,init就将重新启动该守护进程。</li>
+<li>若一个守护进程有一个配置文件,那么当该守护进程启动时会读该文件,但在此之后般就不会再查看它。若某个管理员更改了配置文件,那么该守护进程可能需要被停止,然后再启动,以使配置文件的更改生效。</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;《UNIX环境高级编程》第13章 守护进程 笔记&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
+    
+  </entry>
   
   <entry>
     <title>APUE 线程控制</title>
@@ -4181,56 +4248,6 @@
     <summary type="html">
     
       &lt;p&gt;链表和字典（dict）是比较常用的数据结构，但是C语言在底层并没有内置这种数据结构，这里通过源码查看这两个数据结构在Redis底层的实现&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="源码剖析" scheme="https://www.liuin.cn/categories/%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/"/>
-    
-    
-      <category term="Redis" scheme="https://www.liuin.cn/tags/Redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis源码剖析——简单动态字符串(SDS)</title>
-    <link href="https://www.liuin.cn/2018/03/19/Redis%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E2%80%94%E2%80%94%E7%AE%80%E5%8D%95%E5%8A%A8%E6%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2-SDS/"/>
-    <id>https://www.liuin.cn/2018/03/19/Redis源码解析——简单动态字符串-SDS/</id>
-    <published>2018-03-19T10:45:00.000Z</published>
-    <updated>2018-03-23T10:41:27.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>解析Redis的一个底层数据结构——简单动态数组，讨论起优点和不足</p>
-<a id="more"></a>
-<p>Redis没有直接使用C语言传统的字符串表示(以空字符结尾的字符数组),而是自己构建了一种名为<strong>简单动态字符串</strong>( simple dynamic string,SDS)的抽象类型,并将SDS用作 Redis的默认字符串表示。现在作者把这一个部分抽出来，单独做了一个项目，地址在<a href="https://github.com/antirez/sds" target="_blank" rel="external">这里</a></p>
-<h2 id="数据结构定义定义"><a href="#数据结构定义定义" class="headerlink" title="数据结构定义定义"></a>数据结构定义定义</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> sdshdr &#123;</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> len;   <span class="comment">// buf数组中已经使用的字节数量</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="built_in">free</span>;  <span class="comment">// buf数组中未使用的字节数量</span></div><div class="line">    <span class="keyword">char</span> buf[];         <span class="comment">// 字节数组，保存字符</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>SDS遵循C字符串以空字符结尾的惯例,保存空字符的1字节空间不计算在SDS的1en属性里面,并且为空字符分配额外的1字节空间,以及添加空字符到字符串末尾等操作</p>
-<h2 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h2><h3 id="获取字符串长度是常数级复杂度"><a href="#获取字符串长度是常数级复杂度" class="headerlink" title="获取字符串长度是常数级复杂度"></a>获取字符串长度是常数级复杂度</h3><p>C语言中获取字符串的长度需要把整个字符串都遍历一遍，而对于SDS来说，只需要访问len属性，将时间复杂度从O（N）降低到了O（1）</p>
-<h3 id="杜绝缓冲区溢出"><a href="#杜绝缓冲区溢出" class="headerlink" title="杜绝缓冲区溢出"></a>杜绝缓冲区溢出</h3><p>除了获取字符串长度的复杂度高之外,C字符串不记录自身长度带来的另一个问题是容易造成缓冲区溢出( buffer overflow)。C语言字符串进行拼接的时候如果不对原来的字符串分配足够的空间，容易造成溢出。</p>
-<p>与C字符串不同,SDS的空间分配策略完全杜绝了发生缓冲区溢出的可能性:当SDS API需要对SDS进行修改时,API会先检查SDS的空间是否满足修改所需的要求,如果不满足的话,API会自动将SDS的空间扩展至执行修改所需的大小,然后才执行实际的修改</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 追加长度为len的字符串到buf的末尾</span></div><div class="line"><span class="function">sds <span class="title">sdscatlen</span><span class="params">(sds s, <span class="keyword">const</span> <span class="keyword">void</span> *t, <span class="keyword">size_t</span> len)</span> </span>&#123;</div><div class="line">    <span class="keyword">struct</span> sdshdr *sh;</div><div class="line">    <span class="keyword">size_t</span> curlen = sdslen(s);</div><div class="line"></div><div class="line">    <span class="comment">// 扩展sds空间，确保其至少含有len+1个空间可以放置字符串</span></div><div class="line">    s = sdsMakeRoomFor(s,len);</div><div class="line">    <span class="keyword">if</span> (s == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="literal">NULL</span>;</div><div class="line">    sh = (<span class="keyword">void</span>*) (s-(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)));</div><div class="line">    <span class="comment">// 复制字符串</span></div><div class="line">    <span class="built_in">memcpy</span>(s+curlen, t, len);</div><div class="line">    <span class="comment">// 更新长度</span></div><div class="line">    sh-&gt;len = curlen+len;</div><div class="line">    sh-&gt;<span class="built_in">free</span> = sh-&gt;<span class="built_in">free</span>-len;</div><div class="line">    s[curlen+len] = <span class="string">'\0'</span>;</div><div class="line">    <span class="keyword">return</span> s;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function">sds <span class="title">sdscat</span><span class="params">(sds s, <span class="keyword">const</span> <span class="keyword">char</span> *t)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> sdscatlen(s, t, <span class="built_in">strlen</span>(t));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="减少修改字符串时带来的内存重分配次数"><a href="#减少修改字符串时带来的内存重分配次数" class="headerlink" title="减少修改字符串时带来的内存重分配次数"></a>减少修改字符串时带来的内存重分配次数</h3><p>C语言中，每次对字符串进行修改都要进行内存的重新分配，在SDS中使用<strong>空间预分配和惰性空间释放</strong>来减少内存重新分配的次数</p>
-<blockquote>
-<p>空间预分配</p>
-</blockquote>
-<p>SDS在执行空间扩展的时候将执行以下策略：</p>
-<ul>
-<li>如果对SDS进行修改之后,SDS的长度(也即是1en属性的值)将小于1MB,那么程序分配和1en属性同样大小的未使用空间,这时SDs1en属性的值将和free属性的值相同。</li>
-<li>如果对SDs进行修改之后,SDS的长度将大于等于1MB,那么程序会分配1MB的未使用空间。</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 对sds中buf的长度进行扩展，至少有addlen+1长度的剩余空间</span></div><div class="line"><span class="function">sds <span class="title">sdsMakeRoomFor</span><span class="params">(sds s, <span class="keyword">size_t</span> addlen)</span> </span>&#123;</div><div class="line">    <span class="keyword">struct</span> sdshdr *sh, *newsh;</div><div class="line">    <span class="keyword">size_t</span> <span class="built_in">free</span> = sdsavail(s);</div><div class="line">    <span class="keyword">size_t</span> len, newlen;</div><div class="line"></div><div class="line">    <span class="comment">// 目前剩余空间足够</span></div><div class="line">    <span class="keyword">if</span> (<span class="built_in">free</span> &gt;= addlen) <span class="keyword">return</span> s;</div><div class="line">    len = sdslen(s);</div><div class="line">    sh = (<span class="keyword">void</span>*) (s-(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)));</div><div class="line">    newlen = (len+addlen);</div><div class="line">    <span class="comment">// 分配两倍空间</span></div><div class="line">    <span class="keyword">if</span> (newlen &lt; SDS_MAX_PREALLOC)</div><div class="line">        newlen *= <span class="number">2</span>;</div><div class="line">    <span class="comment">// 分配1M空间</span></div><div class="line">    <span class="keyword">else</span></div><div class="line">        newlen += SDS_MAX_PREALLOC;</div><div class="line">    newsh = zrealloc(sh, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)+newlen+<span class="number">1</span>);</div><div class="line">    <span class="keyword">if</span> (newsh == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="literal">NULL</span>;</div><div class="line"></div><div class="line">    <span class="comment">// 更新剩余空间</span></div><div class="line">    newsh-&gt;<span class="built_in">free</span> = newlen - len;</div><div class="line">    <span class="keyword">return</span> newsh-&gt;buf;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>惰性空间释放</p>
-</blockquote>
-<p>惰性空间释放用于优化SDS的字符串缩短操作:当SDS的API需要缩短SDS保存的字符串时,程序并不立即使用内存重分配来回收缩短后多出来的字节,而是使用free属性将这些字节的数量记录起来,并等待将来使用。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 移除所有在s中出现过的cset字符</span></div><div class="line"><span class="function">sds <span class="title">sdstrim</span><span class="params">(sds s, <span class="keyword">const</span> <span class="keyword">char</span> *cset)</span> </span>&#123;</div><div class="line">    <span class="keyword">struct</span> sdshdr *sh = (<span class="keyword">void</span>*) (s-(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)));</div><div class="line">    <span class="keyword">char</span> *start, *end, *sp, *ep;</div><div class="line">    <span class="keyword">size_t</span> len;</div><div class="line"></div><div class="line">    sp = start = s;</div><div class="line">    ep = end = s+sdslen(s)<span class="number">-1</span>;</div><div class="line">    <span class="keyword">while</span>(sp &lt;= end &amp;&amp; <span class="built_in">strchr</span>(cset, *sp)) sp++;</div><div class="line">    <span class="keyword">while</span>(ep &gt; start &amp;&amp; <span class="built_in">strchr</span>(cset, *ep)) ep--;</div><div class="line">    len = (sp &gt; ep) ? <span class="number">0</span> : ((ep-sp)+<span class="number">1</span>);</div><div class="line">    <span class="keyword">if</span> (sh-&gt;buf != sp) memmove(sh-&gt;buf, sp, len);</div><div class="line">    sh-&gt;buf[len] = <span class="string">'\0'</span>;</div><div class="line">    <span class="comment">// 并没有释放buf空间，而是增加free数量</span></div><div class="line">    sh-&gt;<span class="built_in">free</span> = sh-&gt;<span class="built_in">free</span>+(sh-&gt;len-len);</div><div class="line">    sh-&gt;len = len;</div><div class="line">    <span class="keyword">return</span> s;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="二进制安全"><a href="#二进制安全" class="headerlink" title="二进制安全"></a>二进制安全</h3><p>C字符串中的字符必须符合某种编码方式，并且除了字符串的末尾处，字符串里面不能包含空字符。使得C字符串只能保存文本数据,而不能保存像图片、音频、视频、压缩文件这样的二进制数据。</p>
-<p>Redis可以适用于各种不同的使用场景,SDS的API都是二进制安全的(binary-safe),所有 SDS API都会以处理二进制的方式来处理SDs存放在buf数组里的数据</p>
-<h2 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h2><h3 id="API返回后不能确定内部是否重新分配了空间"><a href="#API返回后不能确定内部是否重新分配了空间" class="headerlink" title="API返回后不能确定内部是否重新分配了空间"></a>API返回后不能确定内部是否重新分配了空间</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">s = sdscat(s, <span class="string">"Hello world"</span>);</div></pre></td></tr></table></figure>
-<p>s既是参数，又作为了返回值，原因是我们在调用sdscat函数之前不确定s的剩余空间是否足够分配出data长度的字节，如果不够的话，内部会重新malloc空间，然后把目前的sds包括头部全部挪过去，这样的话如果我们没有把返回的地址重新赋值给s,那么s实际上是失效的。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;解析Redis的一个底层数据结构——简单动态数组，讨论起优点和不足&lt;/p&gt;
     
     </summary>
     
