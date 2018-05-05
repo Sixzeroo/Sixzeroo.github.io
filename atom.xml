@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-05-04T13:42:10.000Z</updated>
+  <updated>2018-05-05T08:45:58.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,359 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>APUE 伪终端</title>
+    <link href="https://www.liuin.cn/2018/05/05/APUE-%E4%BC%AA%E7%BB%88%E7%AB%AF/"/>
+    <id>https://www.liuin.cn/2018/05/05/APUE-伪终端/</id>
+    <published>2018-05-05T08:09:34.000Z</published>
+    <updated>2018-05-05T08:45:58.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>《UNIX环境高级编程》第19章 伪终端 笔记</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>伪终端这个术语是指,对于一个应用程序而言,它看上去像一个终端,但事实上它并不是个真正的终端。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255087230010.jpg" alt=""></p>
+<p>图中的关键点是：</p>
+<ol>
+<li>通常,一个进程打开伪终端主设备,然后调用fork。子进程建立一个新的会话,打开一个相应的伪终端从设备,将其文件描述符复制到标准输入、标准输出和标准错误,然后调用exec。伪终端从设备成为子进程的控制终端。</li>
+<li>对于伪终端从设备上的用户进程来说,其标准输入、标准输出和标准错误都是终端设备。通过这些描述符,用户进程能够处理所有终端I/O函数。但是因为仍终端从设备不是真正的终端设备,所以无意义的函数调用(例如,改变波特率、发送中断符、设置奇偶校验)将被忽略</li>
+<li>任何写到伪终端主设备的都会作为从设备的输入,反之亦然。事实上,所有从设备端的输入都来自于伪终端主设备上的用户进程。这看起来就像一个双向管道,但是从设备上的中断行规程使我们拥有管道没有的处理奇谈问题的能力</li>
+</ol>
+<p>伪终端的某些经典用途：</p>
+<blockquote>
+<p>网络登录服务器</p>
+</blockquote>
+<p>伪终端可用于构造提供网络登录的服务器。典型的例子是 telnetd和rlogind服务器</p>
+<p>在rlogind服务器和登录shell之间有两个exec调用,这是因为login程序通常是在两个exec之间检验用户是否合法</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255090645150.jpg" alt=""></p>
+<blockquote>
+<p>窗口系统终端模拟</p>
+</blockquote>
+<p>窗口系统通常提供一个终端模拟器,这样我们就能在熟悉的命令行环境中通过shell来运行程序。终端模拟器作为shell和窗口管理器之间的媒介。每个shell在自己的窗口中执行。</p>
+<p>shell将自己的标准输入、标准输出、标准错误连接到PTY的从设备端。终端模拟器程序打开PTY的主设备。终端模拟器除了作为窗口子系统的接口,还要负责模拟一种特殊的终端,这意味着它需要根据它所模拟的设备类型来响应返回码。这些码列在 termcap和 terminfo数据库中。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255091975517.jpg" alt=""></p>
+<blockquote>
+<p>script 程序</p>
+</blockquote>
+<p>script(1)程序是随大多数UNIX系统提供的,它将终端会话期间的所有输入和输出信息复制到一个文件中。为完成此工作,该程序将自己置于终端和一个新调用的登录 shell之间。这里要特别指出, script程序通常是从登录shell启动的,该 shell还要等待 script程序的终止。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255092890944.jpg" alt=""></p>
+<blockquote>
+<p>expect 程序</p>
+</blockquote>
+<p>伪终端可以用来在非交互模式中驱动交互式程序的运行。许多硬连线程序需要一个终端才能行, passwd(1)命令就是一个例子,它要求用户在系统提示后输入口令</p>
+<blockquote>
+<p>运行协同进程</p>
+</blockquote>
+<p>如果协同进程是一个已经编译的程序而我们又没有源程序,则无法在源程序中加入ff1ush语句来解决这个问题。我们需要做的是将一个伪终端放到两个进程之间,诱使协同进程认为它是由终端驱动的,而非另一个进程</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255094556754.jpg" alt=""></p>
+<blockquote>
+<p>观看长时间运行程序的输出</p>
+</blockquote>
+<p>使用任何一个标准 shell,可以将一个需要长时间运行的程序放到后台运行。但是,如果将该程序的标准输出重定向到一个文件,并且它产生的输出又不多,那么我们就不能方便地监控程序的进展,因为标准I/O库将完全缓冲它的标准输出。</p>
+<p>如果有源程序,则可以加入fflush调用强制标准I/O缓冲区在某些节点冲洗或者把缓冲模式改使用 setybuf的行缓冲。然而,如果没有源程序,可以在pty程序下运行该程序,让标准I/O库认为标准输出是终端。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255095797010.jpg" alt=""></p>
+<h2 id="打开伪终端设备"><a href="#打开伪终端设备" class="headerlink" title="打开伪终端设备"></a>打开伪终端设备</h2><p>PTY表现得就像物理终端设备一样,因此应用程序就无须在意它们在使用的是何种设备。各种平台打开伪终端设备的方法有所不同。posix_openpt函数提供了一种可移植的方法来打开下一个可用<strong>伪终端主设备</strong>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; #include &lt;fcntl.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">posix_openpt</span><span class="params">(<span class="keyword">int</span> oﬂag)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: ﬁle descriptor of next available PTY master if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>在伪终端从设备可用之前,它的权限必须设置,以便应用程序可以访问它。 grantpt函数提供这样的功能:它把从设备节点的用户ID设置为调用者的实际用户ID,设置其组ID为一非指定值,通常是可以访问该终端设备的组。权限被设置为:对个体所有者是读写,对组所有者是写(0620)</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">grantpt</span><span class="params">(<span class="keyword">int</span> fd)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">unlockpt</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 on success, −1 on error</span></div></pre></td></tr></table></figure>
+<p>unlockpt函数用于准予对伪终端从设备的访问,从而允许应用程序打开该设备。阻止其他进程打开从设备后,建立该设备的应用程序有机会在使用主、从设备之前正确地初始化这些设备</p>
+<p>注意,在 grantpt和unlockpt这两个函数中,文件描述符参数是与伪终端主设备关联的文件描述符。</p>
+<p>如果给定了伪终端主设备的文件描述符,那么可以用 ptsname函数找到伪终端从设备的路径名。这使应用程序可以独立于给定平台的某种特定约定而标识从设备。注意,该函数返回的名字可能存储在静态存储中,因此后续的调用可能会覆盖它。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">ptsname</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to name of PTY slave if OK, NULL on error</span></div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;《UNIX环境高级编程》第19章 伪终端 笔记&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>APUE 终端I/O</title>
+    <link href="https://www.liuin.cn/2018/05/05/APUE-%E7%BB%88%E7%AB%AFI-O/"/>
+    <id>https://www.liuin.cn/2018/05/05/APUE-终端I-O/</id>
+    <published>2018-05-05T02:53:52.000Z</published>
+    <updated>2018-05-05T08:09:10.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>《UNIX环境高级编程》第18章 终端I/O 笔记</p>
+<a id="more"></a>
+<h2 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h2><p>终端I/O有两种不同的工作模式:</p>
+<ol>
+<li>规范模式输入处理。在这种模式中,对终端输入以行为单位进行处理。对于每个读请求终端驱动程序最多返回一行</li>
+<li>非规范模式输入处理。输入字符不装配成行</li>
+</ol>
+<p>如果不做特殊处理,则默认模式是规范模式</p>
+<p>可以认为终端设备是由通常位于内核中的终端驱动程序控制的。每个终端设备都有一个输入列和一个输出队列,如图所示：</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255055612367.jpg" alt=""></p>
+<p>有以下几点说明：</p>
+<ul>
+<li>如果打开了回显功能,则在输入队列和输出队列之间有一个隐含的连接</li>
+<li>输入队列的长度MAX_INPUT是有限值。当一个特定设备的输入队列已经填满时,系统的行为将依赖于实现。这种情况发生时大多数UNIX系统回显响铃字符。</li>
+<li>图中没有显示另一个输入限制MAX_CANON。这个限制是一个规范输入行的最大字节数</li>
+<li>虽然输出队列的长度通常也是有限的,但是程序并不能获得这个定义其长度的常量为当输出队列将要填满时,内核便直接使写进程休眠,直至写队列中有可用的空间。</li>
+</ul>
+<p>大多数UNIX系统在一个称为终端行规程(terminal linediscipline)的模块中进行全部的规范处理。可以将这个模块设想成一个盒子,<strong>位于内核通用读、写函数和实际设备驱动程序之间</strong>。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255057246778.jpg" alt=""></p>
+<p>由于将规范处理分离为单独的模块,所有的终端驱动程序都能够一致地支持规范处理。</p>
+<p>所有可以检测和更改的终端设备特性都包含在termios结构中。该结构定义在头文件<termios.h>中,本章使用这一头文件。</termios.h></p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255057581968.jpg" alt=""></p>
+<p>各个标志位的作用：</p>
+<ul>
+<li>输入标志通过终端设备驱动程序控制字符的输入(例如,剥除输入字节的第8位,允许输入奇偶校验)</li>
+<li>输出标志则控制驱动程序输出(例如,执行输出处理、将换行符转换为CRLF)</li>
+<li>控制标志影响RS232串行线(例如,忽略调制解调器的状态线、每个字符的一个或两个停止位)</li>
+<li>本地标志影响驱动程序和用户之间的接口(例如,回显打开或关闭、可视地擦除字符、允许终端产生的信号以及对后台输出的作业控制停止信号</li>
+</ul>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255058794969.jpg" alt=""></p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255058823469.jpg" alt=""></p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255058855001.jpg" alt=""></p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255058879538.jpg" alt=""></p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255058906529.jpg" alt=""></p>
+<p>与终端有关的各个函数之间的关系</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255059407734.jpg" alt=""></p>
+<h2 id="特殊输入字符"><a href="#特殊输入字符" class="headerlink" title="特殊输入字符"></a>特殊输入字符</h2><p>POSIX.1定义了11个在输入时要特殊处理的字符。实现定义了另外一些特殊字符</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255061027706.jpg" alt=""></p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255061066356.jpg" alt=""></p>
+<p>在POSIX的11个特殊字符中,其中有9个字符的值可以任意更改。不能更改的两个特殊字符是换行符和回车符(分别是\n和\r),也可能是STOP和START字符(依赖于实现)。为了更改,只需要修改termios结构中c_cc数组的相应项。该数组中的元素都用名字作为下标进行引用,每个名字都以字母V开头。</p>
+<p>对各个字符的详细解释可见原书内容</p>
+<h2 id="获得和设置终端属性"><a href="#获得和设置终端属性" class="headerlink" title="获得和设置终端属性"></a>获得和设置终端属性</h2><p>为了获得和设置 termios结构,可以调用 tcgetattr和 tcsetattr函数。这样就可以检测和修改各种终端选项标志和特殊字符,使终端按我们所希望的方式进行操作。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;termios.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcgetattr</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">struct</span> termios *termptr)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcsetattr</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> opt, <span class="keyword">const</span> <span class="keyword">struct</span> termios *termptr)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>tcsetattr的参数opt使我们可以指定在什么时候新的终端属性才起作用。opt可以指定为下列常量中的一个:</p>
+<ul>
+<li>TCSANOW   更改立即发生。</li>
+<li>TCSADRAIN 发送了所有输出后更改才发生。若更改输出参数则应使用此选项。</li>
+<li>TCSAFLUSH 发送了所有输出后更改才发生。更进一步,在更改发生时未读的所有输入数据都被丢弃(冲洗)。</li>
+</ul>
+<h2 id="终端选项标志"><a href="#终端选项标志" class="headerlink" title="终端选项标志"></a>终端选项标志</h2><p>包含终端选项标志的所有的解释，具体可查看原书</p>
+<h2 id="stty命令"><a href="#stty命令" class="headerlink" title="stty命令"></a>stty命令</h2><p>上节说明的所有选项都可以被检查和更改:在程序中用tcgetattr和tcsetattr函数进行检查和更改;在命令行(或shell脚本)中用stty(1)命令进行检查和更改。简单地说,stty(1)命令就是终端I/O所列的前6个函数的接口。</p>
+<h2 id="波特率函数"><a href="#波特率函数" class="headerlink" title="波特率函数"></a>波特率函数</h2><p>术语波特率(baud rate)是一个历史沿用的术语,现在它指的是“位/秒”(bit per second)。虽然大多数终端设备对输入和输出使用同一波特率,但是只要硬件许可,可以将它们设置为两个不同值。</p>
+<p>设置波特率函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;termios.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">speed_t</span> cfgetispeed(<span class="keyword">const</span> <span class="keyword">struct</span> termios *termptr); </div><div class="line"><span class="keyword">speed_t</span> cfgetospeed(<span class="keyword">const</span> <span class="keyword">struct</span> termios *termptr); </div><div class="line"></div><div class="line"><span class="comment">// Both return: baud rate value </span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">cfsetispeed</span><span class="params">(<span class="keyword">struct</span> termios *termptr, <span class="keyword">speed_t</span> speed)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">cfsetospeed</span><span class="params">(<span class="keyword">struct</span> termios *termptr, <span class="keyword">speed_t</span> speed)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<h2 id="行控制函数"><a href="#行控制函数" class="headerlink" title="行控制函数"></a>行控制函数</h2><p>下列4个函数提供了终端设备的行控制能力：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;termios.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcdrain</span><span class="params">(<span class="keyword">int</span> fd)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcflow</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> action)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcflush</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> <span class="built_in">queue</span>)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcsendbreak</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> duration)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// All four return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>tcdrain函数等待所有输出都被传递。<br>tcflow函数用于对输入和输出流控制进行控制。<br>tcflush函数冲洗(抛弃)输入缓冲区(其中的数据是终端驱动程序已接收到,但用户程序尚未读取的)或输出缓冲区(其中的数据是用户程序已经写入,但尚未被传递的)。<br>tcsendbreak函数在一个指定的时间区间内发送连续的0值位流。</p>
+<h2 id="终端标识"><a href="#终端标识" class="headerlink" title="终端标识"></a>终端标识</h2><p>历史上,在大多数UNIX系统版本中,控制终端的名字一直是/dev/tty。POSIX.1提供了个运行时函数,可用来确定控制终端的名字。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">ctermid</span><span class="params">(<span class="keyword">char</span> *ptr)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to name of controlling terminal on success, pointer to empty string on error</span></div></pre></td></tr></table></figure>
+<p>另外还有两个UNIX系统比较感兴趣的函数: isatty和 ttyname。如果文件描述符引用个终端设备,则 isatty返回真。 ttyname返回的是在该文件描述符上打开的终端设备的路径名</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">isatty</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 1 (true) if terminal device, 0 (false) otherwise</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">ttyname</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to pathname of terminal, NULL on error</span></div></pre></td></tr></table></figure>
+<h2 id="规范模式"><a href="#规范模式" class="headerlink" title="规范模式"></a>规范模式</h2><p>规范模式很简单:发一个读请求,<strong>当一行已经输入后,终端驱动程序即返回</strong>。以下几个条件造成读返回。</p>
+<ol>
+<li>所请求的字节数已读到时,读返回。无需读一个完整的行。如果读了部分行,那么也不会丢失任何信息,下一次读从前一次读的停止处开始。</li>
+<li>当读到一个行定界符时,读返回。</li>
+<li>如果捕捉到信号,并且该函数不再自动重启,则读也返回</li>
+</ol>
+<h2 id="非规范模式"><a href="#非规范模式" class="headerlink" title="非规范模式"></a>非规范模式</h2><p>可以通过关闭termios结构中c_lf1ag字段的ICANON标志来指定非规范模式。在非规范模式中,输入数据不装配成行,不处理下列特殊字符: ERASE、KILL、EOF、NLEOL、EOL2、CR、REPRINT、STATUS和 WERASE。</p>
+<p>如前所述,规范模式很容易理解:系统每次至多返回一行。但在非规范模式下,系统如何知道在什么时候将数据返回给我们呢?如果它一次返回一个字节,那么系统开销就会过大。在启动读数据之前,往往不知道要读多少数据,所以系统不能总是一次返回多个字节解决方法是,当已读了指定量的数据后,或者已经超过了给定量的时间后,即通知系统返回。</p>
+<p>这种技术使用了 termios结构中c_cc数组的两个变量:MIN和TIME。c_cc数组中的这两个元素的下标名为VMIN和VTIM。</p>
+<p>MIN指定一个read返回前的最小字节数。TIME指定等待数据到达的分秒数(分秒为秒的1/10)。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255076147395.jpg" alt=""></p>
+<h2 id="终端窗口大小"><a href="#终端窗口大小" class="headerlink" title="终端窗口大小"></a>终端窗口大小</h2><p>大多数UNⅨX系统都提供了一种跟踪当前终端窗口大小的方法,在窗口大小发生变化时,使内核通知前台进程组。内核为每个终端和伪终端都维护了一个wins1ze结构</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255076954042.jpg" alt=""></p>
+<p>提供这种功能的目的是,当窗口大小发生变化时应用程序能够得到通知(如v1编辑器)。应用程序接收此信号后,可以获取窗口大小的新值,然后重绘屏幕。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;《UNIX环境高级编程》第18章 终端I/O 笔记&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>APUE 高级进程间通信</title>
+    <link href="https://www.liuin.cn/2018/05/05/APUE-%E9%AB%98%E7%BA%A7%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/"/>
+    <id>https://www.liuin.cn/2018/05/05/APUE-高级进程间通信/</id>
+    <published>2018-05-05T01:37:33.000Z</published>
+    <updated>2018-05-05T02:55:05.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>《UNIX环境高级编程》第17章 高级进程间通信 笔记</p>
+<a id="more"></a>
+<h2 id="UNIX-域套接字"><a href="#UNIX-域套接字" class="headerlink" title="UNIX 域套接字"></a>UNIX 域套接字</h2><p>UNIX域套接字用于在同一台计算机上运行的进程之间的通信。虽然因特网域套接字可用于同一目的,但<strong>UNIX域套接字的效率更高</strong>。UNIX域套接字仅仅复制数据,它们并不执行协议处理,不需要添加或删除网络报头,无需计算校验和,不要产生顺序号,无需发送确认报文。</p>
+<p>UNIX域套接字<strong>提供流和数据报两种接口</strong>。UNIX域数据报服务是可靠的,既不会丢失报文也不会传递出错。UNIX域套接字就像是套接字和管道的混合。</p>
+<p>可以使用它们面向网络的域套接字接口或者使用socketpair函数来创建一对无命名的、相互连接的UNIX域套接字。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">socketpair</span><span class="params">(<span class="keyword">int</span> domain, <span class="keyword">int</span> type, <span class="keyword">int</span> protocol, <span class="keyword">int</span> sockfd[<span class="number">2</span>])</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>虽然接口足够通用,允许socketpair用于其他域,但一般来说操作系统仅对UNIX域提供支持</p>
+<p>对相互连接的UNIX域套接字可以起到<strong>全双工管道的作用</strong>:两端对读和写开放。我们将其称为fd管道( fd-pipe),以便与普通的半双工管道区分开来。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254872539788.jpg" alt=""></p>
+<p>曾经提到XSI消息队列的使用存在一个问题,即不能将它们和po11或者se1ect起使用,这是因为它们不能关联到文件描述符。然而,套接字是和文件描述符相关联的,消息到达时,可以用套接字来通知。对每个消息队列使用一个线程。每个线程都会在mmsgrcv调用中阻塞。当消息到达时,线程会把它写入一个UNIX域套接字的一端。当poll指示套接字可以读取数据时,应用程序会使用这个套接字的另外一端来接收这个消息。</p>
+<blockquote>
+<p>命名UNIX域套接字</p>
+</blockquote>
+<p>虽然socketpair函数能创建一对相互连接的套接字,但是每一个套接字都没有名字。这意味着无关进程不能使用它们。恰如因特网域套接字一样,可以命名UNIX域套接字,并可将其用于告示服务。但是要注意,UNX域套接字使用的地址格式不同于因特网域套接字，套接字地址格式会随实现而变。</p>
+<p>UNIX域套接字的地址由 sockaddr_un结构表示。在 Linux3.20和 Solaris10中, sockaddr_un结构在头文件<sys un.h="">中的定义</sys></p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254875673064.jpg" alt=""></p>
+<p>sockaddr_un结构的sun_path成员包含一个路径名。当我们将一个地址绑定到一个UNIX域套接字时,系统会用该路径名创建一个S_IFSOCK类型的文件该文件仅用于向客户进程告示套接字名字。该文件无法打开,也不能由应用程序用于通信。</p>
+<p>如果我们试图绑定同一地址时,该文件已经存在,那么bind请求会失败。当关闭套接字时,并不自动删除该文件,所以必须确保在应用程序退出前,对该文件执行解除链接操作。</p>
+<h2 id="唯一连接"><a href="#唯一连接" class="headerlink" title="唯一连接"></a>唯一连接</h2><p>服务器进程可以使用标准bind、listen和 accept函数,为客户进程安排一个唯一UNIX域连接。客户进程使用 connect与服务器进程联系。在服务器进程接受了connect请求后,在服务器进程和客户进程之间就存在了唯一连接。</p>
+<p>下图展示了客户进程和服务器进程存在连接之前二者的情形。服务器端把它的套接字绑定到sockaddr_un的地址并监听新的连接请求。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254879207178.jpg" alt=""></p>
+<p>现在，开发3个函数,使用这些函数可以在运行于同一台计算机上的两个无关进程之间创建唯一连接。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"apue.h"</span> </span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">serv_listen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name)</span></span>; </div><div class="line"><span class="comment">// Returns: ﬁle descriptor to listen on if OK, negative value on error</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">serv_accept</span><span class="params">(<span class="keyword">int</span> listenfd, <span class="keyword">uid_t</span> *uidptr)</span></span>; </div><div class="line"><span class="comment">// Returns: new ﬁle descriptor if OK, negative value on error</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">cli_conn</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name)</span></span>; </div><div class="line"><span class="comment">// Returns: ﬁle descriptor if OK, negative value on error</span></div></pre></td></tr></table></figure>
+<p>服务器进程可以调用serv_listen函数声明它要在一个众所周知的名字(文件系统中的某个路径名)上监听客户进程的连接请求。当客户进程想要连接至服务器进程时,它们将使用该名字。serv_listen函数的返回值是用于接收客户进程连接请求的服务器UNIX域套接字</p>
+<p>服务器进程可以使用serv_accept函数等待客户进程连接请求的到达。当个请求到达时,系统自动创建一个新的UNIX域套接字,并将它与客户端套接字连接,最后将这个新套接字返回给服务器。此外,客户进程的有效用户ID存放在 uidptr指向的存储区中客户</p>
+<p>进程调用cli_conn函数连接至服务器进程。客户进程指定的name参数必须与服务器进程调用serv_listen函数时所用的名字相同</p>
+<p>这三个函数的具体实现可以查看书本</p>
+<h2 id="传送文件描述符"><a href="#传送文件描述符" class="headerlink" title="传送文件描述符"></a>传送文件描述符</h2><p>在两个进程之间传送打开文件描述符的技术是非常有用的。因此可以对客户进程服务器进程应用进行不同的设计。它使一个进程(通常是服务器进程)能够处理打开一个文件所要做的一切操作(包括将网络名翻译为网络地址、拨号调制解调器、协商文件锁等)以及<strong>向调用进程送回个描述符</strong>,该描述符可被用于以后的所有I/O函数。涉及打开文件或设备的所有细节对客户进程而言都是透明的。</p>
+<p>一般情况下，两个进程,它们打开了同一文件。虽然它们共享同一个v节点,但每个进程都有它自己的文件表项。当一个进程向另一个进程传送一个打开文件描述符时,我们想让发送进程和接收进程共享同文件表项。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254885933315.jpg" alt=""></p>
+<p>在技术上,我们是<strong>将指向一个打开文件表项的指针从一个进程发送到另外一个进程</strong>。该指针被分配存放在接收进程的第一个可用描述符项中。(注意,不要造成错觉,以为发送进程和接收进程中的描述符编号是相同的,它们通常是不同的。)两个进程共享同一个打开文件表,这与foxk之后的父进程和子进程共享打开文件表的情况完全相同。</p>
+<p>当发送进程将描述符传送给接收进程后,通常会关闭该描述符。发送进程关闭该描述符并不会真的关闭该文件或设备,其原因是该描述符仍被视为由接收进程打开(即使接收进程尚未接收到该描述符)</p>
+<p>下面定义用以发送和接收文件描述符的3个函数。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">#include "apue.h" </div><div class="line"></div><div class="line">int send_fd(int fd, int fd_to_send); </div><div class="line">int send_err(int fd, int status, const char *errmsg); </div><div class="line">// Both return: 0 if OK, −1 on error </div><div class="line"></div><div class="line">int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t)); </div><div class="line">// Returns: ﬁle descriptor if OK, negative value on error</div></pre></td></tr></table></figure>
+<p>具体的实现原书代码</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;《UNIX环境高级编程》第17章 高级进程间通信 笔记&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>APUE 网络IPC：套接字</title>
+    <link href="https://www.liuin.cn/2018/05/05/APUE-%E7%BD%91%E7%BB%9CIPC%EF%BC%9A%E5%A5%97%E6%8E%A5%E5%AD%97/"/>
+    <id>https://www.liuin.cn/2018/05/05/APUE-网络IPC：套接字/</id>
+    <published>2018-05-05T00:38:42.000Z</published>
+    <updated>2018-05-05T01:37:03.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>《UNIX环境高级编程》第16章 网络IPC：套接字 笔记</p>
+<a id="more"></a>
+<h2 id="套接字描述"><a href="#套接字描述" class="headerlink" title="套接字描述"></a>套接字描述</h2><p>套接字是通信端点的抽象。正如使用文件描述符访问文件,应用程序用套接字描述符访问套接字。<strong>套接字描述符在UNIX系统中被当作是一种文件描述符</strong>。事实上,许多处理文件描述符的函数(如read和 write)可以用于处理套接字描述符。</p>
+<p>为创建一个套接字,调用socket函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">socket</span><span class="params">(<span class="keyword">int</span> domain, <span class="keyword">int</span> type, <span class="keyword">int</span> protocol)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: ﬁle (socket) descriptor if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>参数 domain(域)确定通信的特性,包括地址格式</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254808968863.jpg" alt=""></p>
+<p>参数type确定套接字的类型,进一步确定通信特征。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254809237060.jpg" alt=""></p>
+<p>参数protocol通常是0,表示为给定的域和套接字类型选择默认协议。当对同一域和套接字类型支持多个协议时,可以使用 protocol选择一个特定协议</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254809947426.jpg" alt=""></p>
+<p>对于数据报(SOCK_DGRAM)接口,两个对等进程之间通信时不需要逻辑连接。只需要向对等进程所使用的套接字送出一个报文。字节流(SOCK_STREAM)要求在交换数据之前,在本地套接字和通信的对等进程的套接字之间建立一个逻辑连接。</p>
+<p>调用socket与调用open相类似。在两种情况下,均可获得用于I/O的文件描述符。当不再需要该文件描述符时,调用c1ose来关闭对文件或套接字的访问,并且释放该描述符以便重新使用虽然套接字描述符本质上是一个文件描述符,但不是所有参数为文件描述符的函数都可以接受套接字描述符。</p>
+<h2 id="寻址"><a href="#寻址" class="headerlink" title="寻址"></a>寻址</h2><p>在学习用套接字做一些有意义的事情之前,需要知道如何标识一个目标通信进程。进程标识由两部分组成。一部分是<strong>计算机的网络地址</strong>,它可以帮助标识网络上我们想与之通信的计算机;另一部分是该<strong>计算机上用端口号</strong>表示的服务,它可以帮助标识特定的进程。</p>
+<h3 id="字节序"><a href="#字节序" class="headerlink" title="字节序"></a>字节序</h3><p>字节序是一个处理器架构特性用于指示像整数这样的大数据类型内部的字节如何排序。</p>
+<p>如果处理器架构支持大端(big-endian)字节序,那么<strong>最大字节地址出现在最低有效字节</strong>( Least Significant Byte,LSB)上，小端(little-endian)字节序则相反:<strong>最低有效字节包含最小字节地址</strong>。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254815015116.jpg" alt=""></p>
+<p>网络协议指定了字节序,因此异构计算机系统能够交换协议信息而不会被字节序所混淆。TCPP协议栈使用大端字节序。应用程序交换格式化数据时,字节序问题就会出现</p>
+<p>对于TCPP应用程序,有4个用来在处理器字节序和网络字节序之间实施转换的函数:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">uint32_t</span> htonl(<span class="keyword">uint32_t</span> hostint32);</div><div class="line"><span class="comment">// Returns: 32-bit integer in network byte order</span></div><div class="line"></div><div class="line"><span class="keyword">uint16_t</span> htons(<span class="keyword">uint16_t</span> hostint16);</div><div class="line"><span class="comment">// Returns: 16-bit integer in network byte order</span></div><div class="line"></div><div class="line"><span class="keyword">uint32_t</span> ntohl(<span class="keyword">uint32_t</span> netint32);</div><div class="line"></div><div class="line"><span class="comment">// Returns: 32-bit integer in host byte order</span></div><div class="line"></div><div class="line"><span class="keyword">uint16_t</span> ntohs(<span class="keyword">uint16_t</span> netint16);</div><div class="line"></div><div class="line"><span class="comment">// Returns: 16-bit integer in host byte order</span></div></pre></td></tr></table></figure>
+<p>h表示“主机”字节序,n表示“网络”字节序。1表示“长”(即4字节)整数,s表示“短”</p>
+<h3 id="地址格式"><a href="#地址格式" class="headerlink" title="地址格式"></a>地址格式</h3><p>一个地址标识一个特定通信域的套接字端点,地址格式与这个特定的通信域相关。为使不同格式地址能够传入到套接字函数,地址会被<strong>强制转换</strong>成一个通用的地址结构sockaddr</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254817776056.jpg" alt=""></p>
+<p>不同的系统实现可能会不一样</p>
+<p>因特网地址定义在<netinet in.h="">头文件中。在IPv4因特网域(AF_INET)中,套接字地址用结构 sockaddr_in表示</netinet></p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254818310427.jpg" alt=""></p>
+<p>有时,需要打印出能被人理解而不是计算机所理解的地址格式。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">const</span> <span class="keyword">char</span> *<span class="title">inet_ntop</span><span class="params">(<span class="keyword">int</span> domain, <span class="keyword">const</span> <span class="keyword">void</span> *<span class="keyword">restrict</span> addr, <span class="keyword">char</span> *<span class="keyword">restrict</span> str, <span class="keyword">socklen_t</span> size)</span></span>;</div><div class="line"><span class="comment">// Returns: pointer to address string on success, NULL on error </span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">inet_pton</span><span class="params">(<span class="keyword">int</span> domain, <span class="keyword">const</span> <span class="keyword">char</span> *<span class="keyword">restrict</span> str, <span class="keyword">void</span> *<span class="keyword">restrict</span> addr)</span></span>;</div><div class="line"><span class="comment">// Returns: 1 on success, 0 if the format is invalid, or −1 on error</span></div></pre></td></tr></table></figure>
+<p>函数inet_ntop将网络字节序的二进制地址转换成文本字符串格式。inet_pton将文本字符串格式转换成网络字节序的二进制地址。</p>
+<h3 id="将套接字和地址关联"><a href="#将套接字和地址关联" class="headerlink" title="将套接字和地址关联"></a>将套接字和地址关联</h3><p>将一个客户端的套接字关联上一个地址没有多少新意,可以让系统选一个默认的地址。然而,<strong>对于服务器,需要给一个接收客户端请求的服务器套接字关联上一个众所周知的地址</strong>。客户端应有一种方法来发现连接服务器所需要的地址,最简单的方法就是服务器保留一个地址并且注册在/etc/services或者某个名字服务中。</p>
+<p>使用bind函数来关联地址和套接字</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">bind</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">struct</span> sockaddr *addr, <span class="keyword">socklen_t</span> len)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>对于使用的地址有以下一些限制:</p>
+<ul>
+<li>在进程正在运行的计算机上,指定的地址必须有效，不能指定一个其他机器的地址。</li>
+<li>地址必须和创建套接字时的地址族所支持的格式相匹配。</li>
+<li>地址中的端口号必须不小于1024,除非该进程具有相应的特权(即超级用户)</li>
+<li>一般只能将一个套接字端点绑定到一个给定地址上,尽管有些协议允许多重绑定</li>
+</ul>
+<p>可以调用 getsockname函数来发现绑定到套接字上的地址：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getsockname</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">struct</span> sockaddr *<span class="keyword">restrict</span> addr, <span class="keyword">socklen_t</span> *<span class="keyword">restrict</span> alenp)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>调用 getsockname之前,将 alenp设置为一个指向整数的指针,该整数指定缓冲区sockaddr的长度。返回时,该整数会被设置成返回地址的大小。如果地址和提供的缓冲区长</p>
+<p>如果套接字已经和对等方连接,可以调用 getpeername函数来找到对方的地址。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getpeername</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">struct</span> sockaddr *<span class="keyword">restrict</span> addr, <span class="keyword">socklen_t</span> *<span class="keyword">restrict</span> alenp)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<h2 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h2><p>如果要处理一个面向连接的网络服务(SOCK_STREAM或SOCK_SEQPACKET),那么在开始交换数据以前,需要在请求服务的进程套接字(客户端)和提供服务的进程套接字(服务器)之间建立一个连接。使用connect函数来建立连接。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">connect</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">struct</span> sockaddr *addr, <span class="keyword">socklen_t</span> len)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>在connect中指定的地址是我们想与之通信的服务器地址。如果 sockfd没有绑定到一个地址, connect会给调用者绑定一个默认地址。</p>
+<p>服务器调用listen函数来宣告它愿意接受连接请求。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">listen</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> backlog)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>一旦服务器调用了listen,所用的套接字就能接收连接请求。使用accept函数获得连接请求并建立连接</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">accept</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">struct</span> sockaddr *<span class="keyword">restrict</span> addr, <span class="keyword">socklen_t</span> *<span class="keyword">restrict</span> len)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: ﬁle (socket) descriptor if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>函数accept所返回的文件描述符是套接字描述符,该描述符连接到调用connect的客户端。这个新的套接字描述符和原始套接字(sockfd)具有相同的套接字类型和地址族。传给accept原始套接字没有关联到这个连接,而是继续保持可用状态并接收其他连接请求。</p>
+<p>如果服务器调用accept,并且当前没有连接请求,服务器会阻塞直到一个请求到来。另外服务器可以使用poll或se1ect来等待一个请求的到来。在这种情况下,一个带有等待连接请求的套接字会以可读的方式出现</p>
+<h2 id="数据传输"><a href="#数据传输" class="headerlink" title="数据传输"></a>数据传输</h2><p>既然一个套接字端点表示为一个文件描述符,那么只要建立连接,就可以使用read和 write来通过套接字通信。</p>
+<p>尽管可以通过read和write交换数据,但这就是这两个函数所能做的一切。如果想指定选项,从多个客户端接收数据包,或者发送带外数据,就需要使用6个为数据传递而设计的套接字函数中的一个</p>
+<p>3个函数用来发送数据,3个用于接收数据。首先,考查用于发送数据的函数。最简单的是send,它和 write很像,但是可以指定标志来改变处理传输数据的方式</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> send(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> nbytes, <span class="keyword">int</span> ﬂags);</div><div class="line"></div><div class="line"><span class="comment">// Returns: number of bytes sent if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>前面3个参数和write参数一样，不同的是第4个参数flags：</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254833405785.jpg" alt=""></p>
+<p>即使send成功返回,也并不表示连接的另一端的进程就一定接收了数据。我们所能保证的只是当send成功返回时,数据已经被无错误地发送到网络驱动程序上</p>
+<p>函数 sendto和send很类似。区别在于sendto可以在无连接的套接字上指定一个目标地址。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> sendto(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> nbytes, <span class="keyword">int</span> ﬂags, <span class="keyword">const</span> <span class="keyword">struct</span> sockaddr *destaddr, <span class="keyword">socklen_t</span> destlen); </div><div class="line"></div><div class="line"><span class="comment">// Returns: number of bytes sent if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>对于面向连接的套接字,目标地址是被忽略的,因为连接中隐含了目标地址。对于无连接的套接字,除非先调用 connect设置了目标地址,否则不能使用send。 sendto提供了发送报文的另一种方式</p>
+<p>通过套接字发送数据时,还有一个选择。可以调用带有msghdr结构的sendmsg来指定多重缓冲区传输数据,这和 writev函数很相似</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> sendmsg(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">struct</span> msghdr *msg, <span class="keyword">int</span> ﬂags);</div><div class="line"></div><div class="line"><span class="comment">// Returns: number of bytes sent if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>与发送数据相对应的，接受数据也有三个函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> recv(<span class="keyword">int</span> sockfd, <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> nbytes, <span class="keyword">int</span> ﬂags);</div><div class="line"></div><div class="line"><span class="comment">// Returns: length of message in bytes, 0 if no messages are available and peer has done an orderly shutdown, or −1 on error</span></div></pre></td></tr></table></figure>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254835445782.jpg" alt=""></p>
+<p>如果有兴趣定位发送者,可以使用 recvfrom来得到数据发送者的源地址</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> recvfrom(<span class="keyword">int</span> sockfd, <span class="keyword">void</span> *<span class="keyword">restrict</span> buf, <span class="keyword">size_t</span> len, <span class="keyword">int</span> ﬂags, <span class="keyword">struct</span> sockaddr *<span class="keyword">restrict</span> addr, <span class="keyword">socklen_t</span> *<span class="keyword">restrict</span> addrlen); </div><div class="line"></div><div class="line"><span class="comment">// Returns: length of message in bytes, 0 if no messages are available and peer has done an orderly shutdown, or −1 on error</span></div></pre></td></tr></table></figure>
+<p>为了将接收到的数据送入多个缓冲区,类似于 readv,或者想接收辅助数据,可以使用 recvmso</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> recvmsg(<span class="keyword">int</span> sockfd, <span class="keyword">struct</span> msghdr *msg, <span class="keyword">int</span> ﬂags);</div><div class="line"></div><div class="line"><span class="comment">// Returns: length of message in bytes, 0 if no messages are available and peer has done an orderly shutdown, or −1 on error</span></div></pre></td></tr></table></figure>
+<h2 id="套接字选项"><a href="#套接字选项" class="headerlink" title="套接字选项"></a>套接字选项</h2><p>套接字机制提供了两个套接字选项接口来控制套接字行为。一个接口用来设置选项,另一个接口可以查询选项的状态。可以获取或设置以下3种选项</p>
+<ol>
+<li>通用选项,工作在所有套接字类型上</li>
+<li>在套接字层次管理的选项,但是依赖于下层协议的支持</li>
+<li>特定于某协议的选项,每个协议独有的</li>
+</ol>
+<p>可以使用 setsockopt函数来设置套接字选项。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setsockopt</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> level, <span class="keyword">int</span> option, <span class="keyword">const</span> <span class="keyword">void</span> *val, <span class="keyword">socklen_t</span> len)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>参数 level标识了选项应用的协议。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254838324441.jpg" alt=""></p>
+<p>参数val根据选项的不同指向一个数据结构或者一个整数。一些选项是on/off开关。如果整数非0,则启用选项。如果整数为0,则禁止选项。参数len指定了val指向的对象的大小</p>
+<p>可以使用getsockopt来查看选项的当前值</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getsockopt</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> level, <span class="keyword">int</span> option, <span class="keyword">void</span> *<span class="keyword">restrict</span> val, <span class="keyword">socklen_t</span> *<span class="keyword">restrict</span> lenp)</span></span>;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<h2 id="带外数据"><a href="#带外数据" class="headerlink" title="带外数据"></a>带外数据</h2><p>带外数据( out-of-band data)是一些通信协议所支持的可选功能,与普通数据相比,它允许更高优先级的数据传输。带外数据先行传输,即使传输队列已经有数据。TCP支持带外数据,但是UDP不支持。套接字接口对带外数据的支持很大程度上受TCP带外数据具体实现的影响。TCP将带外数据称为紧急数据( urgent data)。</p>
+<p>TCP仅支持一个字节的紧急数据,但是允许紧急数据在普通数据传递机制数据流之外传输。</p>
+<h2 id="非阻塞和异步I-O"><a href="#非阻塞和异步I-O" class="headerlink" title="非阻塞和异步I/O"></a>非阻塞和异步I/O</h2><p>在基于套接字的异步LO中,当从套接字中读取数据时,或者当套接字写队列中空间变得可用时,可以安排要发送的信号 SIGIO。</p>
+<p>启用异步IO是一个两步骤的过程</p>
+<ol>
+<li>建立套接字所有权,这样信号可以被传递到合适的进程</li>
+<li>通知套接字当IO操作不会阻塞时发信号</li>
+</ol>
+<p>可以使用3种方式来完成第一个步骤</p>
+<ul>
+<li>在fcnt1中使用 F_SETOWN命令</li>
+<li>在ioct1中使用 FIOSETOWN命令</li>
+<li>在ioctl中使用 SIOCSPGRP命令</li>
+</ul>
+<p>要完成第二个步骤,有两个选择</p>
+<ul>
+<li>在fcnt1中使用F_SETFL命令并且启用文件标志O_ASYNO</li>
+<li>在ioctl中使用FI命令</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;《UNIX环境高级编程》第16章 网络IPC：套接字 笔记&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
+    
+  </entry>
   
   <entry>
     <title>APUE 进程间通信</title>
@@ -1999,2397 +2352,6 @@
     
     
       <category term="Unix" scheme="https://www.liuin.cn/tags/Unix/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Github分布式爬虫——数据分析</title>
-    <link href="https://www.liuin.cn/2018/04/07/Github%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E2%80%94%E2%80%94%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/"/>
-    <id>https://www.liuin.cn/2018/04/07/Github分布式爬虫——数据分析/</id>
-    <published>2018-04-07T01:54:54.000Z</published>
-    <updated>2018-04-07T02:00:07.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>对Github分布式爬虫爬取的20w用户信息和40w仓库信息进行简单的分析和统计</p>
-<a id="more"></a>
-<p>这里爬取的数据主要有两大类：用户数据和仓库数据，此次分析的数据量：256171用户数据，434994仓库数据</p>
-<h2 id="用户"><a href="#用户" class="headerlink" title="用户"></a>用户</h2><h3 id="全球用户榜单"><a href="#全球用户榜单" class="headerlink" title="全球用户榜单"></a>全球用户榜单</h3><h4 id="Followers人数榜"><a href="#Followers人数榜" class="headerlink" title="Followers人数榜"></a>Followers人数榜</h4><table>
-<thead>
-<tr>
-<th>Avatar</th>
-<th>User</th>
-<th>Repos</th>
-<th>Stars</th>
-<th>Followers</th>
-<th>Following</th>
-<th>Contributions</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><img src="https://avatars0.githubusercontent.com/u/1024025" alt=""></td>
-<td><a href="https://github.com/torvalds" target="_blank" rel="external">https://github.com/torvalds</a></td>
-<td>6</td>
-<td>2</td>
-<td>70400</td>
-<td>0</td>
-<td>8</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/66577" alt=""></td>
-<td><a href="https://github.com/JakeWharton" target="_blank" rel="external">https://github.com/JakeWharton</a></td>
-<td>95</td>
-<td>228</td>
-<td>45000</td>
-<td>12</td>
-<td>3541</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/905434" alt=""></td>
-<td><a href="https://github.com/ruanyf" target="_blank" rel="external">https://github.com/ruanyf</a></td>
-<td>48</td>
-<td>206</td>
-<td>38200</td>
-<td>0</td>
-<td>1645</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/25254" alt=""></td>
-<td><a href="https://github.com/tj" target="_blank" rel="external">https://github.com/tj</a></td>
-<td>273</td>
-<td>2000</td>
-<td>34400</td>
-<td>46</td>
-<td>3310</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/499550" alt=""></td>
-<td><a href="https://github.com/yyx990803" target="_blank" rel="external">https://github.com/yyx990803</a></td>
-<td>141</td>
-<td>779</td>
-<td>29200</td>
-<td>90</td>
-<td>2553</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/110953" alt=""></td>
-<td><a href="https://github.com/addyosmani" target="_blank" rel="external">https://github.com/addyosmani</a></td>
-<td>295</td>
-<td>807</td>
-<td>29000</td>
-<td>254</td>
-<td>928</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/810438" alt=""></td>
-<td><a href="https://github.com/gaearon" target="_blank" rel="external">https://github.com/gaearon</a></td>
-<td>227</td>
-<td>1300</td>
-<td>27200</td>
-<td>171</td>
-<td>3019</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/39191" alt=""></td>
-<td><a href="https://github.com/paulirish" target="_blank" rel="external">https://github.com/paulirish</a></td>
-<td>266</td>
-<td>723</td>
-<td>25600</td>
-<td>245</td>
-<td>2375</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/170270" alt=""></td>
-<td><a href="https://github.com/sindresorhus" target="_blank" rel="external">https://github.com/sindresorhus</a></td>
-<td>975</td>
-<td>2500</td>
-<td>23600</td>
-<td>50</td>
-<td>4753</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/119893" alt=""></td>
-<td><a href="https://github.com/kennethreitz" target="_blank" rel="external">https://github.com/kennethreitz</a></td>
-<td>141</td>
-<td>1900</td>
-<td>21200</td>
-<td>197</td>
-<td>5626</td>
-</tr>
-</tbody>
-</table>
-<h4 id="Following人数榜"><a href="#Following人数榜" class="headerlink" title="Following人数榜"></a>Following人数榜</h4><table>
-<thead>
-<tr>
-<th>Avatar</th>
-<th>User</th>
-<th>Repos</th>
-<th>Stars</th>
-<th>Followers</th>
-<th>Following</th>
-<th>Contributions</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/3076393" alt=""></td>
-<td><a href="https://github.com/KevinHock" target="_blank" rel="external">https://github.com/KevinHock</a></td>
-<td>19</td>
-<td>198</td>
-<td>1300</td>
-<td>284000</td>
-<td>639</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/5877145" alt=""></td>
-<td><a href="https://github.com/angusshire" target="_blank" rel="external">https://github.com/angusshire</a></td>
-<td>8</td>
-<td>217000</td>
-<td>10300</td>
-<td>230000</td>
-<td>30</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/6508763" alt=""></td>
-<td><a href="https://github.com/dalinhuang99" target="_blank" rel="external">https://github.com/dalinhuang99</a></td>
-<td>20</td>
-<td>75</td>
-<td>3200</td>
-<td>162000</td>
-<td>1293</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/3604053" alt=""></td>
-<td><a href="https://github.com/cusspvz" target="_blank" rel="external">https://github.com/cusspvz</a></td>
-<td>109</td>
-<td>1200</td>
-<td>6600</td>
-<td>130000</td>
-<td>90</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/6673982" alt=""></td>
-<td><a href="https://github.com/MichalPaszkiewicz" target="_blank" rel="external">https://github.com/MichalPaszkiewicz</a></td>
-<td>60</td>
-<td>558</td>
-<td>4600</td>
-<td>72700</td>
-<td>172</td>
-</tr>
-<tr>
-<td><img src="https://avatars0.githubusercontent.com/u/418638" alt=""></td>
-<td><a href="https://github.com/nfultz" target="_blank" rel="external">https://github.com/nfultz</a></td>
-<td>70</td>
-<td>2500</td>
-<td>2600</td>
-<td>61600</td>
-<td>2141</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/14251570" alt=""></td>
-<td><a href="https://github.com/mstraughan86" target="_blank" rel="external">https://github.com/mstraughan86</a></td>
-<td>15</td>
-<td>454</td>
-<td>3400</td>
-<td>60500</td>
-<td>299</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/32831059" alt=""></td>
-<td><a href="https://github.com/opengiineer" target="_blank" rel="external">https://github.com/opengiineer</a></td>
-<td>19</td>
-<td>90</td>
-<td>1600</td>
-<td>55700</td>
-<td>46</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/778015" alt=""></td>
-<td><a href="https://github.com/ahmetabdi" target="_blank" rel="external">https://github.com/ahmetabdi</a></td>
-<td>130</td>
-<td>4100</td>
-<td>448</td>
-<td>53300</td>
-<td>1954</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/4107768" alt=""></td>
-<td><a href="https://github.com/brunocasanova" target="_blank" rel="external">https://github.com/brunocasanova</a></td>
-<td>46</td>
-<td>152</td>
-<td>2400</td>
-<td>48300</td>
-<td>13</td>
-</tr>
-</tbody>
-</table>
-<h4 id="Stars榜"><a href="#Stars榜" class="headerlink" title="Stars榜"></a>Stars榜</h4><p>看看谁收藏的仓库最多</p>
-<table>
-<thead>
-<tr>
-<th>Avatar</th>
-<th>User</th>
-<th>Repos</th>
-<th>Stars</th>
-<th>Followers</th>
-<th>Following</th>
-<th>Contributions</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/5877145" alt=""></td>
-<td><a href="https://github.com/angusshire" target="_blank" rel="external">https://github.com/angusshire</a></td>
-<td>8</td>
-<td>217000</td>
-<td>10300</td>
-<td>230000</td>
-<td>30</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/1610158" alt=""></td>
-<td><a href="https://github.com/mcanthony" target="_blank" rel="external">https://github.com/mcanthony</a></td>
-<td>4300</td>
-<td>42500</td>
-<td>375</td>
-<td>12700</td>
-<td>21</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/3947125" alt=""></td>
-<td><a href="https://github.com/maoabc1818" target="_blank" rel="external">https://github.com/maoabc1818</a></td>
-<td>9</td>
-<td>32200</td>
-<td>121</td>
-<td>95</td>
-<td>2</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/391299" alt=""></td>
-<td><a href="https://github.com/JT5D" target="_blank" rel="external">https://github.com/JT5D</a></td>
-<td>210</td>
-<td>29300</td>
-<td>276</td>
-<td>6200</td>
-<td>0</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/500775" alt=""></td>
-<td><a href="https://github.com/reduxionist" target="_blank" rel="external">https://github.com/reduxionist</a></td>
-<td>15</td>
-<td>25800</td>
-<td>174</td>
-<td>429</td>
-<td>62</td>
-</tr>
-<tr>
-<td><img src="https://avatars0.githubusercontent.com/u/6948067" alt=""></td>
-<td><a href="https://github.com/pranavlathigara" target="_blank" rel="external">https://github.com/pranavlathigara</a></td>
-<td>1200</td>
-<td>24600</td>
-<td>793</td>
-<td>14900</td>
-<td>130</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/2882" alt=""></td>
-<td><a href="https://github.com/nikolay" target="_blank" rel="external">https://github.com/nikolay</a></td>
-<td>12</td>
-<td>23100</td>
-<td>243</td>
-<td>349</td>
-<td>469</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/3759759" alt=""></td>
-<td><a href="https://github.com/denji" target="_blank" rel="external">https://github.com/denji</a></td>
-<td>1300</td>
-<td>22500</td>
-<td>181</td>
-<td>397</td>
-<td>305</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/24416962" alt=""></td>
-<td><a href="https://github.com/roscopecoltran" target="_blank" rel="external">https://github.com/roscopecoltran</a></td>
-<td>156</td>
-<td>21000</td>
-<td>121</td>
-<td>4400</td>
-<td>599</td>
-</tr>
-<tr>
-<td><img src="https://avatars0.githubusercontent.com/u/6257454" alt=""></td>
-<td><a href="https://github.com/Jerzerak" target="_blank" rel="external">https://github.com/Jerzerak</a></td>
-<td>1</td>
-<td>18900</td>
-<td>54</td>
-<td>0</td>
-<td>3</td>
-</tr>
-</tbody>
-</table>
-<h4 id="Reps榜"><a href="#Reps榜" class="headerlink" title="Reps榜"></a>Reps榜</h4><p>Github上创建仓库最多的人在这里</p>
-<table>
-<thead>
-<tr>
-<th>Avatar</th>
-<th>User</th>
-<th>Repos</th>
-<th>Stars</th>
-<th>Followers</th>
-<th>Following</th>
-<th>Contributions</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><img src="https://avatars0.githubusercontent.com/u/675997" alt=""></td>
-<td><a href="https://github.com/pombredanne" target="_blank" rel="external">https://github.com/pombredanne</a></td>
-<td>40600</td>
-<td>6500</td>
-<td>149</td>
-<td>87</td>
-<td>2558</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/1732196" alt=""></td>
-<td><a href="https://github.com/carriercomm" target="_blank" rel="external">https://github.com/carriercomm</a></td>
-<td>20400</td>
-<td>12900</td>
-<td>72</td>
-<td>176</td>
-<td>151</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/14135456" alt=""></td>
-<td><a href="https://github.com/digideskio" target="_blank" rel="external">https://github.com/digideskio</a></td>
-<td>18000</td>
-<td>88</td>
-<td>120</td>
-<td>3900</td>
-<td>113</td>
-</tr>
-<tr>
-<td><img src="https://avatars0.githubusercontent.com/u/431924" alt=""></td>
-<td><a href="https://github.com/guoyu07" target="_blank" rel="external">https://github.com/guoyu07</a></td>
-<td>11600</td>
-<td>91</td>
-<td>20</td>
-<td>1000</td>
-<td>112</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/12729391" alt=""></td>
-<td><a href="https://github.com/modulexcite" target="_blank" rel="external">https://github.com/modulexcite</a></td>
-<td>10700</td>
-<td>4200</td>
-<td>30</td>
-<td>192</td>
-<td>15</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/1218365" alt=""></td>
-<td><a href="https://github.com/PlumpMath" target="_blank" rel="external">https://github.com/PlumpMath</a></td>
-<td>10100</td>
-<td>508</td>
-<td>31</td>
-<td>147</td>
-<td>103</td>
-</tr>
-<tr>
-<td><img src="https://avatars0.githubusercontent.com/u/3380677" alt=""></td>
-<td><a href="https://github.com/carabina" target="_blank" rel="external">https://github.com/carabina</a></td>
-<td>9300</td>
-<td>8700</td>
-<td>83</td>
-<td>5</td>
-<td>101</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/4687038" alt=""></td>
-<td><a href="https://github.com/jorik041" target="_blank" rel="external">https://github.com/jorik041</a></td>
-<td>9200</td>
-<td>53</td>
-<td>20</td>
-<td>129</td>
-<td>101</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/1332574" alt=""></td>
-<td><a href="https://github.com/treejames" target="_blank" rel="external">https://github.com/treejames</a></td>
-<td>8000</td>
-<td>6900</td>
-<td>93</td>
-<td>897</td>
-<td>101</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/498130" alt=""></td>
-<td><a href="https://github.com/mehulsbhatt" target="_blank" rel="external">https://github.com/mehulsbhatt</a></td>
-<td>7400</td>
-<td>364</td>
-<td>23</td>
-<td>9</td>
-<td>104</td>
-</tr>
-</tbody>
-</table>
-<h4 id="Contribution榜"><a href="#Contribution榜" class="headerlink" title="Contribution榜"></a>Contribution榜</h4><table>
-<thead>
-<tr>
-<th>Avatar</th>
-<th>User</th>
-<th>Repos</th>
-<th>Stars</th>
-<th>Followers</th>
-<th>Following</th>
-<th>Contributions</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/3244" alt=""></td>
-<td><a href="https://github.com/robertbrook" target="_blank" rel="external">https://github.com/robertbrook</a></td>
-<td>67</td>
-<td>32</td>
-<td>63</td>
-<td>114</td>
-<td>539804</td>
-</tr>
-<tr>
-<td><img src="https://avatars0.githubusercontent.com/u/20975616" alt=""></td>
-<td><a href="https://github.com/SimiCode" target="_blank" rel="external">https://github.com/SimiCode</a></td>
-<td>24</td>
-<td>11</td>
-<td>5</td>
-<td>15</td>
-<td>377077</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/751143" alt=""></td>
-<td><a href="https://github.com/jasoncalabrese" target="_blank" rel="external">https://github.com/jasoncalabrese</a></td>
-<td>75</td>
-<td>50</td>
-<td>64</td>
-<td>19</td>
-<td>357587</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/56100" alt=""></td>
-<td><a href="https://github.com/kinlane" target="_blank" rel="external">https://github.com/kinlane</a></td>
-<td>222</td>
-<td>242</td>
-<td>346</td>
-<td>588</td>
-<td>199240</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/415831" alt=""></td>
-<td><a href="https://github.com/talos" target="_blank" rel="external">https://github.com/talos</a></td>
-<td>113</td>
-<td>95</td>
-<td>143</td>
-<td>7</td>
-<td>115891</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/283441" alt=""></td>
-<td><a href="https://github.com/honzajavorek" target="_blank" rel="external">https://github.com/honzajavorek</a></td>
-<td>87</td>
-<td>167</td>
-<td>128</td>
-<td>93</td>
-<td>80301</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/1006477" alt=""></td>
-<td><a href="https://github.com/felixonmars" target="_blank" rel="external">https://github.com/felixonmars</a></td>
-<td>420</td>
-<td>369</td>
-<td>806</td>
-<td>149</td>
-<td>70179</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/1317792" alt=""></td>
-<td><a href="https://github.com/xndcn" target="_blank" rel="external">https://github.com/xndcn</a></td>
-<td>33</td>
-<td>86</td>
-<td>67</td>
-<td>8</td>
-<td>67634</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/3935007" alt=""></td>
-<td><a href="https://github.com/ojengwa" target="_blank" rel="external">https://github.com/ojengwa</a></td>
-<td>293</td>
-<td>469</td>
-<td>67</td>
-<td>8</td>
-<td>49621</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/10103766" alt=""></td>
-<td><a href="https://github.com/SergioChan" target="_blank" rel="external">https://github.com/SergioChan</a></td>
-<td>47</td>
-<td>372</td>
-<td>982</td>
-<td>598</td>
-<td>42202</td>
-</tr>
-</tbody>
-</table>
-<p>365天，天天绿是种怎样的体验？</p>
-<h3 id="中国用户榜单"><a href="#中国用户榜单" class="headerlink" title="中国用户榜单"></a>中国用户榜单</h3><p>这里只是通过location中”China”、”Shanghai”类似的关键词对中国用户进行区分，所以可能有遗漏的地方，还请谅解。此次统计的中国用户数据有18011</p>
-<h4 id="Followers人数榜-1"><a href="#Followers人数榜-1" class="headerlink" title="Followers人数榜"></a>Followers人数榜</h4><table>
-<thead>
-<tr>
-<th>Avatar</th>
-<th>User</th>
-<th>Repos</th>
-<th>Stars</th>
-<th>Followers</th>
-<th>Following</th>
-<th>Contributions</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/905434" alt=""></td>
-<td><a href="https://github.com/ruanyf" target="_blank" rel="external">https://github.com/ruanyf</a></td>
-<td>48</td>
-<td>206</td>
-<td>38200</td>
-<td>0</td>
-<td>1645</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/499550" alt=""></td>
-<td><a href="https://github.com/yyx990803" target="_blank" rel="external">https://github.com/yyx990803</a></td>
-<td>141</td>
-<td>779</td>
-<td>29200</td>
-<td>90</td>
-<td>2553</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/2503423" alt=""></td>
-<td><a href="https://github.com/daimajia" target="_blank" rel="external">https://github.com/daimajia</a></td>
-<td>63</td>
-<td>2900</td>
-<td>20000</td>
-<td>241</td>
-<td>21</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/470058" alt=""></td>
-<td><a href="https://github.com/michaelliao" target="_blank" rel="external">https://github.com/michaelliao</a></td>
-<td>61</td>
-<td>81</td>
-<td>19700</td>
-<td>0</td>
-<td>297</td>
-</tr>
-<tr>
-<td><img src="https://avatars0.githubusercontent.com/u/327019" alt=""></td>
-<td><a href="https://github.com/JacksonTian" target="_blank" rel="external">https://github.com/JacksonTian</a></td>
-<td>229</td>
-<td>583</td>
-<td>15500</td>
-<td>151</td>
-<td>805</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/1169522" alt=""></td>
-<td><a href="https://github.com/Trinea" target="_blank" rel="external">https://github.com/Trinea</a></td>
-<td>24</td>
-<td>1500</td>
-<td>14100</td>
-<td>38</td>
-<td>80</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/2267900" alt=""></td>
-<td><a href="https://github.com/stormzhang" target="_blank" rel="external">https://github.com/stormzhang</a></td>
-<td>5</td>
-<td>1500</td>
-<td>12800</td>
-<td>91</td>
-<td>9</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/97227" alt=""></td>
-<td><a href="https://github.com/lifesinger" target="_blank" rel="external">https://github.com/lifesinger</a></td>
-<td>2</td>
-<td>278</td>
-<td>12000</td>
-<td>13</td>
-<td>1</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/729648" alt=""></td>
-<td><a href="https://github.com/cloudwu" target="_blank" rel="external">https://github.com/cloudwu</a></td>
-<td>102</td>
-<td>63</td>
-<td>11700</td>
-<td>1</td>
-<td>690</td>
-</tr>
-<tr>
-<td><img src="https://avatars0.githubusercontent.com/u/472311" alt=""></td>
-<td><a href="https://github.com/phodal" target="_blank" rel="external">https://github.com/phodal</a></td>
-<td>254</td>
-<td>1700</td>
-<td>11100</td>
-<td>15</td>
-<td>5924</td>
-</tr>
-</tbody>
-</table>
-<h4 id="Following人数榜-1"><a href="#Following人数榜-1" class="headerlink" title="Following人数榜"></a>Following人数榜</h4><table>
-<thead>
-<tr>
-<th>Avatar</th>
-<th>User</th>
-<th>Repos</th>
-<th>Stars</th>
-<th>Followers</th>
-<th>Following</th>
-<th>Contributions</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/3693121" alt=""></td>
-<td><a href="https://github.com/fordream" target="_blank" rel="external">https://github.com/fordream</a></td>
-<td>724</td>
-<td>21</td>
-<td>919</td>
-<td>19800</td>
-<td>1</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/17972943" alt=""></td>
-<td><a href="https://github.com/Vermisse" target="_blank" rel="external">https://github.com/Vermisse</a></td>
-<td>15</td>
-<td>25</td>
-<td>2300</td>
-<td>10400</td>
-<td>102</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/93859" alt=""></td>
-<td><a href="https://github.com/technologiclee" target="_blank" rel="external">https://github.com/technologiclee</a></td>
-<td>149</td>
-<td>844</td>
-<td>374</td>
-<td>9500</td>
-<td>6</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/15626022" alt=""></td>
-<td><a href="https://github.com/shenzhoudance" target="_blank" rel="external">https://github.com/shenzhoudance</a></td>
-<td>599</td>
-<td>6</td>
-<td>108</td>
-<td>7700</td>
-<td>2373</td>
-</tr>
-<tr>
-<td><img src="https://avatars0.githubusercontent.com/u/10573715" alt=""></td>
-<td><a href="https://github.com/kotobukki" target="_blank" rel="external">https://github.com/kotobukki</a></td>
-<td>15</td>
-<td>68</td>
-<td>111</td>
-<td>7500</td>
-<td>889</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/29220207" alt=""></td>
-<td><a href="https://github.com/vincentpanqi" target="_blank" rel="external">https://github.com/vincentpanqi</a></td>
-<td>1800</td>
-<td>714</td>
-<td>47</td>
-<td>5600</td>
-<td>102</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/1727724" alt=""></td>
-<td><a href="https://github.com/ovwane" target="_blank" rel="external">https://github.com/ovwane</a></td>
-<td>220</td>
-<td>1100</td>
-<td>120</td>
-<td>5500</td>
-<td>329</td>
-</tr>
-<tr>
-<td><img src="https://avatars0.githubusercontent.com/u/9153294" alt=""></td>
-<td><a href="https://github.com/pisual" target="_blank" rel="external">https://github.com/pisual</a></td>
-<td>39</td>
-<td>62</td>
-<td>917</td>
-<td>4900</td>
-<td>122</td>
-</tr>
-<tr>
-<td><img src="https://avatars0.githubusercontent.com/u/23236638" alt=""></td>
-<td><a href="https://github.com/youkaichao" target="_blank" rel="external">https://github.com/youkaichao</a></td>
-<td>39</td>
-<td>0</td>
-<td>58</td>
-<td>4800</td>
-<td>113</td>
-</tr>
-<tr>
-<td><img src="https://avatars0.githubusercontent.com/u/7576876" alt=""></td>
-<td><a href="https://github.com/bloodycoder" target="_blank" rel="external">https://github.com/bloodycoder</a></td>
-<td>73</td>
-<td>34</td>
-<td>162</td>
-<td>4200</td>
-<td>390</td>
-</tr>
-</tbody>
-</table>
-<h4 id="Stars榜-1"><a href="#Stars榜-1" class="headerlink" title="Stars榜"></a>Stars榜</h4><table>
-<thead>
-<tr>
-<th>Avatar</th>
-<th>User</th>
-<th>Repos</th>
-<th>Stars</th>
-<th>Followers</th>
-<th>Following</th>
-<th>Contributions</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/1041542" alt=""></td>
-<td><a href="https://github.com/weimingtom" target="_blank" rel="external">https://github.com/weimingtom</a></td>
-<td>2100</td>
-<td>9100</td>
-<td>172</td>
-<td>1800</td>
-<td>1724</td>
-</tr>
-<tr>
-<td><img src="https://avatars0.githubusercontent.com/u/2041398" alt=""></td>
-<td><a href="https://github.com/jiangplus" target="_blank" rel="external">https://github.com/jiangplus</a></td>
-<td>28</td>
-<td>8800</td>
-<td>85</td>
-<td>115</td>
-<td>13</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/1024948" alt=""></td>
-<td><a href="https://github.com/DavidAlphaFox" target="_blank" rel="external">https://github.com/DavidAlphaFox</a></td>
-<td>346</td>
-<td>7800</td>
-<td>167</td>
-<td>83</td>
-<td>1122</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/480859" alt=""></td>
-<td><a href="https://github.com/mayulu" target="_blank" rel="external">https://github.com/mayulu</a></td>
-<td>12</td>
-<td>7700</td>
-<td>133</td>
-<td>616</td>
-<td>14</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/4370703" alt=""></td>
-<td><a href="https://github.com/hzy87email" target="_blank" rel="external">https://github.com/hzy87email</a></td>
-<td>73</td>
-<td>7700</td>
-<td>77</td>
-<td>167</td>
-<td>3</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/1468284" alt=""></td>
-<td><a href="https://github.com/se77en" target="_blank" rel="external">https://github.com/se77en</a></td>
-<td>197</td>
-<td>7600</td>
-<td>119</td>
-<td>455</td>
-<td>0</td>
-</tr>
-<tr>
-<td><img src="https://avatars0.githubusercontent.com/u/12030169" alt=""></td>
-<td><a href="https://github.com/JaredYeDH" target="_blank" rel="external">https://github.com/JaredYeDH</a></td>
-<td>166</td>
-<td>7400</td>
-<td>45</td>
-<td>636</td>
-<td>101</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/10380759" alt=""></td>
-<td><a href="https://github.com/xhs" target="_blank" rel="external">https://github.com/xhs</a></td>
-<td>20</td>
-<td>7200</td>
-<td>43</td>
-<td>119</td>
-<td>10</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/1881113" alt=""></td>
-<td><a href="https://github.com/paladin74" target="_blank" rel="external">https://github.com/paladin74</a></td>
-<td>618</td>
-<td>7100</td>
-<td>52</td>
-<td>901</td>
-<td>1</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/3856" alt=""></td>
-<td><a href="https://github.com/mrluanma" target="_blank" rel="external">https://github.com/mrluanma</a></td>
-<td>12</td>
-<td>7000</td>
-<td>126</td>
-<td>541</td>
-<td>36</td>
-</tr>
-</tbody>
-</table>
-<h4 id="Reps榜-1"><a href="#Reps榜-1" class="headerlink" title="Reps榜"></a>Reps榜</h4><table>
-<thead>
-<tr>
-<th>Avatar</th>
-<th>User</th>
-<th>Repos</th>
-<th>Stars</th>
-<th>Followers</th>
-<th>Following</th>
-<th>Contributions</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/10938976" alt=""></td>
-<td><a href="https://github.com/skyformat99" target="_blank" rel="external">https://github.com/skyformat99</a></td>
-<td>6000</td>
-<td>143</td>
-<td>98</td>
-<td>3200</td>
-<td>134</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/1203820" alt=""></td>
-<td><a href="https://github.com/tempbottle" target="_blank" rel="external">https://github.com/tempbottle</a></td>
-<td>4200</td>
-<td>59</td>
-<td>21</td>
-<td>18</td>
-<td>101</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/8662447" alt=""></td>
-<td><a href="https://github.com/JamesLinus" target="_blank" rel="external">https://github.com/JamesLinus</a></td>
-<td>4100</td>
-<td>1600</td>
-<td>89</td>
-<td>3300</td>
-<td>181</td>
-</tr>
-<tr>
-<td><img src="https://avatars0.githubusercontent.com/u/12955801" alt=""></td>
-<td><a href="https://github.com/hu19891110" target="_blank" rel="external">https://github.com/hu19891110</a></td>
-<td>3600</td>
-<td>90</td>
-<td>11</td>
-<td>112</td>
-<td>107</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/452743" alt=""></td>
-<td><a href="https://github.com/WilliamRen" target="_blank" rel="external">https://github.com/WilliamRen</a></td>
-<td>2900</td>
-<td>3200</td>
-<td>32</td>
-<td>5</td>
-<td>5</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/3414057" alt=""></td>
-<td><a href="https://github.com/chagge" target="_blank" rel="external">https://github.com/chagge</a></td>
-<td>2300</td>
-<td>8</td>
-<td>16</td>
-<td>669</td>
-<td>101</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/6813552" alt=""></td>
-<td><a href="https://github.com/forging2012" target="_blank" rel="external">https://github.com/forging2012</a></td>
-<td>2200</td>
-<td>789</td>
-<td>8</td>
-<td>71</td>
-<td>151</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/1041542" alt=""></td>
-<td><a href="https://github.com/weimingtom" target="_blank" rel="external">https://github.com/weimingtom</a></td>
-<td>2100</td>
-<td>9100</td>
-<td>172</td>
-<td>1800</td>
-<td>1724</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/23429527" alt=""></td>
-<td><a href="https://github.com/isuhao" target="_blank" rel="external">https://github.com/isuhao</a></td>
-<td>2000</td>
-<td>153</td>
-<td>62</td>
-<td>2700</td>
-<td>282</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/5791117" alt=""></td>
-<td><a href="https://github.com/ycaihua" target="_blank" rel="external">https://github.com/ycaihua</a></td>
-<td>1900</td>
-<td>109</td>
-<td>38</td>
-<td>589</td>
-<td>133</td>
-</tr>
-</tbody>
-</table>
-<h4 id="Contribution榜-1"><a href="#Contribution榜-1" class="headerlink" title="Contribution榜"></a>Contribution榜</h4><table>
-<thead>
-<tr>
-<th>Avatar</th>
-<th>User</th>
-<th>Repos</th>
-<th>Stars</th>
-<th>Followers</th>
-<th>Following</th>
-<th>Contributions</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/1006477" alt=""></td>
-<td><a href="https://github.com/felixonmars" target="_blank" rel="external">https://github.com/felixonmars</a></td>
-<td>420</td>
-<td>369</td>
-<td>806</td>
-<td>149</td>
-<td>70179</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/10103766" alt=""></td>
-<td><a href="https://github.com/SergioChan" target="_blank" rel="external">https://github.com/SergioChan</a></td>
-<td>47</td>
-<td>372</td>
-<td>982</td>
-<td>598</td>
-<td>42202</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/12693644" alt=""></td>
-<td><a href="https://github.com/dragon-yuan" target="_blank" rel="external">https://github.com/dragon-yuan</a></td>
-<td>16</td>
-<td>109</td>
-<td>35</td>
-<td>50</td>
-<td>18591</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/8347202" alt=""></td>
-<td><a href="https://github.com/fengss" target="_blank" rel="external">https://github.com/fengss</a></td>
-<td>30</td>
-<td>67</td>
-<td>15</td>
-<td>1</td>
-<td>12560</td>
-</tr>
-<tr>
-<td><img src="https://avatars0.githubusercontent.com/u/9410171" alt=""></td>
-<td><a href="https://github.com/xieguigang" target="_blank" rel="external">https://github.com/xieguigang</a></td>
-<td>41</td>
-<td>115</td>
-<td>136</td>
-<td>143</td>
-<td>10999</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/9280577" alt=""></td>
-<td><a href="https://github.com/csjunxu" target="_blank" rel="external">https://github.com/csjunxu</a></td>
-<td>194</td>
-<td>81</td>
-<td>35</td>
-<td>51</td>
-<td>9935</td>
-</tr>
-<tr>
-<td><img src="https://avatars3.githubusercontent.com/u/559179" alt=""></td>
-<td><a href="https://github.com/airyland" target="_blank" rel="external">https://github.com/airyland</a></td>
-<td>183</td>
-<td>1400</td>
-<td>996</td>
-<td>175</td>
-<td>8852</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/11537812" alt=""></td>
-<td><a href="https://github.com/yutiansut" target="_blank" rel="external">https://github.com/yutiansut</a></td>
-<td>216</td>
-<td>1100</td>
-<td>298</td>
-<td>8</td>
-<td>7311</td>
-</tr>
-<tr>
-<td><img src="https://avatars2.githubusercontent.com/u/1826685" alt=""></td>
-<td><a href="https://github.com/lloydzhou" target="_blank" rel="external">https://github.com/lloydzhou</a></td>
-<td>92</td>
-<td>556</td>
-<td>52</td>
-<td>69</td>
-<td>6729</td>
-</tr>
-<tr>
-<td><img src="https://avatars1.githubusercontent.com/u/8784712" alt=""></td>
-<td><a href="https://github.com/egoist" target="_blank" rel="external">https://github.com/egoist</a></td>
-<td>647</td>
-<td>2700</td>
-<td>3600</td>
-<td>40</td>
-<td>6236</td>
-</tr>
-</tbody>
-</table>
-<h3 id="个人网站中顶级域名分布情况"><a href="#个人网站中顶级域名分布情况" class="headerlink" title="个人网站中顶级域名分布情况"></a>个人网站中顶级域名分布情况</h3><p><img src="https://data2.liuin.cn/2018-04-01-15225621477939.jpg" alt=""></p>
-<h3 id="用户公布邮箱情况"><a href="#用户公布邮箱情况" class="headerlink" title="用户公布邮箱情况"></a>用户公布邮箱情况</h3><p><img src="https://data2.liuin.cn/2018-04-01-15225624252077.jpg" alt=""></p>
-<h3 id="用户所在公司情况"><a href="#用户所在公司情况" class="headerlink" title="用户所在公司情况"></a>用户所在公司情况</h3><p>公布公司的前8</p>
-<p><img src="https://data2.liuin.cn/2018-04-01-15225631364406.jpg" alt=""></p>
-<p>云图</p>
-<p><img src="https://data2.liuin.cn/2018-04-01-15225635127953.jpg" alt=""></p>
-<h2 id="仓库"><a href="#仓库" class="headerlink" title="仓库"></a>仓库</h2><h3 id="Stars榜-2"><a href="#Stars榜-2" class="headerlink" title="Stars榜"></a>Stars榜</h3><table>
-<thead>
-<tr>
-<th>Rep</th>
-<th>User</th>
-<th>Language</th>
-<th>Stars</th>
-<th>Fork</th>
-<th>Commit</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="https://github.com/freeCodeCamp/freeCodeCamp" target="_blank" rel="external">freeCodeCamp/freeCodeCamp</a></td>
-<td><a href="https://github.com/freeCodeCamp" target="_blank" rel="external">freeCodeCamp</a></td>
-<td>JavaScript</td>
-<td>291895</td>
-<td>13667</td>
-<td>11334</td>
-</tr>
-<tr>
-<td><a href="https://github.com/twbs/bootstrap" target="_blank" rel="external">twbs/bootstrap</a></td>
-<td><a href="https://github.com/twbs" target="_blank" rel="external">twbs</a></td>
-<td>CSS</td>
-<td>123341</td>
-<td>58717</td>
-<td>17645</td>
-</tr>
-<tr>
-<td><a href="https://github.com/EbookFoundation/free-programming-books" target="_blank" rel="external">EbookFoundation/free-programming-books</a></td>
-<td><a href="https://github.com/EbookFoundation" target="_blank" rel="external">EbookFoundation</a></td>
-<td></td>
-<td>103480</td>
-<td>26331</td>
-<td>4634</td>
-</tr>
-<tr>
-<td><a href="https://github.com/tensorflow/tensorflow" target="_blank" rel="external">tensorflow/tensorflow</a></td>
-<td><a href="https://github.com/tensorflow" target="_blank" rel="external">tensorflow</a></td>
-<td>C++</td>
-<td>95028</td>
-<td>60694</td>
-<td>30887</td>
-</tr>
-<tr>
-<td><a href="https://github.com/facebook/react" target="_blank" rel="external">facebook/react</a></td>
-<td><a href="https://github.com/facebook" target="_blank" rel="external">facebook</a></td>
-<td>JavaScript</td>
-<td>92602</td>
-<td>17473</td>
-<td>9773</td>
-</tr>
-<tr>
-<td><a href="https://github.com/vuejs/vue" target="_blank" rel="external">vuejs/vue</a></td>
-<td><a href="https://github.com/vuejs" target="_blank" rel="external">vuejs</a></td>
-<td>JavaScript</td>
-<td>89447</td>
-<td>13129</td>
-<td>2581</td>
-</tr>
-<tr>
-<td><a href="https://github.com/sindresorhus/awesome" target="_blank" rel="external">sindresorhus/awesome</a></td>
-<td><a href="https://github.com/sindresorhus" target="_blank" rel="external">sindresorhus</a></td>
-<td></td>
-<td>82141</td>
-<td>10785</td>
-<td>725</td>
-</tr>
-<tr>
-<td><a href="https://github.com/getify/You-Dont-Know-JS" target="_blank" rel="external">getify/You-Dont-Know-JS</a></td>
-<td><a href="https://github.com/getify" target="_blank" rel="external">getify</a></td>
-<td></td>
-<td>78848</td>
-<td>14404</td>
-<td>1465</td>
-</tr>
-<tr>
-<td><a href="https://github.com/d3/d3" target="_blank" rel="external">d3/d3</a></td>
-<td><a href="https://github.com/d3" target="_blank" rel="external">d3</a></td>
-<td>JavaScript</td>
-<td>74472</td>
-<td>19024</td>
-<td>4132</td>
-</tr>
-<tr>
-<td><a href="https://github.com/airbnb/javascript" target="_blank" rel="external">airbnb/javascript</a></td>
-<td><a href="https://github.com/airbnb" target="_blank" rel="external">airbnb</a></td>
-<td>JavaScript</td>
-<td>68833</td>
-<td>13127</td>
-<td>1607</td>
-</tr>
-</tbody>
-</table>
-<h3 id="Forks榜"><a href="#Forks榜" class="headerlink" title="Forks榜"></a>Forks榜</h3><table>
-<thead>
-<tr>
-<th>Rep</th>
-<th>User</th>
-<th>Language</th>
-<th>Stars</th>
-<th>Fork</th>
-<th>Commit</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="https://github.com/jtleek/datasharing" target="_blank" rel="external">jtleek/datasharing</a></td>
-<td><a href="https://github.com/jtleek" target="_blank" rel="external">jtleek</a></td>
-<td></td>
-<td>4332</td>
-<td>184409</td>
-<td>29</td>
-</tr>
-<tr>
-<td><a href="https://github.com/rdpeng/ProgrammingAssignment2" target="_blank" rel="external">rdpeng/ProgrammingAssignment2</a></td>
-<td><a href="https://github.com/rdpeng" target="_blank" rel="external">rdpeng</a></td>
-<td>R</td>
-<td>528</td>
-<td>110145</td>
-<td>7</td>
-</tr>
-<tr>
-<td><a href="https://github.com/octocat/Spoon-Knife" target="_blank" rel="external">octocat/Spoon-Knife</a></td>
-<td><a href="https://github.com/octocat" target="_blank" rel="external">octocat</a></td>
-<td>HTML</td>
-<td>10043</td>
-<td>97471</td>
-<td>3</td>
-</tr>
-<tr>
-<td><a href="https://github.com/tensorflow/tensorflow" target="_blank" rel="external">tensorflow/tensorflow</a></td>
-<td><a href="https://github.com/tensorflow" target="_blank" rel="external">tensorflow</a></td>
-<td>C++</td>
-<td>95028</td>
-<td>60694</td>
-<td>30887</td>
-</tr>
-<tr>
-<td><a href="https://github.com/twbs/bootstrap" target="_blank" rel="external">twbs/bootstrap</a></td>
-<td><a href="https://github.com/twbs" target="_blank" rel="external">twbs</a></td>
-<td>CSS</td>
-<td>123341</td>
-<td>58717</td>
-<td>17645</td>
-</tr>
-<tr>
-<td><a href="https://github.com/SmartThingsCommunity/SmartThingsPublic" target="_blank" rel="external">SmartThingsCommunity/SmartThingsPublic</a></td>
-<td><a href="https://github.com/SmartThingsCommunity" target="_blank" rel="external">SmartThingsCommunity</a></td>
-<td>Groovy</td>
-<td>853</td>
-<td>38018</td>
-<td>2448</td>
-</tr>
-<tr>
-<td><a href="https://github.com/rdpeng/RepData_PeerAssessment1" target="_blank" rel="external">rdpeng/RepData_PeerAssessment1</a></td>
-<td><a href="https://github.com/rdpeng" target="_blank" rel="external">rdpeng</a></td>
-<td></td>
-<td>69</td>
-<td>29883</td>
-<td>13</td>
-</tr>
-<tr>
-<td><a href="https://github.com/github/gitignore" target="_blank" rel="external">github/gitignore</a></td>
-<td><a href="https://github.com/github" target="_blank" rel="external">github</a></td>
-<td></td>
-<td>63853</td>
-<td>29259</td>
-<td>2738</td>
-</tr>
-<tr>
-<td><a href="https://github.com/angular/angular.js" target="_blank" rel="external">angular/angular.js</a></td>
-<td><a href="https://github.com/angular" target="_blank" rel="external">angular</a></td>
-<td>JavaScript</td>
-<td>58232</td>
-<td>28872</td>
-<td>8755</td>
-</tr>
-<tr>
-<td><a href="https://github.com/EbookFoundation/free-programming-books" target="_blank" rel="external">EbookFoundation/free-programming-books</a></td>
-<td><a href="https://github.com/EbookFoundation" target="_blank" rel="external">EbookFoundation</a></td>
-<td></td>
-<td>103480</td>
-<td>26331</td>
-<td>4634</td>
-</tr>
-</tbody>
-</table>
-<h3 id="C"><a href="#C" class="headerlink" title="C"></a>C</h3><p>stars排行</p>
-<table>
-<thead>
-<tr>
-<th>Rep</th>
-<th>User</th>
-<th>Language</th>
-<th>Stars</th>
-<th>Fork</th>
-<th>Commit</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="https://github.com/torvalds/linux" target="_blank" rel="external">torvalds/linux</a></td>
-<td><a href="https://github.com/torvalds" target="_blank" rel="external">torvalds</a></td>
-<td>C</td>
-<td>57191</td>
-<td>21032</td>
-<td>744803</td>
-</tr>
-<tr>
-<td><a href="https://github.com/firehol/netdata" target="_blank" rel="external">firehol/netdata</a></td>
-<td><a href="https://github.com/firehol" target="_blank" rel="external">firehol</a></td>
-<td>C</td>
-<td>28607</td>
-<td>2389</td>
-<td>6690</td>
-</tr>
-<tr>
-<td><a href="https://github.com/antirez/redis" target="_blank" rel="external">antirez/redis</a></td>
-<td><a href="https://github.com/antirez" target="_blank" rel="external">antirez</a></td>
-<td>C</td>
-<td>28340</td>
-<td>10916</td>
-<td>6679</td>
-</tr>
-<tr>
-<td><a href="https://github.com/git/git" target="_blank" rel="external">git/git</a></td>
-<td><a href="https://github.com/git" target="_blank" rel="external">git</a></td>
-<td>C</td>
-<td>21665</td>
-<td>12634</td>
-<td>50674</td>
-</tr>
-<tr>
-<td><a href="https://github.com/Bilibili/ijkplayer" target="_blank" rel="external">Bilibili/ijkplayer</a></td>
-<td><a href="https://github.com/Bilibili" target="_blank" rel="external">Bilibili</a></td>
-<td>C</td>
-<td>18374</td>
-<td>5191</td>
-<td>2584</td>
-</tr>
-<tr>
-<td><a href="https://github.com/php/php-src" target="_blank" rel="external">php/php-src</a></td>
-<td><a href="https://github.com/php" target="_blank" rel="external">php</a></td>
-<td>C</td>
-<td>16996</td>
-<td>4745</td>
-<td>107206</td>
-</tr>
-<tr>
-<td><a href="https://github.com/SamyPesse/How-to-Make-a-Computer-Operating-System" target="_blank" rel="external">SamyPesse/How-to-Make-a-Computer-Operating-System</a></td>
-<td><a href="https://github.com/SamyPesse" target="_blank" rel="external">SamyPesse</a></td>
-<td>C</td>
-<td>16957</td>
-<td>3015</td>
-<td>243</td>
-</tr>
-<tr>
-<td><a href="https://github.com/wg/wrk" target="_blank" rel="external">wg/wrk</a></td>
-<td><a href="https://github.com/wg" target="_blank" rel="external">wg</a></td>
-<td>C</td>
-<td>15386</td>
-<td>1245</td>
-<td>72</td>
-</tr>
-<tr>
-<td><a href="https://github.com/ggreer/the_silver_searcher" target="_blank" rel="external">ggreer/the_silver_searcher</a></td>
-<td><a href="https://github.com/ggreer" target="_blank" rel="external">ggreer</a></td>
-<td>C</td>
-<td>14854</td>
-<td>954</td>
-<td>1974</td>
-</tr>
-<tr>
-<td><a href="https://github.com/kripken/emscripten" target="_blank" rel="external">kripken/emscripten</a></td>
-<td><a href="https://github.com/kripken" target="_blank" rel="external">kripken</a></td>
-<td>C</td>
-<td>14373</td>
-<td>1704</td>
-<td>18154</td>
-</tr>
-</tbody>
-</table>
-<p>forks排行</p>
-<table>
-<thead>
-<tr>
-<th>Rep</th>
-<th>User</th>
-<th>Language</th>
-<th>Stars</th>
-<th>Fork</th>
-<th>Commit</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="https://github.com/torvalds/linux" target="_blank" rel="external">torvalds/linux</a></td>
-<td><a href="https://github.com/torvalds" target="_blank" rel="external">torvalds</a></td>
-<td>C</td>
-<td>57191</td>
-<td>21032</td>
-<td>744803</td>
-</tr>
-<tr>
-<td><a href="https://github.com/git/git" target="_blank" rel="external">git/git</a></td>
-<td><a href="https://github.com/git" target="_blank" rel="external">git</a></td>
-<td>C</td>
-<td>21665</td>
-<td>12634</td>
-<td>50674</td>
-</tr>
-<tr>
-<td><a href="https://github.com/antirez/redis" target="_blank" rel="external">antirez/redis</a></td>
-<td><a href="https://github.com/antirez" target="_blank" rel="external">antirez</a></td>
-<td>C</td>
-<td>28340</td>
-<td>10916</td>
-<td>6679</td>
-</tr>
-<tr>
-<td><a href="https://github.com/arduino/Arduino" target="_blank" rel="external">arduino/Arduino</a></td>
-<td><a href="https://github.com/arduino" target="_blank" rel="external">arduino</a></td>
-<td>C</td>
-<td>7936</td>
-<td>6184</td>
-<td>6649</td>
-</tr>
-<tr>
-<td><a href="https://github.com/julycoding/The-Art-Of-Programming-By-July" target="_blank" rel="external">julycoding/The-Art-Of-Programming-By-July</a></td>
-<td><a href="https://github.com/julycoding" target="_blank" rel="external">julycoding</a></td>
-<td>C</td>
-<td>13544</td>
-<td>5666</td>
-<td>3630</td>
-</tr>
-<tr>
-<td><a href="https://github.com/MarlinFirmware/Marlin" target="_blank" rel="external">MarlinFirmware/Marlin</a></td>
-<td><a href="https://github.com/MarlinFirmware" target="_blank" rel="external">MarlinFirmware</a></td>
-<td>C</td>
-<td>3615</td>
-<td>5340</td>
-<td>9015</td>
-</tr>
-<tr>
-<td><a href="https://github.com/Bilibili/ijkplayer" target="_blank" rel="external">Bilibili/ijkplayer</a></td>
-<td><a href="https://github.com/Bilibili" target="_blank" rel="external">Bilibili</a></td>
-<td>C</td>
-<td>18374</td>
-<td>5191</td>
-<td>2584</td>
-</tr>
-<tr>
-<td><a href="https://github.com/php/php-src" target="_blank" rel="external">php/php-src</a></td>
-<td><a href="https://github.com/php" target="_blank" rel="external">php</a></td>
-<td>C</td>
-<td>16996</td>
-<td>4745</td>
-<td>107206</td>
-</tr>
-<tr>
-<td><a href="https://github.com/esp8266/Arduino" target="_blank" rel="external">esp8266/Arduino</a></td>
-<td><a href="https://github.com/esp8266" target="_blank" rel="external">esp8266</a></td>
-<td>C</td>
-<td>7063</td>
-<td>4378</td>
-<td>2697</td>
-</tr>
-<tr>
-<td><a href="https://github.com/FFmpeg/FFmpeg" target="_blank" rel="external">FFmpeg/FFmpeg</a></td>
-<td><a href="https://github.com/FFmpeg" target="_blank" rel="external">FFmpeg</a></td>
-<td>C</td>
-<td>10314</td>
-<td>4377</td>
-<td>90611</td>
-</tr>
-</tbody>
-</table>
-<h3 id="C-1"><a href="#C-1" class="headerlink" title="C++"></a>C++</h3><p>stars排行</p>
-<table>
-<thead>
-<tr>
-<th>Rep</th>
-<th>User</th>
-<th>Language</th>
-<th>Stars</th>
-<th>Fork</th>
-<th>Commit</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="https://github.com/tensorflow/tensorflow" target="_blank" rel="external">tensorflow/tensorflow</a></td>
-<td><a href="https://github.com/tensorflow" target="_blank" rel="external">tensorflow</a></td>
-<td>C++</td>
-<td>95028</td>
-<td>60694</td>
-<td>30887</td>
-</tr>
-<tr>
-<td><a href="https://github.com/electron/electron" target="_blank" rel="external">electron/electron</a></td>
-<td><a href="https://github.com/electron" target="_blank" rel="external">electron</a></td>
-<td>C++</td>
-<td>58531</td>
-<td>7642</td>
-<td>18669</td>
-</tr>
-<tr>
-<td><a href="https://github.com/apple/swift" target="_blank" rel="external">apple/swift</a></td>
-<td><a href="https://github.com/apple" target="_blank" rel="external">apple</a></td>
-<td>C++</td>
-<td>43250</td>
-<td>6795</td>
-<td>68510</td>
-</tr>
-<tr>
-<td><a href="https://github.com/nwjs/nw.js" target="_blank" rel="external">nwjs/nw.js</a></td>
-<td><a href="https://github.com/nwjs" target="_blank" rel="external">nwjs</a></td>
-<td>C++</td>
-<td>33478</td>
-<td>3731</td>
-<td>3188</td>
-</tr>
-<tr>
-<td><a href="https://github.com/x64dbg/x64dbg" target="_blank" rel="external">x64dbg/x64dbg</a></td>
-<td><a href="https://github.com/x64dbg" target="_blank" rel="external">x64dbg</a></td>
-<td>C++</td>
-<td>33242</td>
-<td>684</td>
-<td>3923</td>
-</tr>
-<tr>
-<td><a href="https://github.com/bitcoin/bitcoin" target="_blank" rel="external">bitcoin/bitcoin</a></td>
-<td><a href="https://github.com/bitcoin" target="_blank" rel="external">bitcoin</a></td>
-<td>C++</td>
-<td>30209</td>
-<td>18101</td>
-<td>16629</td>
-</tr>
-<tr>
-<td><a href="https://github.com/google/protobuf" target="_blank" rel="external">google/protobuf</a></td>
-<td><a href="https://github.com/google" target="_blank" rel="external">google</a></td>
-<td>C++</td>
-<td>24950</td>
-<td>7150</td>
-<td>5557</td>
-</tr>
-<tr>
-<td><a href="https://github.com/BVLC/caffe" target="_blank" rel="external">BVLC/caffe</a></td>
-<td><a href="https://github.com/BVLC" target="_blank" rel="external">BVLC</a></td>
-<td>C++</td>
-<td>23550</td>
-<td>14390</td>
-<td>4118</td>
-</tr>
-<tr>
-<td><a href="https://github.com/opencv/opencv" target="_blank" rel="external">opencv/opencv</a></td>
-<td><a href="https://github.com/opencv" target="_blank" rel="external">opencv</a></td>
-<td>C++</td>
-<td>23493</td>
-<td>16901</td>
-<td>23654</td>
-</tr>
-<tr>
-<td><a href="https://github.com/rethinkdb/rethinkdb" target="_blank" rel="external">rethinkdb/rethinkdb</a></td>
-<td><a href="https://github.com/rethinkdb" target="_blank" rel="external">rethinkdb</a></td>
-<td>C++</td>
-<td>20993</td>
-<td>1665</td>
-<td>33382</td>
-</tr>
-</tbody>
-</table>
-<p>forks排行</p>
-<table>
-<thead>
-<tr>
-<th>Rep</th>
-<th>User</th>
-<th>Language</th>
-<th>Stars</th>
-<th>Fork</th>
-<th>Commit</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="https://github.com/tensorflow/tensorflow" target="_blank" rel="external">tensorflow/tensorflow</a></td>
-<td><a href="https://github.com/tensorflow" target="_blank" rel="external">tensorflow</a></td>
-<td>C++</td>
-<td>95028</td>
-<td>60694</td>
-<td>30887</td>
-</tr>
-<tr>
-<td><a href="https://github.com/bitcoin/bitcoin" target="_blank" rel="external">bitcoin/bitcoin</a></td>
-<td><a href="https://github.com/bitcoin" target="_blank" rel="external">bitcoin</a></td>
-<td>C++</td>
-<td>30209</td>
-<td>18101</td>
-<td>16629</td>
-</tr>
-<tr>
-<td><a href="https://github.com/opencv/opencv" target="_blank" rel="external">opencv/opencv</a></td>
-<td><a href="https://github.com/opencv" target="_blank" rel="external">opencv</a></td>
-<td>C++</td>
-<td>23493</td>
-<td>16901</td>
-<td>23654</td>
-</tr>
-<tr>
-<td><a href="https://github.com/BVLC/caffe" target="_blank" rel="external">BVLC/caffe</a></td>
-<td><a href="https://github.com/BVLC" target="_blank" rel="external">BVLC</a></td>
-<td>C++</td>
-<td>23550</td>
-<td>14390</td>
-<td>4118</td>
-</tr>
-<tr>
-<td><a href="https://github.com/electron/electron" target="_blank" rel="external">electron/electron</a></td>
-<td><a href="https://github.com/electron" target="_blank" rel="external">electron</a></td>
-<td>C++</td>
-<td>58531</td>
-<td>7642</td>
-<td>18669</td>
-</tr>
-<tr>
-<td><a href="https://github.com/google/protobuf" target="_blank" rel="external">google/protobuf</a></td>
-<td><a href="https://github.com/google" target="_blank" rel="external">google</a></td>
-<td>C++</td>
-<td>24950</td>
-<td>7150</td>
-<td>5557</td>
-</tr>
-<tr>
-<td><a href="https://github.com/apple/swift" target="_blank" rel="external">apple/swift</a></td>
-<td><a href="https://github.com/apple" target="_blank" rel="external">apple</a></td>
-<td>C++</td>
-<td>43250</td>
-<td>6795</td>
-<td>68510</td>
-</tr>
-<tr>
-<td><a href="https://github.com/cocos2d/cocos2d-x" target="_blank" rel="external">cocos2d/cocos2d-x</a></td>
-<td><a href="https://github.com/cocos2d" target="_blank" rel="external">cocos2d</a></td>
-<td>C++</td>
-<td>11759</td>
-<td>6496</td>
-<td>36641</td>
-</tr>
-<tr>
-<td><a href="https://github.com/ArduPilot/ardupilot" target="_blank" rel="external">ArduPilot/ardupilot</a></td>
-<td><a href="https://github.com/ArduPilot" target="_blank" rel="external">ArduPilot</a></td>
-<td>C++</td>
-<td>3110</td>
-<td>6153</td>
-<td>31379</td>
-</tr>
-<tr>
-<td><a href="https://github.com/dmlc/xgboost" target="_blank" rel="external">dmlc/xgboost</a></td>
-<td><a href="https://github.com/dmlc" target="_blank" rel="external">dmlc</a></td>
-<td>C++</td>
-<td>11406</td>
-<td>5192</td>
-<td>3254</td>
-</tr>
-</tbody>
-</table>
-<h3 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h3><p>stars排行</p>
-<table>
-<thead>
-<tr>
-<th>Rep</th>
-<th>User</th>
-<th>Language</th>
-<th>Stars</th>
-<th>Fork</th>
-<th>Commit</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="https://github.com/ReactiveX/RxJava" target="_blank" rel="external">ReactiveX/RxJava</a></td>
-<td><a href="https://github.com/ReactiveX" target="_blank" rel="external">ReactiveX</a></td>
-<td>Java</td>
-<td>32001</td>
-<td>5594</td>
-<td>5328</td>
-</tr>
-<tr>
-<td><a href="https://github.com/iluwatar/java-design-patterns" target="_blank" rel="external">iluwatar/java-design-patterns</a></td>
-<td><a href="https://github.com/iluwatar" target="_blank" rel="external">iluwatar</a></td>
-<td>Java</td>
-<td>31422</td>
-<td>10072</td>
-<td>2022</td>
-</tr>
-<tr>
-<td><a href="https://github.com/elastic/elasticsearch" target="_blank" rel="external">elastic/elasticsearch</a></td>
-<td><a href="https://github.com/elastic" target="_blank" rel="external">elastic</a></td>
-<td>Java</td>
-<td>29931</td>
-<td>10408</td>
-<td>30528</td>
-</tr>
-<tr>
-<td><a href="https://github.com/square/retrofit" target="_blank" rel="external">square/retrofit</a></td>
-<td><a href="https://github.com/square" target="_blank" rel="external">square</a></td>
-<td>Java</td>
-<td>27182</td>
-<td>5311</td>
-<td>1569</td>
-</tr>
-<tr>
-<td><a href="https://github.com/square/okhttp" target="_blank" rel="external">square/okhttp</a></td>
-<td><a href="https://github.com/square" target="_blank" rel="external">square</a></td>
-<td>Java</td>
-<td>25870</td>
-<td>6054</td>
-<td>3147</td>
-</tr>
-<tr>
-<td><a href="https://github.com/google/guava" target="_blank" rel="external">google/guava</a></td>
-<td><a href="https://github.com/google" target="_blank" rel="external">google</a></td>
-<td>Java</td>
-<td>23154</td>
-<td>5323</td>
-<td>4676</td>
-</tr>
-<tr>
-<td><a href="https://github.com/spring-projects/spring-boot" target="_blank" rel="external">spring-projects/spring-boot</a></td>
-<td><a href="https://github.com/spring-projects" target="_blank" rel="external">spring-projects</a></td>
-<td>Java</td>
-<td>22927</td>
-<td>17555</td>
-<td>16129</td>
-</tr>
-<tr>
-<td><a href="https://github.com/PhilJay/MPAndroidChart" target="_blank" rel="external">PhilJay/MPAndroidChart</a></td>
-<td><a href="https://github.com/PhilJay" target="_blank" rel="external">PhilJay</a></td>
-<td>Java</td>
-<td>21393</td>
-<td>5939</td>
-<td>1938</td>
-</tr>
-<tr>
-<td><a href="https://github.com/kdn251/interviews" target="_blank" rel="external">kdn251/interviews</a></td>
-<td><a href="https://github.com/kdn251" target="_blank" rel="external">kdn251</a></td>
-<td>Java</td>
-<td>21348</td>
-<td>3503</td>
-<td>370</td>
-</tr>
-<tr>
-<td><a href="https://github.com/bumptech/glide" target="_blank" rel="external">bumptech/glide</a></td>
-<td><a href="https://github.com/bumptech" target="_blank" rel="external">bumptech</a></td>
-<td>Java</td>
-<td>21032</td>
-<td>4132</td>
-<td>2190</td>
-</tr>
-</tbody>
-</table>
-<p>forks排行</p>
-<table>
-<thead>
-<tr>
-<th>Rep</th>
-<th>User</th>
-<th>Language</th>
-<th>Stars</th>
-<th>Fork</th>
-<th>Commit</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="https://github.com/spring-projects/spring-boot" target="_blank" rel="external">spring-projects/spring-boot</a></td>
-<td><a href="https://github.com/spring-projects" target="_blank" rel="external">spring-projects</a></td>
-<td>Java</td>
-<td>22927</td>
-<td>17555</td>
-<td>16129</td>
-</tr>
-<tr>
-<td><a href="https://github.com/spring-projects/spring-framework" target="_blank" rel="external">spring-projects/spring-framework</a></td>
-<td><a href="https://github.com/spring-projects" target="_blank" rel="external">spring-projects</a></td>
-<td>Java</td>
-<td>20126</td>
-<td>13328</td>
-<td>16384</td>
-</tr>
-<tr>
-<td><a href="https://github.com/apache/incubator-dubbo" target="_blank" rel="external">apache/incubator-dubbo</a></td>
-<td><a href="https://github.com/apache" target="_blank" rel="external">apache</a></td>
-<td>Java</td>
-<td>17706</td>
-<td>12714</td>
-<td>2201</td>
-</tr>
-<tr>
-<td><a href="https://github.com/elastic/elasticsearch" target="_blank" rel="external">elastic/elasticsearch</a></td>
-<td><a href="https://github.com/elastic" target="_blank" rel="external">elastic</a></td>
-<td>Java</td>
-<td>29931</td>
-<td>10408</td>
-<td>30528</td>
-</tr>
-<tr>
-<td><a href="https://github.com/iluwatar/java-design-patterns" target="_blank" rel="external">iluwatar/java-design-patterns</a></td>
-<td><a href="https://github.com/iluwatar" target="_blank" rel="external">iluwatar</a></td>
-<td>Java</td>
-<td>31422</td>
-<td>10072</td>
-<td>2022</td>
-</tr>
-<tr>
-<td><a href="https://github.com/eugenp/tutorials" target="_blank" rel="external">eugenp/tutorials</a></td>
-<td><a href="https://github.com/eugenp" target="_blank" rel="external">eugenp</a></td>
-<td>Java</td>
-<td>4950</td>
-<td>8411</td>
-<td>7809</td>
-</tr>
-<tr>
-<td><a href="https://github.com/zxing/zxing" target="_blank" rel="external">zxing/zxing</a></td>
-<td><a href="https://github.com/zxing" target="_blank" rel="external">zxing</a></td>
-<td>Java</td>
-<td>18000</td>
-<td>7345</td>
-<td>3425</td>
-</tr>
-<tr>
-<td><a href="https://github.com/nostra13/Android-Universal-Image-Loader" target="_blank" rel="external">nostra13/Android-Universal-Image-Loader</a></td>
-<td><a href="https://github.com/nostra13" target="_blank" rel="external">nostra13</a></td>
-<td>Java</td>
-<td>16040</td>
-<td>6476</td>
-<td>1025</td>
-</tr>
-<tr>
-<td><a href="https://github.com/checkstyle/checkstyle" target="_blank" rel="external">checkstyle/checkstyle</a></td>
-<td><a href="https://github.com/checkstyle" target="_blank" rel="external">checkstyle</a></td>
-<td>Java</td>
-<td>3597</td>
-<td>6402</td>
-<td>7658</td>
-</tr>
-<tr>
-<td><a href="https://github.com/netty/netty" target="_blank" rel="external">netty/netty</a></td>
-<td><a href="https://github.com/netty" target="_blank" rel="external">netty</a></td>
-<td>Java</td>
-<td>13422</td>
-<td>6122</td>
-<td>8723</td>
-</tr>
-</tbody>
-</table>
-<h3 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h3><p>stars排行</p>
-<table>
-<thead>
-<tr>
-<th>Rep</th>
-<th>User</th>
-<th>Language</th>
-<th>Stars</th>
-<th>Fork</th>
-<th>Commit</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="https://github.com/vinta/awesome-python" target="_blank" rel="external">vinta/awesome-python</a></td>
-<td><a href="https://github.com/vinta" target="_blank" rel="external">vinta</a></td>
-<td>Python</td>
-<td>47930</td>
-<td>9270</td>
-<td>1222</td>
-</tr>
-<tr>
-<td><a href="https://github.com/rg3/youtube-dl" target="_blank" rel="external">rg3/youtube-dl</a></td>
-<td><a href="https://github.com/rg3" target="_blank" rel="external">rg3</a></td>
-<td>Python</td>
-<td>35575</td>
-<td>6532</td>
-<td>16048</td>
-</tr>
-<tr>
-<td><a href="https://github.com/toddmotto/public-apis" target="_blank" rel="external">toddmotto/public-apis</a></td>
-<td><a href="https://github.com/toddmotto" target="_blank" rel="external">toddmotto</a></td>
-<td>Python</td>
-<td>35115</td>
-<td>3319</td>
-<td>1760</td>
-</tr>
-<tr>
-<td><a href="https://github.com/jakubroztocil/httpie" target="_blank" rel="external">jakubroztocil/httpie</a></td>
-<td><a href="https://github.com/jakubroztocil" target="_blank" rel="external">jakubroztocil</a></td>
-<td>Python</td>
-<td>34746</td>
-<td>2362</td>
-<td>965</td>
-</tr>
-<tr>
-<td><a href="https://github.com/nvbn/thefuck" target="_blank" rel="external">nvbn/thefuck</a></td>
-<td><a href="https://github.com/nvbn" target="_blank" rel="external">nvbn</a></td>
-<td>Python</td>
-<td>34601</td>
-<td>1723</td>
-<td>1463</td>
-</tr>
-<tr>
-<td><a href="https://github.com/pallets/flask" target="_blank" rel="external">pallets/flask</a></td>
-<td><a href="https://github.com/pallets" target="_blank" rel="external">pallets</a></td>
-<td>Python</td>
-<td>34411</td>
-<td>10562</td>
-<td>3205</td>
-</tr>
-<tr>
-<td><a href="https://github.com/django/django" target="_blank" rel="external">django/django</a></td>
-<td><a href="https://github.com/django" target="_blank" rel="external">django</a></td>
-<td>Python</td>
-<td>32956</td>
-<td>13953</td>
-<td>25601</td>
-</tr>
-<tr>
-<td><a href="https://github.com/tensorflow/models" target="_blank" rel="external">tensorflow/models</a></td>
-<td><a href="https://github.com/tensorflow" target="_blank" rel="external">tensorflow</a></td>
-<td>Python</td>
-<td>32262</td>
-<td>17985</td>
-<td>2109</td>
-</tr>
-<tr>
-<td><a href="https://github.com/josephmisiti/awesome-machine-learning" target="_blank" rel="external">josephmisiti/awesome-machine-learning</a></td>
-<td><a href="https://github.com/josephmisiti" target="_blank" rel="external">josephmisiti</a></td>
-<td>Python</td>
-<td>31793</td>
-<td>7780</td>
-<td>1033</td>
-</tr>
-<tr>
-<td><a href="https://github.com/requests/requests" target="_blank" rel="external">requests/requests</a></td>
-<td><a href="https://github.com/requests" target="_blank" rel="external">requests</a></td>
-<td>Python</td>
-<td>31508</td>
-<td>5824</td>
-<td>5416</td>
-</tr>
-</tbody>
-</table>
-<p>forks排行</p>
-<table>
-<thead>
-<tr>
-<th>Rep</th>
-<th>User</th>
-<th>Language</th>
-<th>Stars</th>
-<th>Fork</th>
-<th>Commit</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="https://github.com/tensorflow/models" target="_blank" rel="external">tensorflow/models</a></td>
-<td><a href="https://github.com/tensorflow" target="_blank" rel="external">tensorflow</a></td>
-<td>Python</td>
-<td>32262</td>
-<td>17985</td>
-<td>2109</td>
-</tr>
-<tr>
-<td><a href="https://github.com/shadowsocks/shadowsocks" target="_blank" rel="external">shadowsocks/shadowsocks</a></td>
-<td><a href="https://github.com/shadowsocks" target="_blank" rel="external">shadowsocks</a></td>
-<td>Python</td>
-<td>24278</td>
-<td>15499</td>
-<td>1</td>
-</tr>
-<tr>
-<td><a href="https://github.com/django/django" target="_blank" rel="external">django/django</a></td>
-<td><a href="https://github.com/django" target="_blank" rel="external">django</a></td>
-<td>Python</td>
-<td>32956</td>
-<td>13953</td>
-<td>25601</td>
-</tr>
-<tr>
-<td><a href="https://github.com/scikit-learn/scikit-learn" target="_blank" rel="external">scikit-learn/scikit-learn</a></td>
-<td><a href="https://github.com/scikit-learn" target="_blank" rel="external">scikit-learn</a></td>
-<td>Python</td>
-<td>27088</td>
-<td>13623</td>
-<td>22684</td>
-</tr>
-<tr>
-<td><a href="https://github.com/ansible/ansible" target="_blank" rel="external">ansible/ansible</a></td>
-<td><a href="https://github.com/ansible" target="_blank" rel="external">ansible</a></td>
-<td>Python</td>
-<td>29373</td>
-<td>10728</td>
-<td>36562</td>
-</tr>
-<tr>
-<td><a href="https://github.com/pallets/flask" target="_blank" rel="external">pallets/flask</a></td>
-<td><a href="https://github.com/pallets" target="_blank" rel="external">pallets</a></td>
-<td>Python</td>
-<td>34411</td>
-<td>10562</td>
-<td>3205</td>
-</tr>
-<tr>
-<td><a href="https://github.com/keras-team/keras" target="_blank" rel="external">keras-team/keras</a></td>
-<td><a href="https://github.com/keras-team" target="_blank" rel="external">keras-team</a></td>
-<td>Python</td>
-<td>27833</td>
-<td>10213</td>
-<td>4442</td>
-</tr>
-<tr>
-<td><a href="https://github.com/udacity/fullstack-nanodegree-vm" target="_blank" rel="external">udacity/fullstack-nanodegree-vm</a></td>
-<td><a href="https://github.com/udacity" target="_blank" rel="external">udacity</a></td>
-<td>Python</td>
-<td>202</td>
-<td>9370</td>
-<td>53</td>
-</tr>
-<tr>
-<td><a href="https://github.com/vinta/awesome-python" target="_blank" rel="external">vinta/awesome-python</a></td>
-<td><a href="https://github.com/vinta" target="_blank" rel="external">vinta</a></td>
-<td>Python</td>
-<td>47930</td>
-<td>9270</td>
-<td>1222</td>
-</tr>
-<tr>
-<td><a href="https://github.com/odoo/odoo" target="_blank" rel="external">odoo/odoo</a></td>
-<td><a href="https://github.com/odoo" target="_blank" rel="external">odoo</a></td>
-<td>Python</td>
-<td>9200</td>
-<td>7889</td>
-<td>115520</td>
-</tr>
-</tbody>
-</table>
-<h3 id="JavaScript"><a href="#JavaScript" class="headerlink" title="JavaScript"></a>JavaScript</h3><p>stars排行</p>
-<table>
-<thead>
-<tr>
-<th>Rep</th>
-<th>User</th>
-<th>Language</th>
-<th>Stars</th>
-<th>Fork</th>
-<th>Commit</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="https://github.com/freeCodeCamp/freeCodeCamp" target="_blank" rel="external">freeCodeCamp/freeCodeCamp</a></td>
-<td><a href="https://github.com/freeCodeCamp" target="_blank" rel="external">freeCodeCamp</a></td>
-<td>JavaScript</td>
-<td>291895</td>
-<td>13667</td>
-<td>11334</td>
-</tr>
-<tr>
-<td><a href="https://github.com/facebook/react" target="_blank" rel="external">facebook/react</a></td>
-<td><a href="https://github.com/facebook" target="_blank" rel="external">facebook</a></td>
-<td>JavaScript</td>
-<td>92602</td>
-<td>17473</td>
-<td>9773</td>
-</tr>
-<tr>
-<td><a href="https://github.com/vuejs/vue" target="_blank" rel="external">vuejs/vue</a></td>
-<td><a href="https://github.com/vuejs" target="_blank" rel="external">vuejs</a></td>
-<td>JavaScript</td>
-<td>89447</td>
-<td>13129</td>
-<td>2581</td>
-</tr>
-<tr>
-<td><a href="https://github.com/d3/d3" target="_blank" rel="external">d3/d3</a></td>
-<td><a href="https://github.com/d3" target="_blank" rel="external">d3</a></td>
-<td>JavaScript</td>
-<td>74472</td>
-<td>19024</td>
-<td>4132</td>
-</tr>
-<tr>
-<td><a href="https://github.com/airbnb/javascript" target="_blank" rel="external">airbnb/javascript</a></td>
-<td><a href="https://github.com/airbnb" target="_blank" rel="external">airbnb</a></td>
-<td>JavaScript</td>
-<td>68833</td>
-<td>13127</td>
-<td>1607</td>
-</tr>
-<tr>
-<td><a href="https://github.com/facebook/react-native" target="_blank" rel="external">facebook/react-native</a></td>
-<td><a href="https://github.com/facebook" target="_blank" rel="external">facebook</a></td>
-<td>JavaScript</td>
-<td>62128</td>
-<td>14129</td>
-<td>13166</td>
-</tr>
-<tr>
-<td><a href="https://github.com/angular/angular.js" target="_blank" rel="external">angular/angular.js</a></td>
-<td><a href="https://github.com/angular" target="_blank" rel="external">angular</a></td>
-<td>JavaScript</td>
-<td>58232</td>
-<td>28872</td>
-<td>8755</td>
-</tr>
-<tr>
-<td><a href="https://github.com/jquery/jquery" target="_blank" rel="external">jquery/jquery</a></td>
-<td><a href="https://github.com/jquery" target="_blank" rel="external">jquery</a></td>
-<td>JavaScript</td>
-<td>48560</td>
-<td>15318</td>
-<td>6316</td>
-</tr>
-<tr>
-<td><a href="https://github.com/nodejs/node" target="_blank" rel="external">nodejs/node</a></td>
-<td><a href="https://github.com/nodejs" target="_blank" rel="external">nodejs</a></td>
-<td>JavaScript</td>
-<td>47212</td>
-<td>9904</td>
-<td>21744</td>
-</tr>
-<tr>
-<td><a href="https://github.com/facebook/create-react-app" target="_blank" rel="external">facebook/create-react-app</a></td>
-<td><a href="https://github.com/facebook" target="_blank" rel="external">facebook</a></td>
-<td>JavaScript</td>
-<td>46391</td>
-<td>9259</td>
-<td>1484</td>
-</tr>
-</tbody>
-</table>
-<p>forks排行</p>
-<table>
-<thead>
-<tr>
-<th>Rep</th>
-<th>User</th>
-<th>Language</th>
-<th>Stars</th>
-<th>Fork</th>
-<th>Commit</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="https://github.com/angular/angular.js" target="_blank" rel="external">angular/angular.js</a></td>
-<td><a href="https://github.com/angular" target="_blank" rel="external">angular</a></td>
-<td>JavaScript</td>
-<td>58232</td>
-<td>28872</td>
-<td>8755</td>
-</tr>
-<tr>
-<td><a href="https://github.com/udacity/frontend-nanodegree-resume" target="_blank" rel="external">udacity/frontend-nanodegree-resume</a></td>
-<td><a href="https://github.com/udacity" target="_blank" rel="external">udacity</a></td>
-<td>JavaScript</td>
-<td>915</td>
-<td>25814</td>
-<td>84</td>
-</tr>
-<tr>
-<td><a href="https://github.com/d3/d3" target="_blank" rel="external">d3/d3</a></td>
-<td><a href="https://github.com/d3" target="_blank" rel="external">d3</a></td>
-<td>JavaScript</td>
-<td>74472</td>
-<td>19024</td>
-<td>4132</td>
-</tr>
-<tr>
-<td><a href="https://github.com/facebook/react" target="_blank" rel="external">facebook/react</a></td>
-<td><a href="https://github.com/facebook" target="_blank" rel="external">facebook</a></td>
-<td>JavaScript</td>
-<td>92602</td>
-<td>17473</td>
-<td>9773</td>
-</tr>
-<tr>
-<td><a href="https://github.com/jquery/jquery" target="_blank" rel="external">jquery/jquery</a></td>
-<td><a href="https://github.com/jquery" target="_blank" rel="external">jquery</a></td>
-<td>JavaScript</td>
-<td>48560</td>
-<td>15318</td>
-<td>6316</td>
-</tr>
-<tr>
-<td><a href="https://github.com/nightscout/cgm-remote-monitor" target="_blank" rel="external">nightscout/cgm-remote-monitor</a></td>
-<td><a href="https://github.com/nightscout" target="_blank" rel="external">nightscout</a></td>
-<td>JavaScript</td>
-<td>439</td>
-<td>15228</td>
-<td>4505</td>
-</tr>
-<tr>
-<td><a href="https://github.com/mrdoob/three.js" target="_blank" rel="external">mrdoob/three.js</a></td>
-<td><a href="https://github.com/mrdoob" target="_blank" rel="external">mrdoob</a></td>
-<td>JavaScript</td>
-<td>40668</td>
-<td>15152</td>
-<td>22927</td>
-</tr>
-<tr>
-<td><a href="https://github.com/facebook/react-native" target="_blank" rel="external">facebook/react-native</a></td>
-<td><a href="https://github.com/facebook" target="_blank" rel="external">facebook</a></td>
-<td>JavaScript</td>
-<td>62128</td>
-<td>14129</td>
-<td>13166</td>
-</tr>
-<tr>
-<td><a href="https://github.com/freeCodeCamp/freeCodeCamp" target="_blank" rel="external">freeCodeCamp/freeCodeCamp</a></td>
-<td><a href="https://github.com/freeCodeCamp" target="_blank" rel="external">freeCodeCamp</a></td>
-<td>JavaScript</td>
-<td>291895</td>
-<td>13667</td>
-<td>11334</td>
-</tr>
-<tr>
-<td><a href="https://github.com/vuejs/vue" target="_blank" rel="external">vuejs/vue</a></td>
-<td><a href="https://github.com/vuejs" target="_blank" rel="external">vuejs</a></td>
-<td>JavaScript</td>
-<td>89447</td>
-<td>13129</td>
-<td>2581</td>
-</tr>
-</tbody>
-</table>
-<h3 id="语言使用比例"><a href="#语言使用比例" class="headerlink" title="语言使用比例"></a>语言使用比例</h3><p>stars 超过100的</p>
-<p><img src="https://data2.liuin.cn/2018-04-06-15229847469176.jpg" alt=""></p>
-<p>stars 超过1000的</p>
-<p><img src="https://data2.liuin.cn/2018-04-06-15229848318605.jpg" alt=""></p>
-<p>stars 超过10000的</p>
-<p><img src="https://data2.liuin.cn/2018-04-06-15229848710272.jpg" alt=""></p>
-<p>forks 超过100的</p>
-<p><img src="https://data2.liuin.cn/2018-04-06-15229849187089.jpg" alt=""></p>
-<p>forks 超过1000的</p>
-<p><img src="https://data2.liuin.cn/2018-04-06-15229849529776.jpg" alt=""></p>
-<p>forks 超过10000的</p>
-<p><img src="https://data2.liuin.cn/2018-04-06-15229849860861.jpg" alt=""></p>
-<p>欢迎大家Star我的<a href="https://github.com/Sixzeroo/GithubCrawler" target="_blank" rel="external">Github项目</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;对Github分布式爬虫爬取的20w用户信息和40w仓库信息进行简单的分析和统计&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="python" scheme="https://www.liuin.cn/categories/python/"/>
-    
-    
-      <category term="python" scheme="https://www.liuin.cn/tags/python/"/>
-    
-      <category term="爬虫" scheme="https://www.liuin.cn/tags/%E7%88%AC%E8%99%AB/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Github分布式爬虫——实现</title>
-    <link href="https://www.liuin.cn/2018/04/05/Github%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E2%80%94%E2%80%94%E5%AE%9E%E7%8E%B0/"/>
-    <id>https://www.liuin.cn/2018/04/05/Github分布式爬虫——实现/</id>
-    <published>2018-04-05T11:40:54.000Z</published>
-    <updated>2018-04-07T01:54:44.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>使用Redis实现分布式爬虫</p>
-<a id="more"></a>
-<p>主要使用Scrapy、Redis、MongoDB实现，Scrapy作为异步爬虫框架、Redis实现分布式以及Cookies池的存储，MongoDB实现底层数据存储</p>
-<h2 id="分布式示意图"><a href="#分布式示意图" class="headerlink" title="分布式示意图"></a>分布式示意图</h2><p><img src="https://data2.liuin.cn/2018-03-25-15219437958574.jpg" alt=""></p>
-<p>主机中安装Redis和MongoDB</p>
-<p>Redis中存储：</p>
-<ul>
-<li>所有Scrapy爬虫的待爬取队列</li>
-<li>去重用的已发出Request指纹</li>
-</ul>
-<p>MongoDB负责最终数据的存储</p>
-<p>可创建多个Scrapy从机进行爬取，实现分布式。</p>
-<h2 id="Features"><a href="#Features" class="headerlink" title="Features"></a>Features</h2><ul>
-<li>共享爬取队列实现分布式</li>
-<li>生成Request的指纹实现分布式的去重</li>
-<li>随机指定User-Agent</li>
-<li>通过Redis实现Cookies池并进行更新</li>
-</ul>
-<h2 id="分布式实现"><a href="#分布式实现" class="headerlink" title="分布式实现"></a>分布式实现</h2><h3 id="请求队列"><a href="#请求队列" class="headerlink" title="请求队列"></a>请求队列</h3><p>各个分布式爬虫共同维护一个Request请求队列，使用的是Redis的list。队列可以实现FIFO，LIFO或者优先级队列。</p>
-<p>爬取的时候一开始使用的是优先级队列，但是后来因为不好设置优先级，导致最后都是User的item，导致Rep的饥饿现象，所以到后面换成FIFO队列。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">FifoQueue</span><span class="params">(Base)</span>:</span></div><div class="line">    <span class="string">"""Per-spider FIFO queue"""</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__len__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""Return the length of the queue"""</span></div><div class="line">        <span class="keyword">return</span> self.server.llen(self.key)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">push</span><span class="params">(self, request)</span>:</span></div><div class="line">        <span class="string">"""Push a request"""</span></div><div class="line">        self.server.lpush(self.key, self._encode_request(request))</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pop</span><span class="params">(self, timeout=<span class="number">0</span>)</span>:</span></div><div class="line">        <span class="string">"""Pop a request"""</span></div><div class="line">        <span class="keyword">if</span> timeout &gt; <span class="number">0</span>:</div><div class="line">            data = self.server.brpop(self.key, timeout)</div><div class="line">            <span class="keyword">if</span> isinstance(data, tuple):</div><div class="line">                data = data[<span class="number">1</span>]</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            data = self.server.rpop(self.key)</div><div class="line">        <span class="keyword">if</span> data:</div><div class="line">            <span class="keyword">return</span> self._decode_request(data)</div></pre></td></tr></table></figure>
-<p>同时需要设置request队列的大小限制，因为爬取Github页面的时候可能爬取一个star列表以后就会产生几十个Request，这样很容易把Redis的队列挤爆：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">enqueue_request</span><span class="params">(self, request)</span>:</span></div><div class="line">    <span class="comment"># set upper limit of request num</span></div><div class="line">    <span class="keyword">if</span> len(self.queue) &gt; REQUEST_NUM:</div><div class="line">        <span class="keyword">return</span> <span class="keyword">False</span></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> request.dont_filter <span class="keyword">and</span> self.df.request_seen(request):</div><div class="line">        self.df.log(request, self.spider)</div><div class="line">        <span class="keyword">return</span> <span class="keyword">False</span></div><div class="line">    <span class="keyword">if</span> self.stats:</div><div class="line">        self.stats.inc_value(<span class="string">'scheduler/enqueued/redis'</span>, spider=self.spider)</div><div class="line">    self.queue.push(request)</div><div class="line">    <span class="keyword">return</span> <span class="keyword">True</span></div></pre></td></tr></table></figure>
-<p>没有设置数量大小的时候，1G内存的主机跑一个多小时之后就挂掉了：</p>
-<p><img src="https://data2.liuin.cn/2018-03-21-15215617499559.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-03-20-15215615819339.jpg" alt=""></p>
-<h3 id="调度器"><a href="#调度器" class="headerlink" title="调度器"></a>调度器</h3><p>为了使用共同的请求队列，所以需要重写Scheduler，重写的Scheduler负责把要爬取的request放入队列以及从队列中找出request进行爬取</p>
-<h3 id="去重集合"><a href="#去重集合" class="headerlink" title="去重集合"></a>去重集合</h3><p>本地爬虫通常需要解决一个去重问题，通常使用的是数据库查询，爬取之前判断url是否请求过。分布式爬虫就是在这个的基础上共用一个去重集合，使用的是Redis的set。</p>
-<p>判断一个Request是否已经爬取过，这里不是使用url，因为不同的url可能代表的是同一种资源，比如：<code>http://www.example.com/query?cat=222&amp;id=111</code>和<code>http://www.example.com/query?cat=222&amp;id=111</code> 事实表示的是一个东西。此外，发出的Request还可能与当时的Cookie有关，因为里面还会有用户信息。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 计算Request指纹判断有没有重复</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">request_seen</span><span class="params">(self, request)</span>:</span></div><div class="line">    fp = self.request_fingerprint(request)</div><div class="line">    <span class="keyword">if</span> USEBLOOMFILTER == <span class="keyword">True</span>:</div><div class="line">        <span class="keyword">if</span> self.bf.isContains(fp):</div><div class="line">            <span class="keyword">return</span> <span class="keyword">True</span></div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            self.bf.insert(fp)</div><div class="line">            <span class="keyword">return</span> <span class="keyword">False</span></div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        <span class="comment"># This returns the number of values added, zero if already exists.</span></div><div class="line">        added = self.server.sadd(self.key, fp)</div><div class="line">        <span class="keyword">return</span> added == <span class="number">0</span></div></pre></td></tr></table></figure>
-<p>这里采用的方案是生成一个Request的指纹，实际上是把request的url，method和指定的header使用sha1算法得到一个hash值。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Request 指纹计算方法</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">request_fingerprint</span><span class="params">(request, include_headers=None)</span>:</span></div><div class="line">    <span class="keyword">if</span> include_headers:</div><div class="line">        include_headers = tuple(to_bytes(h.lower())</div><div class="line">                                 <span class="keyword">for</span> h <span class="keyword">in</span> sorted(include_headers))</div><div class="line">    cache = _fingerprint_cache.setdefault(request, &#123;&#125;)</div><div class="line">    <span class="keyword">if</span> include_headers <span class="keyword">not</span> <span class="keyword">in</span> cache:</div><div class="line">        fp = hashlib.sha1()</div><div class="line">        fp.update(to_bytes(request.method))</div><div class="line">        fp.update(to_bytes(canonicalize_url(request.url)))</div><div class="line">        fp.update(request.body <span class="keyword">or</span> <span class="string">b''</span>)</div><div class="line">        <span class="keyword">if</span> include_headers:</div><div class="line">            <span class="keyword">for</span> hdr <span class="keyword">in</span> include_headers:</div><div class="line">                <span class="keyword">if</span> hdr <span class="keyword">in</span> request.headers:</div><div class="line">                    fp.update(hdr)</div><div class="line">                    <span class="keyword">for</span> v <span class="keyword">in</span> request.headers.getlist(hdr):</div><div class="line">                        fp.update(v)</div><div class="line">        cache[include_headers] = fp.hexdigest()</div><div class="line">    <span class="keyword">return</span> cache[include_headers]</div></pre></td></tr></table></figure>
-<h2 id="反反爬虫策略"><a href="#反反爬虫策略" class="headerlink" title="反反爬虫策略"></a>反反爬虫策略</h2><h3 id="随机User-Agent"><a href="#随机User-Agent" class="headerlink" title="随机User-Agent"></a>随机User-Agent</h3><p>使用中间件实现随机User-Agent，随机替换掉request的header的User-Agent参数</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">GitHubUserAgentMiddleware</span><span class="params">(UserAgentMiddleware)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_request</span><span class="params">(self, request, spider)</span>:</span></div><div class="line">        agent = random.choice(agents)</div><div class="line">        request.headers[<span class="string">'User-Agent'</span>] = agent</div></pre></td></tr></table></figure>
-<h3 id="Cookies池"><a href="#Cookies池" class="headerlink" title="Cookies池"></a>Cookies池</h3><p>首先使用多账号模拟登录，获取到很多已登录账号的cookies，放入到Redis的hashset中，各个爬虫共用这一个Cookies池。爬虫同样实现一个中间件，替换Request的Cookies。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Cookie 中间件</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">GitHubCookieMiddleware</span><span class="params">(RetryMiddleware)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,settings)</span>:</span></div><div class="line">        RetryMiddleware.__init__(self,settings)</div><div class="line">        self.rconn = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=<span class="number">3</span>)</div><div class="line"></div><div class="line"><span class="meta">    @classmethod</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">from_crawler</span><span class="params">(cls, crawler)</span>:</span></div><div class="line">        <span class="keyword">return</span> cls(crawler.settings)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_request</span><span class="params">(self, request, spider)</span>:</span></div><div class="line">        keys = self.rconn.hkeys(REDIS_COOKIE)</div><div class="line">        <span class="keyword">if</span>(len(keys) == <span class="number">0</span>):</div><div class="line">            print(<span class="string">"cookies don't work!"</span>)</div><div class="line">            <span class="keyword">return</span></div><div class="line">        key = random.choice(keys)</div><div class="line">        <span class="comment"># 获取最新cookie</span></div><div class="line">        value = self.rconn.hget(REDIS_COOKIE, key)</div><div class="line">        <span class="keyword">if</span>( isinstance(value, bytes) ):</div><div class="line">            value = value.decode(<span class="string">'utf-8'</span>)</div><div class="line">        cookies = json.loads(value)</div><div class="line">        request.cookies = cookies</div></pre></td></tr></table></figure>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这是一个为了了解分布式工作原理而做的一个小的项目，其中很多地方存在缺陷，欢迎大家在Github上留建议：</p>
-<p><a href="https://github.com/Sixzeroo/GithubCrawler" target="_blank" rel="external">https://github.com/Sixzeroo/GithubCrawler</a></p>
-<p>同时也可以查看下一篇关于Github用户和仓库数据分析的文章</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;使用Redis实现分布式爬虫&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="python" scheme="https://www.liuin.cn/categories/python/"/>
-    
-    
-      <category term="python" scheme="https://www.liuin.cn/tags/python/"/>
-    
-      <category term="爬虫" scheme="https://www.liuin.cn/tags/%E7%88%AC%E8%99%AB/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>LeetCode 题解——Redundant Connection II</title>
-    <link href="https://www.liuin.cn/2018/03/28/LeetCode-%E9%A2%98%E8%A7%A3%E2%80%94%E2%80%94Redundant-Connection-II/"/>
-    <id>https://www.liuin.cn/2018/03/28/LeetCode-题解——Redundant-Connection-II/</id>
-    <published>2018-03-28T07:09:37.000Z</published>
-    <updated>2018-03-28T07:12:37.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>LeetCode 题解——Redundant Connection II</p>
-<a id="more"></a>
-<h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>给出一个有向图，求其有向的最小生成树（除了根节点之外所有的节点都有一条入边指向它），同时给出的有向图刚好只多出一条边</p>
-<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>前一道题是求只多出一条边的无向图的最小生成树，使用并查集很容易就能够求解。</p>
-<p>这一道有向图的题就比较复杂一点了，有向图的最小生成树又叫最小树形图，常规算法是使用<a href="https://www.liuin.cn/2017/03/25/%E5%88%9D%E8%AF%86-%E6%9C%B1%E5%88%98%E7%AE%97%E6%B3%95/">朱刘算法</a>。这里因为只多出一条边，所以不用这么麻烦。</p>
-<p>总共有三种情况：</p>
-<ol>
-<li>有环，但是没有入度为2的节点</li>
-</ol>
-<p><img src="https://data2.liuin.cn/2018-03-28-15222211302563.jpg" alt=""></p>
-<ol>
-<li>有环，同时有入度为2的节点</li>
-</ol>
-<p><img src="https://data2.liuin.cn/2018-03-28-15222211412345.jpg" alt=""></p>
-<ol>
-<li>无环，有入度为2的节点</li>
-</ol>
-<p><img src="https://data2.liuin.cn/2018-03-28-15222211561578.jpg" alt=""></p>
-<p>第一种情况，按照无向图的处理方式进行就行了，使用并查集返回最后一条形成环的边。</p>
-<p>后面两种情况，首先要找到入度为2的节点，选出指向这个节点的两条边，处理完其他的边以后处理这两条边，使用并查集找出最后一个连接的两个节点已经在同一集合中的边</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="keyword">int</span> par[<span class="number">3000</span>];</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">(<span class="keyword">int</span> n)</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++)</div><div class="line">            par[i] = i;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">if</span>(par[x] == x) <span class="keyword">return</span> x;</div><div class="line">        <span class="keyword">else</span> <span class="keyword">return</span> par[x] = find(par[x]);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">unite</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span></div><div class="line">    &#123;</div><div class="line">        x = find(x);</div><div class="line">        y = find(y);</div><div class="line">        <span class="keyword">if</span>(x == y) <span class="keyword">return</span>;</div><div class="line">        par[y] = x;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 并查集</span></div><div class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; findRedundantDirectedConnection(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;&amp; edges) &#123;</div><div class="line">        <span class="keyword">int</span> len = edges.size();</div><div class="line">        init(len);</div><div class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; indegre(len, <span class="number">0</span>), outdegre(len, <span class="number">0</span>);</div><div class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &gt; problem_edge;</div><div class="line">        <span class="keyword">int</span> node = <span class="number">0</span>;</div><div class="line">        <span class="comment">// 统计入度，找到入度为2的点</span></div><div class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> i:edges)</div><div class="line">        &#123;</div><div class="line">            indegre[i[<span class="number">1</span>]]++;</div><div class="line">            <span class="keyword">if</span>(indegre[i[<span class="number">1</span>]] == <span class="number">2</span>) node = i[<span class="number">1</span>];</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">int</span> flag=<span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> i:edges)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span>(i[<span class="number">1</span>] == node)</div><div class="line">            &#123;</div><div class="line">                problem_edge.push_back(i);</div><div class="line">                <span class="keyword">continue</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// 有环的情况</span></div><div class="line">            <span class="keyword">int</span> a = find(i[<span class="number">0</span>]), b= find(i[<span class="number">1</span>]);</div><div class="line">            <span class="keyword">if</span>(a == b) </div><div class="line">                <span class="keyword">return</span> i;</div><div class="line">            unite(i[<span class="number">0</span>], i[<span class="number">1</span>]);</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 无环的情况，从入度为2的节点入手</span></div><div class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> i:problem_edge)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">int</span> a = find(i[<span class="number">0</span>]), b= find(i[<span class="number">1</span>]);</div><div class="line">            <span class="keyword">if</span>(a == b) <span class="keyword">return</span> i;</div><div class="line">            <span class="keyword">else</span> unite(a,b);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>更多LeetCode题解，欢迎查看我的<a href="https://github.com/Sixzeroo/LeetCode" target="_blank" rel="external">GitHub项目</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;LeetCode 题解——Redundant Connection II&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="算法" scheme="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
-    
-    
-      <category term="图论" scheme="https://www.liuin.cn/tags/%E5%9B%BE%E8%AE%BA/"/>
-    
-      <category term="LeetCode" scheme="https://www.liuin.cn/tags/LeetCode/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis源码剖析——内存分配</title>
-    <link href="https://www.liuin.cn/2018/03/23/Redis%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90%E2%80%94%E2%80%94%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/"/>
-    <id>https://www.liuin.cn/2018/03/23/Redis源码剖析——内存分配/</id>
-    <published>2018-03-23T10:43:53.000Z</published>
-    <updated>2018-03-23T11:12:09.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>内存分配是程序需要解决的一个大问题，也应该是剖析一个程序的源码最基础最关键的部分之一。</p>
-<a id="more"></a>
-<p>Redis的内存分配主要是在C语言中对内存处理的函数：malloc、realloc、free的基础加了一些封装和异常的处理。</p>
-<p>其特点主要有以下三点：</p>
-<ol>
-<li>添加对使用内存的统计，在分配和释放内存的时候都会更新记录使用内存的量</li>
-<li>支持线程安全模式，通过锁的机制对use_memory进行控制，避免其出现脏数据的可能</li>
-<li>增添对内存溢出的处理</li>
-</ol>
-<p>首先Redis源码中与内存分配相关的以下全局变量：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">size_t</span> used_memory = <span class="number">0</span>;    <span class="comment">// 使用的内存大小</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> zmalloc_thread_safe = <span class="number">0</span>;   <span class="comment">// 线程安全模式状态</span></div><div class="line"><span class="keyword">pthread_mutex_t</span> used_memory_mutex = PTHREAD_MUTEX_INITIALIZER;   <span class="comment">// 为此服务器</span></div></pre></td></tr></table></figure></p>
-<h2 id="内存分配相关功能函数"><a href="#内存分配相关功能函数" class="headerlink" title="内存分配相关功能函数"></a>内存分配相关功能函数</h2><p>Redis中和内存分配相关的功能函数主要有以下这些：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">void *zmalloc(size_t size);   </div><div class="line">void *zcalloc(size_t size);</div><div class="line">void *zrealloc(void *ptr, size_t size);</div><div class="line">void zfree(void *ptr);</div><div class="line">char *zstrdup(const char *s);  // 封装的字符复制函数</div><div class="line">size_t zmalloc_used_memory(void);   // 获取使用的内存大小</div><div class="line">void zmalloc_enable_thread_safeness(void);    // 开启线程安全模式</div><div class="line">void zmalloc_set_oom_handler(void (*oom_handler)(size_t));   // 自定义的内存溢出处理方法</div><div class="line">float zmalloc_get_fragmentation_ratio(size_t rss);  // 使用内存和所给内存之比</div><div class="line">size_t zmalloc_get_rss(void);  // 获取rss信息</div><div class="line">size_t zmalloc_get_private_dirty(void);   // 获取实际物理分配的内存</div></pre></td></tr></table></figure></p>
-<h2 id="内存申请与调整"><a href="#内存申请与调整" class="headerlink" title="内存申请与调整"></a>内存申请与调整</h2><p>Redis中和内存申请相关的函数主要是zmalloc、zcalloc和zrealloc，分别是对C语言中的malloc、calloc和realloc的封装。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 对malloc进行封装，加上异常处理和内存统计</span></div><div class="line"><span class="function"><span class="keyword">void</span> *<span class="title">zmalloc</span><span class="params">(<span class="keyword">size_t</span> size)</span> </span>&#123;</div><div class="line">    <span class="comment">// 多申请的内存用于存储次块空间大小</span></div><div class="line">    <span class="keyword">void</span> *ptr = <span class="built_in">malloc</span>(size+PREFIX_SIZE);</div><div class="line"></div><div class="line">    <span class="comment">// 内存溢出</span></div><div class="line">    <span class="keyword">if</span> (!ptr) zmalloc_oom_handler(size);</div><div class="line">    <span class="comment">// 进行内存统计</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> HAVE_MALLOC_SIZE</span></div><div class="line">    update_zmalloc_stat_alloc(zmalloc_size(ptr));</div><div class="line">    <span class="keyword">return</span> ptr;</div><div class="line"><span class="meta">#<span class="meta-keyword">else</span></span></div><div class="line">    *((<span class="keyword">size_t</span>*)ptr) = size;</div><div class="line">    update_zmalloc_stat_alloc(size+PREFIX_SIZE);</div><div class="line">    <span class="keyword">return</span> (<span class="keyword">char</span>*)ptr+PREFIX_SIZE;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> *<span class="title">zcalloc</span><span class="params">(<span class="keyword">size_t</span> size)</span> </span>&#123;</div><div class="line">    <span class="keyword">void</span> *ptr = <span class="built_in">calloc</span>(<span class="number">1</span>, size+PREFIX_SIZE);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!ptr) zmalloc_oom_handler(size);</div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> HAVE_MALLOC_SIZE</span></div><div class="line">    update_zmalloc_stat_alloc(zmalloc_size(ptr));</div><div class="line">    <span class="keyword">return</span> ptr;</div><div class="line"><span class="meta">#<span class="meta-keyword">else</span></span></div><div class="line">    *((<span class="keyword">size_t</span>*)ptr) = size;</div><div class="line">    update_zmalloc_stat_alloc(size+PREFIX_SIZE);</div><div class="line">    <span class="keyword">return</span> (<span class="keyword">char</span>*)ptr+PREFIX_SIZE;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 封装重新分配内存函数</span></div><div class="line"><span class="function"><span class="keyword">void</span> *<span class="title">zrealloc</span><span class="params">(<span class="keyword">void</span> *ptr, <span class="keyword">size_t</span> size)</span> </span>&#123;</div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> HAVE_MALLOC_SIZE</span></div><div class="line">    <span class="keyword">void</span> *realptr;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">    <span class="keyword">size_t</span> oldsize;</div><div class="line">    <span class="keyword">void</span> *newptr;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (ptr == <span class="literal">NULL</span>) <span class="keyword">return</span> zmalloc(size);</div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> HAVE_MALLOC_SIZE</span></div><div class="line">    <span class="comment">// 原来所使用空间的大小</span></div><div class="line">    oldsize = zmalloc_size(ptr);</div><div class="line">    <span class="comment">// 重新分配新的空间</span></div><div class="line">    newptr = <span class="built_in">realloc</span>(ptr,size);</div><div class="line">    <span class="keyword">if</span> (!newptr) zmalloc_oom_handler(size);</div><div class="line"></div><div class="line">    <span class="comment">// 更新保存的使用内存值</span></div><div class="line">    update_zmalloc_stat_free(oldsize);</div><div class="line">    update_zmalloc_stat_alloc(zmalloc_size(newptr));</div><div class="line">    <span class="keyword">return</span> newptr;</div><div class="line"><span class="meta">#<span class="meta-keyword">else</span></span></div><div class="line">    realptr = (<span class="keyword">char</span>*)ptr-PREFIX_SIZE;</div><div class="line">    oldsize = *((<span class="keyword">size_t</span>*)realptr);</div><div class="line">    newptr = <span class="built_in">realloc</span>(realptr,size+PREFIX_SIZE);</div><div class="line">    <span class="keyword">if</span> (!newptr) zmalloc_oom_handler(size);</div><div class="line"></div><div class="line">    *((<span class="keyword">size_t</span>*)newptr) = size;</div><div class="line">    update_zmalloc_stat_free(oldsize);</div><div class="line">    update_zmalloc_stat_alloc(size);</div><div class="line">    <span class="keyword">return</span> (<span class="keyword">char</span>*)newptr+PREFIX_SIZE;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>首先要注意的是对内存溢出的处理，可以自定义处理函数，其默认的处理方式如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 默认溢出处理方法</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">zmalloc_default_oom</span><span class="params">(<span class="keyword">size_t</span> size)</span> </span>&#123;</div><div class="line">    <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"zmalloc: Out of memory trying to allocate %zu bytes\n"</span>,</div><div class="line">        size);</div><div class="line">    fflush(<span class="built_in">stderr</span>);</div><div class="line">    <span class="built_in">abort</span>();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 内存溢出处理方法</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="title">void</span> <span class="params">(*zmalloc_oom_handler)</span><span class="params">(<span class="keyword">size_t</span>)</span> </span>= zmalloc_default_oom;</div></pre></td></tr></table></figure>
-<p>然后我们可以看到每次在调整内存的时候，都会对全局变量use_memory进行改变，调整是以<code>sizeof(long)</code>的整数倍进行调整的。在改变use_memory的时候会判断是否在线程安全模式下。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 更新使用的内存数量值</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> update_zmalloc_stat_alloc(__n) do &#123; \</span></div><div class="line">    size_t _n = (__n); \</div><div class="line">    <span class="comment">// _n调整为size(long)的整数倍</span></div><div class="line">    <span class="keyword">if</span> (_n&amp;(<span class="keyword">sizeof</span>(<span class="keyword">long</span>)<span class="number">-1</span>)) _n += <span class="keyword">sizeof</span>(<span class="keyword">long</span>)-(_n&amp;(<span class="keyword">sizeof</span>(<span class="keyword">long</span>)<span class="number">-1</span>)); \</div><div class="line">    <span class="comment">// 线程安全模式，原子性增加使用内存大小 （加锁）</span></div><div class="line">    <span class="keyword">if</span> (zmalloc_thread_safe) &#123; \</div><div class="line">        update_zmalloc_stat_add(_n); \</div><div class="line">    <span class="comment">// 不使用线程安全模式，直接增加</span></div><div class="line">    &#125; <span class="keyword">else</span> &#123; \</div><div class="line">        used_memory += _n; \</div><div class="line">    &#125; \</div><div class="line">&#125; <span class="keyword">while</span>(<span class="number">0</span>)</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> update_zmalloc_stat_add(__n) do &#123; \</span></div><div class="line">    pthread_mutex_lock(&amp;used_memory_mutex); \</div><div class="line">    used_memory += (__n); \</div><div class="line">    pthread_mutex_unlock(&amp;used_memory_mutex); \</div><div class="line">&#125; while(0)</div></pre></td></tr></table></figure>
-<h2 id="内存释放"><a href="#内存释放" class="headerlink" title="内存释放"></a>内存释放</h2><p>内存释放部分和申请部分类似，主要是对free函数的封装。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获取内存占用空间大小</span></div><div class="line"><span class="keyword">size_t</span> zmalloc_size(<span class="keyword">void</span> *ptr) &#123;</div><div class="line">    <span class="comment">// 减去统计内存大小的部分</span></div><div class="line">    <span class="keyword">void</span> *realptr = (<span class="keyword">char</span>*)ptr-PREFIX_SIZE;</div><div class="line">    <span class="keyword">size_t</span> size = *((<span class="keyword">size_t</span>*)realptr);</div><div class="line">    <span class="comment">/* Assume at least that all the allocations are padded at sizeof(long) by</span></div><div class="line">     * the underlying allocator. */</div><div class="line">    <span class="comment">// 调整为sizeof(long)的整数倍，方便对齐</span></div><div class="line">    <span class="keyword">if</span> (size&amp;(<span class="keyword">sizeof</span>(<span class="keyword">long</span>)<span class="number">-1</span>)) size += <span class="keyword">sizeof</span>(<span class="keyword">long</span>)-(size&amp;(<span class="keyword">sizeof</span>(<span class="keyword">long</span>)<span class="number">-1</span>));</div><div class="line">    <span class="keyword">return</span> size+PREFIX_SIZE;</div><div class="line">&#125;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"></div><div class="line"><span class="comment">// 封装对系统的free调用</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">zfree</span><span class="params">(<span class="keyword">void</span> *ptr)</span> </span>&#123;</div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> HAVE_MALLOC_SIZE</span></div><div class="line">    <span class="keyword">void</span> *realptr;</div><div class="line">    <span class="keyword">size_t</span> oldsize;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"></div><div class="line">    <span class="keyword">if</span> (ptr == <span class="literal">NULL</span>) <span class="keyword">return</span>;</div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> HAVE_MALLOC_SIZE</span></div><div class="line">    <span class="comment">// 减少对内存的计数</span></div><div class="line">    update_zmalloc_stat_free(zmalloc_size(ptr));</div><div class="line">    <span class="built_in">free</span>(ptr);</div><div class="line"><span class="meta">#<span class="meta-keyword">else</span></span></div><div class="line">    realptr = (<span class="keyword">char</span>*)ptr-PREFIX_SIZE;</div><div class="line">    oldsize = *((<span class="keyword">size_t</span>*)realptr);</div><div class="line">    update_zmalloc_stat_free(oldsize+PREFIX_SIZE);</div><div class="line">    <span class="built_in">free</span>(realptr);</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>对use_memory的操作：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 释放内存以后对内存空间统计变量的改变</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> update_zmalloc_stat_free(__n) do &#123; \</span></div><div class="line">    size_t _n = (__n); \</div><div class="line">    <span class="comment">// 以sizeof(long)的整数倍进行调整</span></div><div class="line">    <span class="keyword">if</span> (_n&amp;(<span class="keyword">sizeof</span>(<span class="keyword">long</span>)<span class="number">-1</span>)) _n += <span class="keyword">sizeof</span>(<span class="keyword">long</span>)-(_n&amp;(<span class="keyword">sizeof</span>(<span class="keyword">long</span>)<span class="number">-1</span>)); \</div><div class="line">    <span class="comment">// 线程安全模式</span></div><div class="line">    <span class="keyword">if</span> (zmalloc_thread_safe) &#123; \</div><div class="line">        update_zmalloc_stat_sub(_n); \</div><div class="line">    &#125; <span class="keyword">else</span> &#123; \</div><div class="line">        used_memory -= _n; \</div><div class="line">    &#125; \</div><div class="line">&#125; <span class="keyword">while</span>(<span class="number">0</span>)</div></pre></td></tr></table></figure></p>
-<h2 id="辅助函数"><a href="#辅助函数" class="headerlink" title="辅助函数"></a>辅助函数</h2><p>除了最基本的一些内存分配的函数以外，还实现了一些辅助函数(如复制字符串、获取已经使用内存的大小）：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 复制字符串操作</span></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">zstrdup</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *s)</span> </span>&#123;</div><div class="line">    <span class="keyword">size_t</span> l = <span class="built_in">strlen</span>(s)+<span class="number">1</span>;</div><div class="line">    <span class="keyword">char</span> *p = zmalloc(l);</div><div class="line"></div><div class="line">    <span class="comment">// 调用字符复制函数</span></div><div class="line">    <span class="built_in">memcpy</span>(p,s,l);</div><div class="line">    <span class="keyword">return</span> p;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 获取已经使用的内存大小</span></div><div class="line"><span class="keyword">size_t</span> zmalloc_used_memory(<span class="keyword">void</span>) &#123;</div><div class="line">    <span class="keyword">size_t</span> um;</div><div class="line"></div><div class="line">    <span class="comment">// 线程安全模式</span></div><div class="line">    <span class="keyword">if</span> (zmalloc_thread_safe) &#123;</div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__ATOMIC_RELAXED) || defined(HAVE_ATOMIC)</span></div><div class="line">        um = update_zmalloc_stat_add(<span class="number">0</span>);</div><div class="line"><span class="meta">#<span class="meta-keyword">else</span></span></div><div class="line">        pthread_mutex_lock(&amp;used_memory_mutex);</div><div class="line">        um = used_memory;</div><div class="line">        pthread_mutex_unlock(&amp;used_memory_mutex);</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// 非线程安全情况下，直接赋值</span></div><div class="line">        um = used_memory;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> um;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;内存分配是程序需要解决的一个大问题，也应该是剖析一个程序的源码最基础最关键的部分之一。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="源码剖析" scheme="https://www.liuin.cn/categories/%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/"/>
-    
-    
-      <category term="Redis" scheme="https://www.liuin.cn/tags/Redis/"/>
     
   </entry>
   

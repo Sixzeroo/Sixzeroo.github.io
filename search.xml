@@ -3,6 +3,351 @@
   
     
     <entry>
+      <title><![CDATA[APUE 伪终端]]></title>
+      <url>/2018/05/05/APUE-%E4%BC%AA%E7%BB%88%E7%AB%AF/</url>
+      <content type="html"><![CDATA[<p>《UNIX环境高级编程》第19章 伪终端 笔记</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>伪终端这个术语是指,对于一个应用程序而言,它看上去像一个终端,但事实上它并不是个真正的终端。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255087230010.jpg" alt=""></p>
+<p>图中的关键点是：</p>
+<ol>
+<li>通常,一个进程打开伪终端主设备,然后调用fork。子进程建立一个新的会话,打开一个相应的伪终端从设备,将其文件描述符复制到标准输入、标准输出和标准错误,然后调用exec。伪终端从设备成为子进程的控制终端。</li>
+<li>对于伪终端从设备上的用户进程来说,其标准输入、标准输出和标准错误都是终端设备。通过这些描述符,用户进程能够处理所有终端I/O函数。但是因为仍终端从设备不是真正的终端设备,所以无意义的函数调用(例如,改变波特率、发送中断符、设置奇偶校验)将被忽略</li>
+<li>任何写到伪终端主设备的都会作为从设备的输入,反之亦然。事实上,所有从设备端的输入都来自于伪终端主设备上的用户进程。这看起来就像一个双向管道,但是从设备上的中断行规程使我们拥有管道没有的处理奇谈问题的能力</li>
+</ol>
+<p>伪终端的某些经典用途：</p>
+<blockquote>
+<p>网络登录服务器</p>
+</blockquote>
+<p>伪终端可用于构造提供网络登录的服务器。典型的例子是 telnetd和rlogind服务器</p>
+<p>在rlogind服务器和登录shell之间有两个exec调用,这是因为login程序通常是在两个exec之间检验用户是否合法</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255090645150.jpg" alt=""></p>
+<blockquote>
+<p>窗口系统终端模拟</p>
+</blockquote>
+<p>窗口系统通常提供一个终端模拟器,这样我们就能在熟悉的命令行环境中通过shell来运行程序。终端模拟器作为shell和窗口管理器之间的媒介。每个shell在自己的窗口中执行。</p>
+<p>shell将自己的标准输入、标准输出、标准错误连接到PTY的从设备端。终端模拟器程序打开PTY的主设备。终端模拟器除了作为窗口子系统的接口,还要负责模拟一种特殊的终端,这意味着它需要根据它所模拟的设备类型来响应返回码。这些码列在 termcap和 terminfo数据库中。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255091975517.jpg" alt=""></p>
+<blockquote>
+<p>script 程序</p>
+</blockquote>
+<p>script(1)程序是随大多数UNIX系统提供的,它将终端会话期间的所有输入和输出信息复制到一个文件中。为完成此工作,该程序将自己置于终端和一个新调用的登录 shell之间。这里要特别指出, script程序通常是从登录shell启动的,该 shell还要等待 script程序的终止。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255092890944.jpg" alt=""></p>
+<blockquote>
+<p>expect 程序</p>
+</blockquote>
+<p>伪终端可以用来在非交互模式中驱动交互式程序的运行。许多硬连线程序需要一个终端才能行, passwd(1)命令就是一个例子,它要求用户在系统提示后输入口令</p>
+<blockquote>
+<p>运行协同进程</p>
+</blockquote>
+<p>如果协同进程是一个已经编译的程序而我们又没有源程序,则无法在源程序中加入ff1ush语句来解决这个问题。我们需要做的是将一个伪终端放到两个进程之间,诱使协同进程认为它是由终端驱动的,而非另一个进程</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255094556754.jpg" alt=""></p>
+<blockquote>
+<p>观看长时间运行程序的输出</p>
+</blockquote>
+<p>使用任何一个标准 shell,可以将一个需要长时间运行的程序放到后台运行。但是,如果将该程序的标准输出重定向到一个文件,并且它产生的输出又不多,那么我们就不能方便地监控程序的进展,因为标准I/O库将完全缓冲它的标准输出。</p>
+<p>如果有源程序,则可以加入fflush调用强制标准I/O缓冲区在某些节点冲洗或者把缓冲模式改使用 setybuf的行缓冲。然而,如果没有源程序,可以在pty程序下运行该程序,让标准I/O库认为标准输出是终端。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255095797010.jpg" alt=""></p>
+<h2 id="打开伪终端设备"><a href="#打开伪终端设备" class="headerlink" title="打开伪终端设备"></a>打开伪终端设备</h2><p>PTY表现得就像物理终端设备一样,因此应用程序就无须在意它们在使用的是何种设备。各种平台打开伪终端设备的方法有所不同。posix_openpt函数提供了一种可移植的方法来打开下一个可用<strong>伪终端主设备</strong>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; #include &lt;fcntl.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">posix_openpt</span><span class="params">(<span class="keyword">int</span> oﬂag)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: ﬁle descriptor of next available PTY master if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>在伪终端从设备可用之前,它的权限必须设置,以便应用程序可以访问它。 grantpt函数提供这样的功能:它把从设备节点的用户ID设置为调用者的实际用户ID,设置其组ID为一非指定值,通常是可以访问该终端设备的组。权限被设置为:对个体所有者是读写,对组所有者是写(0620)</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">grantpt</span><span class="params">(<span class="keyword">int</span> fd)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">unlockpt</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 on success, −1 on error</span></div></pre></td></tr></table></figure>
+<p>unlockpt函数用于准予对伪终端从设备的访问,从而允许应用程序打开该设备。阻止其他进程打开从设备后,建立该设备的应用程序有机会在使用主、从设备之前正确地初始化这些设备</p>
+<p>注意,在 grantpt和unlockpt这两个函数中,文件描述符参数是与伪终端主设备关联的文件描述符。</p>
+<p>如果给定了伪终端主设备的文件描述符,那么可以用 ptsname函数找到伪终端从设备的路径名。这使应用程序可以独立于给定平台的某种特定约定而标识从设备。注意,该函数返回的名字可能存储在静态存储中,因此后续的调用可能会覆盖它。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">ptsname</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to name of PTY slave if OK, NULL on error</span></div></pre></td></tr></table></figure>
+]]></content>
+      
+        <categories>
+            
+            <category> 读书笔记 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> APUE </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[APUE 终端I/O]]></title>
+      <url>/2018/05/05/APUE-%E7%BB%88%E7%AB%AFI-O/</url>
+      <content type="html"><![CDATA[<p>《UNIX环境高级编程》第18章 终端I/O 笔记</p>
+<a id="more"></a>
+<h2 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h2><p>终端I/O有两种不同的工作模式:</p>
+<ol>
+<li>规范模式输入处理。在这种模式中,对终端输入以行为单位进行处理。对于每个读请求终端驱动程序最多返回一行</li>
+<li>非规范模式输入处理。输入字符不装配成行</li>
+</ol>
+<p>如果不做特殊处理,则默认模式是规范模式</p>
+<p>可以认为终端设备是由通常位于内核中的终端驱动程序控制的。每个终端设备都有一个输入列和一个输出队列,如图所示：</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255055612367.jpg" alt=""></p>
+<p>有以下几点说明：</p>
+<ul>
+<li>如果打开了回显功能,则在输入队列和输出队列之间有一个隐含的连接</li>
+<li>输入队列的长度MAX_INPUT是有限值。当一个特定设备的输入队列已经填满时,系统的行为将依赖于实现。这种情况发生时大多数UNIX系统回显响铃字符。</li>
+<li>图中没有显示另一个输入限制MAX_CANON。这个限制是一个规范输入行的最大字节数</li>
+<li>虽然输出队列的长度通常也是有限的,但是程序并不能获得这个定义其长度的常量为当输出队列将要填满时,内核便直接使写进程休眠,直至写队列中有可用的空间。</li>
+</ul>
+<p>大多数UNIX系统在一个称为终端行规程(terminal linediscipline)的模块中进行全部的规范处理。可以将这个模块设想成一个盒子,<strong>位于内核通用读、写函数和实际设备驱动程序之间</strong>。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255057246778.jpg" alt=""></p>
+<p>由于将规范处理分离为单独的模块,所有的终端驱动程序都能够一致地支持规范处理。</p>
+<p>所有可以检测和更改的终端设备特性都包含在termios结构中。该结构定义在头文件<termios.h>中,本章使用这一头文件。</termios.h></p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255057581968.jpg" alt=""></p>
+<p>各个标志位的作用：</p>
+<ul>
+<li>输入标志通过终端设备驱动程序控制字符的输入(例如,剥除输入字节的第8位,允许输入奇偶校验)</li>
+<li>输出标志则控制驱动程序输出(例如,执行输出处理、将换行符转换为CRLF)</li>
+<li>控制标志影响RS232串行线(例如,忽略调制解调器的状态线、每个字符的一个或两个停止位)</li>
+<li>本地标志影响驱动程序和用户之间的接口(例如,回显打开或关闭、可视地擦除字符、允许终端产生的信号以及对后台输出的作业控制停止信号</li>
+</ul>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255058794969.jpg" alt=""></p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255058823469.jpg" alt=""></p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255058855001.jpg" alt=""></p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255058879538.jpg" alt=""></p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255058906529.jpg" alt=""></p>
+<p>与终端有关的各个函数之间的关系</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255059407734.jpg" alt=""></p>
+<h2 id="特殊输入字符"><a href="#特殊输入字符" class="headerlink" title="特殊输入字符"></a>特殊输入字符</h2><p>POSIX.1定义了11个在输入时要特殊处理的字符。实现定义了另外一些特殊字符</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255061027706.jpg" alt=""></p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255061066356.jpg" alt=""></p>
+<p>在POSIX的11个特殊字符中,其中有9个字符的值可以任意更改。不能更改的两个特殊字符是换行符和回车符(分别是\n和\r),也可能是STOP和START字符(依赖于实现)。为了更改,只需要修改termios结构中c_cc数组的相应项。该数组中的元素都用名字作为下标进行引用,每个名字都以字母V开头。</p>
+<p>对各个字符的详细解释可见原书内容</p>
+<h2 id="获得和设置终端属性"><a href="#获得和设置终端属性" class="headerlink" title="获得和设置终端属性"></a>获得和设置终端属性</h2><p>为了获得和设置 termios结构,可以调用 tcgetattr和 tcsetattr函数。这样就可以检测和修改各种终端选项标志和特殊字符,使终端按我们所希望的方式进行操作。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;termios.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcgetattr</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">struct</span> termios *termptr)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcsetattr</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> opt, <span class="keyword">const</span> <span class="keyword">struct</span> termios *termptr)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>tcsetattr的参数opt使我们可以指定在什么时候新的终端属性才起作用。opt可以指定为下列常量中的一个:</p>
+<ul>
+<li>TCSANOW   更改立即发生。</li>
+<li>TCSADRAIN 发送了所有输出后更改才发生。若更改输出参数则应使用此选项。</li>
+<li>TCSAFLUSH 发送了所有输出后更改才发生。更进一步,在更改发生时未读的所有输入数据都被丢弃(冲洗)。</li>
+</ul>
+<h2 id="终端选项标志"><a href="#终端选项标志" class="headerlink" title="终端选项标志"></a>终端选项标志</h2><p>包含终端选项标志的所有的解释，具体可查看原书</p>
+<h2 id="stty命令"><a href="#stty命令" class="headerlink" title="stty命令"></a>stty命令</h2><p>上节说明的所有选项都可以被检查和更改:在程序中用tcgetattr和tcsetattr函数进行检查和更改;在命令行(或shell脚本)中用stty(1)命令进行检查和更改。简单地说,stty(1)命令就是终端I/O所列的前6个函数的接口。</p>
+<h2 id="波特率函数"><a href="#波特率函数" class="headerlink" title="波特率函数"></a>波特率函数</h2><p>术语波特率(baud rate)是一个历史沿用的术语,现在它指的是“位/秒”(bit per second)。虽然大多数终端设备对输入和输出使用同一波特率,但是只要硬件许可,可以将它们设置为两个不同值。</p>
+<p>设置波特率函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;termios.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">speed_t</span> cfgetispeed(<span class="keyword">const</span> <span class="keyword">struct</span> termios *termptr); </div><div class="line"><span class="keyword">speed_t</span> cfgetospeed(<span class="keyword">const</span> <span class="keyword">struct</span> termios *termptr); </div><div class="line"></div><div class="line"><span class="comment">// Both return: baud rate value </span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">cfsetispeed</span><span class="params">(<span class="keyword">struct</span> termios *termptr, <span class="keyword">speed_t</span> speed)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">cfsetospeed</span><span class="params">(<span class="keyword">struct</span> termios *termptr, <span class="keyword">speed_t</span> speed)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<h2 id="行控制函数"><a href="#行控制函数" class="headerlink" title="行控制函数"></a>行控制函数</h2><p>下列4个函数提供了终端设备的行控制能力：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;termios.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcdrain</span><span class="params">(<span class="keyword">int</span> fd)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcflow</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> action)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcflush</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> <span class="built_in">queue</span>)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcsendbreak</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> duration)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// All four return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>tcdrain函数等待所有输出都被传递。<br>tcflow函数用于对输入和输出流控制进行控制。<br>tcflush函数冲洗(抛弃)输入缓冲区(其中的数据是终端驱动程序已接收到,但用户程序尚未读取的)或输出缓冲区(其中的数据是用户程序已经写入,但尚未被传递的)。<br>tcsendbreak函数在一个指定的时间区间内发送连续的0值位流。</p>
+<h2 id="终端标识"><a href="#终端标识" class="headerlink" title="终端标识"></a>终端标识</h2><p>历史上,在大多数UNIX系统版本中,控制终端的名字一直是/dev/tty。POSIX.1提供了个运行时函数,可用来确定控制终端的名字。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">ctermid</span><span class="params">(<span class="keyword">char</span> *ptr)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to name of controlling terminal on success, pointer to empty string on error</span></div></pre></td></tr></table></figure>
+<p>另外还有两个UNIX系统比较感兴趣的函数: isatty和 ttyname。如果文件描述符引用个终端设备,则 isatty返回真。 ttyname返回的是在该文件描述符上打开的终端设备的路径名</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">isatty</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 1 (true) if terminal device, 0 (false) otherwise</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">ttyname</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to pathname of terminal, NULL on error</span></div></pre></td></tr></table></figure>
+<h2 id="规范模式"><a href="#规范模式" class="headerlink" title="规范模式"></a>规范模式</h2><p>规范模式很简单:发一个读请求,<strong>当一行已经输入后,终端驱动程序即返回</strong>。以下几个条件造成读返回。</p>
+<ol>
+<li>所请求的字节数已读到时,读返回。无需读一个完整的行。如果读了部分行,那么也不会丢失任何信息,下一次读从前一次读的停止处开始。</li>
+<li>当读到一个行定界符时,读返回。</li>
+<li>如果捕捉到信号,并且该函数不再自动重启,则读也返回</li>
+</ol>
+<h2 id="非规范模式"><a href="#非规范模式" class="headerlink" title="非规范模式"></a>非规范模式</h2><p>可以通过关闭termios结构中c_lf1ag字段的ICANON标志来指定非规范模式。在非规范模式中,输入数据不装配成行,不处理下列特殊字符: ERASE、KILL、EOF、NLEOL、EOL2、CR、REPRINT、STATUS和 WERASE。</p>
+<p>如前所述,规范模式很容易理解:系统每次至多返回一行。但在非规范模式下,系统如何知道在什么时候将数据返回给我们呢?如果它一次返回一个字节,那么系统开销就会过大。在启动读数据之前,往往不知道要读多少数据,所以系统不能总是一次返回多个字节解决方法是,当已读了指定量的数据后,或者已经超过了给定量的时间后,即通知系统返回。</p>
+<p>这种技术使用了 termios结构中c_cc数组的两个变量:MIN和TIME。c_cc数组中的这两个元素的下标名为VMIN和VTIM。</p>
+<p>MIN指定一个read返回前的最小字节数。TIME指定等待数据到达的分秒数(分秒为秒的1/10)。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255076147395.jpg" alt=""></p>
+<h2 id="终端窗口大小"><a href="#终端窗口大小" class="headerlink" title="终端窗口大小"></a>终端窗口大小</h2><p>大多数UNⅨX系统都提供了一种跟踪当前终端窗口大小的方法,在窗口大小发生变化时,使内核通知前台进程组。内核为每个终端和伪终端都维护了一个wins1ze结构</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15255076954042.jpg" alt=""></p>
+<p>提供这种功能的目的是,当窗口大小发生变化时应用程序能够得到通知(如v1编辑器)。应用程序接收此信号后,可以获取窗口大小的新值,然后重绘屏幕。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 读书笔记 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> APUE </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[APUE 高级进程间通信]]></title>
+      <url>/2018/05/05/APUE-%E9%AB%98%E7%BA%A7%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/</url>
+      <content type="html"><![CDATA[<p>《UNIX环境高级编程》第17章 高级进程间通信 笔记</p>
+<a id="more"></a>
+<h2 id="UNIX-域套接字"><a href="#UNIX-域套接字" class="headerlink" title="UNIX 域套接字"></a>UNIX 域套接字</h2><p>UNIX域套接字用于在同一台计算机上运行的进程之间的通信。虽然因特网域套接字可用于同一目的,但<strong>UNIX域套接字的效率更高</strong>。UNIX域套接字仅仅复制数据,它们并不执行协议处理,不需要添加或删除网络报头,无需计算校验和,不要产生顺序号,无需发送确认报文。</p>
+<p>UNIX域套接字<strong>提供流和数据报两种接口</strong>。UNIX域数据报服务是可靠的,既不会丢失报文也不会传递出错。UNIX域套接字就像是套接字和管道的混合。</p>
+<p>可以使用它们面向网络的域套接字接口或者使用socketpair函数来创建一对无命名的、相互连接的UNIX域套接字。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">socketpair</span><span class="params">(<span class="keyword">int</span> domain, <span class="keyword">int</span> type, <span class="keyword">int</span> protocol, <span class="keyword">int</span> sockfd[<span class="number">2</span>])</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>虽然接口足够通用,允许socketpair用于其他域,但一般来说操作系统仅对UNIX域提供支持</p>
+<p>对相互连接的UNIX域套接字可以起到<strong>全双工管道的作用</strong>:两端对读和写开放。我们将其称为fd管道( fd-pipe),以便与普通的半双工管道区分开来。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254872539788.jpg" alt=""></p>
+<p>曾经提到XSI消息队列的使用存在一个问题,即不能将它们和po11或者se1ect起使用,这是因为它们不能关联到文件描述符。然而,套接字是和文件描述符相关联的,消息到达时,可以用套接字来通知。对每个消息队列使用一个线程。每个线程都会在mmsgrcv调用中阻塞。当消息到达时,线程会把它写入一个UNIX域套接字的一端。当poll指示套接字可以读取数据时,应用程序会使用这个套接字的另外一端来接收这个消息。</p>
+<blockquote>
+<p>命名UNIX域套接字</p>
+</blockquote>
+<p>虽然socketpair函数能创建一对相互连接的套接字,但是每一个套接字都没有名字。这意味着无关进程不能使用它们。恰如因特网域套接字一样,可以命名UNIX域套接字,并可将其用于告示服务。但是要注意,UNX域套接字使用的地址格式不同于因特网域套接字，套接字地址格式会随实现而变。</p>
+<p>UNIX域套接字的地址由 sockaddr_un结构表示。在 Linux3.20和 Solaris10中, sockaddr_un结构在头文件<sys un.h="">中的定义</sys></p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254875673064.jpg" alt=""></p>
+<p>sockaddr_un结构的sun_path成员包含一个路径名。当我们将一个地址绑定到一个UNIX域套接字时,系统会用该路径名创建一个S_IFSOCK类型的文件该文件仅用于向客户进程告示套接字名字。该文件无法打开,也不能由应用程序用于通信。</p>
+<p>如果我们试图绑定同一地址时,该文件已经存在,那么bind请求会失败。当关闭套接字时,并不自动删除该文件,所以必须确保在应用程序退出前,对该文件执行解除链接操作。</p>
+<h2 id="唯一连接"><a href="#唯一连接" class="headerlink" title="唯一连接"></a>唯一连接</h2><p>服务器进程可以使用标准bind、listen和 accept函数,为客户进程安排一个唯一UNIX域连接。客户进程使用 connect与服务器进程联系。在服务器进程接受了connect请求后,在服务器进程和客户进程之间就存在了唯一连接。</p>
+<p>下图展示了客户进程和服务器进程存在连接之前二者的情形。服务器端把它的套接字绑定到sockaddr_un的地址并监听新的连接请求。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254879207178.jpg" alt=""></p>
+<p>现在，开发3个函数,使用这些函数可以在运行于同一台计算机上的两个无关进程之间创建唯一连接。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"apue.h"</span> </span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">serv_listen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name)</span></span>; </div><div class="line"><span class="comment">// Returns: ﬁle descriptor to listen on if OK, negative value on error</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">serv_accept</span><span class="params">(<span class="keyword">int</span> listenfd, <span class="keyword">uid_t</span> *uidptr)</span></span>; </div><div class="line"><span class="comment">// Returns: new ﬁle descriptor if OK, negative value on error</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">cli_conn</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name)</span></span>; </div><div class="line"><span class="comment">// Returns: ﬁle descriptor if OK, negative value on error</span></div></pre></td></tr></table></figure>
+<p>服务器进程可以调用serv_listen函数声明它要在一个众所周知的名字(文件系统中的某个路径名)上监听客户进程的连接请求。当客户进程想要连接至服务器进程时,它们将使用该名字。serv_listen函数的返回值是用于接收客户进程连接请求的服务器UNIX域套接字</p>
+<p>服务器进程可以使用serv_accept函数等待客户进程连接请求的到达。当个请求到达时,系统自动创建一个新的UNIX域套接字,并将它与客户端套接字连接,最后将这个新套接字返回给服务器。此外,客户进程的有效用户ID存放在 uidptr指向的存储区中客户</p>
+<p>进程调用cli_conn函数连接至服务器进程。客户进程指定的name参数必须与服务器进程调用serv_listen函数时所用的名字相同</p>
+<p>这三个函数的具体实现可以查看书本</p>
+<h2 id="传送文件描述符"><a href="#传送文件描述符" class="headerlink" title="传送文件描述符"></a>传送文件描述符</h2><p>在两个进程之间传送打开文件描述符的技术是非常有用的。因此可以对客户进程服务器进程应用进行不同的设计。它使一个进程(通常是服务器进程)能够处理打开一个文件所要做的一切操作(包括将网络名翻译为网络地址、拨号调制解调器、协商文件锁等)以及<strong>向调用进程送回个描述符</strong>,该描述符可被用于以后的所有I/O函数。涉及打开文件或设备的所有细节对客户进程而言都是透明的。</p>
+<p>一般情况下，两个进程,它们打开了同一文件。虽然它们共享同一个v节点,但每个进程都有它自己的文件表项。当一个进程向另一个进程传送一个打开文件描述符时,我们想让发送进程和接收进程共享同文件表项。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254885933315.jpg" alt=""></p>
+<p>在技术上,我们是<strong>将指向一个打开文件表项的指针从一个进程发送到另外一个进程</strong>。该指针被分配存放在接收进程的第一个可用描述符项中。(注意,不要造成错觉,以为发送进程和接收进程中的描述符编号是相同的,它们通常是不同的。)两个进程共享同一个打开文件表,这与foxk之后的父进程和子进程共享打开文件表的情况完全相同。</p>
+<p>当发送进程将描述符传送给接收进程后,通常会关闭该描述符。发送进程关闭该描述符并不会真的关闭该文件或设备,其原因是该描述符仍被视为由接收进程打开(即使接收进程尚未接收到该描述符)</p>
+<p>下面定义用以发送和接收文件描述符的3个函数。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">#include "apue.h" </div><div class="line"></div><div class="line">int send_fd(int fd, int fd_to_send); </div><div class="line">int send_err(int fd, int status, const char *errmsg); </div><div class="line">// Both return: 0 if OK, −1 on error </div><div class="line"></div><div class="line">int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t)); </div><div class="line">// Returns: ﬁle descriptor if OK, negative value on error</div></pre></td></tr></table></figure>
+<p>具体的实现原书代码</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 读书笔记 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> APUE </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[APUE 网络IPC：套接字]]></title>
+      <url>/2018/05/05/APUE-%E7%BD%91%E7%BB%9CIPC%EF%BC%9A%E5%A5%97%E6%8E%A5%E5%AD%97/</url>
+      <content type="html"><![CDATA[<p>《UNIX环境高级编程》第16章 网络IPC：套接字 笔记</p>
+<a id="more"></a>
+<h2 id="套接字描述"><a href="#套接字描述" class="headerlink" title="套接字描述"></a>套接字描述</h2><p>套接字是通信端点的抽象。正如使用文件描述符访问文件,应用程序用套接字描述符访问套接字。<strong>套接字描述符在UNIX系统中被当作是一种文件描述符</strong>。事实上,许多处理文件描述符的函数(如read和 write)可以用于处理套接字描述符。</p>
+<p>为创建一个套接字,调用socket函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">socket</span><span class="params">(<span class="keyword">int</span> domain, <span class="keyword">int</span> type, <span class="keyword">int</span> protocol)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: ﬁle (socket) descriptor if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>参数 domain(域)确定通信的特性,包括地址格式</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254808968863.jpg" alt=""></p>
+<p>参数type确定套接字的类型,进一步确定通信特征。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254809237060.jpg" alt=""></p>
+<p>参数protocol通常是0,表示为给定的域和套接字类型选择默认协议。当对同一域和套接字类型支持多个协议时,可以使用 protocol选择一个特定协议</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254809947426.jpg" alt=""></p>
+<p>对于数据报(SOCK_DGRAM)接口,两个对等进程之间通信时不需要逻辑连接。只需要向对等进程所使用的套接字送出一个报文。字节流(SOCK_STREAM)要求在交换数据之前,在本地套接字和通信的对等进程的套接字之间建立一个逻辑连接。</p>
+<p>调用socket与调用open相类似。在两种情况下,均可获得用于I/O的文件描述符。当不再需要该文件描述符时,调用c1ose来关闭对文件或套接字的访问,并且释放该描述符以便重新使用虽然套接字描述符本质上是一个文件描述符,但不是所有参数为文件描述符的函数都可以接受套接字描述符。</p>
+<h2 id="寻址"><a href="#寻址" class="headerlink" title="寻址"></a>寻址</h2><p>在学习用套接字做一些有意义的事情之前,需要知道如何标识一个目标通信进程。进程标识由两部分组成。一部分是<strong>计算机的网络地址</strong>,它可以帮助标识网络上我们想与之通信的计算机;另一部分是该<strong>计算机上用端口号</strong>表示的服务,它可以帮助标识特定的进程。</p>
+<h3 id="字节序"><a href="#字节序" class="headerlink" title="字节序"></a>字节序</h3><p>字节序是一个处理器架构特性用于指示像整数这样的大数据类型内部的字节如何排序。</p>
+<p>如果处理器架构支持大端(big-endian)字节序,那么<strong>最大字节地址出现在最低有效字节</strong>( Least Significant Byte,LSB)上，小端(little-endian)字节序则相反:<strong>最低有效字节包含最小字节地址</strong>。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254815015116.jpg" alt=""></p>
+<p>网络协议指定了字节序,因此异构计算机系统能够交换协议信息而不会被字节序所混淆。TCPP协议栈使用大端字节序。应用程序交换格式化数据时,字节序问题就会出现</p>
+<p>对于TCPP应用程序,有4个用来在处理器字节序和网络字节序之间实施转换的函数:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">uint32_t</span> htonl(<span class="keyword">uint32_t</span> hostint32);</div><div class="line"><span class="comment">// Returns: 32-bit integer in network byte order</span></div><div class="line"></div><div class="line"><span class="keyword">uint16_t</span> htons(<span class="keyword">uint16_t</span> hostint16);</div><div class="line"><span class="comment">// Returns: 16-bit integer in network byte order</span></div><div class="line"></div><div class="line"><span class="keyword">uint32_t</span> ntohl(<span class="keyword">uint32_t</span> netint32);</div><div class="line"></div><div class="line"><span class="comment">// Returns: 32-bit integer in host byte order</span></div><div class="line"></div><div class="line"><span class="keyword">uint16_t</span> ntohs(<span class="keyword">uint16_t</span> netint16);</div><div class="line"></div><div class="line"><span class="comment">// Returns: 16-bit integer in host byte order</span></div></pre></td></tr></table></figure>
+<p>h表示“主机”字节序,n表示“网络”字节序。1表示“长”(即4字节)整数,s表示“短”</p>
+<h3 id="地址格式"><a href="#地址格式" class="headerlink" title="地址格式"></a>地址格式</h3><p>一个地址标识一个特定通信域的套接字端点,地址格式与这个特定的通信域相关。为使不同格式地址能够传入到套接字函数,地址会被<strong>强制转换</strong>成一个通用的地址结构sockaddr</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254817776056.jpg" alt=""></p>
+<p>不同的系统实现可能会不一样</p>
+<p>因特网地址定义在<netinet in.h="">头文件中。在IPv4因特网域(AF_INET)中,套接字地址用结构 sockaddr_in表示</netinet></p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254818310427.jpg" alt=""></p>
+<p>有时,需要打印出能被人理解而不是计算机所理解的地址格式。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">const</span> <span class="keyword">char</span> *<span class="title">inet_ntop</span><span class="params">(<span class="keyword">int</span> domain, <span class="keyword">const</span> <span class="keyword">void</span> *<span class="keyword">restrict</span> addr, <span class="keyword">char</span> *<span class="keyword">restrict</span> str, <span class="keyword">socklen_t</span> size)</span></span>;</div><div class="line"><span class="comment">// Returns: pointer to address string on success, NULL on error </span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">inet_pton</span><span class="params">(<span class="keyword">int</span> domain, <span class="keyword">const</span> <span class="keyword">char</span> *<span class="keyword">restrict</span> str, <span class="keyword">void</span> *<span class="keyword">restrict</span> addr)</span></span>;</div><div class="line"><span class="comment">// Returns: 1 on success, 0 if the format is invalid, or −1 on error</span></div></pre></td></tr></table></figure>
+<p>函数inet_ntop将网络字节序的二进制地址转换成文本字符串格式。inet_pton将文本字符串格式转换成网络字节序的二进制地址。</p>
+<h3 id="将套接字和地址关联"><a href="#将套接字和地址关联" class="headerlink" title="将套接字和地址关联"></a>将套接字和地址关联</h3><p>将一个客户端的套接字关联上一个地址没有多少新意,可以让系统选一个默认的地址。然而,<strong>对于服务器,需要给一个接收客户端请求的服务器套接字关联上一个众所周知的地址</strong>。客户端应有一种方法来发现连接服务器所需要的地址,最简单的方法就是服务器保留一个地址并且注册在/etc/services或者某个名字服务中。</p>
+<p>使用bind函数来关联地址和套接字</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">bind</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">struct</span> sockaddr *addr, <span class="keyword">socklen_t</span> len)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>对于使用的地址有以下一些限制:</p>
+<ul>
+<li>在进程正在运行的计算机上,指定的地址必须有效，不能指定一个其他机器的地址。</li>
+<li>地址必须和创建套接字时的地址族所支持的格式相匹配。</li>
+<li>地址中的端口号必须不小于1024,除非该进程具有相应的特权(即超级用户)</li>
+<li>一般只能将一个套接字端点绑定到一个给定地址上,尽管有些协议允许多重绑定</li>
+</ul>
+<p>可以调用 getsockname函数来发现绑定到套接字上的地址：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getsockname</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">struct</span> sockaddr *<span class="keyword">restrict</span> addr, <span class="keyword">socklen_t</span> *<span class="keyword">restrict</span> alenp)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>调用 getsockname之前,将 alenp设置为一个指向整数的指针,该整数指定缓冲区sockaddr的长度。返回时,该整数会被设置成返回地址的大小。如果地址和提供的缓冲区长</p>
+<p>如果套接字已经和对等方连接,可以调用 getpeername函数来找到对方的地址。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getpeername</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">struct</span> sockaddr *<span class="keyword">restrict</span> addr, <span class="keyword">socklen_t</span> *<span class="keyword">restrict</span> alenp)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<h2 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h2><p>如果要处理一个面向连接的网络服务(SOCK_STREAM或SOCK_SEQPACKET),那么在开始交换数据以前,需要在请求服务的进程套接字(客户端)和提供服务的进程套接字(服务器)之间建立一个连接。使用connect函数来建立连接。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">connect</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">struct</span> sockaddr *addr, <span class="keyword">socklen_t</span> len)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>在connect中指定的地址是我们想与之通信的服务器地址。如果 sockfd没有绑定到一个地址, connect会给调用者绑定一个默认地址。</p>
+<p>服务器调用listen函数来宣告它愿意接受连接请求。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">listen</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> backlog)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>一旦服务器调用了listen,所用的套接字就能接收连接请求。使用accept函数获得连接请求并建立连接</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">accept</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">struct</span> sockaddr *<span class="keyword">restrict</span> addr, <span class="keyword">socklen_t</span> *<span class="keyword">restrict</span> len)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: ﬁle (socket) descriptor if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>函数accept所返回的文件描述符是套接字描述符,该描述符连接到调用connect的客户端。这个新的套接字描述符和原始套接字(sockfd)具有相同的套接字类型和地址族。传给accept原始套接字没有关联到这个连接,而是继续保持可用状态并接收其他连接请求。</p>
+<p>如果服务器调用accept,并且当前没有连接请求,服务器会阻塞直到一个请求到来。另外服务器可以使用poll或se1ect来等待一个请求的到来。在这种情况下,一个带有等待连接请求的套接字会以可读的方式出现</p>
+<h2 id="数据传输"><a href="#数据传输" class="headerlink" title="数据传输"></a>数据传输</h2><p>既然一个套接字端点表示为一个文件描述符,那么只要建立连接,就可以使用read和 write来通过套接字通信。</p>
+<p>尽管可以通过read和write交换数据,但这就是这两个函数所能做的一切。如果想指定选项,从多个客户端接收数据包,或者发送带外数据,就需要使用6个为数据传递而设计的套接字函数中的一个</p>
+<p>3个函数用来发送数据,3个用于接收数据。首先,考查用于发送数据的函数。最简单的是send,它和 write很像,但是可以指定标志来改变处理传输数据的方式</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> send(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> nbytes, <span class="keyword">int</span> ﬂags);</div><div class="line"></div><div class="line"><span class="comment">// Returns: number of bytes sent if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>前面3个参数和write参数一样，不同的是第4个参数flags：</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254833405785.jpg" alt=""></p>
+<p>即使send成功返回,也并不表示连接的另一端的进程就一定接收了数据。我们所能保证的只是当send成功返回时,数据已经被无错误地发送到网络驱动程序上</p>
+<p>函数 sendto和send很类似。区别在于sendto可以在无连接的套接字上指定一个目标地址。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> sendto(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> nbytes, <span class="keyword">int</span> ﬂags, <span class="keyword">const</span> <span class="keyword">struct</span> sockaddr *destaddr, <span class="keyword">socklen_t</span> destlen); </div><div class="line"></div><div class="line"><span class="comment">// Returns: number of bytes sent if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>对于面向连接的套接字,目标地址是被忽略的,因为连接中隐含了目标地址。对于无连接的套接字,除非先调用 connect设置了目标地址,否则不能使用send。 sendto提供了发送报文的另一种方式</p>
+<p>通过套接字发送数据时,还有一个选择。可以调用带有msghdr结构的sendmsg来指定多重缓冲区传输数据,这和 writev函数很相似</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> sendmsg(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">struct</span> msghdr *msg, <span class="keyword">int</span> ﬂags);</div><div class="line"></div><div class="line"><span class="comment">// Returns: number of bytes sent if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>与发送数据相对应的，接受数据也有三个函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> recv(<span class="keyword">int</span> sockfd, <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> nbytes, <span class="keyword">int</span> ﬂags);</div><div class="line"></div><div class="line"><span class="comment">// Returns: length of message in bytes, 0 if no messages are available and peer has done an orderly shutdown, or −1 on error</span></div></pre></td></tr></table></figure>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254835445782.jpg" alt=""></p>
+<p>如果有兴趣定位发送者,可以使用 recvfrom来得到数据发送者的源地址</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> recvfrom(<span class="keyword">int</span> sockfd, <span class="keyword">void</span> *<span class="keyword">restrict</span> buf, <span class="keyword">size_t</span> len, <span class="keyword">int</span> ﬂags, <span class="keyword">struct</span> sockaddr *<span class="keyword">restrict</span> addr, <span class="keyword">socklen_t</span> *<span class="keyword">restrict</span> addrlen); </div><div class="line"></div><div class="line"><span class="comment">// Returns: length of message in bytes, 0 if no messages are available and peer has done an orderly shutdown, or −1 on error</span></div></pre></td></tr></table></figure>
+<p>为了将接收到的数据送入多个缓冲区,类似于 readv,或者想接收辅助数据,可以使用 recvmso</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> recvmsg(<span class="keyword">int</span> sockfd, <span class="keyword">struct</span> msghdr *msg, <span class="keyword">int</span> ﬂags);</div><div class="line"></div><div class="line"><span class="comment">// Returns: length of message in bytes, 0 if no messages are available and peer has done an orderly shutdown, or −1 on error</span></div></pre></td></tr></table></figure>
+<h2 id="套接字选项"><a href="#套接字选项" class="headerlink" title="套接字选项"></a>套接字选项</h2><p>套接字机制提供了两个套接字选项接口来控制套接字行为。一个接口用来设置选项,另一个接口可以查询选项的状态。可以获取或设置以下3种选项</p>
+<ol>
+<li>通用选项,工作在所有套接字类型上</li>
+<li>在套接字层次管理的选项,但是依赖于下层协议的支持</li>
+<li>特定于某协议的选项,每个协议独有的</li>
+</ol>
+<p>可以使用 setsockopt函数来设置套接字选项。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setsockopt</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> level, <span class="keyword">int</span> option, <span class="keyword">const</span> <span class="keyword">void</span> *val, <span class="keyword">socklen_t</span> len)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<p>参数 level标识了选项应用的协议。</p>
+<p><img src="https://data2.liuin.cn/2018-05-05-15254838324441.jpg" alt=""></p>
+<p>参数val根据选项的不同指向一个数据结构或者一个整数。一些选项是on/off开关。如果整数非0,则启用选项。如果整数为0,则禁止选项。参数len指定了val指向的对象的大小</p>
+<p>可以使用getsockopt来查看选项的当前值</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getsockopt</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> level, <span class="keyword">int</span> option, <span class="keyword">void</span> *<span class="keyword">restrict</span> val, <span class="keyword">socklen_t</span> *<span class="keyword">restrict</span> lenp)</span></span>;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<h2 id="带外数据"><a href="#带外数据" class="headerlink" title="带外数据"></a>带外数据</h2><p>带外数据( out-of-band data)是一些通信协议所支持的可选功能,与普通数据相比,它允许更高优先级的数据传输。带外数据先行传输,即使传输队列已经有数据。TCP支持带外数据,但是UDP不支持。套接字接口对带外数据的支持很大程度上受TCP带外数据具体实现的影响。TCP将带外数据称为紧急数据( urgent data)。</p>
+<p>TCP仅支持一个字节的紧急数据,但是允许紧急数据在普通数据传递机制数据流之外传输。</p>
+<h2 id="非阻塞和异步I-O"><a href="#非阻塞和异步I-O" class="headerlink" title="非阻塞和异步I/O"></a>非阻塞和异步I/O</h2><p>在基于套接字的异步LO中,当从套接字中读取数据时,或者当套接字写队列中空间变得可用时,可以安排要发送的信号 SIGIO。</p>
+<p>启用异步IO是一个两步骤的过程</p>
+<ol>
+<li>建立套接字所有权,这样信号可以被传递到合适的进程</li>
+<li>通知套接字当IO操作不会阻塞时发信号</li>
+</ol>
+<p>可以使用3种方式来完成第一个步骤</p>
+<ul>
+<li>在fcnt1中使用 F_SETOWN命令</li>
+<li>在ioct1中使用 FIOSETOWN命令</li>
+<li>在ioctl中使用 SIOCSPGRP命令</li>
+</ul>
+<p>要完成第二个步骤,有两个选择</p>
+<ul>
+<li>在fcnt1中使用F_SETFL命令并且启用文件标志O_ASYNO</li>
+<li>在ioctl中使用FI命令</li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 读书笔记 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> APUE </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[APUE 进程间通信]]></title>
       <url>/2018/05/04/APUE-%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/</url>
       <content type="html"><![CDATA[<p>《UNIX环境高级编程》第15章 进程间通信 笔记</p>
@@ -7703,7 +8048,7 @@
       <content type="html"><![CDATA[<p>APUE是《Unix环境高级编程》的简称，在此立flag：大三把这本书啃完，完成笔记</p>
 <a id="more"></a>
 <p>第1章 <a href="/2018/02/06/APUE-Unix-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">Unix 基础知识</a></p>
-<p>第2章 <a href="">Unix 标准及实现</a></p>
+<p>第2章 <a href="">Unix 标准及实现</a>（待整理）</p>
 <p>第3章 <a href="/2018/03/06/APUE-%E6%96%87%E4%BB%B6I-O/">文件 I/O</a></p>
 <p>第4章 <a href="/2018/04/26/APUE-%E6%96%87%E4%BB%B6%E5%92%8C%E7%9B%AE%E5%BD%95/">文件和目录</a></p>
 <p>第5章 <a href="/2018/04/27/APUE-%E6%A0%87%E5%87%86I-O%E5%BA%93/">标准I/O库</a></p>
@@ -7714,15 +8059,13 @@
 <p>第10章 <a href="/2018/04/18/APUE-%E4%BF%A1%E5%8F%B7/">信号</a></p>
 <p>第11章 <a href="/2018/05/02/APUE-%E7%BA%BF%E7%A8%8B/">线程</a></p>
 <p>第12章 <a href="/2018/05/02/APUE-%E7%BA%BF%E7%A8%8B%E6%8E%A7%E5%88%B6/">线程控制</a></p>
-<p>第13章 <a href="">守护进程</a></p>
-<p>第14章 <a href="">高级I/O</a></p>
-<p>第15章 <a href="">进程间通信</a></p>
-<p>第16章 <a href="">网络ICP：套接字</a></p>
-<p>第17章 <a href="">高级进程间通信</a></p>
-<p>第18章 <a href="">终端I/O</a></p>
-<p>第19章 <a href="">伪终端</a></p>
-<p>第20章 <a href="">数据库函数库</a></p>
-<p>第21章 <a href="">与网络打印机通信</a></p>
+<p>第13章 <a href="/2018/05/04/APUE-%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/">守护进程</a></p>
+<p>第14章 <a href="/2018/05/04/APUE-%E9%AB%98%E7%BA%A7I-O/">高级I/O</a></p>
+<p>第15章 <a href="/2018/05/04/APUE-%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/">进程间通信</a></p>
+<p>第16章 <a href="/2018/05/05/APUE-%E7%BD%91%E7%BB%9CIPC%EF%BC%9A%E5%A5%97%E6%8E%A5%E5%AD%97/">网络ICP：套接字</a></p>
+<p>第17章 <a href="/2018/05/05/APUE-%E9%AB%98%E7%BA%A7%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/">高级进程间通信</a></p>
+<p>第18章 <a href="/2018/05/05/APUE-%E7%BB%88%E7%AB%AFI-O/">终端I/O</a></p>
+<p>第19章 <a href="/2018/05/05/APUE-%E4%BC%AA%E7%BB%88%E7%AB%AF/">伪终端</a></p>
 ]]></content>
       
         <categories>
@@ -9922,7 +10265,7 @@ function doDecrypt(pwd, onError) {
    document.getElementById("enc_passwd").style.display = "none";
 }
 </script>
-<div id="enc_content" style="display:none">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</div><div id="enc_passwd"> <input id="enc_pwd_input" type="password" style="border-radius: 5px;border-style: groove;height: 30px;width: 50%;cursor: auto;font-size: 102%;color: currentColor;outline: none;text-overflow: initial;padding-left: 5px;" onkeydown="if (event.keyCode == 13) { decrypt(); return false;}"> <input type="submit" value="解&nbsp;密" onclick="decrypt()" style="width: 58px;height: 34px;border-radius: 5px;background-color: white;border-style: solid;color: currentColor;"><div id="enc_error" style="display: inline-block;color: #d84527;margin-left: 10px"></div>
+<div id="enc_content" style="display:none">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</div><div id="enc_passwd"> <input id="enc_pwd_input" type="password" style="border-radius: 5px;border-style: groove;height: 30px;width: 50%;cursor: auto;font-size: 102%;color: currentColor;outline: none;text-overflow: initial;padding-left: 5px;" onkeydown="if (event.keyCode == 13) { decrypt(); return false;}"> <input type="submit" value="解&nbsp;密" onclick="decrypt()" style="width: 58px;height: 34px;border-radius: 5px;background-color: white;border-style: solid;color: currentColor;"><div id="enc_error" style="display: inline-block;color: #d84527;margin-left: 10px"></div>
 <script>
 var onError = function(error) {
 	document.getElementById("enc_error").innerHTML = "password error!"
