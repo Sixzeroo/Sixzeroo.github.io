@@ -56,6 +56,23 @@
 <p>注意,在 grantpt和unlockpt这两个函数中,文件描述符参数是与伪终端主设备关联的文件描述符。</p>
 <p>如果给定了伪终端主设备的文件描述符,那么可以用 ptsname函数找到伪终端从设备的路径名。这使应用程序可以独立于给定平台的某种特定约定而标识从设备。注意,该函数返回的名字可能存储在静态存储中,因此后续的调用可能会覆盖它。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">ptsname</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to name of PTY slave if OK, NULL on error</span></div></pre></td></tr></table></figure>
+<h2 id="高级特性"><a href="#高级特性" class="headerlink" title="高级特性"></a>高级特性</h2><p>伪终端还有其他特性：</p>
+<ol>
+<li>打包模式</li>
+</ol>
+<p>打包模式(packet mode)能够使PTY主设备了解到PTY从设备的状态变化</p>
+<ol>
+<li>远程模式</li>
+</ol>
+<p>PTY主设备可以用 TIOCREMOTE ioct1命令将PTY从设备设置成远程模式</p>
+<ol>
+<li>窗口大小变化</li>
+</ol>
+<p>PTY主设备上的进程可以用 TIOCSWINSZ ioct1命令来设置从设备的窗口大小。如果新的大小和当前的大小不同, SIGWINCH信号将被发送到PTY从设备的前台进程组。</p>
+<ol>
+<li>信号发生</li>
+</ol>
+<p>读、写PTY主设备的进程可以向PTY从设备的进程组发送信号</p>
 ]]></content>
       
         <categories>
@@ -1824,6 +1841,7 @@
 <a id="more"></a>
 <h2 id="让自己习惯C"><a href="#让自己习惯C" class="headerlink" title="让自己习惯C++"></a>让自己习惯C++</h2><h3 id="条款01：视C-为一个语言联邦"><a href="#条款01：视C-为一个语言联邦" class="headerlink" title="条款01：视C++为一个语言联邦"></a>条款01：视C++为一个语言联邦</h3><p>C++高效编程守则视状况而变化,取决于你使用C++的哪一部分。</p>
 <h3 id="条款02：尽量以const，enum，inline替换-define"><a href="#条款02：尽量以const，enum，inline替换-define" class="headerlink" title="条款02：尽量以const，enum，inline替换#define"></a>条款02：尽量以const，enum，inline替换#define</h3><p>“宁可以编译器替换预处理器”</p>
+<p>使用<code>#define</code>时在编译之前所有的常量都被替换成了数字，如果在编译的时候产生错误，那么追溯错误产生的源头将是一件非常困难的事情。使用<code>const</code>就不一样，其变量一定会被编译器看到，当然就会引入<code>symbol table</code>中</p>
 <p>当我们以常量替换<code>#defines</code>,有两种特殊情况值得说说。第一是定义常量指针( constant pointers)。由于常量定义式通常被放在头文件内(以便被不同的源码含入),因此有必要将指针(而不只是指针所指之物)声明为<code>const</code></p>
 <p>第二个值得注意的是<code>class</code>专属常量。为了将常量的作用域(scope)限制于<code>class</code>内,你必须让它成为 class一个成员(member);而为确保此常量至多只有一份实体,你必须让它成为一个<code>static</code>成员:</p>
 <blockquote>
@@ -6596,7 +6614,7 @@
 <p>除了静态内存和栈内存,每个程序还拥有一个内存池。这部分内存被称作<strong>自由空间</strong>( free store)或<strong>堆</strong>(heap)。程序用堆来存储动态分配( dynamically allocate)的对象——即那些在程序运行时分配的对象。</p>
 <h2 id="动态内存和智能指针"><a href="#动态内存和智能指针" class="headerlink" title="动态内存和智能指针"></a>动态内存和智能指针</h2><p>在C++中,动态内存的管理是通过一对运算符来完成的: <code>new</code>,在动态内存中为对象分配空间并返回一个指向该对象的指针,我们可以选择对对象进行初始化; <code>delete</code>,接受一个动态对象的指针,销毁该对象,并释放与之关联的内存</p>
 <p>为了更容易(同时也更安全)地使用动态内存,新的标准库提供了两种智能指针( smart pointer.)类型来管理动态对象。智能指针的行为类似常规指针,重要的区别是它<strong>负责自动释放所指向的对象</strong>。新标准库提供的这两种智能指针的区别在于管理底层指针的方式<code>shared_ptr</code>允许多个指针指向同一个对于象; <code>unique_ptr</code>则“独占”所指向的对象。标准库还定义了一个名为 <code>weak_ptr</code>的伴随类,它是一种弱引用,指向 <code>shared_ptr</code>所管理的对象。这三种类型都定义在 memory头文件中。</p>
-<h3 id="share-ptr类"><a href="#share-ptr类" class="headerlink" title="share_ptr类"></a>share_ptr类</h3><p>类似 vector,智能指针也是模板。因此,当我们创建一个智能指针十时,必须提供额外的信息—指针可以指向的类型。智能指针的使用方式与普通指针类似。解引用一个智能指针返回它指向的对象。</p>
+<h3 id="share-ptr类"><a href="#share-ptr类" class="headerlink" title="share_ptr类"></a>share_ptr类</h3><p>类似 vector,智能指针也是模板。因此,当我们创建一个智能指针时,必须提供额外的信息—指针可以指向的类型。智能指针的使用方式与普通指针类似。解引用一个智能指针返回它指向的对象。</p>
 <p><img src="https://data2.liuin.cn/story-writer/2018_3_4_1520129716802.jpg" alt="enter description here"></p>
 <blockquote>
 <p>make_shared 函数</p>
@@ -6648,8 +6666,11 @@
 <h3 id="智能指针和异常"><a href="#智能指针和异常" class="headerlink" title="智能指针和异常"></a>智能指针和异常</h3><p>如果使用智能指针,即使程序块过早结束,智能指针类也能确保在内存不再需要时将其释放</p>
 <h3 id="unique-ptr"><a href="#unique-ptr" class="headerlink" title="unique_ptr"></a>unique_ptr</h3><p>一个 <code>unique_ptr</code>“拥有”它所指向的对象。与 <code>shared_ptr</code>不同,某个时刻只能有一个 <code>unique_ptr</code>指向一个给定对象。当 <code>unique_ptr</code>被销毁时,它所指向的对象也被销毁。</p>
 <p><img src="https://data2.liuin.cn/story-writer/2018_3_4_1520130502646.jpg" alt="enter description here"></p>
-<h3 id="weak-ptr"><a href="#weak-ptr" class="headerlink" title="weak_ptr"></a>weak_ptr</h3><p>weak_ptr是一种不控制所指向对象生存期的智能指针,它指向由一个shared_ptr管理的对象。将一个 weak_ptr绑定到一个 shared_ptr不会改变shared_ptr的引用计数。</p>
+<h3 id="weak-ptr"><a href="#weak-ptr" class="headerlink" title="weak_ptr"></a>weak_ptr</h3><p>weak_ptr是一种不控制所指向对象生存期的智能指针,它指向由一个<code>shared_ptr</code>管理的对象。将一个 <code>weak_ptr</code>绑定到一个<code>shared_ptr</code>不会改变<code>shared_ptr</code>的引用计数。一旦最后一个指向对象的 <code>shared_ptr</code>被销毁,对象就会被释放。即使有<code>weak_ptr</code>指向对象,对象也还是会被释放。因此,<code>weak_ptr</code>的名字抓住了这种智能指针“弱”共享对象的特点。</p>
 <p><img src="https://data2.liuin.cn/story-writer/2018_3_4_1520130696044.jpg" alt="enter description here"></p>
+<p>由于对象可能不存在,我们不能使用 weak_ptr直接访问对象,而必须调用1ock。此函数检查 weak_ptr指向的对象是否仍存在。如果存在,lock返回一个指向共享对象的 shared_ptr。</p>
+<p>weak_ptr的真正价值在于他能够帮助shared_ptr处理一些问题，其重点在于他对指向的对象没有管理权，表示我指向的东西就是这个，但是不管其释放不释放，其使用上有点像原始指针。</p>
+<p>他的应用场景主要在于有的时候我们不需要shared_ptr释放资源这个功能的时候，比如说双向链表中的释放资源问题，会形成一个死环，当把节点中的引用改成弱引用就可以解决这个问题；比如内存中的缓存问题，可以使用weak_ptr找到需要在内存中的对象。</p>
 <h2 id="动态数组"><a href="#动态数组" class="headerlink" title="动态数组"></a>动态数组</h2><p>new和 delete运算符一次分配释放一个对象,但某些应用需要一次为很多对象分配内存的功能。</p>
 <p>为了支持这种需求,C++语言和标准库提供了两种一次分配一个对象数组的方法。C+语言定义了另一种new表达式语法,可以分配并初始化一个对象数组。标准库中包含个名为allocator的类,允许我们们将分配和初始化分离。使用allocator通常会提供更好的性能和更灵活的内存管理能力</p>
 <h3 id="new和数组"><a href="#new和数组" class="headerlink" title="new和数组"></a>new和数组</h3><p>为了让new分配一个对象数组,我们要在类型名之后跟一对方括号,在其中指明要分配的对象的数目。</p>

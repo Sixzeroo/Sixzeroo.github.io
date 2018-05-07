@@ -120,7 +120,7 @@
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-05-15255092890944.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-05-15255094556754.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-05-15255095797010.jpg">
-<meta property="og:updated_time" content="2018-05-05T08:45:58.000Z">
+<meta property="og:updated_time" content="2018-05-05T11:14:17.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="APUE 伪终端">
 <meta name="twitter:description" content="《UNIX环境高级编程》第19章 伪终端 笔记">
@@ -457,7 +457,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1,555 字
+                  1,716 字
                 </span>
               
 
@@ -533,6 +533,23 @@
 <p>注意,在 grantpt和unlockpt这两个函数中,文件描述符参数是与伪终端主设备关联的文件描述符。</p>
 <p>如果给定了伪终端主设备的文件描述符,那么可以用 ptsname函数找到伪终端从设备的路径名。这使应用程序可以独立于给定平台的某种特定约定而标识从设备。注意,该函数返回的名字可能存储在静态存储中,因此后续的调用可能会覆盖它。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">ptsname</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to name of PTY slave if OK, NULL on error</span></div></pre></td></tr></table></figure>
+<h2 id="高级特性"><a href="#高级特性" class="headerlink" title="高级特性"></a>高级特性</h2><p>伪终端还有其他特性：</p>
+<ol>
+<li>打包模式</li>
+</ol>
+<p>打包模式(packet mode)能够使PTY主设备了解到PTY从设备的状态变化</p>
+<ol>
+<li>远程模式</li>
+</ol>
+<p>PTY主设备可以用 TIOCREMOTE ioct1命令将PTY从设备设置成远程模式</p>
+<ol>
+<li>窗口大小变化</li>
+</ol>
+<p>PTY主设备上的进程可以用 TIOCSWINSZ ioct1命令来设置从设备的窗口大小。如果新的大小和当前的大小不同, SIGWINCH信号将被发送到PTY从设备的前台进程组。</p>
+<ol>
+<li>信号发生</li>
+</ol>
+<p>读、写PTY主设备的进程可以向PTY从设备的进程组发送信号</p>
 
       
     </div>
@@ -590,7 +607,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年5月5日 - 16时05分
+	2018年5月5日 - 19时05分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -795,7 +812,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#打开伪终端设备"><span class="nav-number">2.</span> <span class="nav-text">打开伪终端设备</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#打开伪终端设备"><span class="nav-number">2.</span> <span class="nav-text">打开伪终端设备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高级特性"><span class="nav-number">3.</span> <span class="nav-text">高级特性</span></a></li></ol></div>
             
 
           </div>
@@ -833,7 +850,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      292.9k 字
+      293.5k 字
     </span>
   
 

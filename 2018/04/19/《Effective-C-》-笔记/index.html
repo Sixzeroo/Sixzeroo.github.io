@@ -114,7 +114,7 @@
 <meta property="og:site_name" content="Sixzeroo">
 <meta property="og:description" content="《Effective C++》的副标题是改善程序与设计的55个具体做法。这本书用比较多的示例展示了很多改善C++程序的方法，值得一读。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-29T11:30:54.000Z">
+<meta property="og:updated_time" content="2018-05-06T01:22:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《Effective C++》 笔记">
 <meta name="twitter:description" content="《Effective C++》的副标题是改善程序与设计的55个具体做法。这本书用比较多的示例展示了很多改善C++程序的方法，值得一读。">
@@ -450,7 +450,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  4,666 字
+                  4,750 字
                 </span>
               
 
@@ -479,6 +479,7 @@
 <a id="more"></a>
 <h2 id="让自己习惯C"><a href="#让自己习惯C" class="headerlink" title="让自己习惯C++"></a>让自己习惯C++</h2><h3 id="条款01：视C-为一个语言联邦"><a href="#条款01：视C-为一个语言联邦" class="headerlink" title="条款01：视C++为一个语言联邦"></a>条款01：视C++为一个语言联邦</h3><p>C++高效编程守则视状况而变化,取决于你使用C++的哪一部分。</p>
 <h3 id="条款02：尽量以const，enum，inline替换-define"><a href="#条款02：尽量以const，enum，inline替换-define" class="headerlink" title="条款02：尽量以const，enum，inline替换#define"></a>条款02：尽量以const，enum，inline替换#define</h3><p>“宁可以编译器替换预处理器”</p>
+<p>使用<code>#define</code>时在编译之前所有的常量都被替换成了数字，如果在编译的时候产生错误，那么追溯错误产生的源头将是一件非常困难的事情。使用<code>const</code>就不一样，其变量一定会被编译器看到，当然就会引入<code>symbol table</code>中</p>
 <p>当我们以常量替换<code>#defines</code>,有两种特殊情况值得说说。第一是定义常量指针( constant pointers)。由于常量定义式通常被放在头文件内(以便被不同的源码含入),因此有必要将指针(而不只是指针所指之物)声明为<code>const</code></p>
 <p>第二个值得注意的是<code>class</code>专属常量。为了将常量的作用域(scope)限制于<code>class</code>内,你必须让它成为 class一个成员(member);而为确保此常量至多只有一份实体,你必须让它成为一个<code>static</code>成员:</p>
 <blockquote>
@@ -727,7 +728,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年4月29日 - 19时04分
+	2018年5月6日 - 09时05分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -974,7 +975,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      292.9k 字
+      293.5k 字
     </span>
   
 

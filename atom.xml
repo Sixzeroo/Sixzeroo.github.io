@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-05-05T08:45:58.000Z</updated>
+  <updated>2018-05-05T11:14:17.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="https://www.liuin.cn/2018/05/05/APUE-%E4%BC%AA%E7%BB%88%E7%AB%AF/"/>
     <id>https://www.liuin.cn/2018/05/05/APUE-伪终端/</id>
     <published>2018-05-05T08:09:34.000Z</published>
-    <updated>2018-05-05T08:45:58.000Z</updated>
+    <updated>2018-05-05T11:14:17.000Z</updated>
     
     <content type="html"><![CDATA[<p>《UNIX环境高级编程》第19章 伪终端 笔记</p>
 <a id="more"></a>
@@ -73,6 +73,23 @@
 <p>注意,在 grantpt和unlockpt这两个函数中,文件描述符参数是与伪终端主设备关联的文件描述符。</p>
 <p>如果给定了伪终端主设备的文件描述符,那么可以用 ptsname函数找到伪终端从设备的路径名。这使应用程序可以独立于给定平台的某种特定约定而标识从设备。注意,该函数返回的名字可能存储在静态存储中,因此后续的调用可能会覆盖它。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">ptsname</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to name of PTY slave if OK, NULL on error</span></div></pre></td></tr></table></figure>
+<h2 id="高级特性"><a href="#高级特性" class="headerlink" title="高级特性"></a>高级特性</h2><p>伪终端还有其他特性：</p>
+<ol>
+<li>打包模式</li>
+</ol>
+<p>打包模式(packet mode)能够使PTY主设备了解到PTY从设备的状态变化</p>
+<ol>
+<li>远程模式</li>
+</ol>
+<p>PTY主设备可以用 TIOCREMOTE ioct1命令将PTY从设备设置成远程模式</p>
+<ol>
+<li>窗口大小变化</li>
+</ol>
+<p>PTY主设备上的进程可以用 TIOCSWINSZ ioct1命令来设置从设备的窗口大小。如果新的大小和当前的大小不同, SIGWINCH信号将被发送到PTY从设备的前台进程组。</p>
+<ol>
+<li>信号发生</li>
+</ol>
+<p>读、写PTY主设备的进程可以向PTY从设备的进程组发送信号</p>
 ]]></content>
     
     <summary type="html">
@@ -1867,12 +1884,13 @@
     <link href="https://www.liuin.cn/2018/04/19/%E3%80%8AEffective-C-%E3%80%8B-%E7%AC%94%E8%AE%B0/"/>
     <id>https://www.liuin.cn/2018/04/19/《Effective-C-》-笔记/</id>
     <published>2018-04-19T08:18:10.000Z</published>
-    <updated>2018-04-29T11:30:54.000Z</updated>
+    <updated>2018-05-06T01:22:03.000Z</updated>
     
     <content type="html"><![CDATA[<p>《Effective C++》的副标题是改善程序与设计的55个具体做法。这本书用比较多的示例展示了很多改善C++程序的方法，值得一读。</p>
 <a id="more"></a>
 <h2 id="让自己习惯C"><a href="#让自己习惯C" class="headerlink" title="让自己习惯C++"></a>让自己习惯C++</h2><h3 id="条款01：视C-为一个语言联邦"><a href="#条款01：视C-为一个语言联邦" class="headerlink" title="条款01：视C++为一个语言联邦"></a>条款01：视C++为一个语言联邦</h3><p>C++高效编程守则视状况而变化,取决于你使用C++的哪一部分。</p>
 <h3 id="条款02：尽量以const，enum，inline替换-define"><a href="#条款02：尽量以const，enum，inline替换-define" class="headerlink" title="条款02：尽量以const，enum，inline替换#define"></a>条款02：尽量以const，enum，inline替换#define</h3><p>“宁可以编译器替换预处理器”</p>
+<p>使用<code>#define</code>时在编译之前所有的常量都被替换成了数字，如果在编译的时候产生错误，那么追溯错误产生的源头将是一件非常困难的事情。使用<code>const</code>就不一样，其变量一定会被编译器看到，当然就会引入<code>symbol table</code>中</p>
 <p>当我们以常量替换<code>#defines</code>,有两种特殊情况值得说说。第一是定义常量指针( constant pointers)。由于常量定义式通常被放在头文件内(以便被不同的源码含入),因此有必要将指针(而不只是指针所指之物)声明为<code>const</code></p>
 <p>第二个值得注意的是<code>class</code>专属常量。为了将常量的作用域(scope)限制于<code>class</code>内,你必须让它成为 class一个成员(member);而为确保此常量至多只有一份实体,你必须让它成为一个<code>static</code>成员:</p>
 <blockquote>
