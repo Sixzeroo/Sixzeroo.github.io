@@ -1884,7 +1884,7 @@
     <link href="https://www.liuin.cn/2018/04/19/%E3%80%8AEffective-C-%E3%80%8B-%E7%AC%94%E8%AE%B0/"/>
     <id>https://www.liuin.cn/2018/04/19/《Effective-C-》-笔记/</id>
     <published>2018-04-19T08:18:10.000Z</published>
-    <updated>2018-05-06T01:22:03.000Z</updated>
+    <updated>2018-05-10T03:17:39.000Z</updated>
     
     <content type="html"><![CDATA[<p>《Effective C++》的副标题是改善程序与设计的55个具体做法。这本书用比较多的示例展示了很多改善C++程序的方法，值得一读。</p>
 <a id="more"></a>
@@ -2076,7 +2076,34 @@
 <li>以上规则并不适用于内置类型,以及STL的迭代器和函数对象。对它们而言,pas- by-value往往比较适当。</li>
 </ul>
 </blockquote>
-<h3 id="条款21：必须返回对象的时，别妄想返回其reference"><a href="#条款21：必须返回对象的时，别妄想返回其reference" class="headerlink" title="条款21：必须返回对象的时，别妄想返回其reference"></a>条款21：必须返回对象的时，别妄想返回其reference</h3><blockquote>
+<h3 id="条款21：必须返回对象的时，别妄想返回其reference"><a href="#条款21：必须返回对象的时，别妄想返回其reference" class="headerlink" title="条款21：必须返回对象的时，别妄想返回其reference"></a>条款21：必须返回对象的时，别妄想返回其reference</h3><p>所谓 reference只是个名称,代表某个既有对象。任何时候看到一个 reference声明式,你都应该立刻问自己,它的另一个名称是什么?因为它一定是某物的另一个名称。</p>
+<p>有的时候我们在返回引用的时候，其引用的对象如果一个局部变量，而这个局部变量在退出前就销毁了，所以不能够使用引用；如果所引用的对象是通过动态创建内存的方式创建的，这种情况下由谁来实施delete是一个问题。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>绝不要返回 pointer或 reference指向一个 local stack对象,或返回 reference指向个 heap-allocated对象,或返回 pointer或 reference指向一个 local static对象而有可能同时需要多个这样的对象。</li>
+</ul>
+</blockquote>
+<h3 id="条款22：将成员变量声明为private"><a href="#条款22：将成员变量声明为private" class="headerlink" title="条款22：将成员变量声明为private"></a>条款22：将成员变量声明为private</h3><p>如果成员变量不是 public,客户唯一能够访问对象的办法就是通过成员函数。如果 public接口内的每样东西都是函数,客户就不需要在打算访问 class成员时迷惑地试着记住是否该使用小括号(圆括号)。他们只要做就是了,因为每样东西都是函数。就生命而言,这至少可以省下许多搔首弄耳的时间</p>
+<p>使用函数可以让你对成员变量的处理有更精确的控制。如果你令成员变量为 public,每个人都可以读写它,但如果你以函数取得或设定其值,你就可以实现出“不准访问”、“只读访问”以及“读写访问”。</p>
+<p>还是不够说服你?是端出大口径武器的时候了:封装啦。如果你通过函数访问成员变量,日后可改以某个计算替换这个成员变量,而 class客户一点也不会知道 class的内部实现已经起了变化。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>切记将成员变量声明为 private。这可赋予客户访问数据的一致性、可细微划分访问控制、允诺约束条件获得保证,并提供 class作者以充分的实现弹性。</li>
+<li>protected并不比 public更具封装性。</li>
+</ul>
+</blockquote>
+<h3 id="条款23：宁以non-member、non-friend替换member函数"><a href="#条款23：宁以non-member、non-friend替换member函数" class="headerlink" title="条款23：宁以non-member、non-friend替换member函数"></a>条款23：宁以non-member、non-friend替换member函数</h3><p>面向对象守则要求,数据以及操作数据的那些函数应该被捆绑在一块,这意味它建议 member函数是较好的选择。不幸的是这个建议不正确。这是基于对面向对象真实意义的一个误解。面向对象守则要求数据应该尽可能被封装,然而与直观相反地,member函数带来的封装性比non-member函数低。</p>
+<p>让我们从封装开始讨论。如果某些东西被封装,它就不再可见。<strong>愈多东西被封装愈少人可以看到它。而愈少人看到它,我们就有愈大的弹性去变化它</strong>,因为我们的改变仅仅直接影响看到改变的那些人事物。因此,愈多东西被封装,我们改变那些东西的能力也就愈大。这就是我们首先推崇封装的原因:<strong>它使我们能够改变事物而只影响有限客户</strong>。</p>
+<p>现在考虑对象内的数据。愈少代码可以看到数据(也就是访问它),愈多的数据可被封装,而我们也就愈能自由地改变对象数据,例如改变成员变量的数量、类型等等。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>宁可拿non-member non-friend函数替换 member函数。这样做可以增加封装性、包裹弹性(packaging flexibility)和机能扩充性。 </li>
+</ul>
+</blockquote>
+<h3 id="条款24：若所有参数皆需类型转换，请为此采用non-member函数"><a href="#条款24：若所有参数皆需类型转换，请为此采用non-member函数" class="headerlink" title="条款24：若所有参数皆需类型转换，请为此采用non-member函数"></a>条款24：若所有参数皆需类型转换，请为此采用non-member函数</h3><blockquote>
 <p>重点</p>
 <ul>
 <li></li>

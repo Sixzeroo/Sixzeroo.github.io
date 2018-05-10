@@ -2027,7 +2027,34 @@
 <li>以上规则并不适用于内置类型,以及STL的迭代器和函数对象。对它们而言,pas- by-value往往比较适当。</li>
 </ul>
 </blockquote>
-<h3 id="条款21：必须返回对象的时，别妄想返回其reference"><a href="#条款21：必须返回对象的时，别妄想返回其reference" class="headerlink" title="条款21：必须返回对象的时，别妄想返回其reference"></a>条款21：必须返回对象的时，别妄想返回其reference</h3><blockquote>
+<h3 id="条款21：必须返回对象的时，别妄想返回其reference"><a href="#条款21：必须返回对象的时，别妄想返回其reference" class="headerlink" title="条款21：必须返回对象的时，别妄想返回其reference"></a>条款21：必须返回对象的时，别妄想返回其reference</h3><p>所谓 reference只是个名称,代表某个既有对象。任何时候看到一个 reference声明式,你都应该立刻问自己,它的另一个名称是什么?因为它一定是某物的另一个名称。</p>
+<p>有的时候我们在返回引用的时候，其引用的对象如果一个局部变量，而这个局部变量在退出前就销毁了，所以不能够使用引用；如果所引用的对象是通过动态创建内存的方式创建的，这种情况下由谁来实施delete是一个问题。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>绝不要返回 pointer或 reference指向一个 local stack对象,或返回 reference指向个 heap-allocated对象,或返回 pointer或 reference指向一个 local static对象而有可能同时需要多个这样的对象。</li>
+</ul>
+</blockquote>
+<h3 id="条款22：将成员变量声明为private"><a href="#条款22：将成员变量声明为private" class="headerlink" title="条款22：将成员变量声明为private"></a>条款22：将成员变量声明为private</h3><p>如果成员变量不是 public,客户唯一能够访问对象的办法就是通过成员函数。如果 public接口内的每样东西都是函数,客户就不需要在打算访问 class成员时迷惑地试着记住是否该使用小括号(圆括号)。他们只要做就是了,因为每样东西都是函数。就生命而言,这至少可以省下许多搔首弄耳的时间</p>
+<p>使用函数可以让你对成员变量的处理有更精确的控制。如果你令成员变量为 public,每个人都可以读写它,但如果你以函数取得或设定其值,你就可以实现出“不准访问”、“只读访问”以及“读写访问”。</p>
+<p>还是不够说服你?是端出大口径武器的时候了:封装啦。如果你通过函数访问成员变量,日后可改以某个计算替换这个成员变量,而 class客户一点也不会知道 class的内部实现已经起了变化。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>切记将成员变量声明为 private。这可赋予客户访问数据的一致性、可细微划分访问控制、允诺约束条件获得保证,并提供 class作者以充分的实现弹性。</li>
+<li>protected并不比 public更具封装性。</li>
+</ul>
+</blockquote>
+<h3 id="条款23：宁以non-member、non-friend替换member函数"><a href="#条款23：宁以non-member、non-friend替换member函数" class="headerlink" title="条款23：宁以non-member、non-friend替换member函数"></a>条款23：宁以non-member、non-friend替换member函数</h3><p>面向对象守则要求,数据以及操作数据的那些函数应该被捆绑在一块,这意味它建议 member函数是较好的选择。不幸的是这个建议不正确。这是基于对面向对象真实意义的一个误解。面向对象守则要求数据应该尽可能被封装,然而与直观相反地,member函数带来的封装性比non-member函数低。</p>
+<p>让我们从封装开始讨论。如果某些东西被封装,它就不再可见。<strong>愈多东西被封装愈少人可以看到它。而愈少人看到它,我们就有愈大的弹性去变化它</strong>,因为我们的改变仅仅直接影响看到改变的那些人事物。因此,愈多东西被封装,我们改变那些东西的能力也就愈大。这就是我们首先推崇封装的原因:<strong>它使我们能够改变事物而只影响有限客户</strong>。</p>
+<p>现在考虑对象内的数据。愈少代码可以看到数据(也就是访问它),愈多的数据可被封装,而我们也就愈能自由地改变对象数据,例如改变成员变量的数量、类型等等。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>宁可拿non-member non-friend函数替换 member函数。这样做可以增加封装性、包裹弹性(packaging flexibility)和机能扩充性。 </li>
+</ul>
+</blockquote>
+<h3 id="条款24：若所有参数皆需类型转换，请为此采用non-member函数"><a href="#条款24：若所有参数皆需类型转换，请为此采用non-member函数" class="headerlink" title="条款24：若所有参数皆需类型转换，请为此采用non-member函数"></a>条款24：若所有参数皆需类型转换，请为此采用non-member函数</h3><blockquote>
 <p>重点</p>
 <ul>
 <li></li>
@@ -5482,7 +5509,19 @@
 <blockquote>
 <p>移动赋值运算符</p>
 </blockquote>
-<p>移动赋值运算符执行与析构函数和移动构造函数相同的工作。与移动构造函数一样如果我们的移动赋值运算符不抛出任何异常,我们就应该将它标记为 except。</p>
+<p>移动赋值运算符执行与析构函数和移动构造函数相同的工作。与移动构造函数一样如果我们的移动赋值运算符不抛出任何异常,我们就应该将它标记为 noexcept。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">StrVec &amp;StrVec::<span class="keyword">operator</span>=(StrVec &amp;&amp; rhs) <span class="keyword">noexcept</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span>(<span class="keyword">this</span> != rhs)</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">free</span>();</div><div class="line">        element = rhs.element;</div><div class="line">        first_free = rhs.first_free;</div><div class="line">        cap = rhs.cap;</div><div class="line">        <span class="comment">// 设置为可析构状态</span></div><div class="line">        rhs.element = rhs.first_free = rhs.cap = <span class="literal">nullptr</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>移动以后源对象必须可析构</p>
+</blockquote>
+<p>从一个对象移动数据并不会销毁此对象,但有时在移动操作完成后,源对象会被销毁因此,当我们编写一个移动操作时,必须确保移后源对象进入一个可析构的状态。上面的Strvec的移动操作满足这一要求,这是通过将移后源对象的指针成员置为nu11ptr来实现的。</p>
+<p>在移动操作之后,移后源对象必须保持有效的、可析构的状态,但是用户不能对其值进行任何假设。</p>
+<blockquote>
+<p>合成的移动操作</p>
+</blockquote>
+<p>只有当一个类没有定义任何自己版本的拷贝控制成员,且类的每个非 static数据成员都可以移动时,编译器才会为它合成移动构造函数或移动赋值运算符。编译器可以移动内置类型的成员。如果一个成员是类类型,且该类有对应的移动操作,编译器也能移动这个成员</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">struct</span> X &#123;</div><div class="line">    <span class="keyword">int</span> i;          <span class="comment">// 内置类型可移动</span></div><div class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> s;  <span class="comment">// string类型自定义了移动函数</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">struct</span> hasX &#123;</div><div class="line">    X mem;          <span class="comment">// X有合成移动函数</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">X x, x2 = <span class="built_in">std</span>::move(x);         <span class="comment">// 使用合成的移动函数</span></div><div class="line">hasX hx, hx2 = <span class="built_in">std</span>::move(hx);   <span class="comment">// 使用合成的移动函数</span></div></pre></td></tr></table></figure>
+<p>与拷贝操作不同,移动操作永远不会隐式定义为删除的函数。但是,如果我们显式地要求编译器生成= default的移动操作,且编译器不能移动所有成员,则编译器会将移动操作定义为删除的函数。</p>
 <hr>
 <h1 id="操作重载和类型转换"><a href="#操作重载和类型转换" class="headerlink" title="操作重载和类型转换"></a>操作重载和类型转换</h1><p>当运算符被用于类类型的对象时,C+语言允许我们为其指定新的含义:同时,我们也能自定义类类型之间的转换规则。</p>
 <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>重载的运算符是具有特殊名字的函数:它们的名字由关键字 operator和其后要定义的运算符号共同组成。和其他函数一样,重载的运算符也包含返回类型、参数列表以及函数体。</p>

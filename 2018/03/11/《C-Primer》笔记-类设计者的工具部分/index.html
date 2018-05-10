@@ -142,7 +142,7 @@
 <meta property="og:image" content="https://data2.liuin.cn/2018-03-10-15206826958070.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208165159357.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-03-12-15208167547457.jpg">
-<meta property="og:updated_time" content="2018-04-18T08:32:13.000Z">
+<meta property="og:updated_time" content="2018-05-10T01:19:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《C++ Primer》笔记 类设计者的工具部分">
 <meta name="twitter:description" content="《C++ Primer》笔记 类设计者的工具部分">
@@ -479,7 +479,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  18,741 字
+                  19,196 字
                 </span>
               
 
@@ -640,7 +640,19 @@
 <blockquote>
 <p>移动赋值运算符</p>
 </blockquote>
-<p>移动赋值运算符执行与析构函数和移动构造函数相同的工作。与移动构造函数一样如果我们的移动赋值运算符不抛出任何异常,我们就应该将它标记为 except。</p>
+<p>移动赋值运算符执行与析构函数和移动构造函数相同的工作。与移动构造函数一样如果我们的移动赋值运算符不抛出任何异常,我们就应该将它标记为 noexcept。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">StrVec &amp;StrVec::<span class="keyword">operator</span>=(StrVec &amp;&amp; rhs) <span class="keyword">noexcept</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span>(<span class="keyword">this</span> != rhs)</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">free</span>();</div><div class="line">        element = rhs.element;</div><div class="line">        first_free = rhs.first_free;</div><div class="line">        cap = rhs.cap;</div><div class="line">        <span class="comment">// 设置为可析构状态</span></div><div class="line">        rhs.element = rhs.first_free = rhs.cap = <span class="literal">nullptr</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>移动以后源对象必须可析构</p>
+</blockquote>
+<p>从一个对象移动数据并不会销毁此对象,但有时在移动操作完成后,源对象会被销毁因此,当我们编写一个移动操作时,必须确保移后源对象进入一个可析构的状态。上面的Strvec的移动操作满足这一要求,这是通过将移后源对象的指针成员置为nu11ptr来实现的。</p>
+<p>在移动操作之后,移后源对象必须保持有效的、可析构的状态,但是用户不能对其值进行任何假设。</p>
+<blockquote>
+<p>合成的移动操作</p>
+</blockquote>
+<p>只有当一个类没有定义任何自己版本的拷贝控制成员,且类的每个非 static数据成员都可以移动时,编译器才会为它合成移动构造函数或移动赋值运算符。编译器可以移动内置类型的成员。如果一个成员是类类型,且该类有对应的移动操作,编译器也能移动这个成员</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">struct</span> X &#123;</div><div class="line">    <span class="keyword">int</span> i;          <span class="comment">// 内置类型可移动</span></div><div class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> s;  <span class="comment">// string类型自定义了移动函数</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">struct</span> hasX &#123;</div><div class="line">    X mem;          <span class="comment">// X有合成移动函数</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">X x, x2 = <span class="built_in">std</span>::move(x);         <span class="comment">// 使用合成的移动函数</span></div><div class="line">hasX hx, hx2 = <span class="built_in">std</span>::move(hx);   <span class="comment">// 使用合成的移动函数</span></div></pre></td></tr></table></figure>
+<p>与拷贝操作不同,移动操作永远不会隐式定义为删除的函数。但是,如果我们显式地要求编译器生成= default的移动操作,且编译器不能移动所有成员,则编译器会将移动操作定义为删除的函数。</p>
 <hr>
 <h1 id="操作重载和类型转换"><a href="#操作重载和类型转换" class="headerlink" title="操作重载和类型转换"></a>操作重载和类型转换</h1><p>当运算符被用于类类型的对象时,C+语言允许我们为其指定新的含义:同时,我们也能自定义类类型之间的转换规则。</p>
 <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>重载的运算符是具有特殊名字的函数:它们的名字由关键字 operator和其后要定义的运算符号共同组成。和其他函数一样,重载的运算符也包含返回类型、参数列表以及函数体。</p>
@@ -1190,7 +1202,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年4月18日 - 16时04分
+	2018年5月10日 - 09时05分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -1437,7 +1449,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      293.5k 字
+      294.9k 字
     </span>
   
 
