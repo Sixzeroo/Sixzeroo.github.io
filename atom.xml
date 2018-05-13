@@ -1884,7 +1884,7 @@
     <link href="https://www.liuin.cn/2018/04/19/%E3%80%8AEffective-C-%E3%80%8B-%E7%AC%94%E8%AE%B0/"/>
     <id>https://www.liuin.cn/2018/04/19/《Effective-C-》-笔记/</id>
     <published>2018-04-19T08:18:10.000Z</published>
-    <updated>2018-05-10T03:17:39.000Z</updated>
+    <updated>2018-05-13T02:17:05.000Z</updated>
     
     <content type="html"><![CDATA[<p>《Effective C++》的副标题是改善程序与设计的55个具体做法。这本书用比较多的示例展示了很多改善C++程序的方法，值得一读。</p>
 <a id="more"></a>
@@ -2103,7 +2103,81 @@
 <li>宁可拿non-member non-friend函数替换 member函数。这样做可以增加封装性、包裹弹性(packaging flexibility)和机能扩充性。 </li>
 </ul>
 </blockquote>
-<h3 id="条款24：若所有参数皆需类型转换，请为此采用non-member函数"><a href="#条款24：若所有参数皆需类型转换，请为此采用non-member函数" class="headerlink" title="条款24：若所有参数皆需类型转换，请为此采用non-member函数"></a>条款24：若所有参数皆需类型转换，请为此采用non-member函数</h3><blockquote>
+<h3 id="条款24：若所有参数皆需类型转换，请为此采用non-member函数"><a href="#条款24：若所有参数皆需类型转换，请为此采用non-member函数" class="headerlink" title="条款24：若所有参数皆需类型转换，请为此采用non-member函数"></a>条款24：若所有参数皆需类型转换，请为此采用non-member函数</h3><p>只有当参数被列于参数列(parameter list)内,这个参数才是隐式类型转换的合格参与者。地位相当于“被调用之成员函数所隶属的那个对象”一一即this对象—的那个隐喻参数,绝不是隐式转换的合格参与者。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>如果你需要为某个函数的所有参数(包括被this指针所指的那个隐喻参数)进行类型转换,那么这个函数必须是个non-member</li>
+</ul>
+</blockquote>
+<h3 id="条款25：考虑写出一个不抛异常的swap函数"><a href="#条款25：考虑写出一个不抛异常的swap函数" class="headerlink" title="条款25：考虑写出一个不抛异常的swap函数"></a>条款25：考虑写出一个不抛异常的swap函数</h3><p>如果swap的缺省实现码对你的 class或 class template提供可接受的效率,你不需要额外做任何事。任何尝试置换(swap)那种对象的人都会取得缺省版本,而那将有良好的运作。</p>
+<p>其次,如果swap缺省实现版的效率不足(那几乎总是意味你的 class或 template使用了某种pmpl手法),试着做以下事情</p>
+<ul>
+<li>提供一个 public swap成员函数,让它高效地置换你的类型的两个对象值。这个函数绝不该抛出异常。</li>
+<li>在你的cass或 template所在的命名空间内提供一个non-member swap,并令它调用上述swap成员函数。</li>
+<li>如果你正编写一个cass而非 class template),为你的clas特化stc并令它调用你的swap成员函数。</li>
+</ul>
+<p>唯一还未明确的是我的劝告:成员版swap绝不可抛出异常。那是因为swap的个最好的应用是帮助 classes(和 class templates)提供强烈的异常安全性(exception-safety)保障。</p>
+<p>高效率的swap几乎总是基于对内置类型的操作(例如pmpl手法的底层指针),而内置类型上的操作绝不会抛出异常。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>当std::swap对你的类型效率不高时,提供一个swap成员函数,并确定这个函数不抛出异常。</li>
+<li>如果你提供一个member swap,也该提供一个non-member swap用来调用前者。对于 classes(而非 templates),也请特化std::swap。</li>
+<li>调用swap时应针对std::swap使用 using声明式,然后调用swap并且不带任何“命名空间资格修饰”</li>
+<li>为“用户定义类型”进行std templates全特化是好的,但千万不要尝试在std内加入某些对std而言全新的东西</li>
+</ul>
+</blockquote>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="条款26：尽可能延后变量定义式出现的时间"><a href="#条款26：尽可能延后变量定义式出现的时间" class="headerlink" title="条款26：尽可能延后变量定义式出现的时间"></a>条款26：尽可能延后变量定义式出现的时间</h3><p>只要你定义了一个变量而其类型带有一个构造函数或析构函数,那么当程序的控制流( control flow)到达这个变量定义式时,你便得承受构造成本;当这个变量离开其作用域时,你便得承受析构成本。即使这个变量最终并未被使用,仍需耗费这些成本,所以你应该尽可能避免这种情形。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>尽可能延后变量定义式的出现。这样做可增加程序的清晰度并改善程序效率。</li>
+</ul>
+</blockquote>
+<h3 id="条款27：尽量减少转型动作"><a href="#条款27：尽量减少转型动作" class="headerlink" title="条款27：尽量减少转型动作"></a>条款27：尽量减少转型动作</h3><p>C++提供四种新式转型：<br><code>const_cast&lt;T&gt;( expression )</code><br><code>dynamic_cast&lt;T&gt;( expression )</code><br><code>reinterpret_cast&lt;T&gt;( expression )</code><br><code>static_cast&lt;T&gt;(expression )</code></p>
+<ul>
+<li>const_cast通常被用来将对象的常量性转除</li>
+<li>dynamic_cast主要用来执行“安全向下转型”(safe downcasting),也就是用来决定某对象是否归属继承体系中的某个类型。</li>
+<li>reinterpret_cast意图执行低级转型,实际动作(及结果)可能取决于编译器这也就表示它不可移植。</li>
+<li>static_cast用来强迫隐式转换</li>
+</ul>
+<p>许多程序员相信,转型其实什么都没做,只是告诉编译器把某种类型视为另一种类型。这是错误的观念。任何一个类型转换(不论是通过转型操作而进行的显式完成的隐式转换〕往往真的令编译器编译出运行期间执行的码。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>如果可以,尽量避免转型,特别是在注重效率的代码中避免 dynamic casts如果有个设计需要转型动作,试着发展无需转型的替代设计。</li>
+<li>如果转型是必要的,试着将它<strong>隐藏于某个函数背后</strong>。客户随后可以调用该函数,而不需将转型放进他们自已的代码内。</li>
+<li>宁可使用C++-style(新式)转型,不要使用旧式转型。前者很容易辨识出来,而且也比较有着分门别类的职掌。</li>
+</ul>
+</blockquote>
+<h3 id="条款28：避免返回handles指向对象内部部分"><a href="#条款28：避免返回handles指向对象内部部分" class="headerlink" title="条款28：避免返回handles指向对象内部部分"></a>条款28：避免返回handles指向对象内部部分</h3><p>第一,成员变量的封装性最多只等于“返回其reference”的函数的访问级别。第二,如果 const成员函数传出一个 reference,后者所指数据与对象自身有关联,而它又被存储于对象之外,那么这个函数的调用者可以修改那笔数据。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>避免返回 handles(包括 references、指针、迭代弋器)指向对象内部。遵守这个条可增加封装性,帮助 const成员函数的行为像个 const,并将发生“虚吊号码牌”( dangling handles)的可能性降至最低。</li>
+</ul>
+</blockquote>
+<h3 id="条款29：为“异常安全”而努力是值得的"><a href="#条款29：为“异常安全”而努力是值得的" class="headerlink" title="条款29：为“异常安全”而努力是值得的"></a>条款29：为“异常安全”而努力是值得的</h3><p>当异常抛出时，带有异常安全性的函数会：</p>
+<ol>
+<li>不泄露任何资源</li>
+<li>不允许数据破坏</li>
+</ol>
+<p>异常安全函数提供下面三个保证之一：</p>
+<ul>
+<li>基本承诺:如果异常被抛出,程序内的任何事物仍然保持在有效状态下。没有任何对象或数据结构会因此而败坏,所有对象都处于一种内部前后一致的状态</li>
+<li>强烈保证:如果异常被抛出,程序状态不改变。调用这样的函数需有这样的认知:如果函数成功,就是完全成功,如果函数失败,程序会回复到“调用函数之前”的状态。</li>
+<li>不抛掷( nothrow)保证,承诺绝不抛出异常,因为它们总是能够完成它们原先承诺的功能。作用于内置类型(例如ints,指针等等)身上的所有操作都提供nothrow保证。这是异常安全码中一个必不可少的关键基础材料。</li>
+</ul>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>异常安全函数( exception-safe functions)即使发生异常也不会泄漏资源或允许任何数据结构败坏。这样的函数区分为三种可能的保证:基本型、强烈型、不抛异常型。</li>
+<li>强烈保证”往往能够以 copy-and-swap实现出来,但“强烈保证”并非对所有函数都可实现或具备现实意义</li>
+<li>函数提供的“异常安全保证”通常最高只等于其所调用之各个函数的“异常安全保证”中的最弱者。</li>
+</ul>
+</blockquote>
+<h3 id="条款30：透彻了解inlining的里里外外"><a href="#条款30：透彻了解inlining的里里外外" class="headerlink" title="条款30：透彻了解inlining的里里外外"></a>条款30：透彻了解inlining的里里外外</h3><blockquote>
 <p>重点</p>
 <ul>
 <li></li>
