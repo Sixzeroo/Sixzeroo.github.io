@@ -1884,7 +1884,7 @@
     <link href="https://www.liuin.cn/2018/04/19/%E3%80%8AEffective-C-%E3%80%8B-%E7%AC%94%E8%AE%B0/"/>
     <id>https://www.liuin.cn/2018/04/19/《Effective-C-》-笔记/</id>
     <published>2018-04-19T08:18:10.000Z</published>
-    <updated>2018-05-18T10:59:41.000Z</updated>
+    <updated>2018-05-19T01:33:25.000Z</updated>
     
     <content type="html"><![CDATA[<p>《Effective C++》的副标题是改善程序与设计的55个具体做法。这本书用比较多的示例展示了很多改善C++程序的方法，值得一读。</p>
 <a id="more"></a>
@@ -2241,10 +2241,53 @@
 <li>将继承体系内的 virtual函数替换为另一个继承体系内的 virtual函数。这是Strategy设计模式的传统实现手法。</li>
 </ol>
 <p>以上并未彻底而详尽地列出 virtual函数的所有替换方案,但应该足够让你知道的确有不少替换方案。此外,它们各有其相对的优点和缺点,你应该把它们全部列入考虑</p>
-<h3 id="条款36：绝不重新定义继承而来的non-virtual函数"><a href="#条款36：绝不重新定义继承而来的non-virtual函数" class="headerlink" title="条款36：绝不重新定义继承而来的non-virtual函数"></a>条款36：绝不重新定义继承而来的non-virtual函数</h3><blockquote>
+<h3 id="条款36：绝不重新定义继承而来的non-virtual函数"><a href="#条款36：绝不重新定义继承而来的non-virtual函数" class="headerlink" title="条款36：绝不重新定义继承而来的non-virtual函数"></a>条款36：绝不重新定义继承而来的non-virtual函数</h3><p>对于D继承B以及non-virtual成员函数B::mf身上：</p>
+<ul>
+<li>适用于B对象的每一件事,也适用于D对象,因为每个D对象都是一个B对象;</li>
+<li>B的 derived classes一定会继承mf的接口和实现,因为mf是B的一个non-virtual函数。</li>
+</ul>
+<p>现在,如果b重新定义mf,你的设计便出现矛盾。如果D真有必要实现出与B不同的mf,并且如果每一个B对象——不管多么特化—一真的必须使用B所提供的mf实现码,那么“每个D都是一个B”就不为真。既然如此D就不该以 public形式继承B。另一方面,如果D真的必须以 public方式继承B,并且如果D真有需要实现出与B不同的mf,那么mf就无法为B反映出“不变性凌驾特异性”的性质。既然这样mf应该声明为 virtual函数。最后,如果每个D真的是一个B,并且如果mf真的为B反映出“不变性凌驾特异性”的性质,那么D便不需要重新定义mf,而且它也不应该尝试这样做。</p>
+<blockquote>
 <p>重点</p>
 <ul>
-<li></li>
+<li>绝对不要重新定义继承而来的 non-virtua函数</li>
+</ul>
+</blockquote>
+<h3 id="条款37：绝不重新定义继承而来的缺省参数值"><a href="#条款37：绝不重新定义继承而来的缺省参数值" class="headerlink" title="条款37：绝不重新定义继承而来的缺省参数值"></a>条款37：绝不重新定义继承而来的缺省参数值</h3><p>让我们一开始就将讨论简化。你只能继承两种函数: virtual和 non-virtual函数。然而重新定义一个继承而来的non-virtual函数永远是错误的(见条款36),所以我们可以安全地将本条款的讨论局限于“继承一个带有缺省参数值的 virtual函数”。</p>
+<p>这种情况下,本条款成立的理由就非常直接而明确了: <strong>virtual函数系动态绑定( dynamically bound),而缺省参数值却是静态绑定( statically bound)</strong>。</p>
+<p>为什么C++坚持以这种乖张的方式来运作呢?答案在于运行期效率。如果缺省参数值是动态绑定,编译器就必须有某种办法在运行期为 virtua函数决定适当的参数缺省值。这比目前实行的“在编译期决定”的机制更慢而且更复杂。为了程序的执行速度和编译器实现上的简易度,C++做了这样的取舍,其结果就是你如今所享受的执行效率。但如果你没有注意本条款所揭示的忠告,很容易发生混淆。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>绝对不要重新定义一个继承而来的缺省参数值,因为缺省参数值都是静态绑定,而 virtual函数—你唯一应该覆写的东西—却是动态绑定。</li>
+</ul>
+</blockquote>
+<h3 id="条款38：通过复合塑模出has-a或”根据某物实现出”"><a href="#条款38：通过复合塑模出has-a或”根据某物实现出”" class="headerlink" title="条款38：通过复合塑模出has-a或”根据某物实现出”"></a>条款38：通过复合塑模出has-a或”根据某物实现出”</h3><p>复合( composition)是类型之间的一种关系,当某种类型的对象内含它种类型的对象,便是这种关系。</p>
+<p>条款32曾说,“public继承”带有is-a(是一种)的意义。复合也有它自己的意义实际上它有两个意义。复合意味has-a(有一个)或 is-implemented-in-terms-of(根据某物实现出)。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>复合( composition)的意义和 public继承完全不同</li>
+<li>在应用域( application domain),复合意味has-a(有一个)。在实现域( implementation domain),复合意味 is-implemented- in-terms-of(根据某物实现出)</li>
+</ul>
+</blockquote>
+<h3 id="条款39：明智而审慎得使用private继承"><a href="#条款39：明智而审慎得使用private继承" class="headerlink" title="条款39：明智而审慎得使用private继承"></a>条款39：明智而审慎得使用private继承</h3><p>统御 private继承的首要规则你刚才已经见过了:如果classes之间的继承关系是 private,编译器不会自动将一个 derived class对象(例如Student)转换为一个 base class对象(例如 Person)。这和 public继承的情况不同。第二条规则是,由 private base class继承而来的所有成员,在 derived class中都会变成 private属性,纵使它们在base class中原本是 protected或 public属性。</p>
+<p>Private继承意味 implemented-in-terms-of(根据某物实现出)。如果你让 class D以 private形式继承 class B,你的用意是为了采用 class B内已经备妥的某些特性,不是因为B对象和D对象存在有任何观念上的关系。 private继承纯粹只是一种实现技术(这就是为什么继承自一个 private baseclass的每样东西在你的clas内都是 private:因为它们都只是实现枝节而已)。借用条款34提出的术语, <strong>private继承意味只有实现部分被继承,接口部分应略去</strong>。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>Private继承意味 is-implemented-in-terms-of(根据某物实现出)。它通常比复合( composition)的级别低。但是当 derived clas需要访问 protected base class的成员,或需要重新定义继承而来的 virtua函数时,这么设计是合理的。</li>
+<li>和复合( composition)不同, private继承可以造成 empty base最优化。这对致力于“对象尺寸最小化”的程序库开发者而言,可能很重要。</li>
+</ul>
+</blockquote>
+<h3 id="条款40：明智而审慎得使用多重继承"><a href="#条款40：明智而审慎得使用多重继承" class="headerlink" title="条款40：明智而审慎得使用多重继承"></a>条款40：明智而审慎得使用多重继承</h3><p>当派生类继承的多个基类中都有某个同名成员函数的时候，可能会产生歧义。这个时候C++处理的方法与C++用来解析( resolving)重载函数调用的规则相符:在看到是否有个函数可取用之前,C++首先确认这个函数对此调用之言是最佳匹配。找出最佳匹配函数后才检验其可取用性。</p>
+<p>从正确行为的观点看, public继承应该总是 virtuale。如果这是唯一一个观点,规则很简单:任何时候当你使用 public继承,请改用 virtual public继承。但是,啊呀,正确性并不是唯一观点。为避免继承得来的成员变量重复,编译器必须提供若干幕后戏法,而其后果是:使用 virtual继承的那些 classes所产生的对象往往比使用non- virtual继承的兄弟们体积大,访问 virtual base classes的成员变量时,也比访问non- virtual base classes的成员变量速度慢。种种细节因编译器不同而异,但基本重点很清楚:你得为 virtual继承付出代价。</p>
+<blockquote>
+<p>重点</p>
+<ul>
+<li>多重继承比单一继承复杂。它可能导致新的歧义性,以及对 virtual继承的需要。</li>
+<li>virtual继承会增加大小、速度、初始化(及赋值)复杂度等等成本。如果 virtual base classes不带任何数据,将是最具实用价值的情况。</li>
+<li>多重继承的确有正当用途。其中一个情节涉及“ public继承某个 Interface class”和“ private继承某个协助实现的 class”的两相组合。</li>
 </ul>
 </blockquote>
 ]]></content>
