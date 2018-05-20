@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-05-05T11:14:17.000Z</updated>
+  <updated>2018-05-20T02:52:44.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,99 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>《STL源码剖析》 笔记</title>
+    <link href="https://www.liuin.cn/2018/05/20/%E3%80%8ASTL%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90%E3%80%8B-%E7%AC%94%E8%AE%B0/"/>
+    <id>https://www.liuin.cn/2018/05/20/《STL源码剖析》-笔记/</id>
+    <published>2018-05-20T00:52:59.000Z</published>
+    <updated>2018-05-20T02:52:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>侯捷老师的《STL源码剖析》可谓是学习STL的经典。在书籍的自序中侯捷老师提到的”我的确认为99.99%的程序员所写的程序，在SGI STL面前都是三流水平“，这让我等菜鸟更本把持不住呀。</p>
+<a id="more"></a>
+<h1 id="迭代器概念与traits编程技法"><a href="#迭代器概念与traits编程技法" class="headerlink" title="迭代器概念与traits编程技法"></a>迭代器概念与traits编程技法</h1><p>在设计模式中有一种迭代器模式，其定义如下：提供一种方法,使之能够依序巡访某个聚合物(容器)所含的各个元素,而又无需暴露该聚合物的内部表述方式</p>
+<h2 id="迭代器设计思维——STL关键所在"><a href="#迭代器设计思维——STL关键所在" class="headerlink" title="迭代器设计思维——STL关键所在"></a>迭代器设计思维——STL关键所在</h2><p>STL的中心思想在于:将数据容器( containers)和算法 algorithms)分开,彼此独立设计,最后再以一帖胶着剂将它们撮合在一起。容器和算法的泛型化,从技术角度来看并不困难,C++的class templates和 function templates可分别达成目标。如何设计出两者之间的良好胶着剂,才是大难题</p>
+<h2 id="迭代器是一种smart-pointer"><a href="#迭代器是一种smart-pointer" class="headerlink" title="迭代器是一种smart pointer"></a>迭代器是一种smart pointer</h2><p>迭代器是一种行为类似指针的对象,而指针的各种行为中最常见也最重要的便是内容提领(dereference)和成员访问( member access),因此,迭代器最重要的编程工作就是对 operator*和 operator-&gt;进行重载( overloading)工作。</p>
+<p>在设计实现每一个容器的迭代器的时候都会暴露许多这些容器的一些实现细节的东西，要设计出 LIstitem,首先必须对List的实现细节有非常丰富的了解。既然这无可避免,干脆就把迭代器的开发工作交给List的设计者好了,如此一来,所有实现细节反而得以封装起来不被使用者看到。<strong>这正是为什么每一种STL容器都提供有专属迭代器的缘故</strong></p>
+<h2 id="迭代器相应的型别"><a href="#迭代器相应的型别" class="headerlink" title="迭代器相应的型别"></a>迭代器相应的型别</h2><p>迭代器中相应的型别之一是迭代器所指之物的型别</p>
+<p>迭代器相应型别(associated types)不只是“迭代器所指对象的型别”一种而已。根据经验,最常用的相应型别有五种,然而并非任何情况下任何一种都可利用上述的 template参数推导机制来取得.我们需要更全面的解法</p>
+<h1 id="序列式容器"><a href="#序列式容器" class="headerlink" title="序列式容器"></a>序列式容器</h1><h2 id="容器的概观与分类"><a href="#容器的概观与分类" class="headerlink" title="容器的概观与分类"></a>容器的概观与分类</h2><p>研究数据的特定排列方式,以利于搜寻或排序或其它特殊目的,这一专门学科我们称为数据结构( Data Structures)。大学信息类相关教育里面,与编程最有直接关系的科目,首推数据结构与算法( Algorithms)。几乎可以说,任何特定的数据结构都是为了实现某种特定的算法。STL容器即是将运用最广的一些数据结构实现出来</p>
+<p><img src="https://data2.liuin.cn/2018-05-20-15267795512022.jpg" alt=""></p>
+<blockquote>
+<p>序列式容器</p>
+</blockquote>
+<p>所谓序列式容器,其中的<strong>元素都可序( ordered),但未必有序( sorted)</strong>。C++语言本身提供了一个序列式容器 array,STL另外再提供 vector, list, deque, stack, queue, priority-queue等等序列式容器。其中 stack和 queue由于只是将 deque改头换面而成,技术上被归类为一种配接器( adapter)</p>
+<h2 id="vector"><a href="#vector" class="headerlink" title="vector"></a>vector</h2><h3 id="vector-概述"><a href="#vector-概述" class="headerlink" title="vector 概述"></a>vector 概述</h3><p>vector的数据安排以及操作方式,与 array非常相似。两者的唯一差别在于空间的运用的灵活性。 array是静态空间,一旦配置了就不能改变，如果需要更多的空间需要用户自己解决。vector是动态空间,随着元素的加人,它的内部机制会自行扩充空间以容纳新元素。因此, vector的运用对于内存的合理利用与运用的灵活性有很大的帮助,我们再也不必因为害怕空间不足而开始就要求一个大块头 array了,我们可以安心使用 vector,吃多少用多少</p>
+<h3 id="vector-迭代器"><a href="#vector-迭代器" class="headerlink" title="vector 迭代器"></a>vector 迭代器</h3><p>vector维护的是一个连续线性空间,所以不论其元素型别为何,<strong>普通指针都可以作为 vector的迭代器而满足所有必要条件</strong>,因为 vector迭代器所需要的操作行为普通指针天生就具备。 vector支持随机存取,而普通指针正有着这样的能力。所以, vector提供的是 Random Access Iterators。</p>
+<h3 id="vector-的数据结构"><a href="#vector-的数据结构" class="headerlink" title="vector 的数据结构"></a>vector 的数据结构</h3><p>vector所采用的数据结构非常简单:线性连续空间。它以两个迭代器 start和 finish分别指向配置得来的连续空间中目前已被使用的范围,并以迭代器end_of_storage指向整块连续空间(含备用空间)的尾端</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T, <span class="keyword">class</span> Alloc = alloc&gt;</div><div class="line"><span class="keyword">class</span> <span class="built_in">vector</span>&#123;</div><div class="line">...</div><div class="line"><span class="keyword">protected</span>:</div><div class="line">    iterator start;</div><div class="line">    iterator finish;</div><div class="line">    iterator end_of_storage;</div><div class="line">...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>为了降低空间配置时的速度成本, vector实际配置的大小可能比客户端需求量更大一些,以备将来可能的扩充。这便是容量( capacity)的观念。换句话说个 vector的容量永远大于或等于其大小。一旦容量等于大小,便是满载,下次再有新增元素,整个 vector就得另觅居所</p>
+<p><img src="https://data2.liuin.cn/2018-05-20-15267802557974.jpg" alt=""></p>
+<h3 id="vector-的构造和内存管理"><a href="#vector-的构造和内存管理" class="headerlink" title="vector 的构造和内存管理"></a>vector 的构造和内存管理</h3><p>当我们以 push_back()将新元素插入于 vector尾端时,该函数首先检查是否还有备用空间,如果有就直接在备用空间上构造元素,并调整迭代器 finish,使vector变大。如果没有备用空间了,就扩充空间(重新配置、移动数据、释放原空间)</p>
+<p>注意,所谓动态增加大小,并不是在原空间之后接续新空间(因为无法保证原空间之后尚有可供配置的空间),而是以原大小的两倍另外配置一块较大空间,然后将原内容拷贝过来,然后才开始在原内容之后构造新元素,并释放原空间。因此对 vector的任何操作,<strong>一旦引起空间重新配置,指向原 vector的所有迭代器就都失效了</strong>。这是程序员易犯的一个错误,务需小心</p>
+<h2 id="list"><a href="#list" class="headerlink" title="list"></a>list</h2><h3 id="list-概述"><a href="#list-概述" class="headerlink" title="list 概述"></a>list 概述</h3><p>相较于vector的连续线性空间,list就显得复杂许多,它的好处是每次插人或删除一个元素,就配置或释放一个元素空间。因此,list对于空间的运用有绝对的精准,一点也不浪费。而且,对于任何位置的元素插入或元素移除,list永远是常数时间。</p>
+<p>list和 vector是两个最常被使用的容器。什么时机下最适合使用哪一种容器,必须视元素的多寡、元素的构造复杂度、元素存取行为的特性而定。</p>
+<h3 id="list的节点-node"><a href="#list的节点-node" class="headerlink" title="list的节点(node)"></a>list的节点(node)</h3><p>list的节点是一个典型的双向链表的结构</p>
+<p><img src="https://data2.liuin.cn/2018-05-20-15267809077014.jpg" alt=""></p>
+<h3 id="list的迭代器"><a href="#list的迭代器" class="headerlink" title="list的迭代器"></a>list的迭代器</h3><p>list不再能够像vector一样以普通指针作为迭代器,因为其节点不保证在储存空间中连续存在。list迭代器必须有能力指向list的节点,并有能力进行正确的递增、递减、取值、成员存取等操作。</p>
+<p>由于STL list是一个双向链表(double linked-ist),迭代器必须具备前移后移的能力,所以list提供的是 Bidirectional iteratorslist</p>
+<p>有一个重要性质:插入操作( insert)和接合操作( splice)都不会造成原有的list迭代器失效。这在 vector是不成立的,因为 vector的插人操作可能造成内存的重新配置,导致原有的迭代器全部失效。甚至list的元素删除操作( erase),也只有“指向被删除元素”的那个迭代器失效,其它迭代器不受任何影响</p>
+<h3 id="list的数据结构"><a href="#list的数据结构" class="headerlink" title="list的数据结构"></a>list的数据结构</h3><p>SGL list不仅是一个双向链表,而且还是一个环状双向链表。所以它只需要个指针,便可以完整表现整个链表</p>
+<p>如果让指针node指向刻意置于尾端的一个空白节点,node便能符合STL对于“前闭后开”区间的要求,成为1ast迭代器,如图所示</p>
+<p><img src="https://data2.liuin.cn/2018-05-20-15267812961833.jpg" alt=""></p>
+<h2 id="deque"><a href="#deque" class="headerlink" title="deque"></a>deque</h2><h3 id="deque概述"><a href="#deque概述" class="headerlink" title="deque概述"></a>deque概述</h3><p>vector是单向开口的连续线性空间, deque则是一种双向开口的连续线性空间。所谓双向开口,意思是<strong>可以在头尾两端分别做元素的插入和删除操作</strong>。 vector当然也可以在头尾两端进行操作(从技术观点),但是其头部操作效率奇差,无法被接受</p>
+<p><img src="https://data2.liuin.cn/2018-05-20-15267815267741.jpg" alt=""></p>
+<p>deque和 vector的最大差异,一在于deque允许于常数时间内对起头端进行元素的插入或移除操作,二在于 deque没有所谓容量( capacity)观念,因为它是动态地以分段连续空间组合而成,随时可以增加一段新的空间并链接起来。换句话说,像 vector那样“因旧空间不足而重新配置一块更大空间,然后复制元素,再释放旧空间”这样的事情在 deque是不会发生的。也因此, deque没有必要提供所谓的空间保留( reserve)功能</p>
+<p>虽然 deque也提供 Ramdon Access iterator,但<strong>它的迭代器并不是普通指针,其复杂度和 vector不可以道里计</strong>(稍后看到源代码,你便知道),这当然影响了各个运算层面。因此,除非必要,我们应尽可能选择使用 vector而非 deque</p>
+<h3 id="deque的中控器"><a href="#deque的中控器" class="headerlink" title="deque的中控器"></a>deque的中控器</h3><p>deque是连续空间(至少逻辑上看来如此),连续线性空间总令我们联想到array或 vector。 array无法成长, vector虽可成长,却只能向尾端成长,而且其所谓成长原是个假象,事实上是(1)另觅更大空间;(2)将原数据复制过去;(3)释放原空间三部曲。如果不是 <strong>vector每次配置新空间时都有留下一些余裕,其成长”假象所带来的代价将是相当高昂</strong></p>
+<p>deque系由一段一段的定量连续空间构成。一旦有必要在 deque的前端或尾端增加新空间,便配置一段定量连续空间,串接在整个 deque的头端或尾端deque的最大任务,便是在这些分段的定量连续空间上,维护其整体连续的假象并提供随机存取的接口·避开了“重新配置、复制、释放”的轮回,<strong>代价则是复杂的迭代器架构</strong></p>
+<p>受到分段连续线性空间的字面影响,我们可能以为 deque的实现复杂度和vector相比虽不中亦不远矣,其实不然。主要因为,既日<strong>分段连续线性空间,就必须有中央控制,而为了维持整体连续的假象,数据结构的设计及迭代器前进后退等操作都颇为繁琐</strong>。 deque的实现代码分量远比 vector或list都多得多</p>
+<p>deque采用一块所谓的mqp(注意,不是STL的map容器)作为主控。这里所谓map是一小块连续空间,其中每个元素(此处称为一个节点,node)都是指针,指向另一段(较大的)连续线性空间,称为缓冲区。缓冲区才是 deque的储存空间主体。 </p>
+<p>把令人头皮发麻的各种型别定义(为了型别安全,那其实是有必要的)整理下,我们便可发现,map其实是一个T**,也就是说它是一个指针,所指之物又是个指针,指向型别为T的一块空间,如图所示</p>
+<p><img src="https://data2.liuin.cn/2018-05-20-15267828260370.jpg" alt=""></p>
+<h3 id="deque的迭代器"><a href="#deque的迭代器" class="headerlink" title="deque的迭代器"></a>deque的迭代器</h3><p>deque是分段连续空间。维持其“整体连续”假象的任务,落在了迭代器的operator++和operator–两个运算子身上</p>
+<p>让我们思考一下, deque迭代器应该具备什么结构。首先,它必须能够<strong>指出分段连续空间(亦即缓冲区)在哪里,其次它必须能够判断自己是否已经处于其所在缓冲区的边缘</strong>,如果是,一旦前进或后退时就必须跳跃至下一个或上一个缓冲区为了能够正确跳跃, deque必须<strong>随时掌握管控中心</strong>(map)。</p>
+<p><img src="https://data2.liuin.cn/2018-05-20-15267830496256.jpg" alt=""></p>
+<h3 id="deque的数据结构"><a href="#deque的数据结构" class="headerlink" title="deque的数据结构"></a>deque的数据结构</h3><p>deque除了维护一个先前说过的指向map的指针外,也维护 start,fini两个迭代器,分别指向第一缓冲区的第一个元素和最后缓冲区的最后一个元素(的下一位置)。此外,它当然也必须记住目前的mqp大小。因为一旦mqp所提供的节点不足,就必须重新配置更大的一块map</p>
+<h2 id="stack"><a href="#stack" class="headerlink" title="stack"></a>stack</h2><h3 id="stack-概述"><a href="#stack-概述" class="headerlink" title="stack 概述"></a>stack 概述</h3><p>stack是一种先进后出( First In last out,FILO)的数据结构。它只有一个出口,形式如图4-18所示。 stack允许新增元素、移除元素、取得最顶端元素。但除了最顶端外,没有任何其它方法可以存取 stack的其它元素。换言之, stack不允许有遍历行为</p>
+<p><img src="https://data2.liuin.cn/2018-05-20-15267835939355.jpg" alt=""></p>
+<h3 id="stack-定义完整列表"><a href="#stack-定义完整列表" class="headerlink" title="stack 定义完整列表"></a>stack 定义完整列表</h3><p>以某种既有容器作为底部结构,将其接口改变,使之符合“先进后出”的特性,形成一个 stack,是很容易做到的, deque是双向开口的数据结构,若以dequ为底部结构并封闭其头端开口,便轻而易举地形成了一个 stack。因此, SGI STI便以 deque作为缺省情况下的 stack底部结构, stack的实现因而非常简单,源代码十分简短,本处完整列出</p>
+<p>由于 stack系以底部容器完成其所有工作,而具有这种“修改某物接口,形成另一种风貌”之性质者,称为 adapter(配接器),因此STL stack往往不被归类为 container(容器),而被归类为 container adapter</p>
+<h3 id="stack-没有迭代器"><a href="#stack-没有迭代器" class="headerlink" title="stack 没有迭代器"></a>stack 没有迭代器</h3><p>stack所有元素的进出都必须符合“先进后出”的条件,只有 stack顶端的元素,才有机会被外界取用。 stack不提供走访功能,也不提供迭代器</p>
+<h2 id="queue"><a href="#queue" class="headerlink" title="queue"></a>queue</h2><h3 id="queue概述"><a href="#queue概述" class="headerlink" title="queue概述"></a>queue概述</h3><p>queue是一种先进先出( First In First Out,FIFO)的数据结构。它有两个出口。 queue允许新增元素、移除元素、从最底端加入元素、取得最顶端元素。但除了最底端可以加入、最顶端可以取出外,没有任何其它方法可以存取 queue的其它元素。换言之, queue不允许有遍历行为。</p>
+<p><img src="https://data2.liuin.cn/2018-05-20-15267838406632.jpg" alt=""></p>
+<h3 id="queue定义完整列表"><a href="#queue定义完整列表" class="headerlink" title="queue定义完整列表"></a>queue定义完整列表</h3><p>以某种既有容器为底部结构,将其接口改变,使其符合“先进先出”的特性形成一个 queue,是很容易做到的. deque是双向开口的数据结构,若以 deque为底部结构并封闭其底端的出口和前端的入口,便轻而易举地形成了一个 queue。因此, SGI STL便以 deque作为缺省情况下的 queue底部结构。</p>
+<h3 id="queue没有迭代器"><a href="#queue没有迭代器" class="headerlink" title="queue没有迭代器"></a>queue没有迭代器</h3><p>queue所有元素的进出都必须符合“先进先出”的条件,只有 queue顶端的元素,才有机会被外界取用。 queue不提供遍历功能,也不提供迭代器</p>
+<h2 id="heap"><a href="#heap" class="headerlink" title="heap"></a>heap</h2><h3 id="heap概述"><a href="#heap概述" class="headerlink" title="heap概述"></a>heap概述</h3><p>heap并不归属于STL容器组件,它是个幕后英雄,扮演 priority queue的助手。顾名思义, priority queue允许用户以任何次序将任何元素推入容器内,但取出时一定是从优先权最高(也就是数值最高)的元素开始取。 binary max heap正是具有这样的特性,适合作为 priority queue的底层机制</p>
+<p>如果使用list作为 priority queue的底层机制,元素插入操作可享常数时间。但是要找到list中的极值,却需要对整个list进行线性扫描。我们也可以改变做法,让元素插入前先经过排序这一关,使得list的元素值总是由小到大(或由大到小),但这么一来,收之东隅却失之桑榆:虽然取得极值以及元素删除操作达到最高效率,可元素的插人却只有线性表现</p>
+<p>比较麻辣的做法是以 binary search tree作为 prlorltyqueue的底层机制。这么一来,元素的插入和极值的取得就有O(logN)的表现但杀鸡用牛刀,未免小题大做,一来 binary search tree的输人需要足够的随机性,二来 binary search tree并不容易实现。 </p>
+<p>比较适合的是binary heap的方案，所谓 binary heap就是一种 complete binary tree(完全二叉树),也就是说,整棵 binary tree除了最底层的叶节点之外,是填满的,而最底层的叶节点(s)由左至右又不得有空隙。</p>
+<p><img src="https://data2.liuin.cn/2018-05-20-15267842482184.jpg" alt=""></p>
+<p>这么一来,我们需要的工具就很简单了:一个 array和一组heap算法(用来插入元素、删除元素、取极值,将某一整组数据排列成一个heap)</p>
+<h3 id="heap算法"><a href="#heap算法" class="headerlink" title="heap算法"></a>heap算法</h3><h4 id="push-heap-算法"><a href="#push-heap-算法" class="headerlink" title="push_heap 算法"></a>push_heap 算法</h4><p><img src="https://data2.liuin.cn/2018-05-20-15267844079830.jpg" alt=""></p>
+<h4 id="pop-heap-算法"><a href="#pop-heap-算法" class="headerlink" title="pop_heap 算法"></a>pop_heap 算法</h4><p><img src="https://data2.liuin.cn/2018-05-20-15267844125899.jpg" alt=""></p>
+<h4 id="sort-heap-算法"><a href="#sort-heap-算法" class="headerlink" title="sort_heap 算法"></a>sort_heap 算法</h4><p>堆排序思想，不断对heap进行pop操作，达到排序效果</p>
+<h2 id="priority-queue"><a href="#priority-queue" class="headerlink" title="priority_queue"></a>priority_queue</h2><h3 id="priority-queue概述"><a href="#priority-queue概述" class="headerlink" title="priority_queue概述"></a>priority_queue概述</h3><p>顾名思义, priority_queue是一个拥有权值观念的 queue,它允许加人新元素、移除旧元素、审视元素值等功能。由于这是一个 queue,所以只允许在底端加入元素,并从顶端取出元素,除此之外别无其它存取元素的途径</p>
+<p>priority_queue带有权值观念,其内的元素并非依照被推入的次序排列,而是自动依照元素的权值排列(通常权值以实值表示)。权值最高者,排在最前面</p>
+<p>缺省情况下 priority_queue系利用一个max-heap完成,后者是一个以vector表现的 complete binary tree。max-heap可以满足priority_queue所需要的“依权值高低自动递增排序”的特性。</p>
+<p><img src="https://data2.liuin.cn/2018-05-20-15267846191674.jpg" alt=""></p>
+<h3 id="priority-queue定义完整列表"><a href="#priority-queue定义完整列表" class="headerlink" title="priority_queue定义完整列表"></a>priority_queue定义完整列表</h3><p>由于 priority-queue完全以底部容器为根据,再加上heap处理规则,所以其实现非常简单。缺省情况下是以 vector为底部容器。</p>
+<p>queue以底部容器完成其所有工作。具有这种“修改某物接口,形成另一种风貌”之性质者,称为 adapter(配接器),因此, STL prior1ty_ queue往往不被归类为 container(容器),而被归类为 container adapter</p>
+<h3 id="priority-queue没有迭代器"><a href="#priority-queue没有迭代器" class="headerlink" title="priority_queue没有迭代器"></a>priority_queue没有迭代器</h3><p>priority-queue的所有元素,进出都有一定的规则,只有 queue顶端的元素(权值最高者),才有机会被外界取用。 priority_queue不提供遍历功能,也不提供迭代器。</p>
+<h1 id="关联式容器"><a href="#关联式容器" class="headerlink" title="关联式容器"></a>关联式容器</h1>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;侯捷老师的《STL源码剖析》可谓是学习STL的经典。在书籍的自序中侯捷老师提到的”我的确认为99.99%的程序员所写的程序，在SGI STL面前都是三流水平“，这让我等菜鸟更本把持不住呀。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="STL" scheme="https://www.liuin.cn/tags/STL/"/>
+    
+  </entry>
   
   <entry>
     <title>APUE 伪终端</title>
@@ -2509,75 +2602,6 @@
     
     
       <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>同步/异步与阻塞/非阻塞的理解</title>
-    <link href="https://www.liuin.cn/2018/04/09/%E5%90%8C%E6%AD%A5-%E5%BC%82%E6%AD%A5%E4%B8%8E%E9%98%BB%E5%A1%9E-%E9%9D%9E%E9%98%BB%E5%A1%9E%E7%9A%84%E7%90%86%E8%A7%A3/"/>
-    <id>https://www.liuin.cn/2018/04/09/同步-异步与阻塞-非阻塞的理解/</id>
-    <published>2018-04-09T02:57:32.000Z</published>
-    <updated>2018-04-09T03:02:32.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>近期在了解网络编程的时候对同步/异步和阻塞/非阻塞这些概念有一些混淆，所查了一些资料总结了这篇文章。</p>
-<a id="more"></a>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>对于同步/异步与阻塞/非阻塞的理解可能各个领域的人的回答是不一样的，在网络上也有各种各样的说法。这其实是因为不同的人的知识背景不同，并且在讨论这个问题的时候上下文(context)也不相同。本文主要结合网络上的观点以及一些书籍谈谈对同步/异步与阻塞/非阻塞大致概念上的理解，以及在Linux Network IO上的这四个概念的情况。</p>
-<h2 id="同步-异步"><a href="#同步-异步" class="headerlink" title="同步/异步"></a>同步/异步</h2><p>同步和异步关注的是消息通信机制 (synchronous communication/ asynchronous communication)</p>
-<p>所谓同步，就是在发出一个<strong>调用</strong>时，在没有得到结果之前，该<strong>调用</strong>就不返回。但是一旦调用返回，就得到返回值了。换句话说，就是由<strong>调用者</strong>主动等待这个<strong>调用</strong>的结果。</p>
-<p>而异步则是相反，<strong>调用</strong>在发出之后，这个调用就直接返回了，所以没有返回结果。换句话说，当一个异步过程调用发出后，调用者不会立刻得到结果。而是在<strong>调用</strong>发出后，<strong>被调用者</strong>通过状态、通知来通知调用者，或通过回调函数处理这个调用。</p>
-<p>打一个不恰当的比方：</p>
-<blockquote>
-<p>你打电话问书店老板有没有《分布式系统》这本书，如果是同步通信机制，书店老板会说，你稍等，”我查一下”，然后开始查啊查，等查好了（可能是5秒，也可能是一天）告诉你结果（返回结果）。而异步通信机制，书店老板直接告诉你我查一下啊，查好了打电话给你，然后直接挂电话了（不返回结果）。然后查好了，他会主动打电话给你。在这里老板通过“回电”这种方式来回调。</p>
-</blockquote>
-<h2 id="阻塞-非阻塞"><a href="#阻塞-非阻塞" class="headerlink" title="阻塞/非阻塞"></a>阻塞/非阻塞</h2><p>阻塞和非阻塞关注的是程序在<strong>等待调用结果（消息，返回值）时的状态</strong>.</p>
-<p>阻塞调用是指调用结果返回之前，当前线程会被挂起。调用线程只有在得到结果之后才会返回。<br>非阻塞调用指在不能立刻得到结果之前，该调用不会阻塞当前线程。</p>
-<p>例子：</p>
-<blockquote>
-<p>你打电话问书店老板有没有《分布式系统》这本书，你如果是阻塞式调用，你会一直把自己“挂起”，直到得到这本书有没有的结果，如果是非阻塞式调用，你不管老板有没有告诉你，你自己先一边去玩了， 当然你也要偶尔过几分钟check一下老板有没有返回结果。</p>
-</blockquote>
-<p>在这里阻塞与非阻塞与是否同步异步无关。跟老板通过什么方式回答你结果无关。</p>
-<p>把自己挂起可以是在电话里面一直等着老板回信（同步阻塞），也可以是挂掉电话以后一直等着老板回电过来（异步阻塞）。先玩一会儿可以是电话接通着你去玩一会儿（同步非阻塞），也可以是电话挂了你去玩老板回电给你的时候你回来接（异步非阻塞）。</p>
-<p>阻塞和非阻塞描述的是一种状态，同步与非同步描述的是行为方式。</p>
-<h2 id="Unix-网络IO"><a href="#Unix-网络IO" class="headerlink" title="Unix 网络IO"></a>Unix 网络IO</h2><p>POSIX对同步I/O和异步I/O的定义如下：</p>
-<ul>
-<li>同步I/O操作( synchronous I/O opetation) 导致请求进程阻塞,直到I/O操作完成</li>
-<li>异步IO操作( asynchronous I/O opetation) 不导致请求进程阻塞。</li>
-</ul>
-<p>在Unix中有四种常用的网络IO模型：</p>
-<ul>
-<li>阻塞式I/O</li>
-<li>非阻塞式I/O</li>
-<li>I/O复用</li>
-<li>异步I/O</li>
-</ul>
-<p>其中前者都是同步I/O</p>
-<h3 id="阻塞式I-O"><a href="#阻塞式I-O" class="headerlink" title="阻塞式I/O"></a>阻塞式I/O</h3><p>默认情况下，所有套接字都是阻塞的。在下面展示recvfrom系统调用中把数据接收过程分成两个阶段：1. 等待数据 2. 数据复制到用户空间。</p>
-<p><img src="https://data2.liuin.cn/2018-04-09-15232418188483.jpg" alt=""></p>
-<p>在等待过程中，进程不能做其他事情，所以是阻塞式的。什么时候调用结束：有结果或者报错的时候，调用才结束，所以是同步的。</p>
-<h3 id="非阻塞式I-O"><a href="#非阻塞式I-O" class="headerlink" title="非阻塞式I/O"></a>非阻塞式I/O</h3><p><img src="https://data2.liuin.cn/2018-04-09-15232420864225.jpg" alt=""></p>
-<p>在非阻塞式I/O中进程在进行系统调用recvfrom的时候，如果数据没有准备好线程不会等待，而是不断询问，直到数据准备好，复制数据到用户空间以后，接受数据这个动作才算完成。</p>
-<p>因为线程不是一直在等待数据返回，其中也可以做其他的事情，所以是非阻塞式的，对于接受数据这个动作，进程会不断询问，知道最后有结果才算结束，所以是同步式的。</p>
-<h3 id="I-O复用"><a href="#I-O复用" class="headerlink" title="I/O复用"></a>I/O复用</h3><p><img src="https://data2.liuin.cn/2018-04-09-15232424437721.jpg" alt=""></p>
-<p>我们阻塞于 select调用,等待数据报套接字变为可读。当se1ect返回套接字可读这一条件时,我们调用 recvfrom把所读数据报复制到应用进程缓冲区。</p>
-<h3 id="异步I-O"><a href="#异步I-O" class="headerlink" title="异步I/O"></a>异步I/O</h3><p><img src="https://data2.liuin.cn/2018-04-09-15232425049293.jpg" alt=""></p>
-<p>异步I/O的工作模式时:告知内核启动某个操作,并让内核在整个操作(包括将数据从内核复制到我们自己的缓冲区)完成后通知我们。所以进程不需要一直询问其数据是否准备好</p>
-<h3 id="比较"><a href="#比较" class="headerlink" title="比较"></a>比较</h3><p><img src="https://data2.liuin.cn/2018-04-09-15232425884264.jpg" alt=""></p>
-<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><ul>
-<li><a href="https://www.zhihu.com/question/19732473/answer/20851256" target="_blank" rel="external">https://www.zhihu.com/question/19732473/answer/20851256</a></li>
-<li>《Unix 网络编程》</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;近期在了解网络编程的时候对同步/异步和阻塞/非阻塞这些概念有一些混淆，所查了一些资料总结了这篇文章。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="开发随笔" scheme="https://www.liuin.cn/categories/%E5%BC%80%E5%8F%91%E9%9A%8F%E7%AC%94/"/>
-    
-    
-      <category term="Unix" scheme="https://www.liuin.cn/tags/Unix/"/>
     
   </entry>
   
