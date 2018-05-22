@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-05-20T02:52:44.000Z</updated>
+  <updated>2018-05-21T10:39:57.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -20,9 +20,9 @@
     <link href="https://www.liuin.cn/2018/05/20/%E3%80%8ASTL%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90%E3%80%8B-%E7%AC%94%E8%AE%B0/"/>
     <id>https://www.liuin.cn/2018/05/20/《STL源码剖析》-笔记/</id>
     <published>2018-05-20T00:52:59.000Z</published>
-    <updated>2018-05-20T02:52:44.000Z</updated>
+    <updated>2018-05-21T10:39:57.000Z</updated>
     
-    <content type="html"><![CDATA[<p>侯捷老师的《STL源码剖析》可谓是学习STL的经典。在书籍的自序中侯捷老师提到的”我的确认为99.99%的程序员所写的程序，在SGI STL面前都是三流水平“，这让我等菜鸟更本把持不住呀。</p>
+    <content type="html"><![CDATA[<p>侯捷老师的《STL源码剖析》可谓是学习STL的经典。在书籍的自序中侯捷老师提到的”我的确认为99.99%的程序员所写的程序，在SGI STL面前都是三流水平“，这让我等菜鸟根本把持不住呀。</p>
 <a id="more"></a>
 <h1 id="迭代器概念与traits编程技法"><a href="#迭代器概念与traits编程技法" class="headerlink" title="迭代器概念与traits编程技法"></a>迭代器概念与traits编程技法</h1><p>在设计模式中有一种迭代器模式，其定义如下：提供一种方法,使之能够依序巡访某个聚合物(容器)所含的各个元素,而又无需暴露该聚合物的内部表述方式</p>
 <h2 id="迭代器设计思维——STL关键所在"><a href="#迭代器设计思维——STL关键所在" class="headerlink" title="迭代器设计思维——STL关键所在"></a>迭代器设计思维——STL关键所在</h2><p>STL的中心思想在于:将数据容器( containers)和算法 algorithms)分开,彼此独立设计,最后再以一帖胶着剂将它们撮合在一起。容器和算法的泛型化,从技术角度来看并不困难,C++的class templates和 function templates可分别达成目标。如何设计出两者之间的良好胶着剂,才是大难题</p>
@@ -93,11 +93,52 @@
 <h3 id="priority-queue定义完整列表"><a href="#priority-queue定义完整列表" class="headerlink" title="priority_queue定义完整列表"></a>priority_queue定义完整列表</h3><p>由于 priority-queue完全以底部容器为根据,再加上heap处理规则,所以其实现非常简单。缺省情况下是以 vector为底部容器。</p>
 <p>queue以底部容器完成其所有工作。具有这种“修改某物接口,形成另一种风貌”之性质者,称为 adapter(配接器),因此, STL prior1ty_ queue往往不被归类为 container(容器),而被归类为 container adapter</p>
 <h3 id="priority-queue没有迭代器"><a href="#priority-queue没有迭代器" class="headerlink" title="priority_queue没有迭代器"></a>priority_queue没有迭代器</h3><p>priority-queue的所有元素,进出都有一定的规则,只有 queue顶端的元素(权值最高者),才有机会被外界取用。 priority_queue不提供遍历功能,也不提供迭代器。</p>
-<h1 id="关联式容器"><a href="#关联式容器" class="headerlink" title="关联式容器"></a>关联式容器</h1>]]></content>
+<h1 id="关联式容器"><a href="#关联式容器" class="headerlink" title="关联式容器"></a>关联式容器</h1><p>标准的STL关联式容器分为set(集合)和map(映射表)两大类,以及这两大类的衍生体 multiset(多键集合)和multimap(多键映射表)。这些容器的底层机制均以RB-tree(红黑树)完成。RB-tree也是一个独立容器,但并不开放给外界使用</p>
+<p><img src="https://data2.liuin.cn/2018-05-21-15268607936529.jpg" alt=""></p>
+<p>所谓关联式容器,观念上类似关联式数据库(实际上则简单许多):每笔数据(每个元素)都有一个键值(key)和一个实值( value)。当元素被插人到关联式容器中时,容器内部结构(可能是RB-tree,也可能是hash-tab1e)便依照其键值大小,以某种特定规则将这个元素放置于适当位置.关联式容器没有所谓头尾(只有最大元素和最小元素)</p>
+<h2 id="RB-tree（红黑树）"><a href="#RB-tree（红黑树）" class="headerlink" title="RB-tree（红黑树）"></a>RB-tree（红黑树）</h2><p>AVL-tree之外,另一个颇具历史并被广泛运用的平衡二又搜索树是RB-tree(红黑树)。所谓RB-tree,不仅是一个二叉搜索树,而且必须满足以下规则</p>
+<ol>
+<li>每个节点不是红色就是黑色</li>
+<li>根节点为黑色</li>
+<li>如果节点为红,其子节点必须为黑</li>
+<li>任一节点至NULL(树尾端)的任何路径,所含之黑节点数必须相同</li>
+</ol>
+<h3 id="插入节点"><a href="#插入节点" class="headerlink" title="插入节点"></a>插入节点</h3><p>当插入一个新节点的时候，就会导致红黑树上面的规则被破坏。这个时候就要进行调整，其中包括了四种情况：</p>
+<p><img src="https://data2.liuin.cn/2018-05-21-15268627862296.jpg" alt=""></p>
+<p><img src="https://data2.liuin.cn/2018-05-21-15268628337631.jpg" alt=""></p>
+<p><img src="https://data2.liuin.cn/2018-05-21-15268628547016.jpg" alt=""></p>
+<p><img src="https://data2.liuin.cn/2018-05-21-15268628574449.jpg" alt=""></p>
+<h3 id="RB-tree的元素操作"><a href="#RB-tree的元素操作" class="headerlink" title="RB-tree的元素操作"></a>RB-tree的元素操作</h3><p>RB-tree提供两种插入操作:insert_unique()和 insert_equal(),前者表示被插入节点的键值(key)在整棵树中必须独一无二(因此,如果树中已存在相同的键值,插入操作就不会真正进行),后者表示被插入节点的键值在整棵树中可以重复,因此,无论如何插入都会成功(除非空间不足导致配置失败)。</p>
+<h2 id="set"><a href="#set" class="headerlink" title="set"></a>set</h2><p>set的特性是,所有元素都会根据元素的键值自动被排序。set的元素不像map那样可以同时拥有实值( value)和键值(key),set元素的键值就是实值实值就是键值。<strong>set不允许两个元素有相同的键值</strong></p>
+<p>我们可以通过set的迭代器改变set的元素值吗?不行,因为set元素值就是其键值,关系到set元素的排列规则。如果任意改变set元素值,会严重破坏set组织。set iterators是一种constant iterators(相对于 mutable iterators)</p>
+<p>set拥有与1ist相同的某些性质:当<strong>客户端对它进行元素新增操作( insert)或删除操作( erase)时,操作之前的所有迭代器,在操作完成之后都依然有效</strong>。当然,被删除的那个元素的迭代器必然是个例外</p>
+<p>由于RB-tree是一种平衡二叉搜索树,自动排序的效果很不错,所以标准的STL set即以RB-tree为底层机制。又由于set所开放的各种操作接口,RB-tree也都提供了,所以几乎所有的set操作行为,都只是转调用RB→tree的操作行为而已</p>
+<h2 id="map"><a href="#map" class="headerlink" title="map"></a>map</h2><p>map的特性是,所有元素都会根据元素的键值自动被排序。map的所有元素都是pair,同时拥有实值( value)和键值(key)。pair的第一元素被视为键值第二元素被视为实值.map不允许两个元素拥有相同的键值。</p>
+<p>可以通过map的迭代器修改value的值，但是不能更改key的值，因为修改key会破坏map的组织结构。因此, map iterators既不是一种constant iterators,也不是一种 mutable iterators</p>
+<p>map拥有和1ist相同的某些性质:当客户端对它进行元素新增操作或删除操作时,操作之前的所有迭代器,在操作完成之后都依然有效。当然,被删除的那个元素的迭代器必然是个例外</p>
+<p>map底层以RB-tree为实现机制，主要调用的是底层RB-tree的各种接口</p>
+<h2 id="multiset"><a href="#multiset" class="headerlink" title="multiset"></a>multiset</h2><p>multiset的特性以及用法和set完全相同,唯一的差别在于它允许键值重复,因此它的插入操作采用的是底层机制RB-tree的 insert_equa1()而非insert unique()。</p>
+<h2 id="multimap"><a href="#multimap" class="headerlink" title="multimap"></a>multimap</h2><p>multimap的特性以及用法与map完全相同,唯一的差别在于它允许键值重复,因此它的插入操作采用的是底层机制RB-tree的 insert_equal()而非insert_unique()。</p>
+<h2 id="hashtable"><a href="#hashtable" class="headerlink" title="hashtable"></a>hashtable</h2><p>二叉搜索树具有对数平均时间(logarithmic average time)的表现,但这样的表现构造在一个假设上:输入数据有足够的随机性。这一节要介绍一种名为hashtable(散列表)的数据结构,这种结构在插人、删除、搜寻等操作上也具有“常数平均时间”的表现,而且这种表现是以统计为基础,不需仰赖输入元素的随机性</p>
+<h3 id="hashtable-概述"><a href="#hashtable-概述" class="headerlink" title="hashtable 概述"></a>hashtable 概述</h3><p>hash table可提供对任何有名项( named item)的存取操作和删除操作。由于操作对象是有名项,所以 hash table也可被视为一种字典结构( dictionary)这种结构的用意在于提供常数时间之基本操作,就像 stack或 queue那样。乍听之下这几乎是不可能的任务,因为约束制条件如此之少,而元素个数增加,搜寻操作必定耗费更多时间</p>
+<p>通过hash function来进行key和index之间的转换。但是使用hash function会产生冲突的问题</p>
+<p>解决冲突的方法主要有以下几种：</p>
+<ol>
+<li>线性探测法，产生冲突的时候向下一个地址进行存储</li>
+<li>二次探测法，产生冲突的时候以H+1^2,H+2^2…的形式进行存储</li>
+<li>开链法，在表格中维护一个list</li>
+</ol>
+<h3 id="hashtable-的buckets与nodes"><a href="#hashtable-的buckets与nodes" class="headerlink" title="hashtable 的buckets与nodes"></a>hashtable 的buckets与nodes</h3><p>下图是以开链法( separate chaining)完成 hash table的图形表述。为了解说 SGI STL源代码,我遵循SGI的命名,称 hash table表格内的元素为桶子( bucket),此名称的大约意义是,表格内的每个单元,涵盖的不只是个节点(元素),甚且可能是一“桶”节点</p>
+<p><img src="https://data2.liuin.cn/2018-05-21-15268653336402.jpg" alt=""></p>
+<h2 id="hash-set"><a href="#hash-set" class="headerlink" title="hash_set"></a>hash_set</h2><p>STL set多半以RB-tree为底层机制。SGI则是在STL标准规格之外另又提供了一个所谓的hash_set,以 hash table为底层机制。由于hash_set所供应的操作接口hashtable都提供了,所以几乎所有的hash_set操作行为,都只是转调用hashtab1e的操作行为而已</p>
+<p>运用set,为的是能够快速搜寻元素。这一点,不论其底层是RB-tree或是hash table,都可以达成任务。但是请注意,<strong>RB-tree有自动排序功能而 hashtable没有,反应出来的结果就是,set的元素有自动排序功能而hash_set没有</strong>。</p>
+<h2 id="hash-map"><a href="#hash-map" class="headerlink" title="hash_map"></a>hash_map</h2><p>SGI在STL标准规格之外,另提供了一个所谓的 hash_map,以 hash table为底层机制。由于 hash_map所供应的操作接口, hash table都提供了,所以几乎所有的hash_map操作行为,都只是转调用 hashtable的操作行为而已。</p>
+<p>运用map,为的是能够根据键值快速搜寻元素。这一点,不论其底层是RB-tree或是 hash table,都可以达成任务。但是请注意,RB-tree有自动排序功能而hashtable没有,反应出来的结果就是,<strong>map的元素有自动排序功能而hash_map没有</strong></p>
+<h1 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h1>]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;侯捷老师的《STL源码剖析》可谓是学习STL的经典。在书籍的自序中侯捷老师提到的”我的确认为99.99%的程序员所写的程序，在SGI STL面前都是三流水平“，这让我等菜鸟更本把持不住呀。&lt;/p&gt;
+      &lt;p&gt;侯捷老师的《STL源码剖析》可谓是学习STL的经典。在书籍的自序中侯捷老师提到的”我的确认为99.99%的程序员所写的程序，在SGI STL面前都是三流水平“，这让我等菜鸟根本把持不住呀。&lt;/p&gt;
     
     </summary>
     
@@ -105,6 +146,81 @@
     
     
       <category term="STL" scheme="https://www.liuin.cn/tags/STL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《UNIX网络编程卷1》笔记 简介部分</title>
+    <link href="https://www.liuin.cn/2018/05/15/%E3%80%8AUNIX%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%8D%B71%E3%80%8B%E7%AC%94%E8%AE%B0%20%E7%AE%80%E4%BB%8B%E9%83%A8%E5%88%86/"/>
+    <id>https://www.liuin.cn/2018/05/15/《UNIX网络编程卷1》笔记 简介部分/</id>
+    <published>2018-05-15T12:37:20.000Z</published>
+    <updated>2018-05-21T13:35:53.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>UNIX网络编程必读书籍——《UNIX网络编程卷1》  简介部分 笔记</p>
+<a id="more"></a>
+<h1 id="传输层：TCP、UDP和SCTP"><a href="#传输层：TCP、UDP和SCTP" class="headerlink" title="传输层：TCP、UDP和SCTP"></a>传输层：TCP、UDP和SCTP</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>UDP是一个<strong>简单的、不可靠的数据报协议</strong>,而TCP是一个<strong>复杂、可靠的字节流协议</strong>。SCTP与TCP类似之处在于它<strong>也是一个可靠的传输协议,但它还提供消息边界、传输级别多宿</strong>（multihoming)支持以及将头端阻塞( head-of-line blockin)减少到最小的一种方法。我们必须了解由这些传输层协议提供给应用进程的服务,这样才能弄清这些协议处理什么,应用进程中又需要处理什么。</p>
+<h2 id="总图"><a href="#总图" class="headerlink" title="总图"></a>总图</h2><p>TCP/IP协议族除了TCP和IP这两个协议以外，还有许多其他的成员：</p>
+<p><img src="https://data2.liuin.cn/2018-05-21-15269068803801.jpg" alt=""></p>
+<h2 id="用户数据报协议（UDP）"><a href="#用户数据报协议（UDP）" class="headerlink" title="用户数据报协议（UDP）"></a>用户数据报协议（UDP）</h2><p>应用进程往一个UDP套接字写入一个消息,该消息随后被封装( encapsulating)到一个UDP数据报,该UDP数据报进而又被封装到一个IP数据报,然后发送到目的地。UDP不保证UDP数据报会到达其最终目的地,不保证各个数据报的先后顺序跨网络后保持不变,也不保证每个数据报只到达一次</p>
+<p>使用UDP进行网络编程所遇到的问题是它缺乏可靠性。如果一个数据报到达了其最终目的地,但是校验和检测发现有错误,或者该数据报在网络传输途中被丢弃了,它就无法被投递给UDP套接字,也不会被源端自动重传。</p>
+<p>每个UDP数据报都有一个长度。如果一个数据报正确地到达其目的地,那么该数据报的长度将随数据一道传递给接收端应用进程。同时TCP是一个字节流(byte-stream)协议,没有任何记录边界,这一点不同于UDP</p>
+<h2 id="传输控制协议（TCP）"><a href="#传输控制协议（TCP）" class="headerlink" title="传输控制协议（TCP）"></a>传输控制协议（TCP）</h2><p>首先，TCP客户先与某个给定服务器<strong>建立一个连接</strong>,再跨该连接与那个服务器交换数据,然后终止这个连接。</p>
+<p>其次,TCP还提供了<strong>可靠性</strong>( reliability)。当TCP向另一端发送数据时,它要求对端返回个确认。如果没有收到确认,TCP就自动重传数据并等待更长时间。在数次重传失败后,TCP才放弃。TCP通过给其中每个字节关联一个序列号对所发送的数据进行排序，从而达到确认重传的目的。</p>
+<p>再次,TCP提供<strong>流量控制</strong>( flow control)。TCP总是告知对端在任何时刻它一次能够从对端接收多少字节的数据,这称为通告窗口( advertised window)。在任何时刻,该窗口指出接收缓冲区中当前可用的空间量,从而确保发送端发送的数据不会使接收缓冲区溢出。该窗口时刻动态变化。</p>
+<p>最后,TCP连接是全双工的( full-duplex)。这意味着在一个给定的连接上应用可以在任何时刻在进出两个方向上既发送数据又接收数据。因此,TCP必须为每个数据流方向跟踪诸如序列号和通告窗口大小等状态信息。当然UDP也是全双工的。</p>
+<h2 id="流控制传输协议（SCTP）"><a href="#流控制传输协议（SCTP）" class="headerlink" title="流控制传输协议（SCTP）"></a>流控制传输协议（SCTP）</h2><p>SCTP提供的服务与UDP和TCP提供的类似。SCTP在客户和服务器之间提供关联( association),并像TCP那样给应用提供可靠性、排序、流量控制以及全双工的数据传送。SCTP中使用“关联”一词取代“连接”是为了避免这样的内涵:一个连接只涉及两个IP地址之间的通信。一个关联指代两个系统之间的一次通信,它可能因为SCTP支持多宿而涉及不止两个地址</p>
+<p>与TCP不同的是,SCTP是面向消息的(message-oriented)。它提供各个记录的按序递送服务。与UDP一样,由发送端写入的每条记录的长度随数据一道传递给接收端应用SCTP能够在所连接的端点之间提供多个流,每个流各自可靠地按序递送消息。</p>
+<h2 id="TCP连接的建立和终止"><a href="#TCP连接的建立和终止" class="headerlink" title="TCP连接的建立和终止"></a>TCP连接的建立和终止</h2><h3 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h3><p><img src="https://data2.liuin.cn/2018-05-21-15269078619660.jpg" alt=""></p>
+<h3 id="TCP选项"><a href="#TCP选项" class="headerlink" title="TCP选项"></a>TCP选项</h3><p>每一个SYN可以含有多个TCP选项，下面是一些常用的：</p>
+<ul>
+<li>MSS选项。发送SYN的TCP一端使用本选项通告对端它的最大分节大小( maximunsegment size)即MSS,也就是它在本连接的每个TCP分节中愿意接受的最大数据量。</li>
+<li>窗口规模选项。TCP连接任何一端能够通告对端的最大窗口大小是65535,因为在TCP首部中相应的字段占16位。</li>
+<li>时间戳选项。这个选项对于高速网络连接是必要的,它可以防止由失而复现的分组°可能造成的数据损坏。</li>
+</ul>
+<h3 id="TCP-连接终止"><a href="#TCP-连接终止" class="headerlink" title="TCP 连接终止"></a>TCP 连接终止</h3><p><img src="https://data2.liuin.cn/2018-05-21-15269079942940.jpg" alt=""></p>
+<h3 id="TCP-状态转换图"><a href="#TCP-状态转换图" class="headerlink" title="TCP 状态转换图"></a>TCP 状态转换图</h3><p>TCP建立连接和连接终止的操作可以用状态转换图来进行表示，其中一共有11种状态</p>
+<p><img src="https://data2.liuin.cn/2018-05-21-15269080313206.jpg" alt=""></p>
+<h3 id="观察分组"><a href="#观察分组" class="headerlink" title="观察分组"></a>观察分组</h3><p>下图展示了一个完整的TCP连接所发生的实际分组交换情况，包括建立连接、数据传送和连接终止3个阶段</p>
+<p><img src="https://data2.liuin.cn/2018-05-21-15269082100424.jpg" alt=""></p>
+<h2 id="TIME-WAIT状态"><a href="#TIME-WAIT状态" class="headerlink" title="TIME_WAIT状态"></a>TIME_WAIT状态</h2><p>TIME WAIT状态有两个存在的理由:</p>
+<ol>
+<li>可靠地实现TCP全双工连接的终止，当最终的ACK丢失的时候，客户端必须重新发出这个ACK，在这之前客户端必须维护之前的状态，以允许重新发送那个ACK</li>
+<li>允许老的重复分节在网络中消逝，防止影响后面的TCP连接</li>
+</ol>
+<h2 id="端口号"><a href="#端口号" class="headerlink" title="端口号"></a>端口号</h2><p>任何时候,多个进程可能同时使用TCP、UDP和SCTP这3种传输层协议中的任何一种。这3种协议都使用16位整数的端口号(port number)来区分这些进程</p>
+<p>当一个客户想要跟一个服务器联系时,它必须标识想要与之通信的这个服务器。TCP、UDP和SCTP定义了一组众所周知的端口(well- known port),用于标识众所周知的服务。</p>
+<p>另一方面,客户通常使用短期存活的临时端口( ephemeral port)。这些端口号通常<strong>由传输层协议自动赋予客户</strong>。客户通常不关心其临时端口的具体值,而只需确信该端口在所在主机中是唯一的就行。传输协议的代码确保这种唯一性</p>
+<p>端口号被划分成以下3段：</p>
+<ol>
+<li>众所周知的端口为0~1023。这些端口由IANA分配和控制。可能的话,相同端口号就分配给TCP、UDP和SCTP的同一给定服务。</li>
+<li>已登记的端口( registered port)为1024~49151。这些端口不受IANA控制,不过由LANA登记并提供它们的使用情况清单,以方便整个群体。</li>
+<li>49152~65535是动态的( dynamic)或私用的( private)端口。IANA不管这些端口。它们就是我们所称的临时端口。(49152这个魔数是65536的四分之三。）</li>
+</ol>
+<blockquote>
+<p>套接字对</p>
+</blockquote>
+<p>一个TCP连接的套接字对( socket pair)是一个定义该连接的两个端点的四元组:本地P地址、本地TCP端口号、外地IP地址、外地TCP端口号。套接字对唯一标识一个网络上的每个TCP连接。</p>
+<h2 id="TCP端口号与并发服务器"><a href="#TCP端口号与并发服务器" class="headerlink" title="TCP端口号与并发服务器"></a>TCP端口号与并发服务器</h2><p>并发服务器中主服务器循环通过派生一个子进程来处理每个新的连接</p>
+<p>我们必须在服务器主机上区分监听套接字和已连接套接字( connected socket)。注意已连接套接字使用与监听套接字相同的本地端口(21)。</p>
+<p><img src="https://data2.liuin.cn/2018-05-21-15269091556898.jpg" alt=""></p>
+<p>从上面我们可以看到：TCP无法仅仅通过查看目的端口号来分离外来的分节到不同的端点。它必须查看套接字对的所有4个元素才能确定由哪个端点接收某个到达的分节。</p>
+<h2 id="缓冲区大小和限制"><a href="#缓冲区大小和限制" class="headerlink" title="缓冲区大小和限制"></a>缓冲区大小和限制</h2><h3 id="TCP输出"><a href="#TCP输出" class="headerlink" title="TCP输出"></a>TCP输出</h3><p>每一个TCP套接字有一个发送缓冲区,我们可以使用 SO_SNDBUF套接字选项来更改该缓冲区的大小。当某个应用进程调用 write时,内核从该应用进程的缓冲区中复制所有数据到所写套接字的发送缓冲区。如果该套接字的发送缓冲区容不下该应用进程的所有数据(或是应用进程的缓冲区大于套接字的发送缓冲区,或是套接字的发送缓冲区中已有其他数据),该应用进程将被投入睡眠。这里假设该套接字是阻塞的,它是通常的默认设置。内核将不从wite系统调用返回,<strong>直到应用进程缓冲区中的所有数据都复制到套接字发送缓冲区</strong>。因此,从写一个TCP套接字的 write调用成功返回仅仅表示我们可以重新使用原来的应用进程缓冲区,<strong>并不表明对端的TCP或应用进程已接收到数据</strong>。</p>
+<p><img src="https://data2.liuin.cn/2018-05-21-15269096002757.jpg" alt=""></p>
+<h3 id="UDP输出"><a href="#UDP输出" class="headerlink" title="UDP输出"></a>UDP输出</h3><p>任何UDP套接字都有发送缓冲区大小(我们可以使用 SO SNDBUE套接字选项更改它,见75节),不过它仅仅是可写到该套接字的UDP数据报的大小上限。如果一个应用进程写一个大于套接字发送缓冲区大小的数据报,内核将返回该进程一个 EMSGSIZE错误。既然UDP是不可靠的,它不必保存应用进程数据的一个副本,因此无需一个真正的发送缓冲区。</p>
+<p><img src="https://data2.liuin.cn/2018-05-21-15269096922589.jpg" alt=""></p>
+<h2 id="常见因特网应用的协议使用"><a href="#常见因特网应用的协议使用" class="headerlink" title="常见因特网应用的协议使用"></a>常见因特网应用的协议使用</h2><p><img src="https://data2.liuin.cn/2018-05-21-15269097511476.jpg" alt=""></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;UNIX网络编程必读书籍——《UNIX网络编程卷1》  简介部分 笔记&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Linux" scheme="https://www.liuin.cn/tags/Linux/"/>
     
   </entry>
   
@@ -2481,124 +2597,6 @@
     </summary>
     
       <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Unix 进程间通信</title>
-    <link href="https://www.liuin.cn/2018/04/13/Unix-%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/"/>
-    <id>https://www.liuin.cn/2018/04/13/Unix-进程间通信/</id>
-    <published>2018-04-13T14:52:23.000Z</published>
-    <updated>2018-04-18T13:34:35.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>总结Unix下进程间通信的几种方式及其特点</p>
-<a id="more"></a>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><h3 id="进程同步和进程通信的区别"><a href="#进程同步和进程通信的区别" class="headerlink" title="进程同步和进程通信的区别"></a>进程同步和进程通信的区别</h3><p>关于这个问题，网络和很多书籍上把这两者混为一谈，对于这两者的区别，说法也有很多种。</p>
-<p>其中一种说法是：</p>
-<blockquote>
-<p>进程互斥、同步与通信的关系：进程竞争资源时要实施互斥，互斥是一种特殊的同步，实质上需要解决好进程同步问题，进程同步是一种进程通信，由此看来，进程互斥、同步都可以看做进程的通信</p>
-</blockquote>
-<p>个人比较认同是以下这种说法：</p>
-<ul>
-<li>进程同步：控制多个进程按一定顺序执行</li>
-<li>进程通信：进程间传输信息</li>
-</ul>
-<p>进程通信是一种手段，而进程同步是一种目的。也可以说，为了能够达到进程同步的目的，需要让进程进行通信，传输一些进程同步所需要的信息。</p>
-<p>在进程同步中介绍的信号量也属于进程通信的一种方式，但是属于低级别的进程通信，因为它传输的信息非常小。</p>
-<h3 id="消息传递与共享内存"><a href="#消息传递与共享内存" class="headerlink" title="消息传递与共享内存"></a>消息传递与共享内存</h3><p>消息传递提供一种机制以允许进程不必通过共享地址空间来实现通信和同步，消息传递工具提供至少两种操作:发送(消息)和接收(消息)。由进程发送的消息可以是定长的或变长的。</p>
-<p>操作系统提供用于通信的通道，进程通过读写这个通道进行通信。</p>
-<p>Unix中基于消息传递实现的IPC有：管道、FIFO、消息队列以及网络间的Socket通信</p>
-<p>共享内存的进程间通信需要通信进程建立共享内存区域。通常,一块共享内存区域驻留在生成共享内存段进程的地址空间。其他希望使用这个共享内存段进行通信的进程必须将此放到它们自己的地址空间上。</p>
-<h2 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h2><p>管道用于有亲缘关系的两个进程（父子进程）进行通信，写进程在管道的尾端写入数据，读进程在管道的首端读出数据。管道提供了简单的流控制机制，进程试图读空管道时，在有数据写入管道前，进程将一直阻塞。同样地，管道已经满时，进程再试图写管道，在其它进程从管道中移走数据之前，写进程将一直阻塞。</p>
-<p>通常,一个管道由一个进程创建,在进程调用fork之后,这个管道就能在父进程和子进程之间使用了。</p>
-<p>管道存在以下这些局限性：</p>
-<ol>
-<li>历史上,它们是半双工的(即数据只能在一个方向上流动)。现在,某些系统提供全双工管道,但是为了最佳的可移植性,我们决不应预先假定系统支持全双工管道</li>
-<li>管道只能在具有公共祖先的两个进程之间使用。</li>
-</ol>
-<p>在Unix中管道是通过调用<code>pipe</code>函数创建的。对于一个从子进程到父进程的管道,父进程关闭fd[1],子进程关闭fd[0]。</p>
-<p><img src="https://data2.liuin.cn/2018-04-18-15240546357016.jpg" alt=""></p>
-<h2 id="FIFO"><a href="#FIFO" class="headerlink" title="FIFO"></a>FIFO</h2><p>FIFO有时被称为命名管道。未命名的管道只能在两个相关的进程之间使用,而且这两个相关的进程还要有一个共同的创建了它们的祖先进程。但是,通过FIFO,不相关的进程也能交换数据。</p>
-<p>在Unix中使用<code>mkfifo</code>或者<code>mkfifoat</code>创建FIFO，使用<code>open</code>打开，使用正常文件的I/O函数对FIFO进行读写操作实现进程间通信的目的。</p>
-<p>使用FIFO实现两进程间通信的例子：</p>
-<p><img src="https://data2.liuin.cn/2018-04-18-15240551859039.jpg" alt=""></p>
-<h2 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h2><p>消息队列是消息的链接表,存储在内核中,由消息队列标识符标识。</p>
-<p>在Unix中使用<code>msgget</code>用于创建一个新队列或打开一个现有队列、<code>msgsnd</code>将新消息添加到队列尾端。<code>mmsgrcv</code>用于从队列中取消息。我们并不定要以先进先出次序取消息,也可以按消息的类型字段取消息。<br>每个消息包含一个正的长整型类型的字段、一个非负的长度以及实际数据字节数(对应于长度),所有这些都在将消息添加到队列时,传送给 msgsna。</p>
-<p>消息队列相比于其他方式有很多优点：它提供有格式的字节流，减少了开发人员的工作量；消息具有类型（system V）或优先级（posix）</p>
-<h2 id="Socket"><a href="#Socket" class="headerlink" title="Socket"></a>Socket</h2><p>Socket 是网络进程间通信的一种，我们将描述套接字网络进程间通信接口,进程用该接口能够和其他进程通信,无论它们是在同一台计算机上还是在不同的计算机上。实际上,这正是套接字接口的设计目标之一。</p>
-<p>Socket自身携带同步机制，不需要额外的方式来辅助实现同步。</p>
-<p>在Unix中使用<code>socket</code>、<code>bind</code>、<code>connect</code>、<code>listen</code>、<code>accept</code>等一系列系统调用建立连接并进行通信。</p>
-<h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><p>信号量是一个计数器，用于多进程提供对共享数据对象的访问。</p>
-<p>为了获得共享资源,进程需要执行下列操作。</p>
-<ol>
-<li>测试控制该资源的信号量</li>
-<li>若此信号量的值为正,则进程可以使用该资源。在这种情况下,进程会将信号量值减1,表示它使用了一个资源单位。</li>
-<li>否则,若此信号量的值为0,则进程进入休眠状态,直至信号量值大于0。进程被唤醒后,它返回至步骤(1)。</li>
-</ol>
-<p>当进程不再使用由一个信号量控制的共享资源时,该信号量值增1。如果有进程正在休眠等待此信号量,则唤醒它们。</p>
-<p>为了正确地实现信号量,信号量值的测试及减1操作应当是原子操作。为此,信号量通常是在内核中实现的。</p>
-<p>因为只能传递简单的数据，所以信号量常常只是用来进行进程间的同步。</p>
-<h2 id="共享内存"><a href="#共享内存" class="headerlink" title="共享内存"></a>共享内存</h2><p>共享存储允许两个或多个进程共享一个给定的存储区。因为数据不需要在客户进程和服务器进程之间复制,所以这是最快的一种IPC。</p>
-<p>不过使用共享内存的时候要注意保持同步，比如一个进程在写的时候，另一个进程要注意读写的问题，相当于线程中的线程安全。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
-<thead>
-<tr>
-<th>方式</th>
-<th>优点</th>
-<th>缺点</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>管道</td>
-<td>创建简单</td>
-<td>容量有限、速度慢、只能用于父子进程通讯、半双工通信方式</td>
-</tr>
-<tr>
-<td>FIFO</td>
-<td>克服了管道没有名字的限制、允许无亲缘关系进程间的通信</td>
-<td>速度慢</td>
-</tr>
-<tr>
-<td>消息队列</td>
-<td>承载信息量比较多、能够承载有格式的字节流</td>
-<td>容量受到系统限制</td>
-</tr>
-<tr>
-<td>Socket</td>
-<td>能够实现网络间进程的通信</td>
-<td>实现比较复杂</td>
-</tr>
-<tr>
-<td>信号量</td>
-<td>能够比较好地解决同步问题</td>
-<td>传递的信息较少，只能用于同步</td>
-</tr>
-<tr>
-<td>共享内存</td>
-<td>速度快</td>
-<td>要解决线程安全的问题</td>
-</tr>
-</tbody>
-</table>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li>《Unix环境高级编程》</li>
-<li>《Unix-Linux编程实践教程》</li>
-<li>《操作系统概念》</li>
-<li><a href="http://www.cnblogs.com/youngforever/p/3250270.html" target="_blank" rel="external">http://www.cnblogs.com/youngforever/p/3250270.html</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;总结Unix下进程间通信的几种方式及其特点&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="开发随笔" scheme="https://www.liuin.cn/categories/%E5%BC%80%E5%8F%91%E9%9A%8F%E7%AC%94/"/>
     
     
       <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
