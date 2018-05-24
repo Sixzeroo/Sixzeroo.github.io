@@ -1279,22 +1279,22 @@
 <p>如果用户正确登录，login就将完成如下工作：</p>
 <ol>
 <li>将当前工作目录更改为该用户的起始目录(chdir)。</li>
-<li>调用 chown更改该终端的所有权,使登录用户成为它的所有者。将对该终端设备的访问权限改变成“用户读和写”。</li>
+<li>调用chown更改该终端的所有权,使登录用户成为它的所有者。将对该终端设备的访问权限改变成“用户读和写”。</li>
 <li>调用setgid及initgroups设置进程的组ID</li>
 <li>用login得到的所有信息初始化环境:起始目录(HOME)、shell(SHEL)用户名(USER和 LOGNAME)以及一个系统默认路径(PATH)。</li>
 <li>1ogin进程更改为登录用户的用户ID( setuid)并调用该用户的登录 shell</li>
 </ol>
 <p><img src="https://data2.liuin.cn/2018-05-01-15251453247541.jpg" alt=""></p>
 <h2 id="网络登录"><a href="#网络登录" class="headerlink" title="网络登录"></a>网络登录</h2><p>通过串行终端登录至系统和经由网络登录至系统两者之间的主要(物理上的)区别是:网络登录时,在终端和计算机之间的连接不再是点到点的。在网络登录情况下,1ogin仅仅是一种可用的服务,这与其他网络服务(如FIP或SMIP)的性质相同</p>
-<p>为使同一个软件既能处理终端登录,又能处理网络登录,系统使用了一种称为伪终端( pseudo terminal)的软件驱动程序,它仿真串行终端的运行行为,并将终端操作映射为网络操作,反之亦然。</p>
+<p>为使同一个软件既能处理终端登录,又能处理网络登录,系统使用了一种称为伪终端(pseudo terminal)的软件驱动程序,它仿真串行终端的运行行为,并将终端操作映射为网络操作,反之亦然。</p>
 <ol>
 <li>BSD网络登录</li>
 </ol>
-<p>作为系统启动的一部分,init调用一个 shell,,使其执行shell脚本/etc/rc。由此shell脚本启动一个守护进程 inetd。一旦此shell脚本终止, inetd的父进程就变成init。 inetd等待TCP/IP连接请求到达主机,而当一个连接请求到达时,它执行一次fork,然后生成的子进程exec适当的程序。</p>
+<p>作为系统启动的一部分,init调用一个shell,,使其执行shell脚本/etc/rc。由此shell脚本启动一个守护进程 inetd。一旦此shell脚本终止, inetd的父进程就变成init。 inetd等待TCP/IP连接请求到达主机,而当一个连接请求到达时,它执行一次fork,然后生成的子进程exec适当的程序。</p>
 <p><img src="https://data2.liuin.cn/2018-05-01-15251533208482.jpg" alt=""></p>
 <p><img src="https://data2.liuin.cn/2018-05-01-15251534277316.jpg" alt=""></p>
 <p>当通过终端或网络登录时,我们得到一个登录shell,其标准输入、标准输出和标准错误要么连接到一个终端设备,要么连接到一个伪终端设备上。</p>
-<h2 id="进程组"><a href="#进程组" class="headerlink" title="进程组"></a>进程组</h2><p>进程组是一个或多个进程的集合。通常,它们是在同一作业中结合起来的,同一进程组中的各进程接收来自同一终端的各种信号。每个进程组有一个唯一的进程组ID。进程组ID类似于进程ID——它是一个正整数,并可存放在pid_t数据类型中。函数 getpgrp返回调用进程的进程组ID。</p>
+<h2 id="进程组"><a href="#进程组" class="headerlink" title="进程组"></a>进程组</h2><p>进程组是一个或多个进程的集合。通常,它们是在同一作业中结合起来的,<strong>同一进程组中的各进程接收来自同一终端的各种信号</strong>。每个进程组有一个唯一的进程组ID。进程组ID类似于进程ID——它是一个正整数,并可存放在pid_t数据类型中。函数 getpgrp返回调用进程的进程组ID。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> getpgrp(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: process group ID of calling process</span></div></pre></td></tr></table></figure>
 <p>getpgid函数返回指定进程所在的进程组ID：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> getpgid(<span class="keyword">pid_t</span> pid);</div><div class="line"></div><div class="line"><span class="comment">// Returns: process group ID if OK, −1 on error</span></div></pre></td></tr></table></figure>
@@ -1315,8 +1315,8 @@
 <li>该进程没有控制终端(下一节讨论控制终端)。如果在调用 setid之前该进程有一个控制终端,那么这种联系也被切断。</li>
 </ol>
 <p>如果该调用进程已经是一个进程组的组长,则此函数返回出错。为了保证不处于这种情况,通常先调用fork,然后使其父进程终止,而子进程则继续。因为子进程继承了父进程的进程组ID,而其进程ID则是新分配的,两者不可能相等,这就保证了子进程不是一个进程组的组长</p>
-<p>会话首进程是具有唯一进程ID的单个进程,所以可以将会话首进程的进程ID视为会话ID</p>
-<p>getsid函数返回会话首进程的进程组ID</p>
+<p>会话首进程是具有唯一进程ID的单个进程,所以<strong>可以将会话首进程的进程ID视为会话ID</strong></p>
+<p><code>getsid</code>函数返回会话首进程的进程组ID</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> getsid(<span class="keyword">pid_t</span> pid); </div><div class="line"></div><div class="line"><span class="comment">// Returns: session leader’s process group ID if OK, −1 on error</span></div></pre></td></tr></table></figure>
 <p>如若pid是0, getsid返回调用进程的会话首进程的进程组ID。出于安全方面的考虑些实现有如下限制:如若pid并不属于调用者所在的会话,那么调用进程就不能得到该会话首进程的进程组ID</p>
 <h2 id="控制终端"><a href="#控制终端" class="headerlink" title="控制终端"></a>控制终端</h2><p>会话和进程组还有一些其他特性</p>
@@ -1390,7 +1390,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> getpid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: process ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> getppid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: parent process ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">uid_t</span> getuid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: real user ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">uid_t</span> geteuid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: effective user ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">gid_t</span> getgid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: real group ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">gid_t</span> getegid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: effective group ID of calling process</span></div></pre></td></tr></table></figure>
 <h2 id="函数fork"><a href="#函数fork" class="headerlink" title="函数fork"></a>函数fork</h2><p>一个现有进程调用fork函数创建一个新的进程</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> fork(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 in child, process ID of child in parent, −1 on error</span></div></pre></td></tr></table></figure>
-<p>由fork创建的新进程被称为子进程( child process) fork函数被调用一次,但返回两次。两次返回的区别是子进程的返回值是0,而父进程的返回值则是新建子进程的进程ID。</p>
+<p>由fork创建的新进程被称为子进程(child process) fork函数被调用一次,但返回两次。两次返回的区别是子进程的返回值是0,而父进程的返回值则是新建子进程的进程ID。</p>
 <p>将子进程ID返回给父进程的理由是:因为一个进程的子进程可以有多个,<strong>并且没有一个函数使一个进程可以获得其所有子进程的进程ID</strong>。fork使子进程得到返回值0的理由是:一个进程只会有一个父进程,所以子进程总是可以调用 getppid以获得其父进程的进程ID(进程ID0总是由内核交换进程使用,所以一个子进程的进程ID不可能为0)</p>
 <p>子进程和父进程继续执行fork调用之后的指令。子进程是父进程的副本。</p>
 <p>由于在fork之后经常跟随着exec,所以现在的很多实现并不执行一个父进程数据段栈和堆的完全副本。作为替代,使用了<strong>写时复制</strong>( copy-on-write,COW)技术。这些区域由父进程和子进程共享,而且内核将它们的访问权限改变为只读。如果父进程和子进程中的任一个试图修改这些区域,则内核只为修改区域的那块内存制作一个副本,通常是虚拟存储系统中的一“页”。</p>
@@ -1450,7 +1450,7 @@
 </ol>
 <h2 id="函数vfork"><a href="#函数vfork" class="headerlink" title="函数vfork"></a>函数vfork</h2><p>vfork函数的调用序列和返回值与fork相同,但两者的语义不同</p>
 <p>vfork函数用于创建一个新进程,而该新进程的目的是exec一个新程序。但是它并不将父进程的地址空间完全复制到子进程中,因为子进程会立即调用exec(或exit),于是也就<strong>不会引用该地址空间</strong>。不过在子进程调用exec或exit之前,它在父进程的空间中运行。这种优化工作方式在某些UNIX系统的实现中提高了效率,但如果子进程修改数据(除了用于存放 vfork返回值的变量)、进行函数调用、或者没有调用exec或exit就返回都可能会带来未知的结果。(就像上一节中提及的,实现采用写时复制技术以提高fork之后跟随exec操作的效率,但是不复制比部分复制还是要快一些)</p>
-<p>vfork和fork之间的另一个区别是: vfork保证子进程先运行,在它调用exec或exit之后父进程才可能被调度运行,当子进程调用这两个函数中的任意一个时,父进程会恢复运行。</p>
+<p>vfork和fork之间的另一个区别是: <strong>vfork保证子进程先运行,在它调用exec或exit之后父进程才可能被调度运行,当子进程调用这两个函数中的任意一个时,父进程会恢复运行</strong>。</p>
 <h2 id="函数exit"><a href="#函数exit" class="headerlink" title="函数exit"></a>函数exit</h2><p>进程有5种正常终止和3种异常终止的方式，5种正常终止的方式如下：</p>
 <ol>
 <li>从main返回</li>
@@ -1465,11 +1465,11 @@
 <li>接到一个信号</li>
 <li>最后一个线程对取消请求做出响应</li>
 </ol>
-<p>不管进程如何终止,最后都会执行内核中的同一段代码。这段代码为相应进程关闭所有打开描述符,释放它所使用的存储器等。</p>
+<p>不管进程如何终止,最后都会执行内核中的同一段代码。这段代码为相应进程<strong>关闭所有打开描述符,释放它所使用的存储器等</strong>。</p>
 <p>对上述任意一种终止情形,我们都希望终止进程能够通知其父进程它是如何终止的。对于3个终止函数(exit、_exit和_Exit),实现这一点的方法是,将其退出状态( exit status)作为参数传送给函数。在异常终止情况,内核(不是进程本身)<strong>产生一个指示其异常终止原因的终止状态</strong>( termination status)。在任意一种情况下,该终止进程的父进程都能用wait或wa1tpid函数(将在下一节说明)取得其终止状态。</p>
 <p>上面说明了子进程将其终止状态返回给其父进程，但是如果父进程在子进程之前终止,又将如何呢?其回答是:<strong>对于父进程已经终止的所有进程,它们的父进程都改变为init进程</strong>。我们称这些进程由init进程收养。其操作过程大致是:在一个进程终止时,内核逐个检查所有活动进程,以判断它是否是正要终止进程的子进程,如果是,则该进程的父进程ID就更改为1(init进程的ID)。这种处理方法保证了每个进程有一个父进程。</p>
 <p>如果子进程在父进程之前终止,那么父进程又如何能在做相应检查时得到子进程的终止状态呢?如果子进程完全消失了,父进程在最终准备好检查子进程是否终止时是无法获取它的终止状态的。内核为每个终止子进程保存了一定量的信息,所以当终止进程的父进程调用wait或 waitpid时,可以得到这些信息。</p>
-<p>在UNIX术语中,一个已经终止、但是其父进程尚未对其进行善后处理(获取终止子进程的有关信息、释放它仍占用的资源)的进程被称为<strong>僵死进程</strong>( zombie.)。Ps()命令将僵死进程的状态打印为Z。如果编写一个长期运行的程序,它fork了很多子进程,那么除非父进程等待取得子进程的终止状态,不然这些子进程终止后就会变成僵死进程</p>
+<p>在UNIX术语中,一个已经终止、但是其父进程尚未对其进行善后处理(获取终止子进程的有关信息、释放它仍占用的资源)的进程被称为<strong>僵死进程</strong>(zombie)。ps(1)命令将僵死进程的状态打印为Z。如果编写一个长期运行的程序,它fork了很多子进程,那么除非父进程等待取得子进程的终止状态,不然这些子进程终止后就会变成僵死进程</p>
 <p>最后一个要考虑的问题是:一个由init进程收养的进程终止时会发生什么?它会不会变成一个僵死进程?对此问题的回答是“否”,因为init被编写成无论何时只要有一个子进程终止,init就会调用一个wait函数取得其终止状态。这样也就防止了在系统中塞满僵死进程。</p>
 <h2 id="函数wait-和-waitpid"><a href="#函数wait-和-waitpid" class="headerlink" title="函数wait 和 waitpid"></a>函数wait 和 waitpid</h2><p>当一个进程正常或异常终止时,内核就向其父进程发送 SIGCHLD信号。因为子进程终止是个异步事件(这可以在父进程运行的任何时候发生),所以这种信号也是内核向父进程发的异步通知。父进程可以选择忽略该信号,或者提供一个该信号发生时即被调用执行的函数(信号处理程序)。对于这种信号的系统默认动作是忽略它。</p>
 <p>现在我们要知道的是调用wait和waitpid时进程都发生什么：</p>
@@ -1578,8 +1578,8 @@
 <p>如果 cmdstring是一个空指针,则仅当命令处理程序可用时, system返回非0值,这一特征可以确定在一个给定的操作系统上是否支持 system函数。在UNIX中, system总是可用的。</p>
 <p>因为 system在其实现中调用了fork、exec和 waitpid,因此有3种返回值<br>(1)fork失败或者 waitpid返回除 EINTR之外的出错,则 system返回-1,并且设置errno以指示错误类型。<br>(2)如果 exec失败(表示不能执行shel1),则其返回值如同 shell执行了exit(127)一样<br>(3)否则所有3个函数(fork、exec和 waitpid)都成功,那么 system的返回值是 shell的终止状态,其格式已在 waitpid中说明。</p>
 <p>使用 system而不是直接使用fork和exec的优点是: system进行了所需的各种出错处理以及各种信号处理</p>
-<h2 id="进程会计"><a href="#进程会计" class="headerlink" title="进程会计"></a>进程会计</h2><p>大多数UNIX系统提供了一个选项以进行进程会计( process accounting)处理。启用该选项后,每当进程结束时内核就写一个会计记录。典型的会计记录包含总量较小的二进制数据,一般包括命令名、所使用的CPU时间总量、用户ID和组ID、启动时间等。</p>
-<p>一个至今没有说明的函数(acct)启用和禁用进程会计。唯一使用这一函数的是 accton(8)命令(这是在几种平台上都类似的少数几条命令中的一条)。超级用户执行一个带路径名参数的accton命令启用会计处理。会计记录写到指定的文件中</p>
+<h2 id="进程会计"><a href="#进程会计" class="headerlink" title="进程会计"></a>进程会计</h2><p>大多数UNIX系统提供了一个选项以进行进程会计( process accounting)处理。启用该选项后,每当进程结束时内核就写一个会计记录。典型的会计记录包含总量较小的二进制数据,一般包括<strong>命令名、所使用的CPU时间总量、用户ID和组ID、启动时间</strong>等。</p>
+<p>一个至今没有说明的函数(acct)启用和禁用进程会计。唯一使用这一函数的是<code>accton(8)</code>命令(这是在几种平台上都类似的少数几条命令中的一条)。超级用户执行一个带路径名参数的accton命令启用会计处理。会计记录写到指定的文件中</p>
 <p>会计记录结构定义在头文件<sys acct.h="">中，每个系统都有不同，但是基本样式如下：</sys></p>
 <p><img src="https://data2.liuin.cn/2018-05-01-15251417041152.jpg" alt=""></p>
 <p>会计记录所需的各个数据(各CPU时间、传输的字符数等)都由内核保存在进程表中,并在个新进程被创建时初始化(如fork之后在子进程中)。进程终止时写一个会计记录。</p>
@@ -1589,7 +1589,7 @@
 <p>系统通常记录用户登录时使用的名字(见68节),用get1ogin函数可以获取此登录名。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">getlogin</span><span class="params">(<span class="keyword">void</span>)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to string giving login name if OK, NULL on error</span></div></pre></td></tr></table></figure>
 <p>如果调用此函数的进程没有连接到用户登录时所用的终端,则函数会失败。通常称这些进程为守护进程(daemon)</p>
-<h2 id="进程调度"><a href="#进程调度" class="headerlink" title="进程调度"></a>进程调度</h2><p>UNX系统历史上对进程提供的只是基于调度优先级的粗粒度的控制。调度策略和调度优先级是由内核确定的。<strong>进程可以通过调整nice值选择以更低优先级运行</strong>(通过调整nice值降低它对CPU的占有,因此该进程是“友好的”)。只有特权进程允许提高调度权限</p>
+<h2 id="进程调度"><a href="#进程调度" class="headerlink" title="进程调度"></a>进程调度</h2><p>UNIX系统历史上对进程提供的只是基于调度优先级的粗粒度的控制。调度策略和调度优先级是由内核确定的。<strong>进程可以通过调整nice值选择以更低优先级运行</strong>(通过调整nice值降低它对CPU的占有,因此该进程是“友好的”)。只有特权进程允许提高调度权限</p>
 <p>Single UNIX Specification中nice值的范围在0~(2*NZERO)-1之间,有些实现支持0~2*NERO。nice值越小,优先级越高。虽然这看起来有点倒退,但实际上是有道理的:你越友好,你的调度优先级就越低。 NERO是系统默认的nice值。</p>
 <p>进程可以通过nice函数获取或更改它的nice值。使用这个函数,进程只能影响自己的nce值,不能影响任何其他进程的nice值</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">nice</span><span class="params">(<span class="keyword">int</span> incr)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: new nice value − NZERO if OK, −1 on error</span></div></pre></td></tr></table></figure>
@@ -1654,7 +1654,7 @@
 <p>其中, <code>atexit</code>的参数是一个函数地址,当调用此函数时无需向它传递任何参数,也不期望它返回一个值。exit调用这些函数的顺序与它们登记时候的顺序相反。同一函数如若登记多次也会被调用多次。</p>
 <p>exit首先调用各终止程序，然后关闭（通过fclose）所有打开的流</p>
 <p><img src="https://data2.liuin.cn/2018-04-30-15250569958373.jpg" alt=""></p>
-<p>注意,内核使程序执行的唯一方法是调用一个eXec函数。进程自愿终止的唯一方法是显式或隐式地(通过调用exit)调用exit或Exit。进程也可非自愿地由一个信号使其终止</p>
+<p>注意,<strong>内核使程序执行的唯一方法是调用一个exec函数。进程自愿终止的唯一方法是显式或隐式地(通过调用exit)调用exit或Exit</strong>。进程也可非自愿地由一个信号使其终止</p>
 <p>atexit函数有点像析构函数的意思</p>
 <h2 id="命令行参数"><a href="#命令行参数" class="headerlink" title="命令行参数"></a>命令行参数</h2><p>当执行一个程序时,调用exec的进程可将命令行参数传递给该新程序。</p>
 <p>ISO C和POSIX.1都要求argv[argc]是一个空指针。这就使我们可以将参数处理循环改写为</p>
@@ -1696,6 +1696,7 @@
 <li>setenv将name设置为value。</li>
 <li>unsetenv删除name的定义</li>
 </ul>
+<p>环境表(指向实际<code>name=value</code>字符串的指针数组)和环境字符串通常存放在进程存储空间的顶部(栈之上)。删除一个字符串很简单——只要先在环境表中找到该指针,然后将所有后续指针都向环境表首部顺次移动一个位置。但是增加一个字符串或修改一个现有的字符串就困难得多。环境表和环境字符串通常占用的是进程地址空间的顶部,所以它不能再向高地址方向(向上)扩展:同时也不能移动在它之下的各栈帧,所以它也不能向低地址方向(向下)扩展。两者组合使得该空间的长度不能再增加。</p>
 <h2 id="函数setjmp和longjmp"><a href="#函数setjmp和longjmp" class="headerlink" title="函数setjmp和longjmp"></a>函数setjmp和longjmp</h2><p>在C中,goto语句是不能跨越函数的,而执行这种类型跳转功能的是函数 setjmp和1ongjmp两个函数对于处理发生在很深层嵌套函数调用中的出错情况是非常有用的</p>
 <p>setjmp和1ongjmp函数可以看成一个非局部goto函数。非局部指的是这不是由普通的C语言goto语句在一个函数内实施的跳转,而是在栈上跳过若于调用帧,返回到当前函数调用路径上的某一个函数中。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;setjmp.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setjmp</span><span class="params">(jmp_buf env)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if called directly, nonzero if returning from a call to longjmp</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">longjmp</span><span class="params">(jmp_buf env, <span class="keyword">int</span> val)</span></span>;</div></pre></td></tr></table></figure>
@@ -2626,7 +2627,7 @@
 <li>执行系统默认操作</li>
 </ul>
 <p><img src="https://data2.liuin.cn/2018-04-18-15240592901538.jpg" alt=""></p>
-<h2 id="函数signal"><a href="#函数signal" class="headerlink" title="函数signal"></a>函数signal</h2><p>UNX系统信号机制最简单的接口是 signa1函数，其用于捕获信号，并捕获以后发生什么事情。</p>
+<h2 id="函数signal"><a href="#函数signal" class="headerlink" title="函数signal"></a>函数signal</h2><p>UNX系统信号机制最简单的接口是 signal函数，其用于捕获信号，并捕获以后发生什么事情。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">void</span> (*signal(<span class="keyword">int</span> signo, <span class="keyword">void</span> (*func)(<span class="keyword">int</span>)))(<span class="keyword">int</span>); </div><div class="line"></div><div class="line"><span class="comment">//Returns: previous disposition of signal (see following) if OK, SIG_ERR on error</span></div></pre></td></tr></table></figure>
 <p><code>signo</code>参数是信号名。<code>func</code>的值是常量SIG_IGN、常量SIG_DEL或当接到此信号后要调用的函数的地址。<code>SIG_IGN</code>表示向内核表示忽略此信号(记住有两个信号 SIGKILI和 SIGSTOP不能忽略)。SIG_DEL表示接到此信号后的动作是系统默认动作。</p>
 <p>当指定函数地址时，则在信号发生时，调用该函数，我们称这种处理为捕获该信号，称此函数为信号处理程序( signal handler)或信号捕捉函数 (signal-catching function)</p>
@@ -2668,7 +2669,7 @@
 <p>在调用<code>sigprocmask</code>后如果有任何未决的、不再阻塞的信号,则在<code>sigprocmask</code>返回前至少将其中之一递送给该进程</p>
 <h2 id="函数sigpending"><a href="#函数sigpending" class="headerlink" title="函数sigpending"></a>函数sigpending</h2><p><code>sigpending</code>函数返回一信号集,对于调用进程而言,其中的各信号是阻塞不能递送的,因而也一定是当前未决的。该信号集通过set参数返回</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigpending</span><span class="params">(<span class="keyword">sigset_t</span> *<span class="built_in">set</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<h2 id="函数sigaction"><a href="#函数sigaction" class="headerlink" title="函数sigaction"></a>函数sigaction</h2><p><code>sigaction</code>函数的功能是检查或修改(或检查并修改)与指定信号相关联的处理动作。此函数取代了UNX早期版本使用的 signa1函数。</p>
+<h2 id="函数sigaction"><a href="#函数sigaction" class="headerlink" title="函数sigaction"></a>函数sigaction</h2><p><code>sigaction</code>函数的功能是检查或修改(或检查并修改)与指定信号相关联的处理动作。此函数取代了UNX早期版本使用的 signal函数。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigaction</span><span class="params">(<span class="keyword">int</span> signo, <span class="keyword">const</span> <span class="keyword">struct</span> sigaction *<span class="keyword">restrict</span> act, <span class="keyword">struct</span> sigaction *<span class="keyword">restrict</span> oact)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
 <p>参数signo是要检测或修改其具体动作的信号编号。若act指针非空,则要修改其动作。如果oact指针非空,则系统经由oact指针返回该信号的上一个动作。</p>
 <h2 id="函数abort"><a href="#函数abort" class="headerlink" title="函数abort"></a>函数abort</h2><p>abort函数的功能是使程序异常终止，此函数将 SIGABRT信号发送给调用进程(进程不应忽略此信号)。</p>

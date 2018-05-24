@@ -123,7 +123,7 @@
 <meta property="og:image" content="https://data2.liuin.cn/2018-04-30-15251013810789.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-04-30-15251015827722.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-01-15251417041152.jpg">
-<meta property="og:updated_time" content="2018-05-01T02:38:36.000Z">
+<meta property="og:updated_time" content="2018-05-24T09:07:25.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="APUE 进程控制">
 <meta name="twitter:description" content="《UNIX环境高级编程》第8章 进程控制 笔记">
@@ -460,7 +460,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  6,669 字
+                  6,670 字
                 </span>
               
 
@@ -496,7 +496,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> getpid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: process ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> getppid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: parent process ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">uid_t</span> getuid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: real user ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">uid_t</span> geteuid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: effective user ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">gid_t</span> getgid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: real group ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">gid_t</span> getegid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: effective group ID of calling process</span></div></pre></td></tr></table></figure>
 <h2 id="函数fork"><a href="#函数fork" class="headerlink" title="函数fork"></a>函数fork</h2><p>一个现有进程调用fork函数创建一个新的进程</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> fork(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 in child, process ID of child in parent, −1 on error</span></div></pre></td></tr></table></figure>
-<p>由fork创建的新进程被称为子进程( child process) fork函数被调用一次,但返回两次。两次返回的区别是子进程的返回值是0,而父进程的返回值则是新建子进程的进程ID。</p>
+<p>由fork创建的新进程被称为子进程(child process) fork函数被调用一次,但返回两次。两次返回的区别是子进程的返回值是0,而父进程的返回值则是新建子进程的进程ID。</p>
 <p>将子进程ID返回给父进程的理由是:因为一个进程的子进程可以有多个,<strong>并且没有一个函数使一个进程可以获得其所有子进程的进程ID</strong>。fork使子进程得到返回值0的理由是:一个进程只会有一个父进程,所以子进程总是可以调用 getppid以获得其父进程的进程ID(进程ID0总是由内核交换进程使用,所以一个子进程的进程ID不可能为0)</p>
 <p>子进程和父进程继续执行fork调用之后的指令。子进程是父进程的副本。</p>
 <p>由于在fork之后经常跟随着exec,所以现在的很多实现并不执行一个父进程数据段栈和堆的完全副本。作为替代,使用了<strong>写时复制</strong>( copy-on-write,COW)技术。这些区域由父进程和子进程共享,而且内核将它们的访问权限改变为只读。如果父进程和子进程中的任一个试图修改这些区域,则内核只为修改区域的那块内存制作一个副本,通常是虚拟存储系统中的一“页”。</p>
@@ -556,7 +556,7 @@
 </ol>
 <h2 id="函数vfork"><a href="#函数vfork" class="headerlink" title="函数vfork"></a>函数vfork</h2><p>vfork函数的调用序列和返回值与fork相同,但两者的语义不同</p>
 <p>vfork函数用于创建一个新进程,而该新进程的目的是exec一个新程序。但是它并不将父进程的地址空间完全复制到子进程中,因为子进程会立即调用exec(或exit),于是也就<strong>不会引用该地址空间</strong>。不过在子进程调用exec或exit之前,它在父进程的空间中运行。这种优化工作方式在某些UNIX系统的实现中提高了效率,但如果子进程修改数据(除了用于存放 vfork返回值的变量)、进行函数调用、或者没有调用exec或exit就返回都可能会带来未知的结果。(就像上一节中提及的,实现采用写时复制技术以提高fork之后跟随exec操作的效率,但是不复制比部分复制还是要快一些)</p>
-<p>vfork和fork之间的另一个区别是: vfork保证子进程先运行,在它调用exec或exit之后父进程才可能被调度运行,当子进程调用这两个函数中的任意一个时,父进程会恢复运行。</p>
+<p>vfork和fork之间的另一个区别是: <strong>vfork保证子进程先运行,在它调用exec或exit之后父进程才可能被调度运行,当子进程调用这两个函数中的任意一个时,父进程会恢复运行</strong>。</p>
 <h2 id="函数exit"><a href="#函数exit" class="headerlink" title="函数exit"></a>函数exit</h2><p>进程有5种正常终止和3种异常终止的方式，5种正常终止的方式如下：</p>
 <ol>
 <li>从main返回</li>
@@ -571,11 +571,11 @@
 <li>接到一个信号</li>
 <li>最后一个线程对取消请求做出响应</li>
 </ol>
-<p>不管进程如何终止,最后都会执行内核中的同一段代码。这段代码为相应进程关闭所有打开描述符,释放它所使用的存储器等。</p>
+<p>不管进程如何终止,最后都会执行内核中的同一段代码。这段代码为相应进程<strong>关闭所有打开描述符,释放它所使用的存储器等</strong>。</p>
 <p>对上述任意一种终止情形,我们都希望终止进程能够通知其父进程它是如何终止的。对于3个终止函数(exit、_exit和_Exit),实现这一点的方法是,将其退出状态( exit status)作为参数传送给函数。在异常终止情况,内核(不是进程本身)<strong>产生一个指示其异常终止原因的终止状态</strong>( termination status)。在任意一种情况下,该终止进程的父进程都能用wait或wa1tpid函数(将在下一节说明)取得其终止状态。</p>
 <p>上面说明了子进程将其终止状态返回给其父进程，但是如果父进程在子进程之前终止,又将如何呢?其回答是:<strong>对于父进程已经终止的所有进程,它们的父进程都改变为init进程</strong>。我们称这些进程由init进程收养。其操作过程大致是:在一个进程终止时,内核逐个检查所有活动进程,以判断它是否是正要终止进程的子进程,如果是,则该进程的父进程ID就更改为1(init进程的ID)。这种处理方法保证了每个进程有一个父进程。</p>
 <p>如果子进程在父进程之前终止,那么父进程又如何能在做相应检查时得到子进程的终止状态呢?如果子进程完全消失了,父进程在最终准备好检查子进程是否终止时是无法获取它的终止状态的。内核为每个终止子进程保存了一定量的信息,所以当终止进程的父进程调用wait或 waitpid时,可以得到这些信息。</p>
-<p>在UNIX术语中,一个已经终止、但是其父进程尚未对其进行善后处理(获取终止子进程的有关信息、释放它仍占用的资源)的进程被称为<strong>僵死进程</strong>( zombie.)。Ps()命令将僵死进程的状态打印为Z。如果编写一个长期运行的程序,它fork了很多子进程,那么除非父进程等待取得子进程的终止状态,不然这些子进程终止后就会变成僵死进程</p>
+<p>在UNIX术语中,一个已经终止、但是其父进程尚未对其进行善后处理(获取终止子进程的有关信息、释放它仍占用的资源)的进程被称为<strong>僵死进程</strong>(zombie)。ps(1)命令将僵死进程的状态打印为Z。如果编写一个长期运行的程序,它fork了很多子进程,那么除非父进程等待取得子进程的终止状态,不然这些子进程终止后就会变成僵死进程</p>
 <p>最后一个要考虑的问题是:一个由init进程收养的进程终止时会发生什么?它会不会变成一个僵死进程?对此问题的回答是“否”,因为init被编写成无论何时只要有一个子进程终止,init就会调用一个wait函数取得其终止状态。这样也就防止了在系统中塞满僵死进程。</p>
 <h2 id="函数wait-和-waitpid"><a href="#函数wait-和-waitpid" class="headerlink" title="函数wait 和 waitpid"></a>函数wait 和 waitpid</h2><p>当一个进程正常或异常终止时,内核就向其父进程发送 SIGCHLD信号。因为子进程终止是个异步事件(这可以在父进程运行的任何时候发生),所以这种信号也是内核向父进程发的异步通知。父进程可以选择忽略该信号,或者提供一个该信号发生时即被调用执行的函数(信号处理程序)。对于这种信号的系统默认动作是忽略它。</p>
 <p>现在我们要知道的是调用wait和waitpid时进程都发生什么：</p>
@@ -684,8 +684,8 @@
 <p>如果 cmdstring是一个空指针,则仅当命令处理程序可用时, system返回非0值,这一特征可以确定在一个给定的操作系统上是否支持 system函数。在UNIX中, system总是可用的。</p>
 <p>因为 system在其实现中调用了fork、exec和 waitpid,因此有3种返回值<br>(1)fork失败或者 waitpid返回除 EINTR之外的出错,则 system返回-1,并且设置errno以指示错误类型。<br>(2)如果 exec失败(表示不能执行shel1),则其返回值如同 shell执行了exit(127)一样<br>(3)否则所有3个函数(fork、exec和 waitpid)都成功,那么 system的返回值是 shell的终止状态,其格式已在 waitpid中说明。</p>
 <p>使用 system而不是直接使用fork和exec的优点是: system进行了所需的各种出错处理以及各种信号处理</p>
-<h2 id="进程会计"><a href="#进程会计" class="headerlink" title="进程会计"></a>进程会计</h2><p>大多数UNIX系统提供了一个选项以进行进程会计( process accounting)处理。启用该选项后,每当进程结束时内核就写一个会计记录。典型的会计记录包含总量较小的二进制数据,一般包括命令名、所使用的CPU时间总量、用户ID和组ID、启动时间等。</p>
-<p>一个至今没有说明的函数(acct)启用和禁用进程会计。唯一使用这一函数的是 accton(8)命令(这是在几种平台上都类似的少数几条命令中的一条)。超级用户执行一个带路径名参数的accton命令启用会计处理。会计记录写到指定的文件中</p>
+<h2 id="进程会计"><a href="#进程会计" class="headerlink" title="进程会计"></a>进程会计</h2><p>大多数UNIX系统提供了一个选项以进行进程会计( process accounting)处理。启用该选项后,每当进程结束时内核就写一个会计记录。典型的会计记录包含总量较小的二进制数据,一般包括<strong>命令名、所使用的CPU时间总量、用户ID和组ID、启动时间</strong>等。</p>
+<p>一个至今没有说明的函数(acct)启用和禁用进程会计。唯一使用这一函数的是<code>accton(8)</code>命令(这是在几种平台上都类似的少数几条命令中的一条)。超级用户执行一个带路径名参数的accton命令启用会计处理。会计记录写到指定的文件中</p>
 <p>会计记录结构定义在头文件<sys acct.h="">中，每个系统都有不同，但是基本样式如下：</sys></p>
 <p><img src="https://data2.liuin.cn/2018-05-01-15251417041152.jpg" alt=""></p>
 <p>会计记录所需的各个数据(各CPU时间、传输的字符数等)都由内核保存在进程表中,并在个新进程被创建时初始化(如fork之后在子进程中)。进程终止时写一个会计记录。</p>
@@ -695,7 +695,7 @@
 <p>系统通常记录用户登录时使用的名字(见68节),用get1ogin函数可以获取此登录名。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">getlogin</span><span class="params">(<span class="keyword">void</span>)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to string giving login name if OK, NULL on error</span></div></pre></td></tr></table></figure>
 <p>如果调用此函数的进程没有连接到用户登录时所用的终端,则函数会失败。通常称这些进程为守护进程(daemon)</p>
-<h2 id="进程调度"><a href="#进程调度" class="headerlink" title="进程调度"></a>进程调度</h2><p>UNX系统历史上对进程提供的只是基于调度优先级的粗粒度的控制。调度策略和调度优先级是由内核确定的。<strong>进程可以通过调整nice值选择以更低优先级运行</strong>(通过调整nice值降低它对CPU的占有,因此该进程是“友好的”)。只有特权进程允许提高调度权限</p>
+<h2 id="进程调度"><a href="#进程调度" class="headerlink" title="进程调度"></a>进程调度</h2><p>UNIX系统历史上对进程提供的只是基于调度优先级的粗粒度的控制。调度策略和调度优先级是由内核确定的。<strong>进程可以通过调整nice值选择以更低优先级运行</strong>(通过调整nice值降低它对CPU的占有,因此该进程是“友好的”)。只有特权进程允许提高调度权限</p>
 <p>Single UNIX Specification中nice值的范围在0~(2*NZERO)-1之间,有些实现支持0~2*NERO。nice值越小,优先级越高。虽然这看起来有点倒退,但实际上是有道理的:你越友好,你的调度优先级就越低。 NERO是系统默认的nice值。</p>
 <p>进程可以通过nice函数获取或更改它的nice值。使用这个函数,进程只能影响自己的nce值,不能影响任何其他进程的nice值</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">nice</span><span class="params">(<span class="keyword">int</span> incr)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: new nice value − NZERO if OK, −1 on error</span></div></pre></td></tr></table></figure>
@@ -762,7 +762,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年5月1日 - 10时05分
+	2018年5月24日 - 17时05分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -1009,7 +1009,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      321.5k 字
+      321.7k 字
     </span>
   
 
