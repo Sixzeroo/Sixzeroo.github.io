@@ -88,7 +88,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Codeforces," />
+  <meta name="keywords" content="Linux," />
 
 
 
@@ -106,18 +106,33 @@
 
 
 
-<meta name="description" content="比赛链接：http://codeforces.com/contest/805">
-<meta name="keywords" content="Codeforces">
+<meta name="description" content="UNIX网络编程必读书籍——《UNIX网络编程卷1》  基本套接字编程 笔记">
+<meta name="keywords" content="Linux">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Codeforces Round #411 (Div. 2) 题解">
-<meta property="og:url" content="https://www.liuin.cn/2017/05/05/Codeforces-Round-411-Div-2-题解/index.html">
+<meta property="og:title" content="《UNIX网络编程卷1》笔记 基本套接字编程部分">
+<meta property="og:url" content="https://www.liuin.cn/2018/05/23/《UNIX网络编程卷1》笔记-基本套接字编程部分/index.html">
 <meta property="og:site_name" content="Sixzeroo">
-<meta property="og:description" content="比赛链接：http://codeforces.com/contest/805">
+<meta property="og:description" content="UNIX网络编程必读书籍——《UNIX网络编程卷1》  基本套接字编程 笔记">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-05-13T07:56:53.000Z">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-22-15269964950047.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-22-15269968296764.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-22-15269969711360.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-22-15269972347844.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-22-15269973186591.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-22-15269974255787.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-23-15270558826021.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-23-15270567699154.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-23-15270568142560.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-23-15270571324262.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-23-15270571987014.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-23-15270592134854.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-23-15270603977151.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-23-15270604018451.jpg">
+<meta property="og:updated_time" content="2018-05-23T08:41:31.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Codeforces Round #411 (Div. 2) 题解">
-<meta name="twitter:description" content="比赛链接：http://codeforces.com/contest/805">
+<meta name="twitter:title" content="《UNIX网络编程卷1》笔记 基本套接字编程部分">
+<meta name="twitter:description" content="UNIX网络编程必读书籍——《UNIX网络编程卷1》  基本套接字编程 笔记">
+<meta name="twitter:image" content="https://data2.liuin.cn/2018-05-22-15269964950047.jpg">
 
 
 
@@ -147,7 +162,7 @@
 
 
 
-  <link rel="canonical" href="https://www.liuin.cn/2017/05/05/Codeforces-Round-411-Div-2-题解/"/>
+  <link rel="canonical" href="https://www.liuin.cn/2018/05/23/《UNIX网络编程卷1》笔记-基本套接字编程部分/"/>
 
 
 
@@ -163,7 +178,7 @@
   </script>
 
 
-  <title>Codeforces Round #411 (Div. 2) 题解 | Sixzeroo</title>
+  <title>《UNIX网络编程卷1》笔记 基本套接字编程部分 | Sixzeroo</title>
   
 
 
@@ -356,7 +371,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2017/05/05/Codeforces-Round-411-Div-2-题解/">
+    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2018/05/23/《UNIX网络编程卷1》笔记-基本套接字编程部分/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Sixzeroo">
@@ -373,7 +388,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">Codeforces Round #411 (Div. 2) 题解</h2>
+          <h2 class="post-title" itemprop="name headline">《UNIX网络编程卷1》笔记 基本套接字编程部分</h2>
         
 
         <div class="post-meta">
@@ -385,8 +400,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-05T00:56:40+08:00">
-                2017-05-05
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-23T21:36:29+08:00">
+                2018-05-23
               </time>
             
 
@@ -408,8 +423,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法/" itemprop="url" rel="index">
-                    <span itemprop="name">算法</span>
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
                   </a>
                 </span>
 
@@ -425,7 +440,7 @@
 
           
           
-             <span id="/2017/05/05/Codeforces-Round-411-Div-2-题解/" class="leancloud_visitors" data-flag-title="Codeforces Round #411 (Div. 2) 题解">
+             <span id="/2018/05/23/《UNIX网络编程卷1》笔记-基本套接字编程部分/" class="leancloud_visitors" data-flag-title="《UNIX网络编程卷1》笔记 基本套接字编程部分">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -450,7 +465,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  881 字
+                  4,021 字
                 </span>
               
 
@@ -475,31 +490,95 @@
       
 
       
-        <p>比赛链接：<a href="http://codeforces.com/contest/805" target="_blank" rel="external">http://codeforces.com/contest/805</a></p>
+        <p>UNIX网络编程必读书籍——《UNIX网络编程卷1》  基本套接字编程 笔记</p>
 <a id="more"></a>
-<h2 id="A-Fake-NP"><a href="#A-Fake-NP" class="headerlink" title="A Fake NP"></a>A Fake NP</h2><h3 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h3><p>给出一个范围[l,r]，对于所有的从l到r的数的因子数中出现最多的因子数</p>
-<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>可以发现除了范围内只有一个数，其他情况2都是出现次数最多的因子数</p>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> l,r;</div><div class="line">	<span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;l&gt;&gt;r)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">if</span>(l==r)</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;l&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">		<span class="keyword">else</span></div><div class="line">			<span class="built_in">cout</span>&lt;&lt;<span class="string">"2"</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="B-3-palindrome"><a href="#B-3-palindrome" class="headerlink" title="B 3-palindrome"></a>B 3-palindrome</h2><h3 id="题意-1"><a href="#题意-1" class="headerlink" title="题意"></a>题意</h3><p>要求你创建一个仅含有a、b、c三个字符的长度为n的序列，要求序列中不含有长度为3的回文串,，并且要求含有c字符的数目尽可能少。</p>
-<h3 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h3><p>“aabb”这样的字符创不断循环就不会含有长度为3的回文串</p>
-<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">olve()</div><div class="line">&#123;</div><div class="line">	<span class="built_in">string</span> st=<span class="string">"aabb"</span>;</div><div class="line">	<span class="keyword">int</span> n;</div><div class="line">	<span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;n)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">int</span> d=n/<span class="number">4</span>;</div><div class="line">		n%=<span class="number">4</span>;</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;d;i++)</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;st;</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;st[i];</div><div class="line">		<span class="built_in">cout</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="C-Find-Amir"><a href="#C-Find-Amir" class="headerlink" title="C Find Amir"></a>C Find Amir</h2><h3 id="题意-2"><a href="#题意-2" class="headerlink" title="题意"></a>题意</h3><p>给出编号为1到n的n个点，规定两点(i,j)之间的权值为(i+j)mod(n+1)，求将所有点连接起来的最小代价</p>
-<h3 id="题解-2"><a href="#题解-2" class="headerlink" title="题解"></a>题解</h3><ul>
-<li>最小生成树问题，用贪心思想，发现将第1小的点和第1大的点配对，第2小的点和第2大的点配对，。。。（以此类推可以配对n/2条边）,这样的每次配对的代价都是0</li>
-<li>这样两两结对以后（奇数情况下会多出一个点），再将第i大点和第i+1小的点配对，这种配对的每次代价为1。这样就可以生成一棵最小生成树，总体的代价就是后面的配对产生的代价：偶数时候为(n/2-1)，奇数的时候是n/2</li>
+<h1 id="套接字编程简介"><a href="#套接字编程简介" class="headerlink" title="套接字编程简介"></a>套接字编程简介</h1><h2 id="套接字地址结构"><a href="#套接字地址结构" class="headerlink" title="套接字地址结构"></a>套接字地址结构</h2><p>大多数套接字函数都需要一个指向套接字地址结构的指针作为参数。每个协议族都定义它自己的套接字地址结构。这些结构的名字均以 sockaddr_开头,并以对应每个协议族的唯一后缀结尾。</p>
+<h3 id="IPv4套接字地址结构"><a href="#IPv4套接字地址结构" class="headerlink" title="IPv4套接字地址结构"></a>IPv4套接字地址结构</h3><p>IPv4套接字地址结构通常也称为“网际套接字地址结构”,它以 sockaddr_in命名,定义在<netinet in.h="">头文件中。POSIX定义：</netinet></p>
+<p><img src="https://data2.liuin.cn/2018-05-22-15269964950047.jpg" alt=""></p>
+<p>下面给出几点说明：</p>
+<ul>
+<li>并不是所有厂商都支持sin_len，即使有长度字段,我们也无须设置和检查它,除非涉及路由套接字，处理来自不同协议族的套接字地址结构的例程(例如路由表处理代码)在内核中使用的。</li>
+<li>POSX规范只需要这个结构中的3个字段:sin_fari1y、 sin_addr和sin_port,</li>
 </ul>
-<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> n;</div><div class="line">	<span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;n)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">if</span>(n%<span class="number">2</span>)</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;n/<span class="number">2</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">		<span class="keyword">else</span></div><div class="line">			<span class="built_in">cout</span>&lt;&lt;n/<span class="number">2</span><span class="number">-1</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="D-Minimum-number-of-steps"><a href="#D-Minimum-number-of-steps" class="headerlink" title="D Minimum number of steps"></a>D Minimum number of steps</h2><h3 id="题意-3"><a href="#题意-3" class="headerlink" title="题意"></a>题意</h3><p>给出一个只含有字符a、b的字符串，规定一次操作为将原字符串的一个’ab’子串转换成’bba’，求转换成最终无法转换的状态要进行的操作次数（对10^9+7取模）</p>
-<h3 id="题解-3"><a href="#题解-3" class="headerlink" title="题解"></a>题解</h3><ul>
-<li>操作完的最终状态应该是所有的字符a都换到了字符串的最后，同时每次操作我们可以看成a向后移动一位的过程，这样的话我们可以计算每个字符a到字符串最后全是a的部分的距离来对于这个a要进行的操作次数。</li>
-<li>但是每次a向后移动一位对前面的a是有影响的————每向后移动一位对于前面的a相当于增加了一个b，也就是增加了前面的a到字符串最后的距离。这样我们可以从后往前进行考虑来统一这种影响。</li>
-<li>从后往前扫描，用tmp记录中间b的个数，遇到a时累加到ans中同时对tmp加倍（相当于已经将当前的a转移到了最后，这样对于前面的a来说就是增加了tmp个b）。最后的答案就是所有操作的代价ans</li>
+<h3 id="通用套接字地址结构"><a href="#通用套接字地址结构" class="headerlink" title="通用套接字地址结构"></a>通用套接字地址结构</h3><p>当作为一个参数传递进任何套接字函数时,套接字地址结构总是以引用形式(也就是以指向该结构的指针)来传递。然而以这样的指针作为参数之一的任何套接字函数必须处理来自所支持的任何协议族的套接字地址结构。</p>
+<p>现在所采用的方法是在<sys socket.h="">头文件中定义一个通用的套接字地址结构：</sys></p>
+<p><img src="https://data2.liuin.cn/2018-05-22-15269968296764.jpg" alt=""></p>
+<p>于是套接字函数被定义为以指向某个通用套接字地址结构的一个指针作为其参数之一。这就要求对这些函数的任何调用都必须要将<strong>指向特定于协议的套接字地址结构的指针进行强制转换(casting),变成指向某个通用套接字地址结构的指针</strong></p>
+<p>从应用程序开发人员的观点看,这些通用套接字地址结构的唯一用途就是<strong>对指向特定于协议的套接字地址结构的指针执行类型强制转换</strong>。</p>
+<h3 id="套接字地址结构比较"><a href="#套接字地址结构比较" class="headerlink" title="套接字地址结构比较"></a>套接字地址结构比较</h3><p><img src="https://data2.liuin.cn/2018-05-22-15269969711360.jpg" alt=""></p>
+<h2 id="值-结果参数"><a href="#值-结果参数" class="headerlink" title="值-结果参数"></a>值-结果参数</h2><p>当往一个套接字函数传递一个套接字地址结构时,该<strong>结构总是以引用形式来传递</strong>,也就是说传递的是指向该结构的一个指针。该结构的长度也作为一个参数来传递,不过其传递方式取决于该结构的传递方向:是从进程到内核,还是从内核到进程。</p>
+<p>(1)从进程到内核传递套接字地址结构的函数有3个:bind、connect和 sendto。这些函数的一个参数是指向某个套接字地址结构的指针,另一个参数是该结构的整数大小。既然指针和指针所指内容的大小都传递给了内核,于是内核知道到底需从进程复制多少数据进来。</p>
+<p><img src="https://data2.liuin.cn/2018-05-22-15269972347844.jpg" alt=""></p>
+<p>(2)从内核到进程传递套接字地址结构的函数有4个: accept、 recvfrom、 getsockname和 getpeername。这4个函数的其中两个参数是<strong>指向某个套接字地址结构的指针</strong>和<strong>指向表示该结构大小的整数变量的指针</strong>。把套接字地址结构大小这个参数从一个整数改为指向某个整数变量的指针,其原因在于:当函数被调用时,结构大小是一个值(value),它告诉内核该结构的大小,这样内核在写该结构时不至于越界;当函数返回时,结构大小又是一个结果(result.),它告诉进程内核在该结构中究竟存储了多少信息。这种类型的参数称为值-结果(value-result)参数。</p>
+<p><img src="https://data2.liuin.cn/2018-05-22-15269973186591.jpg" alt=""></p>
+<p>在网络编程中,值-结果参数最常见的例子是所返回套接字地址结构的长度</p>
+<h2 id="字节排序函数"><a href="#字节排序函数" class="headerlink" title="字节排序函数"></a>字节排序函数</h2><p>内存中有两种存储多字节数的方法：一种是将低序字节存储在起始地址,这称为小端(little-endian)字节序;另一种方法是将高序字节存储在起始地址,这称为大端(big-endian)字节序</p>
+<p><img src="https://data2.liuin.cn/2018-05-22-15269974255787.jpg" alt=""></p>
+<p>不同的主机中使用的字节序是不一样的。</p>
+<p>套接字地址结构中的某些字段必须按照网络字节序进行维护。因此我们要关注如何在主机字节序和网络字节序之间相互转换。这两种字节序之间的转换使用以下4个函数：</p>
+<p><img src="https://data2.liuin.cn/2018-05-23-15270558826021.jpg" alt=""></p>
+<p>在这些函数的名字中,h代表host,n代表network,s代表short,l代表long。</p>
+<h2 id="字节操作函数"><a href="#字节操作函数" class="headerlink" title="字节操作函数"></a>字节操作函数</h2><p>操纵多字节字段的函数有两组,它们<strong>既不对数据作解释,也不假设数据是以空字符结束的C字符串</strong>。当处理套接字地址结构时,我们需要这些类型的函数,因为我们需要操纵诸如IP地址这样的字段,这些字段可能包含值为0的字节,却并不是C字符串。以空字符结尾的C字符串是由在<string.h>头文件中定义、名字以str(表示字符串)开头的函数处理的。</string.h></p>
+<p><img src="https://data2.liuin.cn/2018-05-23-15270567699154.jpg" alt=""></p>
+<p>bzero把目标字节串中指定数目的字节置为0。我们经常使用该函数来把一个套接字地址结构初始化为0。 bcopy将指定数目的字节从源字节串移到目标字节串。bcmp比较两个任意的字节串,若相同则返回值为0,否则返回值为非0。</p>
+<p><img src="https://data2.liuin.cn/2018-05-23-15270568142560.jpg" alt=""></p>
+<p>memset把目标字节串指定数目的字节置为值c。 memcpy类似bcopy,不过两个指针参数的顺序是相反的。当源字节串与目标字节串重叠时,bco能够正确处理,但是 memcpy的操作结果却不可知。这种情形下必须改用 ANSI C的 mernmove函数。</p>
+<h2 id="inet-aton、inet-addr和inet-ntoa函数"><a href="#inet-aton、inet-addr和inet-ntoa函数" class="headerlink" title="inet_aton、inet_addr和inet_ntoa函数"></a>inet_aton、inet_addr和inet_ntoa函数</h2><p>在ASCII字符串(这是人们偏爱使用的格式)与网络字节序的二进制值(这是存放在套接字地址结构中的值)之间转换网际地址需要一些函数进行实现。</p>
+<p>inet_aton、inet_addr和 inet_ntoa在点分十进制数串(例如“206,168,112.96”)与它长度为32位的网络字节序二进制值间转换IP4地址:</p>
+<p><img src="https://data2.liuin.cn/2018-05-23-15270571324262.jpg" alt=""></p>
+<h2 id="inet-pton和inet-ntop函数"><a href="#inet-pton和inet-ntop函数" class="headerlink" title="inet_pton和inet_ntop函数"></a>inet_pton和inet_ntop函数</h2><p>这两个函数是随Iv6出现的新函数,对于IPv4地址和Pv6地址都适用。本书通篇都在使用这两个函数。函数名中和n分别代表表达( presentation)和数值( numeric)。地址的表达格式通常是ASCⅡ字符串,数值格式则是存放到套接字地址结构中的二进制值</p>
+<p><img src="https://data2.liuin.cn/2018-05-23-15270571987014.jpg" alt=""></p>
+<h2 id="sock-ntop和相关函数"><a href="#sock-ntop和相关函数" class="headerlink" title="sock_ntop和相关函数"></a>sock_ntop和相关函数</h2><p>inet_ntop的一个基本问题是:它要求调用者传递一个指向某个二进制地址的指针,而该地址通常包含在一个套接字地址结构中,这就要求调用者必须知道这个结构的格式和地址族。</p>
+<p>为了解决这个问题,我们将自行编写一个名为sock_ntop的函数,它以指向某个套接字地址结构的指针为参数,查看该结构的内部,然后调用适当的函数返回该地址的表达格式。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">sock_ntop</span><span class="params">(<span class="keyword">const</span> <span class="keyword">struct</span> sockaddr *sockaddr, <span class="keyword">sockelen_t</span> addrlen)</span></span>;</div></pre></td></tr></table></figure>
+<p>仅为AF_INET下的实现：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">sock_ntop</span><span class="params">(<span class="keyword">const</span> <span class="keyword">struct</span> sockaddr *sockaddr, <span class="keyword">sockelen_t</span> addrlen)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">char</span> portstr[<span class="number">8</span>];</div><div class="line">	<span class="keyword">static</span> <span class="keyword">char</span> str[<span class="number">128</span>];</div><div class="line"></div><div class="line">	<span class="keyword">switch</span>(sockaddr-&gt;sa_family)&#123;</div><div class="line">		<span class="keyword">case</span> AF_INET:</div><div class="line">			&#123;</div><div class="line">				<span class="keyword">struct</span> sockaddr_in *<span class="built_in">sin</span> = (<span class="keyword">struct</span> sockaddr_in *) sockeaddr;</div><div class="line">				<span class="keyword">if</span>(inet_ntop(AF_INET, &amp;<span class="built_in">sin</span>-&gt;sin_addr, str, <span class="keyword">sizeof</span>(str)) == <span class="literal">NULL</span>)</div><div class="line">					<span class="keyword">return</span> <span class="literal">NULL</span>;</div><div class="line">				<span class="keyword">if</span>(ntohs(<span class="built_in">sin</span>-&gt;sin_port) != <span class="number">0</span>)</div><div class="line">				&#123;</div><div class="line">					<span class="built_in">snprintf</span>(portstr, <span class="keyword">sizeof</span>(portstr), <span class="string">":%d"</span>, ntohs(<span class="built_in">sin</span>-&gt;sin_port));</div><div class="line">					<span class="built_in">strcat</span>(str, portstr);</div><div class="line">				&#125;</div><div class="line">				<span class="keyword">return</span> str;</div><div class="line">			&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="readn、writen和readline函数"><a href="#readn、writen和readline函数" class="headerlink" title="readn、writen和readline函数"></a>readn、writen和readline函数</h2><p>字节流套接字(例如TCP套接字)上的read和 write函数所表现的行为不同于通常的文件IO。字节流套接字上调用read或 write输入或输出的字节数可能比请求的数量少,然而这不是出错的状态。这个现象的原因在于<strong>内核中用于套接字的缓冲区可能已达到了极限</strong>。</p>
+<p>因为这个原因，我们可以在原始的读写函数的基础上，为了使得I/O传输所有的字符，我们不断调用read、write直到对所需要的数据完成所有的传输</p>
+<h1 id="基本TCP套接字编程"><a href="#基本TCP套接字编程" class="headerlink" title="基本TCP套接字编程"></a>基本TCP套接字编程</h1><p>下图给出了TCP客户与服务器进程之间发生的一些典型事件的时间表：</p>
+<p><img src="https://data2.liuin.cn/2018-05-23-15270592134854.jpg" alt=""></p>
+<h2 id="socket函数"><a href="#socket函数" class="headerlink" title="socket函数"></a>socket函数</h2><p>为了执行网络O,一个进程必须做的第一件事情就是调用 socket函数,指定期望的通信协议类型(使用IPv4的TCP、使用IPv6的UDP、Unix域字节流协议等)。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">socket</span> <span class="params">(<span class="keyword">int</span> family, <span class="keyword">int</span> type, <span class="keyword">int</span> protocol)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: non-negative descriptor if OK, -1 on error</span></div></pre></td></tr></table></figure>
+<p>其中family参数指明协议族。该参数也往往被称为协议域。type参数指明套接字类型。protocol参数应设为某个协议类型常值,或者设为0,以选择所给定mi和nye组合的系统默认值。</p>
+<p><img src="https://data2.liuin.cn/2018-05-23-15270603977151.jpg" alt=""></p>
+<p><img src="https://data2.liuin.cn/2018-05-23-15270604018451.jpg" alt=""></p>
+<p>socket函数在成功时返回一个小的非负整数值,它与文件描述符类似,我们把它称为套接字描述符(socket descriptor),简称sockfd</p>
+<blockquote>
+<p>对比AF_XXX和PF_XXX</p>
+</blockquote>
+<p>AF前缀表示地址族,PF前缀表示协议族。历史上曾有这样的想法:单个协议族可以支持多个地址族,<strong>PF值用来创建套接字,而AF值用于套接字地址结构</strong>。但实际上,支持多个地址族的协议族从来就未实现过,而且头文件<sys socket.h="">中为一给定协议定义的PF值总是与此协议的AF值相等。</sys></p>
+<h2 id="connect函数"><a href="#connect函数" class="headerlink" title="connect函数"></a>connect函数</h2><p>TCP客户用 connect函数来建立与TCP服务器的连接</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">connect</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">struct</span> sockaddr *servaddr, <span class="keyword">socklen_t</span> addrlen)</span></span>; </div><div class="line"><span class="comment">// Returns: 0 if OK, -1 on error</span></div></pre></td></tr></table></figure>
+<p>sockfd是由socket函数返回的套接字描述符,第二个、第三个参数分别是一个指向套接字地址结构的指针和该结构的大小。客户在调用函数 connect前不必非得调用bind函数,因为如果需要的话,内核会确定源IP地址,并选择一个临时端口作为源端口。</p>
+<p>建立连接是通过TCP三次握手建立的，建立连接中产生的具体错误可以通过返回值进行判断</p>
+<h2 id="bind函数"><a href="#bind函数" class="headerlink" title="bind函数"></a>bind函数</h2><p>bind函数把一个本地协议地址赋予一个套接字</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">bind</span> <span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">struct</span> sockaddr *myaddr, <span class="keyword">socklen_t</span> addrlen)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK,-1 on error</span></div></pre></td></tr></table></figure>
+<p>第二个参数是一个指向特定于协议的地址结构的指针,第三个参数是该地址结构的长度。对于TCP,调用bind函数可以指定一个端口号,或指定一个IP地址,也可以两者都指定,还可以都不指定。</p>
+<ul>
+<li>服务器在启动时捆绑它们的众所周知端口</li>
+<li>进程可以把一个特定的IP地址捆绑到它的套接字上,不过这个IP地址必须属于其所在主机的网络接口之一。对于TCP客户,这就为在该套接字上发送的IP数据报指派了源IP地址。对于TCP服务器,这就限定该套接字只接收那些目的地为这个P地址的客户连接。</li>
 </ul>
-<h3 id="代码-3"><a href="#代码-3" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="built_in">string</span> a;</div><div class="line">	<span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;a)</div><div class="line">	&#123;</div><div class="line">		ll tmp=<span class="number">0</span>,ans=<span class="number">0</span>,num=<span class="number">0</span>;</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=a.size()<span class="number">-1</span>;i&gt;=<span class="number">0</span>;i--)</div><div class="line">		&#123;</div><div class="line">			<span class="keyword">if</span>(a[i]==<span class="string">'a'</span>)</div><div class="line">			&#123;</div><div class="line">				ans=(ans+tmp)%MOD;</div><div class="line">				tmp=(<span class="number">2</span>*tmp)%MOD;</div><div class="line">			&#125;</div><div class="line">			<span class="keyword">else</span></div><div class="line">				tmp++;</div><div class="line">		&#125;</div><div class="line">		<span class="built_in">cout</span>&lt;&lt;ans&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><ul>
-<li>看清题意再敲代码，B题就是因为误以为是长度&gt;=3的回文子串而导致错了两发</li>
-<li>提高debug水平，D题思路一直对但是因为else分支里面的一个错误导致迟迟没有AC</li>
-</ul>
+<p>如果指定端口号为0,那么内核就在bind被调用时选择一个临时端口。然而如果指定IP地址为通配地址,那么内核将等到套接字已连接(TCP)或已在套接字上发出数据报(UDP)时才选择一个本地IP地址</p>
+<h2 id="listen函数"><a href="#listen函数" class="headerlink" title="listen函数"></a>listen函数</h2><p>listen函数仅由TCP服务器调用,它做两件事情</p>
+<ol>
+<li>当 socket函数创建一个套接字时,它被假设为一个<strong>主动套接字</strong>,也就是说,它是一个将调用connect发起连接的客户套接字。listen函数把一个未连接的套接字转换成一个被动套接字,指示内核应接受指向该套接字的连接请求。</li>
+<li>本函数的第二个参数规定了内核应该为相应套接字排队的最大连接个数。</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">listen</span> <span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> backlog)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, -1 on error</span></div></pre></td></tr></table></figure>
+<p>为了理解其中的backlog参数,我们必须认识到内核为任何一个给定的监听套接字维护两个队列:</p>
+<ol>
+<li>未完成连接队列(incomplete connection queue),每个这样的SYN分节对应其中一项:已由某个客户发出并到达服务器,而服务器正在等待完成相应的TCP三路握手过程。这些套接字处于SYN RCVD状态。</li>
+<li>已完成连接队列(completed connection queue),每个已完成TCP三路握手过程的客户对应其中一项。这些套接字处于 ESTABLISHED状态</li>
+</ol>
+<h2 id="accept函数"><a href="#accept函数" class="headerlink" title="accept函数"></a>accept函数</h2><p>accept函数由TCP服务器调用,用于从已完成连接队列队头返回下一个已完成连接</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">accept</span> <span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">struct</span> sockaddr *cliaddr, <span class="keyword">socklen_t</span> *addrlen)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: non-negative descriptor if OK, -1 on error</span></div></pre></td></tr></table></figure>
+<p>参数cliaddr和addrlen用来返回已连接的对端进程(客户)的协议地址。 addrlen是值-结果参数:调用前,我们将由*addrlen所引用的整数值置为由cliaddr所指的套接字地址结构的长度,返回时,该整数值即为由内核存放在该套接字地址结构内的确切字节数。</p>
+<p>如果accept成功,那么其返回值是由内核自动生成的一个全新描述符,代表与所返回客户的TCP连接。在讨论 accept函数时,我们称它的第一个参数为<strong>监听套接字</strong>(listening socket)描述符(由socke创建,随后用作bind和listen的第一个参数的描述符),称它的返回值为<strong>已连接套接字</strong>( connected socket)描述符。</p>
+<p>区分这两个套接字非常重要。一个服务器通常仅仅创建个监听套接字,它在该服务器的生命期内一直存在。内核为每个由服务器进程接受的客户连接创建一个已连接套接字(也就是说对于它的TCP三路握手过程已经完成)。当服务器完成对某个给定客户的服务时,相应的已连接套接字就被关闭。</p>
+<h2 id="并发服务器"><a href="#并发服务器" class="headerlink" title="并发服务器"></a>并发服务器</h2><p>然而当服务一个客户请求可能花费较长时间时,我们并不希望整个服务器被单个客户长期占用,而是希望同时服务多个客户。Unix中编写并发服务器程序最简单的办法就是foxk一个子进程来服务每个客户。</p>
+<p>当一个连接建立时, accept返回,服务器接着调用fork,然后由子进程服务客户(通过已连接套接字clientfd),父进程则等待另一个连接(通过监听套接字listened)。既然新的客户由子进程提供服务,父进程就关闭已连接套接。</p>
+<h2 id="close函数"><a href="#close函数" class="headerlink" title="close函数"></a>close函数</h2><p>close一个TCP套接字的默认行为是把该套接字标记成已关闭,然后立即返回到调用进程。该套接字描述符不能再由调用进程使用,也就是说它不能再作为read或wrie的第一个参数。然而TCP将尝试发送已排队等待发送到对端的任何数据,发送完毕后发生的是正常的TCP连接终止序列。</p>
+<p>并发服务器中父进程关闭已连接套接字只是导致相应描述符的引用计数值减1。既然引用计数值仍大于0,这个<strong>c1ose调用并不引发TCP的四分组连接终止序列</strong>。对于父进程与子进程共享已连接套接字的并发服务器来说,这正是所期望的。如果我们确实想在某个TCP连接上发送一个FⅠN,那么可以改用shutdow函数以代替c1ose。</p>
 
       
     </div>
@@ -549,15 +628,15 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://www.liuin.cn/2017/05/05/Codeforces-Round-411-Div-2-题解/" title="Codeforces Round #411 (Div. 2) 题解">https://www.liuin.cn/2017/05/05/Codeforces-Round-411-Div-2-题解/</a>
+    <a href="https://www.liuin.cn/2018/05/23/《UNIX网络编程卷1》笔记-基本套接字编程部分/" title="《UNIX网络编程卷1》笔记 基本套接字编程部分">https://www.liuin.cn/2018/05/23/《UNIX网络编程卷1》笔记-基本套接字编程部分/</a>
   </li>
   <li class="post-copyright-author">
 	<strong>发布时间: </strong>
-	2017年5月5日 - 00时05分
+	2018年5月23日 - 21时05分
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2017年5月13日 - 15时05分
+	2018年5月23日 - 16时05分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -572,7 +651,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Codeforces/" rel="tag"># Codeforces</a>
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
           
         </div>
       
@@ -585,8 +664,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/05/04/HDU-5686-斐波那契数-大数/" rel="next" title="HDU 5686 斐波那契数+大数">
-                <i class="fa fa-chevron-left"></i> HDU 5686 斐波那契数+大数
+              <a href="/2018/05/20/《STL源码剖析》-笔记/" rel="next" title="《STL源码剖析》 笔记">
+                <i class="fa fa-chevron-left"></i> 《STL源码剖析》 笔记
               </a>
             
           </div>
@@ -594,10 +673,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/05/06/POJ-2407-Relatives-欧拉函数/" rel="prev" title="POJ 2407 Relatives 欧拉函数">
-                POJ 2407 Relatives 欧拉函数 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -766,7 +841,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#A-Fake-NP"><span class="nav-number">1.</span> <span class="nav-text">A Fake NP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题意"><span class="nav-number">1.1.</span> <span class="nav-text">题意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#题解"><span class="nav-number">1.2.</span> <span class="nav-text">题解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码"><span class="nav-number">1.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-3-palindrome"><span class="nav-number">2.</span> <span class="nav-text">B 3-palindrome</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题意-1"><span class="nav-number">2.1.</span> <span class="nav-text">题意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#题解-1"><span class="nav-number">2.2.</span> <span class="nav-text">题解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码-1"><span class="nav-number">2.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-Find-Amir"><span class="nav-number">3.</span> <span class="nav-text">C Find Amir</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题意-2"><span class="nav-number">3.1.</span> <span class="nav-text">题意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#题解-2"><span class="nav-number">3.2.</span> <span class="nav-text">题解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码-2"><span class="nav-number">3.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#D-Minimum-number-of-steps"><span class="nav-number">4.</span> <span class="nav-text">D Minimum number of steps</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题意-3"><span class="nav-number">4.1.</span> <span class="nav-text">题意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#题解-3"><span class="nav-number">4.2.</span> <span class="nav-text">题解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码-3"><span class="nav-number">4.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">5.</span> <span class="nav-text">小结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#套接字编程简介"><span class="nav-number">1.</span> <span class="nav-text">套接字编程简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#套接字地址结构"><span class="nav-number">1.1.</span> <span class="nav-text">套接字地址结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IPv4套接字地址结构"><span class="nav-number">1.1.1.</span> <span class="nav-text">IPv4套接字地址结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通用套接字地址结构"><span class="nav-number">1.1.2.</span> <span class="nav-text">通用套接字地址结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#套接字地址结构比较"><span class="nav-number">1.1.3.</span> <span class="nav-text">套接字地址结构比较</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#值-结果参数"><span class="nav-number">1.2.</span> <span class="nav-text">值-结果参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字节排序函数"><span class="nav-number">1.3.</span> <span class="nav-text">字节排序函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字节操作函数"><span class="nav-number">1.4.</span> <span class="nav-text">字节操作函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#inet-aton、inet-addr和inet-ntoa函数"><span class="nav-number">1.5.</span> <span class="nav-text">inet_aton、inet_addr和inet_ntoa函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#inet-pton和inet-ntop函数"><span class="nav-number">1.6.</span> <span class="nav-text">inet_pton和inet_ntop函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sock-ntop和相关函数"><span class="nav-number">1.7.</span> <span class="nav-text">sock_ntop和相关函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#readn、writen和readline函数"><span class="nav-number">1.8.</span> <span class="nav-text">readn、writen和readline函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本TCP套接字编程"><span class="nav-number">2.</span> <span class="nav-text">基本TCP套接字编程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#socket函数"><span class="nav-number">2.1.</span> <span class="nav-text">socket函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#connect函数"><span class="nav-number">2.2.</span> <span class="nav-text">connect函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bind函数"><span class="nav-number">2.3.</span> <span class="nav-text">bind函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#listen函数"><span class="nav-number">2.4.</span> <span class="nav-text">listen函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#accept函数"><span class="nav-number">2.5.</span> <span class="nav-text">accept函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并发服务器"><span class="nav-number">2.6.</span> <span class="nav-text">并发服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#close函数"><span class="nav-number">2.7.</span> <span class="nav-text">close函数</span></a></li></ol></li></ol></div>
             
 
           </div>
