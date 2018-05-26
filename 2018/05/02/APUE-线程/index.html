@@ -114,12 +114,14 @@
 <meta property="og:site_name" content="Sixzeroo">
 <meta property="og:description" content="《UNIX环境高级编程》第11章 线程 笔记">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-25-15272376666056.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-02-15252443887056.jpg">
-<meta property="og:updated_time" content="2018-05-02T07:35:40.000Z">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-25-15272391697777.jpg">
+<meta property="og:updated_time" content="2018-05-25T09:26:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="APUE 线程">
 <meta name="twitter:description" content="《UNIX环境高级编程》第11章 线程 笔记">
-<meta name="twitter:image" content="https://data2.liuin.cn/2018-05-02-15252443887056.jpg">
+<meta name="twitter:image" content="https://data2.liuin.cn/2018-05-25-15272376666056.jpg">
 
 
 
@@ -452,7 +454,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  3,655 字
+                  4,655 字
                 </span>
               
 
@@ -487,19 +489,27 @@
 <li>交互的程序同样可以通过使用多线程来改善响应时间,多线程可以把程序中处理用户输入输出的部分与其他部分分开。</li>
 </ul>
 <p>处理器的数量并不影响程序结构,所以不管处理器的个数多少,程序都可以通过使用线程得以简化。</p>
-<p>每个线程都包含有表示执行环境所必需的信息,其中包括进程中标识线程的线程ID、一组寄存器值、栈、调度优先级和策略、信号屏蔽字、 errno变量以及线程私有数据</p>
+<p>每个线程都包含有表示执行环境所必需的信息,其中包括<strong>进程中标识线程的线程ID、一组寄存器值、栈、调度优先级和策略、信号屏蔽字、 errno变量以及线程私有数据</strong></p>
 <p>一个进程的所有信息对该进程的所有线程都是共享的,包括可执行程序的代码、程序的全局内存和堆内存、栈以及文件描述符</p>
 <h2 id="线程标识"><a href="#线程标识" class="headerlink" title="线程标识"></a>线程标识</h2><p>就像每个进程有一个进程ID一样,每个线程也有一个线程ID。进程ID在整个系统中是唯一的,但线程ID不同,线程ID只有在它所属的进程上下文中才有意义。</p>
 <p>线程ID是用pthread_t数据类型来表示的,实现的时候可以用一个结构来代表pthread_t数据类型,所以可移植的操作系统实现不能把它作为整数处理。因此必须使用一个函数来对两个线程ID进行比较:</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_equal</span><span class="params">(<span class="keyword">pthread_t</span> tid1, <span class="keyword">pthread_t</span> tid2)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: nonzero if equal, 0 otherwise</span></div></pre></td></tr></table></figure>
-<p>线程可以通过调用 pthread_se1f函数获得自身的线程ID</p>
+<p>线程可以通过调用 pthread_self函数获得自身的线程ID</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pthread_t</span> pthread_self(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: the thread ID of the calling thread</span></div></pre></td></tr></table></figure>
+<p>当线程需要识别以线程ID作为标识的数据结构时, pthread_self函数可以与pthread_equal函数一起使用。例如,主线程可能把工作任务放在一个队列中,用线程ID来控制每个工作线程处理哪些作业。如图所示,主线程把新的作业放到一个工作队列中,由3个工作线程组成的线程池从队列中移出作业。主线程不允许每个线程任意处理从队列顶端取出的作业,而是由主线程控制作业的分配,主线程会在每个待处理作业的结构中放置处理该作业的线程ID,每个工作线程只能移出标有自己线程ID的作业。</p>
+<p><img src="https://data2.liuin.cn/2018-05-25-15272376666056.jpg" alt=""></p>
 <h2 id="线程创建"><a href="#线程创建" class="headerlink" title="线程创建"></a>线程创建</h2><p>新增的线程可以通过调用 pthread_create函数创建。</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">#include &lt;pthread.h&gt; </div><div class="line"></div><div class="line">int pthread_create(pthread_t *restrict tidp, const pthread_attr_t *restrict attr, void *(*start_rtn)(void *), void *restrict arg); </div><div class="line"></div><div class="line">// Returns: 0 if OK, error number on failure</div></pre></td></tr></table></figure>
 <p>当pthread_create成功返回时,新创建线程的线程ID会被设置成<code>tidp</code>指向的内存单元，<code>attr</code>参数用于定制各种不同的线程属性。新创建的线程从<code>start_rtn</code>函数的地址开始运行,该函数只有一个无类型指针参数<code>arg</code>。如果需要向<code>start_run</code>函数传递的参数有一个以上,那么需要把这些参数放到一个结构中,然后把这个结构的地址作为<code>arg</code>参数传入</p>
 <p>线程创建时并不能保证哪个线程会先运行:是新创建的线程,还是调用线程。新创建的线程可以访问进程的地址空间,并且继承调用线程的浮点环境和信号屏蔽字,但是该线程的挂起信号集会被清除。</p>
-<p>注意, pthread函数在调用失败时通常会返回错误码,它们并不像其他的 POSIX函数一样设置 errno。每个线程都提供 errno的副本,这只是为了与使用 errno的现有函数兼容。</p>
-<h2 id="线程终止"><a href="#线程终止" class="headerlink" title="线程终止"></a>线程终止</h2><p>单个线程可以通过3种方式退出,因此可以在不终止整个进程的情况下,停止它的控制流。</p>
+<p>注意, pthread函数在调用失败时通常会返回错误码,它们并不像其他的POSIX函数一样设置 errno。每个线程都提供 errno的副本,这只是为了与使用 errno的现有函数兼容。</p>
+<p>在使用pthread_create函数的时候有一些问题是需要注意的：</p>
+<ul>
+<li>在创建多线程程序的时候，有的时候主线程需要休眠,如果主线程不休眠,它就可能会退出,这样新线程还没有机会运行,整个进程可能就已经终止了。这种行为特征依赖于操作系统中的线程实现和调度算法</li>
+<li>第二个特别之处在于新线程是通过调用 pthread_se1f函数获取自己的线程ID的,而不是从共享内存中读出的,或者从线程的启动例程中以参数的形式接收到。我们知道pthread_create会通过第一个参数(tidp)返回新建线程的线程ID。但是新建的线程并不能安全地使用它,如果新线程在主线程调用pthread_create返回之前就运行了,那么新线程看到的是未经初始化的ntid的内容,这个内容并不是正确的线程</li>
+</ul>
+<h2 id="线程终止"><a href="#线程终止" class="headerlink" title="线程终止"></a>线程终止</h2><p>如果进程中的任意线程调用了exit、_Exit或者_exit,那么整个进程就会终止</p>
+<p>单个线程可以通过3种方式退出,因此可以在不终止整个进程的情况下,停止它的控制流。</p>
 <ol>
 <li>线程可以简单地从启动例程中返回,返回值是线程的退出码。</li>
 <li>线程可以被同一进程中的其他线程取消。</li>
@@ -508,11 +518,12 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">pthread_exit</span><span class="params">(<span class="keyword">void</span> *rval_ptr)</span></span>;</div></pre></td></tr></table></figure>
 <p><code>rval_ptr</code>参数是一个无类型指针,与传给启动例程的单个参数类似。进程中的其他线程也可以通过调用 <code>pthread_join</code>函数访问到这个指针。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_join</span><span class="params">(<span class="keyword">pthread_t</span> thread, <span class="keyword">void</span> **rval_ptr)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, error number on failure</span></div></pre></td></tr></table></figure>
-<p>调用线程将一直阻塞,直到指定的线程调用<code>pthread_exit</code>，从启动例程中返回或者被取消。如果线程简单地从它的启动例程返回, <code>rval_ptr</code>就包含返回码。如果线程被取消,由<code>rval_ pir</code>指定的内存单元就设置为<code>PTHREAD_CANCELED</code></p>
+<p>调用线程将一直阻塞,直到指定的线程调用<code>pthread_exit</code>，从启动例程中返回或者被取消。如果线程简单地从它的启动例程返回, <code>rval_ptr</code>就包含返回码。如果线程被取消,由<code>rval_pir</code>指定的内存单元就设置为<code>PTHREAD_CANCELED</code></p>
 <p>可以通过调用<code>pthread_join</code>自动把线程置于分离状态(马上就会讨论到),这样资源就可以恢复。如果线程已经处于分离状态, <code>pthread_join</code>调用就会失败,返回<code>EINVAL</code>,尽管这种行为是与具体实现相关的。</p>
 <p>如果对线程的返回值并不感兴趣,那么可以把 rval_ptr设置为NULL。在这种情况下,调用pthread_join函数可以等待指定的线程终止,但并不获取线程的终止状态。</p>
 <p>线程可以通过调用<code>pthread_cancel</code>函数来请求取消同一进程中的其他线程</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_cancel</span><span class="params">(<span class="keyword">pthread_t</span> tid)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, error number on failure</span></div></pre></td></tr></table></figure>
+<p>在默认情况下, pthread_cancel函数会使得由tid标识的线程的行为表现为如同调用了参数为 PTHREAD_CANCELED的 pthread_exit函数,但是,线程可以选择忽略取消或者控制如何被取消。注意 pthread_cancel<strong>并不等待线程终止,它仅仅提出请求</strong></p>
 <p>线程可以安排它退出时需要调用的函数,这与进程在退出时可以用<code>atexit</code>函数安排退出是类似的。这样的函数称为线程清理处理程序( thread cleanup handler)。一个线程可以建立多个清理处理程序。处理程序记录在栈中,也就是说,它们的<strong>执行顺序与它们注册时相反</strong></p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">#include &lt;pthread.h&gt;</div><div class="line"></div><div class="line">void pthread_cleanup_push(void (*rtn)(void *), void *arg);</div><div class="line"></div><div class="line">void pthread_cleanup_pop(int execute);</div></pre></td></tr></table></figure>
 <h2 id="线程同步"><a href="#线程同步" class="headerlink" title="线程同步"></a>线程同步</h2><p>当一个线程可以修改的变量,其他线程也可以读取或者修改的时候,我们就需要对这些线程进行同步,确保它们在访问变量的存储内容时不会访问到无效的值。</p>
@@ -520,6 +531,8 @@
 <p>为了解决这个问题,线程不得不使用锁,同一时间只允许一个线程访问该变量</p>
 <p><img src="https://data2.liuin.cn/2018-05-02-15252443887056.jpg" alt=""></p>
 <p>两个或多个线程试图在同一时间修改同一变量时,也需要进行同步</p>
+<p>如果修改操作是原子操作,那么就不存在竞争。当多个线程观察不到数据的不一致时,那么操作就是顺序一致的。在现代计算机系统中,存储访问需要多个总线周期,多处理器的总线周期通常在多个处理器上是交叉的,所以我们并不能保证数据是顺序一致的。</p>
+<p><img src="https://data2.liuin.cn/2018-05-25-15272391697777.jpg" alt=""></p>
 <h3 id="互斥量"><a href="#互斥量" class="headerlink" title="互斥量"></a>互斥量</h3><p>可以使用 pthread的互斥接口来保护数据,确保同一时间只有一个线程访问数据。<strong>互斥量(mutex)</strong>从本质上说是一把锁,在访问共享资源前对互斥量进行设置(加锁),在访问完成后释放(解锁)互斥量。</p>
 <p>互斥变量是用<code>pthread_mutex_t</code>数据类型表示的，使用互斥量之前必须要初始化，动态分配的互斥量在释放内存之前要调用<code>pthread_mutex_destory</code></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_mutex_init</span><span class="params">(<span class="keyword">pthread_mutex_t</span> *<span class="keyword">restrict</span> mutex, <span class="keyword">const</span> <span class="keyword">pthread_mutexattr_t</span> *<span class="keyword">restrict</span> attr)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_mutex_destroy</span><span class="params">(<span class="keyword">pthread_mutex_t</span> *mutex)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, error number on failure</span></div></pre></td></tr></table></figure>
@@ -528,7 +541,8 @@
 <p>如果线程不希望被阻塞,它可以使用<code>pthread_mutex_try1ock</code>尝试对互斥量进行加锁。如果调用 <code>pthread_mutex_try1ock</code>时互斥量处于未锁住状态,那么<code>pthread_mutex_try1ock</code>将锁住互斥量,不会出现阻塞直接返回0,否则<code>pthread_mutex_try1ock</code>就会失败,不能锁住互斥量,返回 EBUSY。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_mutex_lock</span><span class="params">(<span class="keyword">pthread_mutex_t</span> *mutex)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_mutex_trylock</span><span class="params">(<span class="keyword">pthread_mutex_t</span> *mutex)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_mutex_unlock</span><span class="params">(<span class="keyword">pthread_mutex_t</span> *mutex)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// All return: 0 if OK, error number on failure</span></div></pre></td></tr></table></figure>
 <h3 id="避免死锁"><a href="#避免死锁" class="headerlink" title="避免死锁"></a>避免死锁</h3><p>如果线程试图对同一个互斥量加锁两次,那么它自身就会陷入死锁状态,可以通过仔细控制互斥量加锁的顺序来避免死锁的发生。例如,假设需要对两个互斥量A和B同时加锁。如果所有线程总是在对互斥量B加锁之前锁住互斥量A,那么使用这两个互斥量就不会产生死锁(当然在其他的资源上仍可能出现死锁)。</p>
-<p>采用顺序加锁的形式避免死锁。</p>
+<p>上面讲的是采用顺序加锁的形式避免死锁的方式。</p>
+<p>有时候,应用程序的结构使得对互斥量进行排序是很困难的。如果涉及了太多的锁和数据结构,可用的函数并不能把它转换成简单的层次,那么就需要采用另外的方法。在这种情况下,可以先释放占有的锁,然后过一段时间再试。这种情况可以使用 pthread_mutex_trylock接口避免死锁。如果已经占有某些锁而且 pthread_mutex_try1ock接口返回成功,那么就可以前进。但是,如果不能获取锁,可以先释放已经占有的锁,做好清理工作,然后过一段时间再重新试。</p>
 <h3 id="函数pthread-mutex-timelock"><a href="#函数pthread-mutex-timelock" class="headerlink" title="函数pthread_mutex_timelock"></a>函数pthread_mutex_timelock</h3><p>当线程试图获取一个已加锁的互斥量时,<code>pthread_mutex_timedlock</code>互斥量原语允许绑定线程阻塞时间。 <code>pthread_mutex_timedlock</code>函数与<code>pthread_mutex_timedlock</code>是基本等价的,但是在达到超时时间值时,<code>pthread_mutex_timedlock</code>不会对互斥量进行加锁,而是返回错误码 ETIME_DOUT。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt; #include &lt;time.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_mutex_timedlock</span><span class="params">(<span class="keyword">pthread_mutex_t</span> *<span class="keyword">restrict</span> mutex, <span class="keyword">const</span> <span class="keyword">struct</span> timespec *<span class="keyword">restrict</span> tsptr)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, error number on failure</span></div></pre></td></tr></table></figure>
 <h3 id="读写锁"><a href="#读写锁" class="headerlink" title="读写锁"></a>读写锁</h3><p>读写锁( reader-writer lock)与互斥量类似,不过读写锁允许更高的并行性。互斥量要么是锁住状态,要么就是不加锁状态,而且一次只有一个线程可以对其加锁。读写锁可以有3种状态:读模式下加锁状态,写模式下加锁状态,不加锁状态。一次只有一个线程可以占有写模式的读写锁,但是多个线程可以同时占有读模式的读写锁</p>
@@ -541,12 +555,13 @@
 <h3 id="带有超时的读写锁"><a href="#带有超时的读写锁" class="headerlink" title="带有超时的读写锁"></a>带有超时的读写锁</h3><p>与互斥量一样，读写锁也有带有超时条件的加锁函数：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt; #include &lt;time.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_rwlock_timedrdlock</span><span class="params">(<span class="keyword">pthread_rwlock_t</span> *<span class="keyword">restrict</span> rwlock, <span class="keyword">const</span> <span class="keyword">struct</span> timespec *<span class="keyword">restrict</span> tsptr)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_rwlock_timedwrlock</span><span class="params">(<span class="keyword">pthread_rwlock_t</span> *<span class="keyword">restrict</span> rwlock, <span class="keyword">const</span> <span class="keyword">struct</span> timespec *<span class="keyword">restrict</span> tsptr)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, error number on failure</span></div></pre></td></tr></table></figure>
 <h3 id="条件变量"><a href="#条件变量" class="headerlink" title="条件变量"></a>条件变量</h3><p>条件变量是线程可用的另一种同步机制。条件变量给多个线程提供了一个会合的场所。条件变量与互斥量一起使用时,允许线程以无竞争的方式等待特定的条件发生。</p>
-<p>条件本身是由互斥量保护的。<strong>线程在改变条件状态之前必须首先锁住互斥量</strong>。</p>
+<p>条件本身是由互斥量保护的。<strong>线程在改变条件状态之前必须首先锁住互斥量</strong>。其他线程在获得互斥量之前不会察觉到这种改变,因为互斥量必须在锁定以后才能计算条件。</p>
 <p>条件变量使用的数据结构<code>pthread_cond_t</code>，同理也有初始化和销毁的函数：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_cond_init</span><span class="params">(<span class="keyword">pthread_cond_t</span> *<span class="keyword">restrict</span> cond, <span class="keyword">const</span> <span class="keyword">pthread_condattr_t</span> *<span class="keyword">restrict</span> attr)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_cond_destroy</span><span class="params">(<span class="keyword">pthread_cond_t</span> *cond)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, error number on failure</span></div></pre></td></tr></table></figure>
 <p>我们使用<code>pthread_cond_wait</code>等待条件变量变为真。如果在给定的时间内条件不能满足那么会生成一个返回错误码的变量</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_cond_wait</span><span class="params">(<span class="keyword">pthread_cond_t</span> *<span class="keyword">restrict</span> cond, <span class="keyword">pthread_mutex_t</span> *<span class="keyword">restrict</span> mutex)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_cond_timedwait</span><span class="params">(<span class="keyword">pthread_cond_t</span> *<span class="keyword">restrict</span> cond, <span class="keyword">pthread_mutex_t</span> *<span class="keyword">restrict</span> mutex, <span class="keyword">const</span> <span class="keyword">struct</span> timespec *<span class="keyword">restrict</span> tsptr)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, error number on failure</span></div></pre></td></tr></table></figure>
-<p>有两个函数可以用于通知线程条件已经满足。<code>pthread_cond_signa1</code>函数至少能唤醒一个等待该条件的线程,而<code>pthread_cond_broadcast</code>函数则能唤醒等待该条件的所有线程</p>
+<p>传递给pthread_cond_wait的互斥量对条件进行保护。调用者<strong>把锁住的互斥量传给函数,函数然后自动把调用线程放到等待条件的线程列表上,对互斥量解锁</strong>。这就<strong>关闭了条件检查和线程进入休眠状态等待条件改变这两个操作之间的时间通道,这样线程就不会错过条件的任何变化</strong>。 pthread_cond_wait返回时,互斥量再次被锁住。</p>
+<p>有两个函数可以用于通知线程条件已经满足。<code>pthread_cond_signal</code>函数<strong>至少能唤醒一个等待该条件的线程</strong>,而<code>pthread_cond_broadcast</code>函数则能<strong>唤醒等待该条件的所有线程</strong></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_cond_signal</span><span class="params">(<span class="keyword">pthread_cond_t</span> *cond)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_cond_broadcast</span><span class="params">(<span class="keyword">pthread_cond_t</span> *cond)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, error number on failure</span></div></pre></td></tr></table></figure>
 <h3 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h3><p>自旋锁与互斥量类似,但它不是通过休眠使进程阻塞,而是在获取锁之前一直处于忙等(自旋)阻塞状态。自旋锁可用于以下情况:锁被持有的时间短,而且线程并不希望在重新调度上花费太多的成本</p>
 <p>自旋锁通常作为底层原语用于实现其他类型的锁。</p>
@@ -620,7 +635,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年5月2日 - 15时05分
+	2018年5月25日 - 17时05分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -867,7 +882,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      321.7k 字
+      323.6k 字
     </span>
   
 
