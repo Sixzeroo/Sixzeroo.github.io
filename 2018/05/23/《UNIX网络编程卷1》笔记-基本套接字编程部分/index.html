@@ -128,7 +128,17 @@
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-23-15270592134854.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-23-15270603977151.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-23-15270604018451.jpg">
-<meta property="og:updated_time" content="2018-05-23T08:41:31.000Z">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-27-15274240586717.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-27-15274241782814.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-27-15274242724836.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-27-15274243322666.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-27-15274244101255.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-27-15274244780614.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-27-15274255486025.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-27-15274259894144.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-27-15274265737476.jpg">
+<meta property="og:image" content="https://data2.liuin.cn/2018-05-27-15274266342975.jpg">
+<meta property="og:updated_time" content="2018-05-27T13:10:51.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《UNIX网络编程卷1》笔记 基本套接字编程部分">
 <meta name="twitter:description" content="UNIX网络编程必读书籍——《UNIX网络编程卷1》  基本套接字编程 笔记">
@@ -465,7 +475,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  4,021 字
+                  6,976 字
                 </span>
               
 
@@ -579,6 +589,90 @@
 <p>当一个连接建立时, accept返回,服务器接着调用fork,然后由子进程服务客户(通过已连接套接字clientfd),父进程则等待另一个连接(通过监听套接字listened)。既然新的客户由子进程提供服务,父进程就关闭已连接套接。</p>
 <h2 id="close函数"><a href="#close函数" class="headerlink" title="close函数"></a>close函数</h2><p>close一个TCP套接字的默认行为是把该套接字标记成已关闭,然后立即返回到调用进程。该套接字描述符不能再由调用进程使用,也就是说它不能再作为read或wrie的第一个参数。然而TCP将尝试发送已排队等待发送到对端的任何数据,发送完毕后发生的是正常的TCP连接终止序列。</p>
 <p>并发服务器中父进程关闭已连接套接字只是导致相应描述符的引用计数值减1。既然引用计数值仍大于0,这个<strong>c1ose调用并不引发TCP的四分组连接终止序列</strong>。对于父进程与子进程共享已连接套接字的并发服务器来说,这正是所期望的。如果我们确实想在某个TCP连接上发送一个FⅠN,那么可以改用shutdow函数以代替c1ose。</p>
+<h1 id="I-O复用：select和poll函数"><a href="#I-O复用：select和poll函数" class="headerlink" title="I/O复用：select和poll函数"></a>I/O复用：select和poll函数</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>有的时候，进程需要一种预先告知内核的能力,使得内核一旦发现进程指定的一个或多个I/O条件就绪(也就是说输入已准备好被读取,或者描述符已能承接更多的输出),它就通知进程。这个能力称为I/O复用(I/O multiplexing),是由se1ect和po11这两个函数支持的。</p>
+<p>IO复用典型使用在下列网络应用场合:</p>
+<ul>
+<li>当客户处理多个描述符(通常是交互式输入和网络套接字)时,必须使用I/O复用。</li>
+<li>一个客户同时处理多个套接字是可能的,不过比较少见。</li>
+<li>如果一个TCP服务器既要处理监听套接字,又要处理已连接套接字,一般就要使用I/O复用</li>
+<li>如果一个服务器即要处理TCP,又要处理UDP,一般就要使用I/O复用</li>
+<li>如果一个服务器要处理多个服务或者多个协议,一般就要使用IO复用。</li>
+</ul>
+<p>IO复用并非只限于网络编程,许多重要的应用程序也需要使用这项技术。</p>
+<h2 id="I-O模型"><a href="#I-O模型" class="headerlink" title="I/O模型"></a>I/O模型</h2><p>在介绍 select和poll这两个函数之前,我们需要回顾整体,查看Uniⅸ下可用的5种I/O模型的基本区别:</p>
+<ul>
+<li>阻塞式I/O;</li>
+<li>非阻塞式I/O;</li>
+<li>IO复用(se1ect和po11);</li>
+<li>信号驱动式IO(SIGIO);</li>
+<li>异步I/O(POSIX的aio_系列函数)。</li>
+</ul>
+<h3 id="阻塞式I-O模型"><a href="#阻塞式I-O模型" class="headerlink" title="阻塞式I/O模型"></a>阻塞式I/O模型</h3><p>默认情形下,所有套接字都是阻塞的</p>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274240586717.jpg" alt=""></p>
+<p>在图中,进程调用 recvfrom,其系统调用直到数据报到达且被复制到应用进程的缓冲区中或者发生错误才返回。最常见的错误是系统调用被信号中断</p>
+<h3 id="非阻塞式I-O模型"><a href="#非阻塞式I-O模型" class="headerlink" title="非阻塞式I/O模型"></a>非阻塞式I/O模型</h3><p>进程把一个套接字设置成非阻塞是在通知内核：当所请求的I/O操作非得把本进程投入睡眠才能完成时,不要把本进程投入睡眠,而是返回一个错误。</p>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274241782814.jpg" alt=""></p>
+<p>当一个应用进程像这样对一个非阻塞描述符循环调用 recvfrom时,我们称之为轮询</p>
+<h3 id="IO复用模型"><a href="#IO复用模型" class="headerlink" title="IO复用模型"></a>IO复用模型</h3><p>有了I/O复用(I/O multiplexing),我们就可以调用select或po11,<strong>阻塞在这两个系统调用中的某一个之上,而不是阻塞在真正的I/O系统调用上</strong>。</p>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274242724836.jpg" alt=""></p>
+<p>我们阻塞于se]ect调用,等待数据报套接字变为可读。当se1ect返回套接字可读这一条件时,我们调用 recvfrom把所读数据报复制到应用进程缓冲区。</p>
+<h3 id="信号驱动式IO模型"><a href="#信号驱动式IO模型" class="headerlink" title="信号驱动式IO模型"></a>信号驱动式IO模型</h3><p>我们也可以用信号,让内核在描述符就绪时发送SIGIO信号通知我们。我们称这种模型为信号驱动式I/O( signal-driven I/O)</p>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274243322666.jpg" alt=""></p>
+<h3 id="异步I-O模型"><a href="#异步I-O模型" class="headerlink" title="异步I/O模型"></a>异步I/O模型</h3><p>这些函数的工作机制是:告知内核启动某个操作,并让内核在整个操作(包括将数据从内核复制到我们自己的缓冲区)完成后通知我们。这种模型与前一节介绍的信号驱动模型的主要区别在于:<strong>信号驱动式IO是由内核通知我们何时可以启动一个O操作,而异步LO模型是由内核通知我们IO操作何时完成</strong>。</p>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274244101255.jpg" alt=""></p>
+<h3 id="各种I-O模型的比较"><a href="#各种I-O模型的比较" class="headerlink" title="各种I/O模型的比较"></a>各种I/O模型的比较</h3><p><img src="https://data2.liuin.cn/2018-05-27-15274244780614.jpg" alt=""></p>
+<p>上图对比了上述5种不同的I/O模型。可以看出,前4种模型的主要区别在于第一阶段,因为它们的第二阶段是一样的:在数据从内核复制到调用者的缓冲区期间,进程阻塞于recvfrom调用。相反,异步I/O模型在这两个阶段都要处理,从而不同于其他4种模型。</p>
+<h2 id="select-函数"><a href="#select-函数" class="headerlink" title="select 函数"></a>select 函数</h2><p>该函数允许进程指示内核等待多个事件中的任何一个发生,并只在有一个或多个事件发生或经历一段指定的时间后才唤醒它。也就是说,我们调用 select告知内核对哪些描述符(就读、写或异常条件)感兴趣以及等待多长时间。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/select.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> maxfdp1, fd_set *readset, fd_set *writeset, fd_set *exceptset, <span class="keyword">const</span> <span class="keyword">struct</span> timeval *timeout)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: positive count of ready descriptors, 0 on timeout, –1 on error</span></div></pre></td></tr></table></figure>
+<p>最后一个参数它告知内核等待所指定描述符中的任何一个就绪可花多少时间。</p>
+<p>中间的三个参数 readset、 writeset和 excepts指定我们要让内核测试读、写和异常条件的描述符。目前支持的异常条件只有两个:<br>(1)某个套接字的带外数据的到达<br>(2)某个已置为分组模式的伪终端存在可从其主端读取的控制状态信息</p>
+<p>如何给这3个参数中的每一个参数指定一个或多个描述符值是一个设计上的问题。se1ect使用描述符集,通常是一个整数数组,其中每个整数中的每一位对应一个描述符</p>
+<p>select函数的中间三个参数 readset、 writeset和 excepts中,如果我们对某一个的条件不感兴趣,就可以把它设为空指针。事实上,如果这三个指针}均为空,我们就有了一个比UNIX的s1eep函数更为精确的定时器( sleep睡眠以秒为最小单位)。</p>
+<p>头文件<sys select.h="">中定义的 FD_SETSIZE常值是数据类型 fd_set中的描述符总数,其值通常是1024,不过很少有程序用到那么多的描述符。<strong>maxfdpl参数迫使我们计算出所关心的最大描述符并告知内核该值</strong>。</sys></p>
+<p>se1ect函数修改由指针 readset、 writeset和 excepts所指向的的描述符集,因而这三个参数都是值结果参数。调用该函数时,我们指定所关心的描述符的值,该函数返回时,结果将指示哪些描述符已就绪。该函数返回后,我们使用 FD_ISSET宏来测试 fa_set数据类型中的描述符描述符集内任何与未就绪描述符对应的位返回时均清成0。为此,每次重新调用se1ect函数时,我们都得再次把所有描述符集内所关心的位均置为1。</p>
+<p>该函数的<strong>返回值表示跨所有描述符集的已就绪的总位数</strong>。如果在任何描述符就绪之前定时器到时,那么返回0。返回-1表示出错(这是可能发生的,譬如本函数被一个所捕获的信号中断)。</p>
+<h3 id="描述符就绪条件"><a href="#描述符就绪条件" class="headerlink" title="描述符就绪条件"></a>描述符就绪条件</h3><p>我们一直在讨论等待某个描述符准备好I/O(读或写)或是等待其上发生一个待处理的异常条件(带外数据)。尽管可读性和可写性对于普通文件这样的描述符显而易见,然而对于引起select返回套接字“就绪”的条件我们必须讨论得更明确些</p>
+<p>满足下列四个条件中的任何一个时,一个套接字准备好读</p>
+<ol>
+<li>该套接字接收缓冲区中的数据字节数大于等于套接字接收缓冲区低水位标记的当前大小。对这样的套接字执行读操作不会阻塞并将返回一个大于0的值(也就是返回准备好读入的数据)。</li>
+<li>该连接的读半部关闭(也就是接收了FIN的TCP连接)。对这样的套接字的读操作将不阻塞并返回0(也就是返回EOF)。</li>
+<li>该套接字是一个监听套接字且已完成的连接数不为0。对这样的套接字的accept通常不会阻塞</li>
+<li>其上有一个套接字错误待处理。</li>
+</ol>
+<p>下列四个条件中的任何一个满足时,一个套接字准备好写</p>
+<ol>
+<li>该套接字发送缓冲区中的可用空间字节数大于等于套接字发送缓冲区低水位标记的当前大小,并且或者该套接字已连接,或者该套接字不需要连接(如UDP套接字)。这意味着如果我们把这样的套接字设置成非阻塞，写操作将不阻塞并返回一个正值(例如由传输层接受的字节数)。</li>
+<li>该连接的写半部关闭。对这样的套接字的写操作将产生SIGPIP信号</li>
+<li>使用非阻塞式connect的套接字已建立连接,或者connect已经以失败告终</li>
+<li>其上有一个套接字错误待处理。</li>
+</ol>
+<p>如果一个套接字存在带外数据或者仍处于带外标记,那么它有异常条件待处理。</p>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274255486025.jpg" alt=""></p>
+<h2 id="shutdown函数"><a href="#shutdown函数" class="headerlink" title="shutdown函数"></a>shutdown函数</h2><p>终止网络连接的通常方法是调用c1ose函数。不过cose有两个限制,却可以使用shutdown来避免：</p>
+<ol>
+<li>close把描述符的引用计数减1,仅在该计数变为0时才关闭套接字。使用 shutdown可以不管引用计数就激发TCP的正常连接终止序列</li>
+<li>close终止读和写两个方向的数据传送。既然TCP连接是全双工的,有时候我们需要告知对端我们已经完成了数据发送,即使对端仍有数据要发送给我们。</li>
+</ol>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274259894144.jpg" alt=""></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">shutdown</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> howto)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, –1 on error</span></div></pre></td></tr></table></figure>
+<p>该函数的行为依赖于howo参数的值:</p>
+<ul>
+<li>SHUT_RD——关闭连接的读这一半——套接字中不再有数据可接收,而且套接字接收缓冲区中的现有数据都被丢弃。进程不能再对这样的套接字调用任何读函数。对一个TCP套接字这样调用 shutdown函数后,由该套接字接收的来自对端的任何数据都被确认,然后悄然丢弃。</li>
+<li>SHUT_WR——关闭连接的写这一半——对于TCP套接字,这称为半关闭。当前留在套接字发送缓冲区中的数据将被发送掉,后跟TCP的正常连接终止序列。我们已经说过,不管套接字描述符的引用计数是否等于0,这样的写半部关闭照样执行。进程不能再对这样的套接字调用任何写函数。</li>
+<li>SHUT_RDWR——连接的读半部和写半部都关闭——这与调用shutdown两次等效:第一次调用指定 SHUT_RD,第二次调用指定 SHUT_WR</li>
+</ul>
+<h2 id="pselect-函数"><a href="#pselect-函数" class="headerlink" title="pselect 函数"></a>pselect 函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/select.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pselect</span> <span class="params">(<span class="keyword">int</span> maxfdp1, fd_set *readset, fd_set *writeset, fd_set *exceptset, <span class="keyword">const</span> <span class="keyword">struct</span> timespec *timeout, <span class="keyword">const</span> <span class="keyword">sigset_t</span> *sigmask)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: count of ready descriptors, 0 on timeout, –1 on error</span></div></pre></td></tr></table></figure>
+<p>pselect相对于通常的select有两个变化。</p>
+<ul>
+<li>pselect使用timespec结构,而不使用timeval结构。前者指定纳秒数，后者指定微秒数</li>
+<li>pselect函数增加了第六个参数:一个指向信号掩码的指针。该参数允许程序先禁止递交某些信号,再测试由这些当前被禁止信号的信号处理函数设置的全局变量,然后调用select,告诉它重新设置信号掩码。</li>
+</ul>
+<h2 id="poll-函数"><a href="#poll-函数" class="headerlink" title="poll 函数"></a>poll 函数</h2><p>po11提供的功能与se1ect类似,不过在处理流设备时,它能够提供额外的信息。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;poll.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">poll</span> <span class="params">(<span class="keyword">struct</span> pollfd *fdarray, <span class="keyword">unsigned</span> <span class="keyword">long</span> nfds, <span class="keyword">int</span> timeout)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: count of ready descriptors, 0 on timeout, –1 on error</span></div></pre></td></tr></table></figure>
+<p>第一个参数是指向一个结构数组第一个元素的指针。每个数组元素都是一个pollfd结构,用于指定测试某个给定描述符fd的条件。</p>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274265737476.jpg" alt=""></p>
+<p>要测试的条件由 events成员指定,函数在相应的 revents成员中返回该描述符的状态。</p>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274266342975.jpg" alt=""></p>
 
       
     </div>
@@ -636,7 +730,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年5月23日 - 16时05分
+	2018年5月27日 - 21时05分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -841,7 +935,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#套接字编程简介"><span class="nav-number">1.</span> <span class="nav-text">套接字编程简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#套接字地址结构"><span class="nav-number">1.1.</span> <span class="nav-text">套接字地址结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IPv4套接字地址结构"><span class="nav-number">1.1.1.</span> <span class="nav-text">IPv4套接字地址结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通用套接字地址结构"><span class="nav-number">1.1.2.</span> <span class="nav-text">通用套接字地址结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#套接字地址结构比较"><span class="nav-number">1.1.3.</span> <span class="nav-text">套接字地址结构比较</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#值-结果参数"><span class="nav-number">1.2.</span> <span class="nav-text">值-结果参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字节排序函数"><span class="nav-number">1.3.</span> <span class="nav-text">字节排序函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字节操作函数"><span class="nav-number">1.4.</span> <span class="nav-text">字节操作函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#inet-aton、inet-addr和inet-ntoa函数"><span class="nav-number">1.5.</span> <span class="nav-text">inet_aton、inet_addr和inet_ntoa函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#inet-pton和inet-ntop函数"><span class="nav-number">1.6.</span> <span class="nav-text">inet_pton和inet_ntop函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sock-ntop和相关函数"><span class="nav-number">1.7.</span> <span class="nav-text">sock_ntop和相关函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#readn、writen和readline函数"><span class="nav-number">1.8.</span> <span class="nav-text">readn、writen和readline函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本TCP套接字编程"><span class="nav-number">2.</span> <span class="nav-text">基本TCP套接字编程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#socket函数"><span class="nav-number">2.1.</span> <span class="nav-text">socket函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#connect函数"><span class="nav-number">2.2.</span> <span class="nav-text">connect函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bind函数"><span class="nav-number">2.3.</span> <span class="nav-text">bind函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#listen函数"><span class="nav-number">2.4.</span> <span class="nav-text">listen函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#accept函数"><span class="nav-number">2.5.</span> <span class="nav-text">accept函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并发服务器"><span class="nav-number">2.6.</span> <span class="nav-text">并发服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#close函数"><span class="nav-number">2.7.</span> <span class="nav-text">close函数</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#套接字编程简介"><span class="nav-number">1.</span> <span class="nav-text">套接字编程简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#套接字地址结构"><span class="nav-number">1.1.</span> <span class="nav-text">套接字地址结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IPv4套接字地址结构"><span class="nav-number">1.1.1.</span> <span class="nav-text">IPv4套接字地址结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通用套接字地址结构"><span class="nav-number">1.1.2.</span> <span class="nav-text">通用套接字地址结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#套接字地址结构比较"><span class="nav-number">1.1.3.</span> <span class="nav-text">套接字地址结构比较</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#值-结果参数"><span class="nav-number">1.2.</span> <span class="nav-text">值-结果参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字节排序函数"><span class="nav-number">1.3.</span> <span class="nav-text">字节排序函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字节操作函数"><span class="nav-number">1.4.</span> <span class="nav-text">字节操作函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#inet-aton、inet-addr和inet-ntoa函数"><span class="nav-number">1.5.</span> <span class="nav-text">inet_aton、inet_addr和inet_ntoa函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#inet-pton和inet-ntop函数"><span class="nav-number">1.6.</span> <span class="nav-text">inet_pton和inet_ntop函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sock-ntop和相关函数"><span class="nav-number">1.7.</span> <span class="nav-text">sock_ntop和相关函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#readn、writen和readline函数"><span class="nav-number">1.8.</span> <span class="nav-text">readn、writen和readline函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本TCP套接字编程"><span class="nav-number">2.</span> <span class="nav-text">基本TCP套接字编程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#socket函数"><span class="nav-number">2.1.</span> <span class="nav-text">socket函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#connect函数"><span class="nav-number">2.2.</span> <span class="nav-text">connect函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bind函数"><span class="nav-number">2.3.</span> <span class="nav-text">bind函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#listen函数"><span class="nav-number">2.4.</span> <span class="nav-text">listen函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#accept函数"><span class="nav-number">2.5.</span> <span class="nav-text">accept函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并发服务器"><span class="nav-number">2.6.</span> <span class="nav-text">并发服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#close函数"><span class="nav-number">2.7.</span> <span class="nav-text">close函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#I-O复用：select和poll函数"><span class="nav-number">3.</span> <span class="nav-text">I/O复用：select和poll函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">3.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#I-O模型"><span class="nav-number">3.2.</span> <span class="nav-text">I/O模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#阻塞式I-O模型"><span class="nav-number">3.2.1.</span> <span class="nav-text">阻塞式I/O模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非阻塞式I-O模型"><span class="nav-number">3.2.2.</span> <span class="nav-text">非阻塞式I/O模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IO复用模型"><span class="nav-number">3.2.3.</span> <span class="nav-text">IO复用模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#信号驱动式IO模型"><span class="nav-number">3.2.4.</span> <span class="nav-text">信号驱动式IO模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异步I-O模型"><span class="nav-number">3.2.5.</span> <span class="nav-text">异步I/O模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#各种I-O模型的比较"><span class="nav-number">3.2.6.</span> <span class="nav-text">各种I/O模型的比较</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#select-函数"><span class="nav-number">3.3.</span> <span class="nav-text">select 函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#描述符就绪条件"><span class="nav-number">3.3.1.</span> <span class="nav-text">描述符就绪条件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shutdown函数"><span class="nav-number">3.4.</span> <span class="nav-text">shutdown函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pselect-函数"><span class="nav-number">3.5.</span> <span class="nav-text">pselect 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#poll-函数"><span class="nav-number">3.6.</span> <span class="nav-text">poll 函数</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -879,7 +973,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      324.0k 字
+      327.8k 字
     </span>
   
 

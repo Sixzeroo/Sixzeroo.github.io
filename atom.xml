@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-05-23T08:41:31.000Z</updated>
+  <updated>2018-05-27T13:10:51.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="https://www.liuin.cn/2018/05/23/%E3%80%8AUNIX%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%8D%B71%E3%80%8B%E7%AC%94%E8%AE%B0-%E5%9F%BA%E6%9C%AC%E5%A5%97%E6%8E%A5%E5%AD%97%E7%BC%96%E7%A8%8B%E9%83%A8%E5%88%86/"/>
     <id>https://www.liuin.cn/2018/05/23/《UNIX网络编程卷1》笔记-基本套接字编程部分/</id>
     <published>2018-05-23T13:36:29.000Z</published>
-    <updated>2018-05-23T08:41:31.000Z</updated>
+    <updated>2018-05-27T13:10:51.000Z</updated>
     
     <content type="html"><![CDATA[<p>UNIX网络编程必读书籍——《UNIX网络编程卷1》  基本套接字编程 笔记</p>
 <a id="more"></a>
@@ -111,6 +111,90 @@
 <p>当一个连接建立时, accept返回,服务器接着调用fork,然后由子进程服务客户(通过已连接套接字clientfd),父进程则等待另一个连接(通过监听套接字listened)。既然新的客户由子进程提供服务,父进程就关闭已连接套接。</p>
 <h2 id="close函数"><a href="#close函数" class="headerlink" title="close函数"></a>close函数</h2><p>close一个TCP套接字的默认行为是把该套接字标记成已关闭,然后立即返回到调用进程。该套接字描述符不能再由调用进程使用,也就是说它不能再作为read或wrie的第一个参数。然而TCP将尝试发送已排队等待发送到对端的任何数据,发送完毕后发生的是正常的TCP连接终止序列。</p>
 <p>并发服务器中父进程关闭已连接套接字只是导致相应描述符的引用计数值减1。既然引用计数值仍大于0,这个<strong>c1ose调用并不引发TCP的四分组连接终止序列</strong>。对于父进程与子进程共享已连接套接字的并发服务器来说,这正是所期望的。如果我们确实想在某个TCP连接上发送一个FⅠN,那么可以改用shutdow函数以代替c1ose。</p>
+<h1 id="I-O复用：select和poll函数"><a href="#I-O复用：select和poll函数" class="headerlink" title="I/O复用：select和poll函数"></a>I/O复用：select和poll函数</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>有的时候，进程需要一种预先告知内核的能力,使得内核一旦发现进程指定的一个或多个I/O条件就绪(也就是说输入已准备好被读取,或者描述符已能承接更多的输出),它就通知进程。这个能力称为I/O复用(I/O multiplexing),是由se1ect和po11这两个函数支持的。</p>
+<p>IO复用典型使用在下列网络应用场合:</p>
+<ul>
+<li>当客户处理多个描述符(通常是交互式输入和网络套接字)时,必须使用I/O复用。</li>
+<li>一个客户同时处理多个套接字是可能的,不过比较少见。</li>
+<li>如果一个TCP服务器既要处理监听套接字,又要处理已连接套接字,一般就要使用I/O复用</li>
+<li>如果一个服务器即要处理TCP,又要处理UDP,一般就要使用I/O复用</li>
+<li>如果一个服务器要处理多个服务或者多个协议,一般就要使用IO复用。</li>
+</ul>
+<p>IO复用并非只限于网络编程,许多重要的应用程序也需要使用这项技术。</p>
+<h2 id="I-O模型"><a href="#I-O模型" class="headerlink" title="I/O模型"></a>I/O模型</h2><p>在介绍 select和poll这两个函数之前,我们需要回顾整体,查看Uniⅸ下可用的5种I/O模型的基本区别:</p>
+<ul>
+<li>阻塞式I/O;</li>
+<li>非阻塞式I/O;</li>
+<li>IO复用(se1ect和po11);</li>
+<li>信号驱动式IO(SIGIO);</li>
+<li>异步I/O(POSIX的aio_系列函数)。</li>
+</ul>
+<h3 id="阻塞式I-O模型"><a href="#阻塞式I-O模型" class="headerlink" title="阻塞式I/O模型"></a>阻塞式I/O模型</h3><p>默认情形下,所有套接字都是阻塞的</p>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274240586717.jpg" alt=""></p>
+<p>在图中,进程调用 recvfrom,其系统调用直到数据报到达且被复制到应用进程的缓冲区中或者发生错误才返回。最常见的错误是系统调用被信号中断</p>
+<h3 id="非阻塞式I-O模型"><a href="#非阻塞式I-O模型" class="headerlink" title="非阻塞式I/O模型"></a>非阻塞式I/O模型</h3><p>进程把一个套接字设置成非阻塞是在通知内核：当所请求的I/O操作非得把本进程投入睡眠才能完成时,不要把本进程投入睡眠,而是返回一个错误。</p>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274241782814.jpg" alt=""></p>
+<p>当一个应用进程像这样对一个非阻塞描述符循环调用 recvfrom时,我们称之为轮询</p>
+<h3 id="IO复用模型"><a href="#IO复用模型" class="headerlink" title="IO复用模型"></a>IO复用模型</h3><p>有了I/O复用(I/O multiplexing),我们就可以调用select或po11,<strong>阻塞在这两个系统调用中的某一个之上,而不是阻塞在真正的I/O系统调用上</strong>。</p>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274242724836.jpg" alt=""></p>
+<p>我们阻塞于se]ect调用,等待数据报套接字变为可读。当se1ect返回套接字可读这一条件时,我们调用 recvfrom把所读数据报复制到应用进程缓冲区。</p>
+<h3 id="信号驱动式IO模型"><a href="#信号驱动式IO模型" class="headerlink" title="信号驱动式IO模型"></a>信号驱动式IO模型</h3><p>我们也可以用信号,让内核在描述符就绪时发送SIGIO信号通知我们。我们称这种模型为信号驱动式I/O( signal-driven I/O)</p>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274243322666.jpg" alt=""></p>
+<h3 id="异步I-O模型"><a href="#异步I-O模型" class="headerlink" title="异步I/O模型"></a>异步I/O模型</h3><p>这些函数的工作机制是:告知内核启动某个操作,并让内核在整个操作(包括将数据从内核复制到我们自己的缓冲区)完成后通知我们。这种模型与前一节介绍的信号驱动模型的主要区别在于:<strong>信号驱动式IO是由内核通知我们何时可以启动一个O操作,而异步LO模型是由内核通知我们IO操作何时完成</strong>。</p>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274244101255.jpg" alt=""></p>
+<h3 id="各种I-O模型的比较"><a href="#各种I-O模型的比较" class="headerlink" title="各种I/O模型的比较"></a>各种I/O模型的比较</h3><p><img src="https://data2.liuin.cn/2018-05-27-15274244780614.jpg" alt=""></p>
+<p>上图对比了上述5种不同的I/O模型。可以看出,前4种模型的主要区别在于第一阶段,因为它们的第二阶段是一样的:在数据从内核复制到调用者的缓冲区期间,进程阻塞于recvfrom调用。相反,异步I/O模型在这两个阶段都要处理,从而不同于其他4种模型。</p>
+<h2 id="select-函数"><a href="#select-函数" class="headerlink" title="select 函数"></a>select 函数</h2><p>该函数允许进程指示内核等待多个事件中的任何一个发生,并只在有一个或多个事件发生或经历一段指定的时间后才唤醒它。也就是说,我们调用 select告知内核对哪些描述符(就读、写或异常条件)感兴趣以及等待多长时间。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/select.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> maxfdp1, fd_set *readset, fd_set *writeset, fd_set *exceptset, <span class="keyword">const</span> <span class="keyword">struct</span> timeval *timeout)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: positive count of ready descriptors, 0 on timeout, –1 on error</span></div></pre></td></tr></table></figure>
+<p>最后一个参数它告知内核等待所指定描述符中的任何一个就绪可花多少时间。</p>
+<p>中间的三个参数 readset、 writeset和 excepts指定我们要让内核测试读、写和异常条件的描述符。目前支持的异常条件只有两个:<br>(1)某个套接字的带外数据的到达<br>(2)某个已置为分组模式的伪终端存在可从其主端读取的控制状态信息</p>
+<p>如何给这3个参数中的每一个参数指定一个或多个描述符值是一个设计上的问题。se1ect使用描述符集,通常是一个整数数组,其中每个整数中的每一位对应一个描述符</p>
+<p>select函数的中间三个参数 readset、 writeset和 excepts中,如果我们对某一个的条件不感兴趣,就可以把它设为空指针。事实上,如果这三个指针}均为空,我们就有了一个比UNIX的s1eep函数更为精确的定时器( sleep睡眠以秒为最小单位)。</p>
+<p>头文件<sys select.h="">中定义的 FD_SETSIZE常值是数据类型 fd_set中的描述符总数,其值通常是1024,不过很少有程序用到那么多的描述符。<strong>maxfdpl参数迫使我们计算出所关心的最大描述符并告知内核该值</strong>。</sys></p>
+<p>se1ect函数修改由指针 readset、 writeset和 excepts所指向的的描述符集,因而这三个参数都是值结果参数。调用该函数时,我们指定所关心的描述符的值,该函数返回时,结果将指示哪些描述符已就绪。该函数返回后,我们使用 FD_ISSET宏来测试 fa_set数据类型中的描述符描述符集内任何与未就绪描述符对应的位返回时均清成0。为此,每次重新调用se1ect函数时,我们都得再次把所有描述符集内所关心的位均置为1。</p>
+<p>该函数的<strong>返回值表示跨所有描述符集的已就绪的总位数</strong>。如果在任何描述符就绪之前定时器到时,那么返回0。返回-1表示出错(这是可能发生的,譬如本函数被一个所捕获的信号中断)。</p>
+<h3 id="描述符就绪条件"><a href="#描述符就绪条件" class="headerlink" title="描述符就绪条件"></a>描述符就绪条件</h3><p>我们一直在讨论等待某个描述符准备好I/O(读或写)或是等待其上发生一个待处理的异常条件(带外数据)。尽管可读性和可写性对于普通文件这样的描述符显而易见,然而对于引起select返回套接字“就绪”的条件我们必须讨论得更明确些</p>
+<p>满足下列四个条件中的任何一个时,一个套接字准备好读</p>
+<ol>
+<li>该套接字接收缓冲区中的数据字节数大于等于套接字接收缓冲区低水位标记的当前大小。对这样的套接字执行读操作不会阻塞并将返回一个大于0的值(也就是返回准备好读入的数据)。</li>
+<li>该连接的读半部关闭(也就是接收了FIN的TCP连接)。对这样的套接字的读操作将不阻塞并返回0(也就是返回EOF)。</li>
+<li>该套接字是一个监听套接字且已完成的连接数不为0。对这样的套接字的accept通常不会阻塞</li>
+<li>其上有一个套接字错误待处理。</li>
+</ol>
+<p>下列四个条件中的任何一个满足时,一个套接字准备好写</p>
+<ol>
+<li>该套接字发送缓冲区中的可用空间字节数大于等于套接字发送缓冲区低水位标记的当前大小,并且或者该套接字已连接,或者该套接字不需要连接(如UDP套接字)。这意味着如果我们把这样的套接字设置成非阻塞，写操作将不阻塞并返回一个正值(例如由传输层接受的字节数)。</li>
+<li>该连接的写半部关闭。对这样的套接字的写操作将产生SIGPIP信号</li>
+<li>使用非阻塞式connect的套接字已建立连接,或者connect已经以失败告终</li>
+<li>其上有一个套接字错误待处理。</li>
+</ol>
+<p>如果一个套接字存在带外数据或者仍处于带外标记,那么它有异常条件待处理。</p>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274255486025.jpg" alt=""></p>
+<h2 id="shutdown函数"><a href="#shutdown函数" class="headerlink" title="shutdown函数"></a>shutdown函数</h2><p>终止网络连接的通常方法是调用c1ose函数。不过cose有两个限制,却可以使用shutdown来避免：</p>
+<ol>
+<li>close把描述符的引用计数减1,仅在该计数变为0时才关闭套接字。使用 shutdown可以不管引用计数就激发TCP的正常连接终止序列</li>
+<li>close终止读和写两个方向的数据传送。既然TCP连接是全双工的,有时候我们需要告知对端我们已经完成了数据发送,即使对端仍有数据要发送给我们。</li>
+</ol>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274259894144.jpg" alt=""></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">shutdown</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> howto)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, –1 on error</span></div></pre></td></tr></table></figure>
+<p>该函数的行为依赖于howo参数的值:</p>
+<ul>
+<li>SHUT_RD——关闭连接的读这一半——套接字中不再有数据可接收,而且套接字接收缓冲区中的现有数据都被丢弃。进程不能再对这样的套接字调用任何读函数。对一个TCP套接字这样调用 shutdown函数后,由该套接字接收的来自对端的任何数据都被确认,然后悄然丢弃。</li>
+<li>SHUT_WR——关闭连接的写这一半——对于TCP套接字,这称为半关闭。当前留在套接字发送缓冲区中的数据将被发送掉,后跟TCP的正常连接终止序列。我们已经说过,不管套接字描述符的引用计数是否等于0,这样的写半部关闭照样执行。进程不能再对这样的套接字调用任何写函数。</li>
+<li>SHUT_RDWR——连接的读半部和写半部都关闭——这与调用shutdown两次等效:第一次调用指定 SHUT_RD,第二次调用指定 SHUT_WR</li>
+</ul>
+<h2 id="pselect-函数"><a href="#pselect-函数" class="headerlink" title="pselect 函数"></a>pselect 函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/select.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pselect</span> <span class="params">(<span class="keyword">int</span> maxfdp1, fd_set *readset, fd_set *writeset, fd_set *exceptset, <span class="keyword">const</span> <span class="keyword">struct</span> timespec *timeout, <span class="keyword">const</span> <span class="keyword">sigset_t</span> *sigmask)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: count of ready descriptors, 0 on timeout, –1 on error</span></div></pre></td></tr></table></figure>
+<p>pselect相对于通常的select有两个变化。</p>
+<ul>
+<li>pselect使用timespec结构,而不使用timeval结构。前者指定纳秒数，后者指定微秒数</li>
+<li>pselect函数增加了第六个参数:一个指向信号掩码的指针。该参数允许程序先禁止递交某些信号,再测试由这些当前被禁止信号的信号处理函数设置的全局变量,然后调用select,告诉它重新设置信号掩码。</li>
+</ul>
+<h2 id="poll-函数"><a href="#poll-函数" class="headerlink" title="poll 函数"></a>poll 函数</h2><p>po11提供的功能与se1ect类似,不过在处理流设备时,它能够提供额外的信息。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;poll.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">poll</span> <span class="params">(<span class="keyword">struct</span> pollfd *fdarray, <span class="keyword">unsigned</span> <span class="keyword">long</span> nfds, <span class="keyword">int</span> timeout)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: count of ready descriptors, 0 on timeout, –1 on error</span></div></pre></td></tr></table></figure>
+<p>第一个参数是指向一个结构数组第一个元素的指针。每个数组元素都是一个pollfd结构,用于指定测试某个给定描述符fd的条件。</p>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274265737476.jpg" alt=""></p>
+<p>要测试的条件由 events成员指定,函数在相应的 revents成员中返回该描述符的状态。</p>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274266342975.jpg" alt=""></p>
 ]]></content>
     
     <summary type="html">
@@ -741,7 +825,7 @@
     <link href="https://www.liuin.cn/2018/05/04/APUE-%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/"/>
     <id>https://www.liuin.cn/2018/05/04/APUE-进程间通信/</id>
     <published>2018-05-04T06:00:08.000Z</published>
-    <updated>2018-05-04T13:42:10.000Z</updated>
+    <updated>2018-05-27T12:01:19.000Z</updated>
     
     <content type="html"><![CDATA[<p>《UNIX环境高级编程》第15章 进程间通信 笔记</p>
 <a id="more"></a>
@@ -757,6 +841,7 @@
 <p>经由参数fd返回两个文件描述符:fd[0]为读而打开,fd[1]为写而打开。fd[1]的输出是fd[0]的输入。</p>
 <p>单个进程中的管道几乎没有任何用处。通常,进程会先调用pipe,接着调用fork,从而创建从父进程到子进程的IPC通道,反之亦然</p>
 <p><img src="https://data2.liuin.cn/2018-05-04-15254214499352.jpg" alt=""></p>
+<p>对于一个从子进程到父进程的管道,父进程关闭fd[1],子进程关闭fd[0]当管道的一端被关闭后,下列两条规则起作用。<br>(1)当读(read)一个写端已被关闭的管道时,在所有数据都被读取后,read返回0,表示文件结束。(从技术上来讲,如果管道的写端还有进程,就不会产生文件的结束。可以复制一个管道的描述符,使得有多个进程对它具有写打开文件描述符。但是,通常一个管道只有一个读进程和一个写进程。）<br>(2)如果写(write)一个读端已被关闭的管道,则产生信号 SIGPIPE。如果忽略该信号或者捕捉该信号并从其处理程序返回,则 write返回-1, errno设置为 EPIPE。</p>
 <h2 id="函数popen和pclose"><a href="#函数popen和pclose" class="headerlink" title="函数popen和pclose"></a>函数popen和pclose</h2><p>常见的操作是创建一个连接到另一个进程的管道,然后读其输出或向其输入端发送数据,为此,标准I/O库提供了两个函数 popen和 pclose。这两个函数实现的操作是:创建一个管道,fork一个子进程,关闭未使用的管道端,执行一个shell运行命令,然后等待命令终止。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">`<span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function">FILE *<span class="title">popen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *cmdstring, <span class="keyword">const</span> <span class="keyword">char</span> *type)</span></span>;</div><div class="line"><span class="comment">// Returns: ﬁle pointer if OK, NULL on error </span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pclose</span><span class="params">(FILE *fp)</span></span>; </div><div class="line"><span class="comment">// Returns: termination status of cmdstring, or −1 on error</span></div></pre></td></tr></table></figure>
 <p>函数 popen先执行fork,然后调用exec执行cstring,并且返回一个标准I/O文件指针。如果type是”r”,则文件指针连接到cstring的标准输出。如果type是”w”,则文件指针连接到 cmdstring的标准输入，表示写FILE中的东西</p>
@@ -767,10 +852,11 @@
 <p>popen只提供连接到另一个进程的标准输入或标准输出的一个单向管道,而协同进程则有连接到另一个进程的两个单向管道:一个接到其标准输入,另一个则来自其标准输出。</p>
 <p><img src="https://data2.liuin.cn/2018-05-04-15254220325027.jpg" alt=""></p>
 <h2 id="FIFO"><a href="#FIFO" class="headerlink" title="FIFO"></a>FIFO</h2><p>FIFO有时被称为命名管道。未命名的管道只能在两个相关的进程之间使用,而且这两个相关的进程还要有一个共同的创建了它们的祖先进程。但是,通过FIFO,不相关的进程也能交换数据。</p>
-<p>FIFO是一种文件类型。通过stat结构的st<em>mode成员的编码可以知道文件是否是FIFO类型。可以用S</em> ISFTEO宏对此进行测试。</p>
-<p>创建FIFO类似于创建文件。确实,FIFO的路径名存在于文件系统中。</p>
+<p>FIFO是一种文件类型。通过<code>stat</code>结构的<code>st_mode</code>成员的编码可以知道文件是否是FIFO类型。可以用S_ ISFTEO宏对此进行测试。</p>
+<p><strong>创建FIFO类似于创建文件</strong>。确实,FIFO的路径名存在于文件系统中。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">mkfifo</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *path, <span class="keyword">mode_t</span> mode)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">mkfifoat</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span> *path, <span class="keyword">mode_t</span> mode)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
 <p>当我们用 mkfifo或者 mkfifoat创建FIFO时,要用open来打开它。设置非阻塞以及对错误的处理和普通文件的处理是一样的。</p>
+<p>类似于管道,若 write一个尚无进程为读而打开的FIFO,则产生信号SIGPIPE。若某个FIFO的最后一个写进程关闭了该FIFO,则将为该FIFO的读进程产生一个文件结束标志。</p>
 <p>FIFO有以下两种用途</p>
 <ul>
 <li>shell命令使用FIFO将数据从一条管道传送到另一条时,无需创建中间临时文件</li>
@@ -778,7 +864,7 @@
 </ul>
 <p><img src="https://data2.liuin.cn/2018-05-04-15254224287657.jpg" alt=""></p>
 <h2 id="XSI-IPC"><a href="#XSI-IPC" class="headerlink" title="XSI IPC"></a>XSI IPC</h2><p>有3种称作XSI IPC的IPC:消息队列、信号量以及共享存储器。它们之间有很多相似之处</p>
-<h3 id="标识符与键"><a href="#标识符与键" class="headerlink" title="标识符与键"></a>标识符与键</h3><p>每个内核中的IPC结构(消息队列、信号量或共享存储段)都用一个非负整数的标识符(identifier)加以引|用。</p>
+<h3 id="标识符与键"><a href="#标识符与键" class="headerlink" title="标识符与键"></a>标识符与键</h3><p>每个内核中的IPC结构(消息队列、信号量或共享存储段)都用一个非负整数的标识符(identifier)加以引用。</p>
 <p>标识符是IPC对象的内部名。为使多个合作进程能够在同一IPC对象上汇聚,需要提供一个外部命名方案。为此,每个IPC对象都与一个键(key)相关联,将这个键作为该对象的外部名。键的数据结构是<code>key_t</code></p>
 <p>有多种方法使客户进程和服务器进程在同一IPC结构上汇聚：</p>
 <ol>
@@ -787,14 +873,20 @@
 <li>客户进程和服务器进程认同一个路径名和项目ID，接着调用函数ftok将这两个值变成一个键</li>
 </ol>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ipc.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">key_t</span> ftok(<span class="keyword">const</span> <span class="keyword">char</span> *path, <span class="keyword">int</span> id);</div><div class="line"></div><div class="line"><span class="comment">// Returns: key if OK, (key_t)−1 on error</span></div></pre></td></tr></table></figure>
+<p>ftok创建的键通常是用下列方式构成的:按给定的路径名取得其stat结构中的部分 st_dev和 st_ino字段,然后再将它们与项目ID组合起来。如果两个路径名引用的是两个不同的文件,那么ftok通常会为这两个路径名返回不同的键。但是,因为i节点编号和键通常都存放在长整型中,所以创建键时可能会丢失信息。这意味着,对于不同文件的两个路径名,如果使用同一项目ID,那么可能产生相同的键。</p>
+<p>3个get函数( msgget、 semget和 shmget)都有两个类似的参数:一个key和一个整型flag。在创建新的IPC结构(通常由服务器进程创建)时,如果key是 IPC_PRIVATE或者和当前某种类型的IPC结构无关,则需要指明fag的 IPC_CREAT标志位。为了引用一个现有队列(通常由客户进程创建),key必须等于队列创建时指明的key的值,并且 IPC_CREAT必须不被指明。</p>
+<p>注意,决不能指定 IPC_PRIVATE作为键来引用一个现有队列,因为这个特殊的键值总是用于创建一个新队列。为了引用一个用 IPC_PRIVATE键创建的现有队列,一定要知道这个相关的标识符,然后在其他IPC调用中(如 msgsnd、 nserc)使用该标识符,这样可以绕过get函数</p>
+<p>如果希望创建一个新的IPC结构,而且要确保没有引用具有同一标识符的一个现有IPC结构,那么必须在flag中同时指定 IPC_CREAT和IPC_EXCL位。这样做了以后,如果IPC结构已经存在就会造成出错,返回 EEXIST(这与指定了O_CREAT和O_EXCL标志的open相类似)</p>
 <h3 id="权限结构"><a href="#权限结构" class="headerlink" title="权限结构"></a>权限结构</h3><p>XSI IPC为每一个IPC结构关联了一个ipc_perm结构。该结构规定了权限和所有者,它至少包括下列成员:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">struct ipc_perm &#123; </div><div class="line">    uid_t uid; /* owner’s effective user ID */ </div><div class="line">    gid_t gid; /* owner’s effective group ID */ </div><div class="line">    uid_t cuid; /* creator’s effective user ID */ </div><div class="line">    gid_t cgid; /* creator’s effective group ID */ </div><div class="line">    mode_t mode; /* access modes */ </div><div class="line">    .</div><div class="line">    .</div><div class="line">    .</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>在创建IPC结构时,对所有字段都赋初值。对于任何IPC结构都不存在执行权限</p>
+<p>每个实现会包括另外一些成员。在创建IPC结构时,对所有字段都赋初值。</p>
+<p>mode字段的值如下图所示，<strong>对于任何IPC结构都不存在执行权限</strong>。</p>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274218221632.jpg" alt=""></p>
 <h3 id="优点和缺点"><a href="#优点和缺点" class="headerlink" title="优点和缺点"></a>优点和缺点</h3><p>XSI IPC的一个基本问题是:<strong>IPC结构是在系统范围内起作用的,没有引用计数</strong>。例如,如果进程创建了一个消息队列,并且在该队列中放入了几则消息,然后终止,那么该消息队列及其内容不会被删除。它们会一直留在系统中直至发生下列动作为止:由某个进程调用 msgrcv或msct1读消息或删除消息队列;或某个进程执行 ipcri(1)命令删除消息队列;或正在自举的系统删除消息队列。</p>
 <p>将此与管道相比,当最后一个引用管道的进程终止时,管道就被完全地删除了。对于FIFO而言,在最后一个引用FIFO的进程终止时,虽然FIFO的名字仍保留在系统中,直至被显式地删除,但是留在FIFO中的数据已被删除了</p>
 <p>XSI IPC的另一个问题是:这些IPC结构在文件系统中没有名字，为了支持这些IPC对象，系统增加了许多的系统调用</p>
 <p>因为这些形式的IPC不使用文件描述符,所以<strong>不能对它们使用多路转接I/O函数</strong></p>
-<h2 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h2><p>消息队列是消息的链接表,存储在内核中,由消息队列标识符标识。</p>
+<h2 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h2><p>消息队列是消息的链接表,<strong>存储在内核中</strong>,由消息队列标识符标识。</p>
 <p><code>msgget</code>用于创建一个新队列或打开一个现有队列。<code>msgsnd</code>将新消息添加到队列尾端。每个消息包含一个正的长整型类型的字段、一个非负的长度以及实际数据字节数(对应于长度),所有这些都在将消息添加到队列时,传送给<code>msgsnd</code>。 <code>msgrcv</code>用于从队列中取消息。我们并不定要以先进先出次序取消息,也可以按消息的类型字段取消息。</p>
 <p>每个队列有一个msqid_ds结构与其相关联</p>
 <p><img src="https://data2.liuin.cn/2018-05-04-15254293881565.jpg" alt=""></p>
@@ -829,7 +921,9 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/sem.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">semop</span><span class="params">(<span class="keyword">int</span> semid, <span class="keyword">struct</span> sembuf semoparray[], <span class="keyword">size_t</span> nops)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
 <p>参数 semoparray是一个指针,它指向一个由 sembuf结构表示的信号量操作数组:</p>
 <p><img src="https://data2.liuin.cn/2018-05-04-15254305267397.jpg" alt=""></p>
-<h2 id="共享存储"><a href="#共享存储" class="headerlink" title="共享存储"></a>共享存储</h2><p>共享存储允许两个或多个进程共享一个给定的存储区。因为数据不需要在客户进程和服务器进程之间复制,所以这是最快的一种IPC。使用共享存储时要掌握的唯一窍门是,在多个进程之间同步访问一个给定的存储区。若服务器进程正在将数据放入共享存储区,则在它做完这一操作之前,客户进程不应当去取这些数据。通常,信号量用于同步共享存储访问。</p>
+<h2 id="共享存储"><a href="#共享存储" class="headerlink" title="共享存储"></a>共享存储</h2><p>共享存储允许两个或多个进程共享一个给定的存储区。因为数据不需要在客户进程和服务器进程之间复制,所以这是最快的一种IPC。使用共享存储时要掌握的唯一窍门是,在多个进程之间同步访问一个给定的存储区。若服务器进程正在将数据放入共享存储区,则在它做完这一操作之前,客户进程不应当去取这些数据。通常,信号量用于同步共享存储访问。下面可以看到共享内存为什么是最快的一种IPC方式：</p>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274224200311.jpg" alt=""></p>
+<p><img src="https://data2.liuin.cn/2018-05-27-15274224241716.jpg" alt=""></p>
 <p>我们已经看到了共享存储的一种形式,就是在多个进程将同一个文件映射到它们的地址空间的时候。XSI共享存储和内存映射的文件的不同之处在于,前者没有相关的文件。XSI共享存储段是内存的匿名段</p>
 <p>内核为每一个共享存储段维护一个结构，包含以下成员：</p>
 <p><img src="https://data2.liuin.cn/2018-05-04-15254405323155.jpg" alt=""></p>
