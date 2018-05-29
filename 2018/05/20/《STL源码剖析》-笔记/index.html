@@ -138,7 +138,7 @@
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-21-15268628547016.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-21-15268628574449.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-21-15268653336402.jpg">
-<meta property="og:updated_time" content="2018-05-23T02:32:19.000Z">
+<meta property="og:updated_time" content="2018-05-29T06:35:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《STL源码剖析》 笔记">
 <meta name="twitter:description" content="侯捷老师的《STL源码剖析》可谓是学习STL的经典。在书籍的自序中侯捷老师提到的”我的确认为99.99%的程序员所写的程序，在SGI STL面前都是三流水平“，这让我等菜鸟根本把持不住呀。">
@@ -521,7 +521,7 @@
 <li>考虑过多“小型区块”可能造成的内存碎片( fragment)问题</li>
 </ul>
 <p>考虑到小型区块所可能造成的内存破碎问题，SGI设计了<strong>双层级配置器</strong>：</p>
-<p>第一级配置器直接使用mal1oc()和free()，第二级配置器则视情况采用不同的策略:当配置区块超过128 bytes时，视之为“足够大”，便调用第一级配置器;<strong>当配置区块小于128 bytes时，视之为“过小”，为了降低额外负担，便采用复杂的memory pool整理方式，而不再求助于第一级配置器</strong>。整个设计究竟只开放第一级配置器，或是同时开放第二级配置器</p>
+<p>第一级配置器直接使用malloc()和free()，第二级配置器则视情况采用不同的策略:当配置区块超过128 bytes时，视之为“足够大”，便调用第一级配置器;<strong>当配置区块小于128 bytes时，视之为“过小”，为了降低额外负担，便采用复杂的memory pool整理方式，而不再求助于第一级配置器</strong>。整个设计究竟只开放第一级配置器，或是同时开放第二级配置器</p>
 <p><img src="https://data2.liuin.cn/2018-05-23-15270402949330.jpg" alt=""></p>
 <p><img src="https://data2.liuin.cn/2018-05-23-15270403004835.jpg" alt=""></p>
 <h3 id="第一级配置器"><a href="#第一级配置器" class="headerlink" title="第一级配置器"></a>第一级配置器</h3><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div></pre></td><td class="code"><pre><div class="line">template &lt;int inst&gt;</div><div class="line">class __malloc_alloc_template &#123;</div><div class="line">private:</div><div class="line">//malloc调用内存不足时调用函数</div><div class="line">static void *oom_malloc(size_t);</div><div class="line">//realloc调用内存不足时调用函数</div><div class="line">static void *oom_realloc(void *, size_t);</div><div class="line">//错误处理函数，类似C++的set_new_handler，默认值为０，如果不设置，则内存分配失败时，返回THROW_BAD_ALLOC</div><div class="line">#ifndef __STL_STATIC_TEMPLATE_MEMBER_BUG</div><div class="line">    static void (* __malloc_alloc_oom_handler)();</div><div class="line">#endif</div><div class="line">public:</div><div class="line">static void * allocate(size_t n)</div><div class="line">&#123;</div><div class="line">    void *result = malloc(n);	第一级配置器直接使用malloc分配内存</div><div class="line">    if (0 == result) result = oom_malloc(n);//如果分配失败，则调用oom_malloc()</div><div class="line">    return result;</div><div class="line">&#125;</div><div class="line">static void deallocate(void *p, size_t /* n */)</div><div class="line">&#123;</div><div class="line">    free(p);	//第一级配置器用free回收内存</div><div class="line">&#125;</div><div class="line">static void * reallocate(void *p, size_t /* old_sz */, size_t new_sz)</div><div class="line">&#123;</div><div class="line">    void * result = realloc(p, new_sz);	//第一级配置器用reallocate重分配内存</div><div class="line">    if (0 == result) result = oom_realloc(p, new_sz);／／分配失败，调用oom_realloc分配</div><div class="line">    return result;</div><div class="line">&#125;</div><div class="line">// 设置分配错误处理函数，用于在oom_malloc和oom_realloc中使用</div><div class="line">static void (* set_malloc_handler(void (*f)()))()</div><div class="line">&#123;</div><div class="line">    void (* old)() = __malloc_alloc_oom_handler;</div><div class="line">    __malloc_alloc_oom_handler = f;</div><div class="line">    return(old);</div><div class="line">&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">template &lt;int inst&gt;</div><div class="line">void * __malloc_alloc_template&lt;inst&gt;::oom_malloc(size_t n)</div><div class="line">&#123;</div><div class="line">    void (* my_malloc_handler)();//声明一个函数指针，用于赋值 __malloc_alloc_oom_handler</div><div class="line">    void *result;//返回的内存指针</div><div class="line">    for (;;) &#123;	// 不断尝试释放内存，分配，再释放，再分配...</div><div class="line">        my_malloc_handler = __malloc_alloc_oom_handler;</div><div class="line">        if (0 == my_malloc_handler) &#123; __THROW_BAD_ALLOC; &#125;//为设置处理函数时，抛出错误</div><div class="line">        (*my_malloc_handler)();		// 调用处理函数，尝试释放内存</div><div class="line">        result = malloc(n);			// 再重新分配内存。</div><div class="line">        if (result) return(result);//如果分配成功，返回指针</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">template &lt;int inst&gt;</div><div class="line">void * __malloc_alloc_template&lt;inst&gt;::oom_realloc(void *p, size_t n)</div><div class="line">&#123;</div><div class="line">    void (* my_malloc_handler)();</div><div class="line">    void *result;</div><div class="line">    for (;;) &#123;	// 不断尝试释放内存，分配，再释放，再分配...</div><div class="line">        my_malloc_handler = __malloc_alloc_oom_handler;</div><div class="line">        if (0 == my_malloc_handler) &#123; __THROW_BAD_ALLOC; &#125;////为设置处理函数时，抛出错误</div><div class="line">        (*my_malloc_handler)();	//  调用处理函数，尝试释放内存</div><div class="line">        result = realloc(p, n);	// 再重新分配内存。</div><div class="line">        if (result) return(result);////如果分配成功，返回指针</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -700,7 +700,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年5月23日 - 10时05分
+	2018年5月29日 - 14时05分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -821,7 +821,7 @@
             
               <a href="/archives">
             
-                <span class="site-state-item-count">170</span>
+                <span class="site-state-item-count">171</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -947,7 +947,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      330.1k 字
+      333.3k 字
     </span>
   
 

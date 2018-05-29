@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-05-29T03:46:21.000Z</updated>
+  <updated>2018-05-29T08:40:17.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -16,11 +16,86 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Redis源码剖析——对象</title>
+    <link href="https://www.liuin.cn/2018/05/29/Redis%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90%E2%80%94%E2%80%94%E5%AF%B9%E8%B1%A1/"/>
+    <id>https://www.liuin.cn/2018/05/29/Redis源码剖析——对象/</id>
+    <published>2018-05-29T06:39:50.000Z</published>
+    <updated>2018-05-29T08:40:17.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>这篇文章将剖析Redis提供给用户的5种对象底层的数据结构和接口</p>
+<a id="more"></a>
+<p>前面讲了Reids底层所使用的一些数据结构：SDS、双端链表、字典、跳跃表等等，但是Redis并没有直接使用这些数据结构来构造键值对数据库。</p>
+<h2 id="对象数据结构"><a href="#对象数据结构" class="headerlink" title="对象数据结构"></a>对象数据结构</h2><p>在redis.h中定义类redisObject的数据结构如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Redis 对象定义</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> redisObject &#123;</div><div class="line">    <span class="keyword">unsigned</span> type:<span class="number">4</span>;       <span class="comment">// 类型</span></div><div class="line">    <span class="keyword">unsigned</span> encoding:<span class="number">4</span>;   <span class="comment">// 编码</span></div><div class="line">    <span class="comment">// 对象最后一次被访问的时间</span></div><div class="line">    <span class="keyword">unsigned</span> lru:REDIS_LRU_BITS; <span class="comment">/* lru time (relative to server.lruclock) */</span></div><div class="line">    <span class="comment">// 引用计数</span></div><div class="line">    <span class="keyword">int</span> refcount;</div><div class="line">    <span class="comment">// 实现的数据结构</span></div><div class="line">    <span class="keyword">void</span> *ptr;</div><div class="line">&#125; robj;</div></pre></td></tr></table></figure>
+<p>从代码中我们可以看到Redis对象所包含的信息有：类型、编码、实现指针、引用计数和访问时间</p>
+<h3 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h3><p>对于 Redis数据库保存的键值对来说,键总是一个字符串对象,而值则可以是字符串对象(string)、列表对象(list)、哈希对象(hash)、集合对象(set)或者有序集合对象(zset)的其中一种</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Object types */</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> REDIS_STRING 0</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> REDIS_LIST 1</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> REDIS_SET 2</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> REDIS_ZSET 3</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> REDIS_HASH 4</span></div></pre></td></tr></table></figure>
+<h3 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h3><p>对象的ptr指针指向对象的底层实现数据结构,而这些数据结构由对象的encoding属性决定encoding属性记录了对象所使用的编码,也即是说这个对象使用了什么数据结构作为对象的底层实现</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> REDIS_ENCODING_RAW 0     <span class="comment">/* 编码为 简单动态字符串 */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> REDIS_ENCODING_INT 1     <span class="comment">/* 编码为 long类型的整数 */</span> </span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> REDIS_ENCODING_HT 2      <span class="comment">/* 编码为 字典 */</span> </span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> REDIS_ENCODING_ZIPMAP 3   </span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> REDIS_ENCODING_LINKEDLIST 4 <span class="comment">/* 编码为 双端链表 */</span> </span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> REDIS_ENCODING_ZIPLIST 5 <span class="comment">/* 编码为 压缩列表 */</span> </span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> REDIS_ENCODING_INTSET 6  <span class="comment">/* 编码为 整数集合 */</span> </span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> REDIS_ENCODING_SKIPLIST 7  <span class="comment">/* 编码为 跳跃表和字典 */</span> </span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> REDIS_ENCODING_EMBSTR 8  <span class="comment">/* 编码为 embstr编码的简单动态字符串 */</span></span></div></pre></td></tr></table></figure>
+<p>每种类型的对象都至少对应两种不同的编码</p>
+<p><img src="http://data3.liuin.cn/2018-05-29-15275795005914.jpg" alt=""></p>
+<h3 id="引用计数"><a href="#引用计数" class="headerlink" title="引用计数"></a>引用计数</h3><p>Redis的对象系统实现了<strong>基于引用计数技术的内存回收机制</strong>,当程序不再使用某个对象的时候,这个对象所占用的内存就会被自动释放;另外, Redis还<strong>通过引用计数技术实现了对象共享机制</strong>,这一机制可以在适当的条件下,通过让多个数据库键共享同个对象来节约内存。</p>
+<p>上面这些功能都是通过<code>refcount</code>这个属性来实现的：</p>
+<ul>
+<li>在创建一个新对象时,引用计数的值会被初始化为1</li>
+<li>当对象被一个新程序使用时,它的引用计数值会被增一</li>
+<li>当对象不再被一个程序使用时,它的引用计数值会被减一</li>
+<li>当对象的引用计数值变为0时,对象所占用的内存会被释放</li>
+</ul>
+<p>修改引用计数的api如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">decrRefCount</span><span class="params">(robj *o)</span></span>;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">incrRefCount</span><span class="params">(robj *o)</span></span>;</div><div class="line"><span class="function">robj *<span class="title">resetRefCount</span><span class="params">(robj *obj)</span></span>;</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p>内存回收</p>
+</blockquote>
+<p>我们可以通过decrRefCount的实现看到当引用计数到达0的时候会自动释放对象所占有的资源</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">decrRefCount</span><span class="params">(robj *o)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (o-&gt;refcount &lt;= <span class="number">0</span>) redisPanic(<span class="string">"decrRefCount against refcount &lt;= 0"</span>);</div><div class="line">    <span class="keyword">if</span> (o-&gt;refcount == <span class="number">1</span>) &#123;</div><div class="line">        <span class="comment">// 释放对象占有的资源</span></div><div class="line">        <span class="keyword">switch</span>(o-&gt;type) &#123;</div><div class="line">        <span class="keyword">case</span> REDIS_STRING: freeStringObject(o); <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> REDIS_LIST: freeListObject(o); <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> REDIS_SET: freeSetObject(o); <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> REDIS_ZSET: freeZsetObject(o); <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> REDIS_HASH: freeHashObject(o); <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">default</span>: redisPanic(<span class="string">"Unknown object type"</span>); <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        zfree(o);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        o-&gt;refcount--;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>对象共享</p>
+</blockquote>
+<p>如果想创建一个与另外一个对象含有相同值的对象，这个时候可以启动对象的共享机制。</p>
+<p>在Redis中,让多个键共享同一个值对象需要执行以下两个步骤</p>
+<ul>
+<li>将数据库键的值指针指向一个现有的值对象</li>
+<li>将被共享的值对象的引用计数增一</li>
+</ul>
+<p>比如在从LongLong创建一个字符串对象的时候，首先要判断在不在共享对象的范围内，如果在的话就对引用计数加1</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="function">robj *<span class="title">createStringObjectFromLongLong</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> value)</span> </span>&#123;</div><div class="line"></div><div class="line">    robj *o;</div><div class="line"></div><div class="line">    <span class="comment">// value 的大小符合 REDIS 共享整数的范围</span></div><div class="line">    <span class="comment">// 那么返回一个共享对象</span></div><div class="line">    <span class="keyword">if</span> (value &gt;= <span class="number">0</span> &amp;&amp; value &lt; REDIS_SHARED_INTEGERS) &#123;</div><div class="line">        incrRefCount(shared.integers[value]);</div><div class="line">        o = shared.integers[value];</div><div class="line"></div><div class="line">    <span class="comment">// 不符合共享范围，创建一个新的整数对象</span></div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// 值可以用 long 类型保存，</span></div><div class="line">        <span class="comment">// 创建一个 REDIS_ENCODING_INT 编码的字符串对象</span></div><div class="line">        <span class="keyword">if</span> (value &gt;= LONG_MIN &amp;&amp; value &lt;= LONG_MAX) &#123;</div><div class="line">            o = createObject(REDIS_STRING, <span class="literal">NULL</span>);</div><div class="line">            o-&gt;encoding = REDIS_ENCODING_INT;</div><div class="line">            o-&gt;ptr = (<span class="keyword">void</span>*)((<span class="keyword">long</span>)value);</div><div class="line"></div><div class="line">        <span class="comment">// 值不能用 long 类型保存（long long 类型），将值转换为字符串，</span></div><div class="line">        <span class="comment">// 并创建一个 REDIS_ENCODING_RAW 的字符串对象来保存值</span></div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            o = createObject(REDIS_STRING,sdsfromlonglong(value));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> o;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="对象的基本操作"><a href="#对象的基本操作" class="headerlink" title="对象的基本操作"></a>对象的基本操作</h2><p>Redis对象的基本操作包含了创建对象、销毁对象、编码转换等等</p>
+<p>大部分操作的实现都在object.c文件中</p>
+<h3 id="对象创建"><a href="#对象创建" class="headerlink" title="对象创建"></a>对象创建</h3><p>各种对象创建的API如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function">robj *<span class="title">createObject</span><span class="params">(<span class="keyword">int</span> type, <span class="keyword">void</span> *ptr)</span></span>;  <span class="comment">// 创建对象，设定参数</span></div><div class="line"><span class="function">robj *<span class="title">createStringObject</span><span class="params">(<span class="keyword">char</span> *ptr, <span class="keyword">size_t</span> len)</span></span>;  <span class="comment">// 创建字符串对象</span></div><div class="line"><span class="function">robj *<span class="title">createRawStringObject</span><span class="params">(<span class="keyword">char</span> *ptr, <span class="keyword">size_t</span> len)</span></span>;   <span class="comment">// 创建raw编码的字符串对象</span></div><div class="line"><span class="function">robj *<span class="title">createEmbeddedStringObject</span><span class="params">(<span class="keyword">char</span> *ptr, <span class="keyword">size_t</span> len)</span></span>;  <span class="comment">// 创建embstr编码的字符串对象</span></div><div class="line"><span class="function">robj *<span class="title">createStringObjectFromLongLong</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> value)</span></span>;  <span class="comment">// 根据传入LongLong创建字符串对象</span></div><div class="line"><span class="function">robj *<span class="title">createStringObjectFromLongDouble</span><span class="params">(<span class="keyword">long</span> <span class="keyword">double</span> value)</span></span>;  <span class="comment">// 根据传入的LongDouble创建字符串对象</span></div><div class="line"><span class="function">robj *<span class="title">createListObject</span><span class="params">(<span class="keyword">void</span>)</span></span>; <span class="comment">// 创建双端链表链表编码的列表对象</span></div><div class="line"><span class="function">robj *<span class="title">createZiplistObject</span><span class="params">(<span class="keyword">void</span>)</span></span>; <span class="comment">// 创建压缩列表编码的列表对象</span></div><div class="line"><span class="function">robj *<span class="title">createSetObject</span><span class="params">(<span class="keyword">void</span>)</span></span>; <span class="comment">// 创建集合对象</span></div><div class="line"><span class="function">robj *<span class="title">createIntsetObject</span><span class="params">(<span class="keyword">void</span>)</span></span>; <span class="comment">// 创建整型集合编码的集合对象</span></div><div class="line"><span class="function">robj *<span class="title">createHashObject</span><span class="params">(<span class="keyword">void</span>)</span></span>; <span class="comment">// 创建hash对象</span></div><div class="line"><span class="function">robj *<span class="title">createZsetObject</span><span class="params">(<span class="keyword">void</span>)</span></span>; <span class="comment">// 创建zset对象</span></div><div class="line"><span class="function">robj *<span class="title">createZsetZiplistObject</span><span class="params">(<span class="keyword">void</span>)</span></span>; <span class="comment">//创建压缩列表编码的zset对象</span></div></pre></td></tr></table></figure></p>
+<p>具体我们以列表对象为例，看看创建对象的过程：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line"> * 创建一个 LINKEDLIST 编码的列表对象</div><div class="line"> */</div><div class="line"><span class="function">robj *<span class="title">createListObject</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</div><div class="line">    <span class="built_in">list</span> *l = listCreate();</div><div class="line">    robj *o = createObject(REDIS_LIST,l);</div><div class="line">    listSetFreeMethod(l,decrRefCountVoid);</div><div class="line">    o-&gt;encoding = REDIS_ENCODING_LINKEDLIST;</div><div class="line">    <span class="keyword">return</span> o;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line"> * 创建一个 ZIPLIST 编码的列表对象</div><div class="line"> */</div><div class="line"><span class="function">robj *<span class="title">createZiplistObject</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> *zl = ziplistNew();</div><div class="line">    robj *o = createObject(REDIS_LIST,zl);</div><div class="line">    o-&gt;encoding = REDIS_ENCODING_ZIPLIST;</div><div class="line">    <span class="keyword">return</span> o;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="对象销毁"><a href="#对象销毁" class="headerlink" title="对象销毁"></a>对象销毁</h3><p>各种对象销毁的API如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">freeStringObject</span><span class="params">(robj *o)</span></span>;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">freeListObject</span><span class="params">(robj *o)</span></span>;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">freeSetObject</span><span class="params">(robj *o)</span></span>;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">freeZsetObject</span><span class="params">(robj *o)</span></span>;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">freeHashObject</span><span class="params">(robj *o)</span></span>;</div></pre></td></tr></table></figure></p>
+<p>以List为例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line"> * 释放列表对象</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">freeListObject</span><span class="params">(robj *o)</span> </span>&#123;</div><div class="line">    <span class="keyword">switch</span> (o-&gt;encoding) &#123;</div><div class="line">    <span class="keyword">case</span> REDIS_ENCODING_LINKEDLIST:</div><div class="line">        listRelease((<span class="built_in">list</span>*) o-&gt;ptr);</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">    <span class="keyword">case</span> REDIS_ENCODING_ZIPLIST:</div><div class="line">        zfree(o-&gt;ptr);</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">    <span class="keyword">default</span>:</div><div class="line">        redisPanic(<span class="string">"Unknown list encoding type"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">listRelease</span><span class="params">(<span class="built_in">list</span> *<span class="built_in">list</span>)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> len;</div><div class="line">    listNode *current, *next;</div><div class="line"></div><div class="line">    <span class="comment">// 指向头指针</span></div><div class="line">    current = <span class="built_in">list</span>-&gt;head;</div><div class="line">    <span class="comment">// 遍历整个链表</span></div><div class="line">    len = <span class="built_in">list</span>-&gt;len;</div><div class="line">    <span class="keyword">while</span>(len--) &#123;</div><div class="line">        next = current-&gt;next;</div><div class="line">        <span class="comment">// 如果有设置值释放函数，那么调用它</span></div><div class="line">        <span class="keyword">if</span> (<span class="built_in">list</span>-&gt;<span class="built_in">free</span>) <span class="built_in">list</span>-&gt;<span class="built_in">free</span>(current-&gt;value);</div><div class="line">        <span class="comment">// 释放节点结构</span></div><div class="line">        zfree(current);</div><div class="line">        current = next;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 释放链表结构</span></div><div class="line">    zfree(<span class="built_in">list</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>和创建对象分多钟编码格式相对应，释放对象的时候也要根据编码具体执行释放</p>
+<h3 id="对象交互指令"><a href="#对象交互指令" class="headerlink" title="对象交互指令"></a>对象交互指令</h3><p>Redis提供三个命令用户获取对象的一些参数：</p>
+<ul>
+<li>object refcount <key> 返回key所指的对象的引用计数</key></li>
+<li>object encoding <key> 返回key所指的对象中存放的数据的编码方式</key></li>
+<li>object idletime <key> 返回key所指的对象的空转时长</key></li>
+</ul>
+<p>具体的实现如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">objectCommand</span><span class="params">(redisClient *c)</span> </span>&#123;</div><div class="line">    robj *o;</div><div class="line"></div><div class="line">    <span class="comment">// 返回对戏哪个的引用计数</span></div><div class="line">    <span class="keyword">if</span> (!strcasecmp(c-&gt;argv[<span class="number">1</span>]-&gt;ptr,<span class="string">"refcount"</span>) &amp;&amp; c-&gt;argc == <span class="number">3</span>) &#123;</div><div class="line">        <span class="keyword">if</span> ((o = objectCommandLookupOrReply(c,c-&gt;argv[<span class="number">2</span>],shared.nullbulk))</div><div class="line">                == <span class="literal">NULL</span>) <span class="keyword">return</span>;</div><div class="line">        addReplyLongLong(c,o-&gt;refcount);</div><div class="line"></div><div class="line">    <span class="comment">// 返回对象的编码</span></div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!strcasecmp(c-&gt;argv[<span class="number">1</span>]-&gt;ptr,<span class="string">"encoding"</span>) &amp;&amp; c-&gt;argc == <span class="number">3</span>) &#123;</div><div class="line">        <span class="keyword">if</span> ((o = objectCommandLookupOrReply(c,c-&gt;argv[<span class="number">2</span>],shared.nullbulk))</div><div class="line">                == <span class="literal">NULL</span>) <span class="keyword">return</span>;</div><div class="line">        addReplyBulkCString(c,strEncoding(o-&gt;encoding));</div><div class="line">    </div><div class="line">    <span class="comment">// 返回对象的空闲时间</span></div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!strcasecmp(c-&gt;argv[<span class="number">1</span>]-&gt;ptr,<span class="string">"idletime"</span>) &amp;&amp; c-&gt;argc == <span class="number">3</span>) &#123;</div><div class="line">        <span class="keyword">if</span> ((o = objectCommandLookupOrReply(c,c-&gt;argv[<span class="number">2</span>],shared.nullbulk))</div><div class="line">                == <span class="literal">NULL</span>) <span class="keyword">return</span>;</div><div class="line">        addReplyLongLong(c,estimateObjectIdleTime(o)/<span class="number">1000</span>);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        addReplyError(c,<span class="string">"Syntax error. Try OBJECT (refcount|encoding|idletime)"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;这篇文章将剖析Redis提供给用户的5种对象底层的数据结构和接口&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="源码剖析" scheme="https://www.liuin.cn/categories/%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/"/>
+    
+    
+      <category term="Redis" scheme="https://www.liuin.cn/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
     <title>《UNIX网络编程卷1》笔记 基本套接字编程部分</title>
     <link href="https://www.liuin.cn/2018/05/23/%E3%80%8AUNIX%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%8D%B71%E3%80%8B%E7%AC%94%E8%AE%B0-%E5%9F%BA%E6%9C%AC%E5%A5%97%E6%8E%A5%E5%AD%97%E7%BC%96%E7%A8%8B%E9%83%A8%E5%88%86/"/>
     <id>https://www.liuin.cn/2018/05/23/《UNIX网络编程卷1》笔记-基本套接字编程部分/</id>
     <published>2018-05-23T13:36:29.000Z</published>
-    <updated>2018-05-29T03:46:21.000Z</updated>
+    <updated>2018-05-29T06:29:20.000Z</updated>
     
     <content type="html"><![CDATA[<p>UNIX网络编程必读书籍——《UNIX网络编程卷1》  基本套接字编程 笔记</p>
 <a id="more"></a>
@@ -241,7 +316,47 @@
 <li>信号驱动式I/O。通过使用F_SEFL命令设置o_ASYNC文件状态标志,我们可以把一个套接字设置成一旦其状态发生变化,内核就产生一个SIGIO信号。</li>
 <li>F_SETOWN命令允许我们指定用于接收SIGIO和SIGURG信号的套接字属主(进程ID或进程组IO)。其中 SIGIO信号是套接字被设置为信号驱动式I/O型后产生的,SIGURG信号是在新的带外数据到达套接字时产生的。F_GETOWN命令返回套接字的当前属主。</li>
 </ul>
-<h1 id="基本UDP套接字编程"><a href="#基本UDP套接字编程" class="headerlink" title="基本UDP套接字编程"></a>基本UDP套接字编程</h1>]]></content>
+<h1 id="基本UDP套接字编程"><a href="#基本UDP套接字编程" class="headerlink" title="基本UDP套接字编程"></a>基本UDP套接字编程</h1><h2 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h2><p>在使用TCP编写的应用程序和使用UDP编写的应用程序之间存在一些本质差异,其原因在于这两个传输层之间的差别:UDP是无连接不可靠的数据报协议,非常不同于TCP提供的面向连接的可靠字节流。然而相比TCP,有些场合确实更适合使用UDP</p>
+<p>下图给出了典型的UDP客户服务器程序的函数调用。客户不与服务器建立连接,而是只管使用sendto函数给服务器发送数据报,其中必须指定目的地(即服务器)的地址作为参数。类似地,服务器不接受来自客户的连接,而是只管调用 recvfrom函数,等待来自客户的某个数据到达</p>
+<p><img src="http://data3.liuin.cn/2018-05-29-15275736670682.jpg" alt=""></p>
+<h2 id="recvfrom和sendto函数"><a href="#recvfrom和sendto函数" class="headerlink" title="recvfrom和sendto函数"></a>recvfrom和sendto函数</h2><p>这两个函数类似于标准的read和write函数,不过需要三个额外的参数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"><span class="keyword">ssize_t</span> recvfrom(<span class="keyword">int</span> sockfd, <span class="keyword">void</span> *buff, <span class="keyword">size_t</span> nbytes, <span class="keyword">int</span> flags, <span class="keyword">struct</span> sockaddr *from, <span class="keyword">socklen_t</span> *addrlen);</div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> sendto(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">void</span> *buff, <span class="keyword">size_t</span> nbytes, <span class="keyword">int</span> flags, <span class="keyword">const</span> <span class="keyword">struct</span> sockaddr *to, <span class="keyword">socklen_t</span> addrlen);</div><div class="line"></div><div class="line"><span class="comment">// Both return: number of bytes read or written if OK, –1 on error</span></div></pre></td></tr></table></figure>
+<p>前三个参数<code>sockfd</code>、<code>buff</code>和<code>nbytes</code>等同于read和write函数的三个参数:描述符、指向读入或写出缓冲区的指针和读写字节数</p>
+<p>sendto的to参数指向一个含有数据报接收者的协议地址(例如IP地址及端口号)的套接字地址结构,其大小由 addrlen参数指定。 recvfrom的fom参数指向一个将由该函数在返回时填写数据报发送者的协议地址的套接字地址结构,而在该套接字地址结构中填写的字节数则放在addrlen参数所指的整数中返回给调用者。注意, sendto的最后一个参数是一个整数值,而recvfrom的最后一个参数是一个指向整数值的指针(即值-结果参数)。</p>
+<h2 id="数据报的丢失"><a href="#数据报的丢失" class="headerlink" title="数据报的丢失"></a>数据报的丢失</h2><p>我们的UDP客户服务器例子是不可靠的。如果一个客户数据报丢失(譬如说,被客户主机与服务器主机之间的某个路由器丢弃),客户将永远阻塞于dg_cli函数中的recvfrom调用,等待一个永远不会到达的服务器应答。类似地,如果客户数据报到达服务器,但是服务器的应答丢失了,客户也将永远阻塞于recvfrom调用。防止这样永久阻塞的一般方法是给客户的recvfrom调用设置一个超时。</p>
+<p>但是仅仅给recvfrom调用设置超时并不是完整的解决办法。</p>
+<h2 id="UDP的connect函数"><a href="#UDP的connect函数" class="headerlink" title="UDP的connect函数"></a>UDP的connect函数</h2><p>除非套接字已连接,否则异步错误是不会返回到UDP套接字的。我们确实可以给UDP套接字调用 connect(4,3节),然而这样做的结果却与TCP连接大相径庭:没有三路握手过程。内核只是检查是否存在立即可知的错误(例如一个显然不可达的目的地),记录对端的P地址和端口号(取自传递给 connect的套接字地址结构),然后立即返回到调用进程。</p>
+<p>对于已连接UDP套接字,与默认的未连接UDP套接字相比,发生了三个变化</p>
+<ol>
+<li>我们再也不能给输出操作指定目的IP地址和端口号。也就是说,我们不使用sendto,而改用write或send写到已连接UDP套接字上的任何内容都自动发送到由connect指定的协议地址（例如IP地址和端口号）</li>
+<li>我们不必使用recvfrom以获悉数据报的发送者,而改用read、recv或recvmsg</li>
+<li>由已连接UDP套接字引发的异步错误会返回给它们所在的进程,而未连接UDP套接字不接收任何异步错误。</li>
+</ol>
+<p><img src="http://data3.liuin.cn/2018-05-29-15275750978867.jpg" alt=""></p>
+<p><img src="http://data3.liuin.cn/2018-05-29-15275751182016.jpg" alt=""></p>
+<h3 id="给一个UDP套接字多次调用connect"><a href="#给一个UDP套接字多次调用connect" class="headerlink" title="给一个UDP套接字多次调用connect"></a>给一个UDP套接字多次调用connect</h3><p>拥有一个已连接UDP套接字的进程可出于下列两个目的之一再次调用 connect:</p>
+<ol>
+<li>指定新的IP地址和端口号</li>
+<li>断开套接字。</li>
+</ol>
+<p>第一个目的(即给一个已连接UDP套接字指定新的对端)不同于TCP套接字中 connect的使用:对于TCP套接字, connect只能调用一次。</p>
+<h3 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h3><p>当应用进程在一个未连接的UDP套接字上调用sendto时,源自Berkeley的内核暂时连接该套接字,发送数据报,然后断开该连接。在一个未连接的UDP套接字上给两个数据报调用sendto函数于是涉及内核执行下列6个步骤:</p>
+<ul>
+<li>连接套接字;</li>
+<li>输出第一个数据报;</li>
+<li>断开套接字连接;</li>
+<li>连接套接字;</li>
+<li>输出第二个数据报;</li>
+<li>断开套接字连接。</li>
+</ul>
+<p>当应用进程知道自己要给同一目的地址发送多个数据报时,显式连接套接字效率更高。调用 connect后调用两次 write涉及内核执行如下步骤:</p>
+<ul>
+<li>连接套接字</li>
+<li>输出第一个数据报</li>
+<li>输出第二个数据报</li>
+</ul>
+<p>在这种情况下,内核只复制一次含有目的IP地址和端口号的套接字地址结构,相反当调用两次 sendto时,需复制两次。临时连接未连接的UDP套接字大约会耗费每个UDP传输三分之一的开销。</p>
+]]></content>
     
     <summary type="html">
     
@@ -261,7 +376,7 @@
     <link href="https://www.liuin.cn/2018/05/20/%E3%80%8ASTL%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90%E3%80%8B-%E7%AC%94%E8%AE%B0/"/>
     <id>https://www.liuin.cn/2018/05/20/《STL源码剖析》-笔记/</id>
     <published>2018-05-20T00:52:59.000Z</published>
-    <updated>2018-05-23T02:32:19.000Z</updated>
+    <updated>2018-05-29T06:35:33.000Z</updated>
     
     <content type="html"><![CDATA[<p>侯捷老师的《STL源码剖析》可谓是学习STL的经典。在书籍的自序中侯捷老师提到的”我的确认为99.99%的程序员所写的程序，在SGI STL面前都是三流水平“，这让我等菜鸟根本把持不住呀。</p>
 <a id="more"></a>
@@ -284,7 +399,7 @@
 <li>考虑过多“小型区块”可能造成的内存碎片( fragment)问题</li>
 </ul>
 <p>考虑到小型区块所可能造成的内存破碎问题，SGI设计了<strong>双层级配置器</strong>：</p>
-<p>第一级配置器直接使用mal1oc()和free()，第二级配置器则视情况采用不同的策略:当配置区块超过128 bytes时，视之为“足够大”，便调用第一级配置器;<strong>当配置区块小于128 bytes时，视之为“过小”，为了降低额外负担，便采用复杂的memory pool整理方式，而不再求助于第一级配置器</strong>。整个设计究竟只开放第一级配置器，或是同时开放第二级配置器</p>
+<p>第一级配置器直接使用malloc()和free()，第二级配置器则视情况采用不同的策略:当配置区块超过128 bytes时，视之为“足够大”，便调用第一级配置器;<strong>当配置区块小于128 bytes时，视之为“过小”，为了降低额外负担，便采用复杂的memory pool整理方式，而不再求助于第一级配置器</strong>。整个设计究竟只开放第一级配置器，或是同时开放第二级配置器</p>
 <p><img src="https://data2.liuin.cn/2018-05-23-15270402949330.jpg" alt=""></p>
 <p><img src="https://data2.liuin.cn/2018-05-23-15270403004835.jpg" alt=""></p>
 <h3 id="第一级配置器"><a href="#第一级配置器" class="headerlink" title="第一级配置器"></a>第一级配置器</h3><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div></pre></td><td class="code"><pre><div class="line">template &lt;int inst&gt;</div><div class="line">class __malloc_alloc_template &#123;</div><div class="line">private:</div><div class="line">//malloc调用内存不足时调用函数</div><div class="line">static void *oom_malloc(size_t);</div><div class="line">//realloc调用内存不足时调用函数</div><div class="line">static void *oom_realloc(void *, size_t);</div><div class="line">//错误处理函数，类似C++的set_new_handler，默认值为０，如果不设置，则内存分配失败时，返回THROW_BAD_ALLOC</div><div class="line">#ifndef __STL_STATIC_TEMPLATE_MEMBER_BUG</div><div class="line">    static void (* __malloc_alloc_oom_handler)();</div><div class="line">#endif</div><div class="line">public:</div><div class="line">static void * allocate(size_t n)</div><div class="line">&#123;</div><div class="line">    void *result = malloc(n);	第一级配置器直接使用malloc分配内存</div><div class="line">    if (0 == result) result = oom_malloc(n);//如果分配失败，则调用oom_malloc()</div><div class="line">    return result;</div><div class="line">&#125;</div><div class="line">static void deallocate(void *p, size_t /* n */)</div><div class="line">&#123;</div><div class="line">    free(p);	//第一级配置器用free回收内存</div><div class="line">&#125;</div><div class="line">static void * reallocate(void *p, size_t /* old_sz */, size_t new_sz)</div><div class="line">&#123;</div><div class="line">    void * result = realloc(p, new_sz);	//第一级配置器用reallocate重分配内存</div><div class="line">    if (0 == result) result = oom_realloc(p, new_sz);／／分配失败，调用oom_realloc分配</div><div class="line">    return result;</div><div class="line">&#125;</div><div class="line">// 设置分配错误处理函数，用于在oom_malloc和oom_realloc中使用</div><div class="line">static void (* set_malloc_handler(void (*f)()))()</div><div class="line">&#123;</div><div class="line">    void (* old)() = __malloc_alloc_oom_handler;</div><div class="line">    __malloc_alloc_oom_handler = f;</div><div class="line">    return(old);</div><div class="line">&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">template &lt;int inst&gt;</div><div class="line">void * __malloc_alloc_template&lt;inst&gt;::oom_malloc(size_t n)</div><div class="line">&#123;</div><div class="line">    void (* my_malloc_handler)();//声明一个函数指针，用于赋值 __malloc_alloc_oom_handler</div><div class="line">    void *result;//返回的内存指针</div><div class="line">    for (;;) &#123;	// 不断尝试释放内存，分配，再释放，再分配...</div><div class="line">        my_malloc_handler = __malloc_alloc_oom_handler;</div><div class="line">        if (0 == my_malloc_handler) &#123; __THROW_BAD_ALLOC; &#125;//为设置处理函数时，抛出错误</div><div class="line">        (*my_malloc_handler)();		// 调用处理函数，尝试释放内存</div><div class="line">        result = malloc(n);			// 再重新分配内存。</div><div class="line">        if (result) return(result);//如果分配成功，返回指针</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">template &lt;int inst&gt;</div><div class="line">void * __malloc_alloc_template&lt;inst&gt;::oom_realloc(void *p, size_t n)</div><div class="line">&#123;</div><div class="line">    void (* my_malloc_handler)();</div><div class="line">    void *result;</div><div class="line">    for (;;) &#123;	// 不断尝试释放内存，分配，再释放，再分配...</div><div class="line">        my_malloc_handler = __malloc_alloc_oom_handler;</div><div class="line">        if (0 == my_malloc_handler) &#123; __THROW_BAD_ALLOC; &#125;////为设置处理函数时，抛出错误</div><div class="line">        (*my_malloc_handler)();	//  调用处理函数，尝试释放内存</div><div class="line">        result = realloc(p, n);	// 再重新分配内存。</div><div class="line">        if (result) return(result);////如果分配成功，返回指针</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -2408,432 +2523,6 @@
     
     
       <category term="Unix" scheme="https://www.liuin.cn/tags/Unix/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《Effective C++》 笔记</title>
-    <link href="https://www.liuin.cn/2018/04/19/%E3%80%8AEffective-C-%E3%80%8B-%E7%AC%94%E8%AE%B0/"/>
-    <id>https://www.liuin.cn/2018/04/19/《Effective-C-》-笔记/</id>
-    <published>2018-04-19T08:18:10.000Z</published>
-    <updated>2018-05-19T01:33:25.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>《Effective C++》的副标题是改善程序与设计的55个具体做法。这本书用比较多的示例展示了很多改善C++程序的方法，值得一读。</p>
-<a id="more"></a>
-<h2 id="让自己习惯C"><a href="#让自己习惯C" class="headerlink" title="让自己习惯C++"></a>让自己习惯C++</h2><h3 id="条款01：视C-为一个语言联邦"><a href="#条款01：视C-为一个语言联邦" class="headerlink" title="条款01：视C++为一个语言联邦"></a>条款01：视C++为一个语言联邦</h3><p>C++高效编程守则视状况而变化,取决于你使用C++的哪一部分。</p>
-<h3 id="条款02：尽量以const，enum，inline替换-define"><a href="#条款02：尽量以const，enum，inline替换-define" class="headerlink" title="条款02：尽量以const，enum，inline替换#define"></a>条款02：尽量以const，enum，inline替换#define</h3><p>“宁可以编译器替换预处理器”</p>
-<p>使用<code>#define</code>时在编译之前所有的常量都被替换成了数字，如果在编译的时候产生错误，那么追溯错误产生的源头将是一件非常困难的事情。使用<code>const</code>就不一样，其变量一定会被编译器看到，当然就会引入<code>symbol table</code>中</p>
-<p>当我们以常量替换<code>#defines</code>,有两种特殊情况值得说说。第一是定义常量指针( constant pointers)。由于常量定义式通常被放在头文件内(以便被不同的源码含入),因此有必要将指针(而不只是指针所指之物)声明为<code>const</code></p>
-<p>第二个值得注意的是<code>class</code>专属常量。为了将常量的作用域(scope)限制于<code>class</code>内,你必须让它成为 class一个成员(member);而为确保此常量至多只有一份实体,你必须让它成为一个<code>static</code>成员:</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>对于单纯常量,最好以 const对象或 enums替换#defines</li>
-<li>对于形似函数的宏( macros),最好改用 inline函数替换#defines</li>
-</ul>
-</blockquote>
-<h3 id="条款03：尽可能使用const"><a href="#条款03：尽可能使用const" class="headerlink" title="条款03：尽可能使用const"></a>条款03：尽可能使用const</h3><p>const的一件奇妙的事情是，它允许你指定一个语义约束，而编译器会强制执行这项约束。</p>
-<p>const语法虽然变化多端,但并不莫测高深。如果关键字const出现在星号左边,表示被指物是常量(底层const)；如果出现在星号右边,表示指针自身是常量(顶层const);如果出现在星号两边,表示被指物和指针两者都是常量。</p>
-<p>const最具威力的用法是面对函数声明时的应用。在一个函数声明式内, const可以和函数返回值、各参数、函数自身(如果是成员函数)产生关联。</p>
-<blockquote>
-<p>const 成员函数</p>
-</blockquote>
-<p>将 const实施于成员函数的目的,是为了确认该成员函数可作用于 const对象身上。这一类成员函数之所以重要,基于两个理由。第一,它们使 class接口比较容易被理解。这是因为,得知哪个函数可以改动对象内容而哪个函数不行,很是重要。第二,它们使“操作 const对象”成为可能。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>将某些东西声明为 const可帮助编译器侦测出错误用法。 const可被施加于任何作用域内的对象、函数参数、函数返回类型、成员函数本体</li>
-<li>当 const和non- const成员函数有着实质等价的实现时,令non- const版本调用 const版本可避免代码重复。</li>
-</ul>
-</blockquote>
-<h3 id="条款04：确认对象使用前已被初始化"><a href="#条款04：确认对象使用前已被初始化" class="headerlink" title="条款04：确认对象使用前已被初始化"></a>条款04：确认对象使用前已被初始化</h3><p>在某些语境下x保证被初始化(为0),但在其他语境中却不保证。<strong>读取未初始化的值会导致不明确行为</strong></p>
-<p>对于内置类型之外的东西，初始化的任务落在了构造函数的身上。我们要确保每一个构造函数都将对象的每一个成员初始化。但是我们很容易混淆复制和初始化的而例子，比如：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">class</span> A &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    A(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; a, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; b);</div><div class="line"><span class="keyword">private</span>:</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> thea;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> theb;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">A::A(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; a, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; b)</div><div class="line">&#123;</div><div class="line">    thea = a;   <span class="comment">// 这些都是赋值，而非初始化</span></div><div class="line">    theb = b;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>C++规定,对象的成员变量的初始化动作发生在进入构造函数本体之前。所以构造函数最好使用成员初值列进行初始化。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>为内置型对象进行手工初始化,因为C++不保证初始化它们。</li>
-<li>构造函数最好使用成员初值列( member initialization list),而不要在构造函数本体内使用赋值操作( assignment)。初值列列出的成员变量,其排列次序应该和它们在 class中的声明次序相同。</li>
-</ul>
-</blockquote>
-<h2 id="构造-析构-赋值运算"><a href="#构造-析构-赋值运算" class="headerlink" title="构造/析构/赋值运算"></a>构造/析构/赋值运算</h2><h3 id="条款05：了解C-默默编写并调用哪些函数"><a href="#条款05：了解C-默默编写并调用哪些函数" class="headerlink" title="条款05：了解C++默默编写并调用哪些函数"></a>条款05：了解C++默默编写并调用哪些函数</h3><p>如果你自己没声明,编译器就会为它声明(编译器版本的)一个copy构造函数、一个 copy assignment操作符和一个析构函数。此外如果你没有声明任何构造函数,编译器也会为你声明一个 default构造函数。所有这些函数都是 public且in1ine。</p>
-<p>default构造函数和析构函数主要是给编译器一个地方用来放置“藏身幕后”的代码,像是调用 base classes和non-static成员变量的构造函数和析构函数。</p>
-<p>至于copy构造函数和 copy assignment操作符,编译器创建的版本只是单纯地将来源对象的每一个non- static成员变量拷贝到目标对象。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>编译器可以暗自为 class创建default构造函数、copy构造函数、 copy assignment操作符,以及析构函数。</li>
-</ul>
-</blockquote>
-<h3 id="条款06：若不想使用编译器自动生成的函数，就该明确拒绝"><a href="#条款06：若不想使用编译器自动生成的函数，就该明确拒绝" class="headerlink" title="条款06：若不想使用编译器自动生成的函数，就该明确拒绝"></a>条款06：若不想使用编译器自动生成的函数，就该明确拒绝</h3><p>如果你不希望 class支持某一特定机能,只要不声明对应函数就是了。但这个策略对copy构造函数和copy assignment操作符却不起作用</p>
-<p>所有编译器产出的函数都是 public.为阻止这些函数被创建出来,你得自行声明它们,但这里并没有什么需求使你必须将它们声明为 public。因此你可以将cory构造函数或 copy assignment操作符声明为 private。藉由明确声明一个成员函数,你阻止了编译器暗自创建其专属版本;而令这些函数为 private,使你得以成功组织别人调用他</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>为驳回编译器自动(暗自)提供的机能,可将相应的成员函数声明为 private并且不予实现。</li>
-</ul>
-</blockquote>
-<h3 id="条款07：为多态基类声明virtual析构函数"><a href="#条款07：为多态基类声明virtual析构函数" class="headerlink" title="条款07：为多态基类声明virtual析构函数"></a>条款07：为多态基类声明virtual析构函数</h3><p>C++明白指出,当 derived class对象经由一个base class指针被删除,而该 base class带着一个non- virtual析构函数,其结果未有定义实际执行时通常发生的是对象的 derived成分没被销毁。</p>
-<p>消除这个问题的做法很简单:给 base class一个 virtua析构函数</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>polymorphic(带多态性质的) base classes应该声明一个 virtual析构函数。如果class带有任何 virtual函数,它就应该拥有一个 virtual析构函数。</li>
-</ul>
-</blockquote>
-<h3 id="条款08：别让异常逃离析构函数"><a href="#条款08：别让异常逃离析构函数" class="headerlink" title="条款08：别让异常逃离析构函数"></a>条款08：别让异常逃离析构函数</h3><p>C++并不禁止析构函数吐出异常,但它不鼓励你这样做。理由是当有多个（比如在vector中）对象需要销毁的时候，第一个对象和第二个对象析构是都抛出异常，这种情况下程序不是结束执行就是导致未定义行为。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>析构函数绝对不要吐出异常。如果一个被析构函数调用的函数可能抛出异常,析构函数应该捕捉任何异常,然后吞下它们(不传播)或结束程序。</li>
-<li>如果客户需要对某个操作函数运行期间抛出的异常做出反应,那么 class应该提供一个普通函数(而非在析构函数中)执行该操作。</li>
-</ul>
-</blockquote>
-<h3 id="条款09：绝不要在构造函数和析构函数中调用virtual函数"><a href="#条款09：绝不要在构造函数和析构函数中调用virtual函数" class="headerlink" title="条款09：绝不要在构造函数和析构函数中调用virtual函数"></a>条款09：绝不要在构造函数和析构函数中调用virtual函数</h3><p>在base class构造期间，virtual函数不是virtual函数。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>在构造和析构期间不要调用 virtual函数,因为这类调用从不下降至 derived class(比起当前执行构造函数和析构函数的那层)</li>
-</ul>
-</blockquote>
-<h3 id="条款10：令operator-返回一个-reference-to-this"><a href="#条款10：令operator-返回一个-reference-to-this" class="headerlink" title="条款10：令operator= 返回一个 reference to *this"></a>条款10：令operator= 返回一个 reference to *this</h3><p>复制可以写成连锁形式：</p>
-<p><code>x = y = z = 15;</code></p>
-<p>同时赋值采用右结合律,所以上述连锁赋值被解析为:</p>
-<p><code>x = (y = (z = 15));</code></p>
-<p>为了实现“连锁赋值”,赋值操作符必须返回一个 reference指向操作符的左侧实参。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>令赋值( assignment)操作符返回一个 reference to *this。</li>
-</ul>
-</blockquote>
-<h3 id="条款11：在operator-中处理“自我赋值”"><a href="#条款11：在operator-中处理“自我赋值”" class="headerlink" title="条款11：在operator= 中处理“自我赋值”"></a>条款11：在operator= 中处理“自我赋值”</h3><p>“自我赋值“发生在对象赋值给自己时：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Widget &#123; ... &#125; ;</div><div class="line">Widget w;</div><div class="line">...</div><div class="line">w = w;</div></pre></td></tr></table></figure>
-<p>这看起来有点愚蠢,但它合法,所以不要认定客户绝不会那么做。</p>
-<p>自我赋值可能出现的一个问题是, operator=函数内的*this(赋值的目的端)和rhs有可能是同一个对象。果真如此 delete就不只是销毁当前对象的 bitmap,它也销毁rhs的 bitmap。</p>
-<p>欲阻止这种错误,传统做法是藉由 operator=最前面的一个“证同测试( identitytest)”达到“自我赋值”的检验目的:</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Widget&amp; Widget::<span class="keyword">operator</span>=(<span class="keyword">const</span> Widget&amp; rhs)</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span>(<span class="keyword">this</span> == rhs) <span class="keyword">return</span> *<span class="keyword">this</span>;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>确保当对象自我赋值时 operator=有良好行为。其中技术包括比较“来源对象”和“目标对象”的地址、精心周到的语句顺序、以及 copy-and-swap。</li>
-<li>确定任何函数如果操作一个以上的对象,而其中多个对象是同一个对象时,其行为仍然正确。</li>
-</ul>
-</blockquote>
-<h3 id="条款12：复制对象时勿忘其每一个成分"><a href="#条款12：复制对象时勿忘其每一个成分" class="headerlink" title="条款12：复制对象时勿忘其每一个成分"></a>条款12：复制对象时勿忘其每一个成分</h3><blockquote>
-<p>重点</p>
-<ul>
-<li>Copying函数应该确保复制“对象内的所有成员变量”及“所有 base class成分”。</li>
-<li>不要尝试以某个 copying函数实现另一个 copying函数。应该将共同机能放进第三个函数中,并由两个 coping函数共同调用。</li>
-</ul>
-</blockquote>
-<h2 id="资源管理"><a href="#资源管理" class="headerlink" title="资源管理"></a>资源管理</h2><h3 id="条款13：以对象管理资源"><a href="#条款13：以对象管理资源" class="headerlink" title="条款13：以对象管理资源"></a>条款13：以对象管理资源</h3><p>有的时候我们我们使用工厂函数获得某个特定的对象的指针的时候，在使用完毕时候需要将其占用的空间释放，尽管我们有这个意识，但是在实际开发中，如果中间出现异常或者return可能会造成内存泄漏的现象。</p>
-<p>为了确保使用工厂函数返回的资源总是被释放,我们需要将资源放进对象内,当控制流离开f,<strong>该对象的析构函数会自动释放那些资源</strong>。实际上这正是隐身于本条款背后的半边想法:把资源放进对象内,我们便可倚赖C++的“析构函数自动调用机制”确保资源被释放。(稍后讨论另半边想法。)</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>为防止资源泄漏,请使用RAII对象,它们在构造函数中获得资源并在析构函数中释放资源</li>
-<li>两个常被使用的 RAII classes分别是trl::shared_ptr和 auto_ptr。前者通常是较佳选择,因为其copy行为比较直观。若选择 auto_ptr,复制动作会使它(被复制物)指向null</li>
-</ul>
-</blockquote>
-<h3 id="条款14：在资源管理类中小心coping行为"><a href="#条款14：在资源管理类中小心coping行为" class="headerlink" title="条款14：在资源管理类中小心coping行为"></a>条款14：在资源管理类中小心coping行为</h3><p>我们使用C API管理一个互斥对象的时候，有lock和unlock两个函数可以用；</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">lock</span><span class="params">(Mutex* pm)</span></span>;     <span class="comment">// 锁定</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">unlock</span><span class="params">(Mutex* pm)</span></span>;   <span class="comment">// 解锁</span></div></pre></td></tr></table></figure>
-<p>为了确保不会忘记解锁一个互斥量，我们可以使用上一个条款的建议，创建一个对象来管理这个互斥量，使得“资源在构造期间获得，在析构期间释放”</p>
-<p>但是如果这个对象发生复制的时候怎么办？大多时候有以下两种可行的方案：</p>
-<ul>
-<li>禁止复制</li>
-<li>对底层资源祭出“引用计数法”（reference-count）</li>
-</ul>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>复制RAII对象必须一并复制它所管理的资源,所以资源的copying行为决定RAII对象的copying行为。</li>
-<li>普遍而常见的 Rail class copying行为是:抑制 copying、施行引用计数法( reference counting)。不过其他行为也都可能被实现</li>
-</ul>
-</blockquote>
-<h3 id="条款15：在资源管理类中提供对原始资源的访问"><a href="#条款15：在资源管理类中提供对原始资源的访问" class="headerlink" title="条款15：在资源管理类中提供对原始资源的访问"></a>条款15：在资源管理类中提供对原始资源的访问</h3><p>资源管理类( resource-managing classes)很棒。它们是你对抗资源泄漏的堡垒。排除此等泄漏是良好设计系统的根本性质。在一个完美世界中你将倚赖这样的classes来处理和资源之间的所有互动,而不是玷污双手直接处理原始资源(rawresources)。但这个世界并不完美。许多APIs直接指涉资源,所以除非你发誓(这其实是一种少有实际价值的举动)永不录用这样的APls,否则只得绕过资源管理对象( resource-managing objects)直接访问原始资源( raw resources)。</p>
-<p>由于有时候还是必须取得RAI对象内的原始资源,某些 RAII class设计者于是联想到“将油脂涂在滑轨上”,做法是提供一个显示转换函数或者隐式转换函数。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>APIs往往要求访问原始资源( raw resources),所以每一个 RAII class应该提供一个“取得其所管理之资源”的办法。</li>
-<li>对原始资源的访问可能经由显式转换或隐式转换。一般而言显式转换比较安全,但隐式转换对客户比较方便。</li>
-</ul>
-</blockquote>
-<h3 id="条款16：成对使用new和delete时要采取相同格式"><a href="#条款16：成对使用new和delete时要采取相同格式" class="headerlink" title="条款16：成对使用new和delete时要采取相同格式"></a>条款16：成对使用new和delete时要采取相同格式</h3><p>当你使用new(也就是通过new动态生成一个对象),有两件事发生。第内存被分配出来(通过名为 operator new的函数)。第二,针对此内存会有一个(或更多)构造函数被调用。</p>
-<p>当你使用 delete,也有两件事发生:针对此内存会有一个(或更多)析构函数被调用,然后内存才被释放(通过名为 operator delete的函数)。</p>
-<p>delete的最大问题在于:即将被删除的内存之内究竟存有多少对象?这个问题的答案决定了有多少个析构函数必须被调用起来。实际上这个问题可以更简单些:即将被删除的那个指针,所指的是单一对象或对象数组?这是个必不可缺的问题,因为单一对象的内存布局一般而言不同于数组的内存布局。</p>
-<p>所以在成对使用new和delete的时候要采取相同的形式</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>如果你在new表达式中使用[],必须在相应的de1ete表达式中也使用[]。如果你在new表达式中不使用[],一定不要在相应的 delete表达式中使用[]</li>
-</ul>
-</blockquote>
-<h3 id="条款17：以独立语句将newed对象置入智能指针"><a href="#条款17：以独立语句将newed对象置入智能指针" class="headerlink" title="条款17：以独立语句将newed对象置入智能指针"></a>条款17：以独立语句将newed对象置入智能指针</h3><blockquote>
-<p>重点</p>
-<ul>
-<li>以独立语句将 newed对象存储于(置入)智能指针内。如果不这样做,一旦异常被抛出,有可能导致难以察觉的资源泄漏。</li>
-</ul>
-</blockquote>
-<h2 id="设计与声明"><a href="#设计与声明" class="headerlink" title="设计与声明"></a>设计与声明</h2><h3 id="条款18：让接口容易被正确使用，不容易被误用"><a href="#条款18：让接口容易被正确使用，不容易被误用" class="headerlink" title="条款18：让接口容易被正确使用，不容易被误用"></a>条款18：让接口容易被正确使用，不容易被误用</h3><p>欲开发一个“容易被正确使用,不容易被误用”的接口,首先必须考虑客户可能做出什么样的错误。</p>
-<p>预防客户错误的另一个办法是,限制类型内什么事可做,什么事不能做。常见的限制是加上 const。例如，以const修饰operator* 的返回类型可以阻止客户因“用户自定义类型”而犯错：</p>
-<p><code>if( a * b = c ) ...</code>原意应该为做一次比较动作</p>
-<p>下面是另一个一般性准则“让 types容易被正确使用,不容易被误用”的表现形式“除非有好理由,否则应该尽量令你的 types的行为与内置 types一致”。客户已经知道像int这样的type有些什么行为,所以你应该努力让你的 types在合样合理的前提下也有相同表现。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>好的接口很容易被正确使用,不容易被误用。你应该在你的所有接口中努力达成这些性质。</li>
-<li>“促进正确使用”的办法包括接口的一致性,以及与内置类型的行为兼容。</li>
-<li>“阻止误用”的办法包括建立新类型、限制类型上的操作,束缚对象值,以及消除客户的资源管理责任</li>
-</ul>
-</blockquote>
-<h3 id="条款19：设计class犹如设计type"><a href="#条款19：设计class犹如设计type" class="headerlink" title="条款19：设计class犹如设计type"></a>条款19：设计class犹如设计type</h3><p>设计优秀的 classes是一项艰巨的工作,因为设计好的 types是一项艰巨的工作。好的 types有自然的语法,直观的语义,以及一或多个高效实现品。在C++中,一个不良规划下的 class定义恐怕无法达到上述任何一个目标。甚至 class的成员函数的效率都有可能受到它们“如何被声明”的影响。</p>
-<p>设计一个class需要思考如下的一些问题：</p>
-<ul>
-<li>新type的对象应该如何被创建和销毁?这会影响到你的 class的构造函数和析构函数以及内存分配函数和释放函数( operator new, operator new[], operator delete和 operator delete[])的设计,当然前提是如果你打算撰写它们。</li>
-<li>对象的初始化和对象的赋值该有什么样的差别?这个答案决定你的构造函数和赋值操作符的行为,以及其间的差异。</li>
-<li>新type的对象如果被 passed by value(以值传递),意味着什么?记住,copy构造函数用来定义一个type的 pass-by-value该如何实现。</li>
-<li>什么是新“type”的合法值</li>
-<li>你的新type需要配合某个继承图系( inheritance graph)吗?</li>
-</ul>
-<h3 id="条款20：宁以pass-by-reference-to-const-替换-pass-by-value"><a href="#条款20：宁以pass-by-reference-to-const-替换-pass-by-value" class="headerlink" title="条款20：宁以pass-by-reference-to-const 替换 pass-by-value"></a>条款20：宁以pass-by-reference-to-const 替换 pass-by-value</h3><p>一般情况下，使用pass-by-reference-to-const能够调用更少的构造函数和析构函数，从而使得程序更加高效。</p>
-<p>以by reference方式传递参数也可以避免 slicing(对象切割)问题。当一个 derived class对象以 by value方式传递并被视为一个 base class对象, base class的copy构造函数会被调用,而“造成此对象的行为像个 derived class对象”的那些特化性质全被切割掉了,仅仅留下一个 base class对象。</p>
-<p>但是如果你有个对象属于内置类型(例如int), pass by value往往比 pass by reference的效率高些。对内置类型而言,当你有机会选择采用 pass-by-value或 pass-by-reference-to-const时,选择 pass-by-value并非没有道理。这个忠告也适用于STL的迭代器和函数对象,因为习惯上它们都被设计为passed by value。迭代器和函数对象的实践者有责任看看它们是否高效且不受切割问题</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>尽量以 pass-by-reference-to-const替换 pass-by-value。前者通常比较高效,并可避免切割问题( slicing problem)</li>
-<li>以上规则并不适用于内置类型,以及STL的迭代器和函数对象。对它们而言,pas- by-value往往比较适当。</li>
-</ul>
-</blockquote>
-<h3 id="条款21：必须返回对象的时，别妄想返回其reference"><a href="#条款21：必须返回对象的时，别妄想返回其reference" class="headerlink" title="条款21：必须返回对象的时，别妄想返回其reference"></a>条款21：必须返回对象的时，别妄想返回其reference</h3><p>所谓 reference只是个名称,代表某个既有对象。任何时候看到一个 reference声明式,你都应该立刻问自己,它的另一个名称是什么?因为它一定是某物的另一个名称。</p>
-<p>有的时候我们在返回引用的时候，其引用的对象如果一个局部变量，而这个局部变量在退出前就销毁了，所以不能够使用引用；如果所引用的对象是通过动态创建内存的方式创建的，这种情况下由谁来实施delete是一个问题。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>绝不要返回 pointer或 reference指向一个 local stack对象,或返回 reference指向个 heap-allocated对象,或返回 pointer或 reference指向一个 local static对象而有可能同时需要多个这样的对象。</li>
-</ul>
-</blockquote>
-<h3 id="条款22：将成员变量声明为private"><a href="#条款22：将成员变量声明为private" class="headerlink" title="条款22：将成员变量声明为private"></a>条款22：将成员变量声明为private</h3><p>如果成员变量不是 public,客户唯一能够访问对象的办法就是通过成员函数。如果 public接口内的每样东西都是函数,客户就不需要在打算访问 class成员时迷惑地试着记住是否该使用小括号(圆括号)。他们只要做就是了,因为每样东西都是函数。就生命而言,这至少可以省下许多搔首弄耳的时间</p>
-<p>使用函数可以让你对成员变量的处理有更精确的控制。如果你令成员变量为 public,每个人都可以读写它,但如果你以函数取得或设定其值,你就可以实现出“不准访问”、“只读访问”以及“读写访问”。</p>
-<p>还是不够说服你?是端出大口径武器的时候了:封装啦。如果你通过函数访问成员变量,日后可改以某个计算替换这个成员变量,而 class客户一点也不会知道 class的内部实现已经起了变化。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>切记将成员变量声明为 private。这可赋予客户访问数据的一致性、可细微划分访问控制、允诺约束条件获得保证,并提供 class作者以充分的实现弹性。</li>
-<li>protected并不比 public更具封装性。</li>
-</ul>
-</blockquote>
-<h3 id="条款23：宁以non-member、non-friend替换member函数"><a href="#条款23：宁以non-member、non-friend替换member函数" class="headerlink" title="条款23：宁以non-member、non-friend替换member函数"></a>条款23：宁以non-member、non-friend替换member函数</h3><p>面向对象守则要求,数据以及操作数据的那些函数应该被捆绑在一块,这意味它建议 member函数是较好的选择。不幸的是这个建议不正确。这是基于对面向对象真实意义的一个误解。面向对象守则要求数据应该尽可能被封装,然而与直观相反地,member函数带来的封装性比non-member函数低。</p>
-<p>让我们从封装开始讨论。如果某些东西被封装,它就不再可见。<strong>愈多东西被封装愈少人可以看到它。而愈少人看到它,我们就有愈大的弹性去变化它</strong>,因为我们的改变仅仅直接影响看到改变的那些人事物。因此,愈多东西被封装,我们改变那些东西的能力也就愈大。这就是我们首先推崇封装的原因:<strong>它使我们能够改变事物而只影响有限客户</strong>。</p>
-<p>现在考虑对象内的数据。愈少代码可以看到数据(也就是访问它),愈多的数据可被封装,而我们也就愈能自由地改变对象数据,例如改变成员变量的数量、类型等等。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>宁可拿non-member non-friend函数替换 member函数。这样做可以增加封装性、包裹弹性(packaging flexibility)和机能扩充性。 </li>
-</ul>
-</blockquote>
-<h3 id="条款24：若所有参数皆需类型转换，请为此采用non-member函数"><a href="#条款24：若所有参数皆需类型转换，请为此采用non-member函数" class="headerlink" title="条款24：若所有参数皆需类型转换，请为此采用non-member函数"></a>条款24：若所有参数皆需类型转换，请为此采用non-member函数</h3><p>只有当参数被列于参数列(parameter list)内,这个参数才是隐式类型转换的合格参与者。地位相当于“被调用之成员函数所隶属的那个对象”一一即this对象—的那个隐喻参数,绝不是隐式转换的合格参与者。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>如果你需要为某个函数的所有参数(包括被this指针所指的那个隐喻参数)进行类型转换,那么这个函数必须是个non-member</li>
-</ul>
-</blockquote>
-<h3 id="条款25：考虑写出一个不抛异常的swap函数"><a href="#条款25：考虑写出一个不抛异常的swap函数" class="headerlink" title="条款25：考虑写出一个不抛异常的swap函数"></a>条款25：考虑写出一个不抛异常的swap函数</h3><p>如果swap的缺省实现码对你的 class或 class template提供可接受的效率,你不需要额外做任何事。任何尝试置换(swap)那种对象的人都会取得缺省版本,而那将有良好的运作。</p>
-<p>其次,如果swap缺省实现版的效率不足(那几乎总是意味你的 class或 template使用了某种pmpl手法),试着做以下事情</p>
-<ul>
-<li>提供一个 public swap成员函数,让它高效地置换你的类型的两个对象值。这个函数绝不该抛出异常。</li>
-<li>在你的cass或 template所在的命名空间内提供一个non-member swap,并令它调用上述swap成员函数。</li>
-<li>如果你正编写一个cass而非 class template),为你的clas特化stc并令它调用你的swap成员函数。</li>
-</ul>
-<p>唯一还未明确的是我的劝告:成员版swap绝不可抛出异常。那是因为swap的个最好的应用是帮助 classes(和 class templates)提供强烈的异常安全性(exception-safety)保障。</p>
-<p>高效率的swap几乎总是基于对内置类型的操作(例如pmpl手法的底层指针),而内置类型上的操作绝不会抛出异常。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>当std::swap对你的类型效率不高时,提供一个swap成员函数,并确定这个函数不抛出异常。</li>
-<li>如果你提供一个member swap,也该提供一个non-member swap用来调用前者。对于 classes(而非 templates),也请特化std::swap。</li>
-<li>调用swap时应针对std::swap使用 using声明式,然后调用swap并且不带任何“命名空间资格修饰”</li>
-<li>为“用户定义类型”进行std templates全特化是好的,但千万不要尝试在std内加入某些对std而言全新的东西</li>
-</ul>
-</blockquote>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="条款26：尽可能延后变量定义式出现的时间"><a href="#条款26：尽可能延后变量定义式出现的时间" class="headerlink" title="条款26：尽可能延后变量定义式出现的时间"></a>条款26：尽可能延后变量定义式出现的时间</h3><p>只要你定义了一个变量而其类型带有一个构造函数或析构函数,那么当程序的控制流( control flow)到达这个变量定义式时,你便得承受构造成本;当这个变量离开其作用域时,你便得承受析构成本。即使这个变量最终并未被使用,仍需耗费这些成本,所以你应该尽可能避免这种情形。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>尽可能延后变量定义式的出现。这样做可增加程序的清晰度并改善程序效率。</li>
-</ul>
-</blockquote>
-<h3 id="条款27：尽量减少转型动作"><a href="#条款27：尽量减少转型动作" class="headerlink" title="条款27：尽量减少转型动作"></a>条款27：尽量减少转型动作</h3><p>C++提供四种新式转型：<br><code>const_cast&lt;T&gt;( expression )</code><br><code>dynamic_cast&lt;T&gt;( expression )</code><br><code>reinterpret_cast&lt;T&gt;( expression )</code><br><code>static_cast&lt;T&gt;(expression )</code></p>
-<ul>
-<li>const_cast通常被用来将对象的常量性转除</li>
-<li>dynamic_cast主要用来执行“安全向下转型”(safe downcasting),也就是用来决定某对象是否归属继承体系中的某个类型。</li>
-<li>reinterpret_cast意图执行低级转型,实际动作(及结果)可能取决于编译器这也就表示它不可移植。</li>
-<li>static_cast用来强迫隐式转换</li>
-</ul>
-<p>许多程序员相信,转型其实什么都没做,只是告诉编译器把某种类型视为另一种类型。这是错误的观念。任何一个类型转换(不论是通过转型操作而进行的显式完成的隐式转换〕往往真的令编译器编译出运行期间执行的码。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>如果可以,尽量避免转型,特别是在注重效率的代码中避免 dynamic casts如果有个设计需要转型动作,试着发展无需转型的替代设计。</li>
-<li>如果转型是必要的,试着将它<strong>隐藏于某个函数背后</strong>。客户随后可以调用该函数,而不需将转型放进他们自已的代码内。</li>
-<li>宁可使用C++-style(新式)转型,不要使用旧式转型。前者很容易辨识出来,而且也比较有着分门别类的职掌。</li>
-</ul>
-</blockquote>
-<h3 id="条款28：避免返回handles指向对象内部部分"><a href="#条款28：避免返回handles指向对象内部部分" class="headerlink" title="条款28：避免返回handles指向对象内部部分"></a>条款28：避免返回handles指向对象内部部分</h3><p>第一,成员变量的封装性最多只等于“返回其reference”的函数的访问级别。第二,如果 const成员函数传出一个 reference,后者所指数据与对象自身有关联,而它又被存储于对象之外,那么这个函数的调用者可以修改那笔数据。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>避免返回 handles(包括 references、指针、迭代弋器)指向对象内部。遵守这个条可增加封装性,帮助 const成员函数的行为像个 const,并将发生“虚吊号码牌”( dangling handles)的可能性降至最低。</li>
-</ul>
-</blockquote>
-<h3 id="条款29：为“异常安全”而努力是值得的"><a href="#条款29：为“异常安全”而努力是值得的" class="headerlink" title="条款29：为“异常安全”而努力是值得的"></a>条款29：为“异常安全”而努力是值得的</h3><p>当异常抛出时，带有异常安全性的函数会：</p>
-<ol>
-<li>不泄露任何资源</li>
-<li>不允许数据破坏</li>
-</ol>
-<p>异常安全函数提供下面三个保证之一：</p>
-<ul>
-<li>基本承诺:如果异常被抛出,程序内的任何事物仍然保持在有效状态下。没有任何对象或数据结构会因此而败坏,所有对象都处于一种内部前后一致的状态</li>
-<li>强烈保证:如果异常被抛出,程序状态不改变。调用这样的函数需有这样的认知:如果函数成功,就是完全成功,如果函数失败,程序会回复到“调用函数之前”的状态。</li>
-<li>不抛掷( nothrow)保证,承诺绝不抛出异常,因为它们总是能够完成它们原先承诺的功能。作用于内置类型(例如ints,指针等等)身上的所有操作都提供nothrow保证。这是异常安全码中一个必不可少的关键基础材料。</li>
-</ul>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>异常安全函数( exception-safe functions)即使发生异常也不会泄漏资源或允许任何数据结构败坏。这样的函数区分为三种可能的保证:基本型、强烈型、不抛异常型。</li>
-<li>强烈保证”往往能够以 copy-and-swap实现出来,但“强烈保证”并非对所有函数都可实现或具备现实意义</li>
-<li>函数提供的“异常安全保证”通常最高只等于其所调用之各个函数的“异常安全保证”中的最弱者。</li>
-</ul>
-</blockquote>
-<h3 id="条款30：透彻了解inlining的里里外外"><a href="#条款30：透彻了解inlining的里里外外" class="headerlink" title="条款30：透彻了解inlining的里里外外"></a>条款30：透彻了解inlining的里里外外</h3><p>编译器最优化机制通常被设计用来浓缩那些“不含函数调用”的代码,所以当你 inline某个函数,或许编译器就因此有能力对它(函数本体)执行语境相关最优化。然而编写程序就像现实生活一样,没有白吃的午餐。 inline函数也不例外。 inline函数背后的整体观念是,将“对此函数的每一个调用”都以函数本体替换之。首先这样会增加你的目标代码的大小</p>
-<p>Inline函数通常一定被置于头文件内,因为大多数建置环境( build environments)在编译过程中进行 inlining,而为了将一个“函数调用”替换为“被调用函数的本体”,编译器必须知道那个函数长什么样子。</p>
-<p>程序库设计者必须评估“将函数声明为 inline”的冲击: inline函数无法随着程序库的升级而升级。换句话说如果f是程序库内的一个 inline函数,客户将“f函数本体”编进其程序中,<strong>一旦程序库设计者决定改变f,所有用到f的客户端程序都必须重新编译</strong>。这往往是大家不愿意见到的。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>将大多数inlining限制在小型、被频繁调用的函数身上。这可使日后的调试过程和二进制升级( binary upgradability)更容易,也可使潜在的代码膨胀问题最小化,使程序的速度提升机会最大化。</li>
-<li>不要只因为function templates出现在头文件,就将它们声明为inline</li>
-</ul>
-</blockquote>
-<h3 id="条款31：将文件间的编译依存关系将至最低"><a href="#条款31：将文件间的编译依存关系将至最低" class="headerlink" title="条款31：将文件间的编译依存关系将至最低"></a>条款31：将文件间的编译依存关系将至最低</h3><p>问题出在C++并没有把“将接口从实现中分离”这事做得很好。 Class的定义式不只详细叙述了clas接口,还包括十足的实现细目。如果一个类定义中有编译依赖的其他文件中的类，那么修改所依赖的类的定义会导致现在的文件需要重新编译。这样的连串编译依存关系( cascading compilation dependencies)会对许多项目造成难以形容的灾难</p>
-<p>上述的东西的一种解决方案是“前置声明每一件东西”，但是这个存在两个问题：第一，对于模板的前置声明比较复杂；第二、编译器必须在编译期间知道对象的大小，知道其大小就必须知道class中是如何实现的</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>支持“编译依存性最小化”的一般构想是:相依于声明式,不要相依于定义式。基于此构想的两个手段是 Handle classes和 Interface classes</li>
-<li>程序库头文件应该以“完全且仅有声明式”( full and declaration- only forms)的形式存在。这种做法不论是否涉及 templates都适用。</li>
-</ul>
-</blockquote>
-<h2 id="继承与面向对象设计"><a href="#继承与面向对象设计" class="headerlink" title="继承与面向对象设计"></a>继承与面向对象设计</h2><h3 id="条款32：确定你的public继承塑模出is-a关系"><a href="#条款32：确定你的public继承塑模出is-a关系" class="headerlink" title="条款32：确定你的public继承塑模出is-a关系"></a>条款32：确定你的public继承塑模出is-a关系</h3><p>以C++进行面向对象编程,最重要的一个规则是: public inheritance(公开继承)意味”is-a”(是一种)的关系。把这个规则牢牢地烙印在你的心中吧!</p>
-<p>ls-a并非是唯一存在于 classes之间的关系。另两个常见的关系是has-a(有个)和is-implemented-in- terms-of(根据某物实现出)。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>“public继承”意味ls-a。适用于base classes身上的每一件事情一定也适用于derived classes身上,因为每一个derived class对象也都是一个 base class对象。</li>
-</ul>
-</blockquote>
-<h3 id="条款33：避免遮掩继承而来的名称"><a href="#条款33：避免遮掩继承而来的名称" class="headerlink" title="条款33：避免遮掩继承而来的名称"></a>条款33：避免遮掩继承而来的名称</h3><p>当编译器处于someFunc的作用域内并遭遇名称x时,它在 local作用域内查找是否有什么东西带着这个名称。如果找到就不再找其他作用域。C++的名称遮掩规则( name-hiding rules)所做的唯一事情就是:遮掩名称。至于名称是否应和相同或不同的类型,并不重要。</p>
-<p>现在导入继承。我们知道,当位于一个derived class成员函数内指涉( refer to)base class内的某物(也许是个成员函数、 typedef、或成员变量)时,编译器可以找出我们所指涉的东西,因为 derived classes继承了声明于 base classes内的所有东西。实际运作方式是, derived class作用域被嵌套在 base class作用域内</p>
-<p>有时候你并不想继承 base classes的所有函数,这是可以理解的。在 public继承下,这绝对不可能发生,因为它违反了 public继承所暗示的“base和 derived classes之间的is-a关系”。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>derived classes内的名称会遮掩 base classes内的名称。在public继承下从来没有人希望如此。</li>
-<li>为了让被遮掩的名称再见天日,可使用using声明式或转交函数( forwardingfunctions)。</li>
-</ul>
-</blockquote>
-<h3 id="条款34：区分接口继承和实现继承"><a href="#条款34：区分接口继承和实现继承" class="headerlink" title="条款34：区分接口继承和实现继承"></a>条款34：区分接口继承和实现继承</h3><p>表面上直截了当的 public继承概念,经过更严密的检查之后,发现它由两部分组成:函数接日( function interfaces)继承和函数实现( function implementations.)继承。这两种继承的差异,很像本书导读所讨论的函数声明与函数定义之间的差异。</p>
-<p>pure virtual函数有两个最突出的特性:它们必须被任何“继承了它们”的具体对象class重新声明,而且它们在抽象 class中通常没有定义。把这两个性质摆在一起,你就会明白:<strong>声明一个 pure virtual函数的目的是为了让 derived classes只继承函数接口</strong>。</p>
-<p>简朴的 impure virtual函数背后的故事和 pure virtual函数有点不同。一如往常,derived classes继承其函数接口,但 impure virtual函数会提供一份实现代码, derived classes可能覆写( override)它。稍加思索,你就会明白:<strong>声明简朴的(非纯) impure virtual函数的目的,是让 derived classes继承该函数的接口和缺省实现</strong></p>
-<p>如果成员函数是个non-virtual函数,意味是它并不打算在 derived classes中有不同的行为。实际上一个 non-virtual成员函数所表现的不变性( invariant)凌驾其特异性( specialization),因为它表示不论 derived class变得多么特异化,它的行为都不可以改变。就其自身而言:<strong>声明non-virtual函数的目的是为了令 derived classes继承函数的接口及一份强制性实现</strong>。</p>
-<p>pure virtual函数、 simple (impure)vmal函数、 non-virtual函数之间的差异,使你得以精确指定你想要 derived classes继承的东西:只继承接口,或是继承接口和一份缺省实现,或是继承接口和一份强制实现。由于这些不同类型的声明意味根本意义并不相同的事情,当你声明你的成员函数时,必须谨慎选择。</p>
-<p>如果你确实履行,应该能够避免经验不足的 class设计者最常犯的两个错误：</p>
-<ul>
-<li>第一个错误是将所有函数声明为non-virtual这使得 derived classes没有余裕空间进行特化工作</li>
-<li>另一个常见错误是将所有成员函数声明为 virtual</li>
-</ul>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>接口继承和实现继承不同在 public继承之下, derived classes总是继承 base class的接口。</li>
-<li>pure virtual函数只具体指定接口继承。</li>
-<li>简朴的(非纯) impure virtual函数具体指定接口继承及缺省实现继承。</li>
-<li>non-virtual函数具体指定接口继承以及强制性实现继承。</li>
-</ul>
-</blockquote>
-<h3 id="条款35：考虑virtual函数以外的其他选择"><a href="#条款35：考虑virtual函数以外的其他选择" class="headerlink" title="条款35：考虑virtual函数以外的其他选择"></a>条款35：考虑virtual函数以外的其他选择</h3><p>当你为解决问题而寻找某个设计方法时,不妨考虑virtual函数的替代方案。</p>
-<ol>
-<li>使用non-virtual interface(NVI)手法,那是Template Method设计模式的一种特殊形式。它以 public non-virtual成员函数包裹较低访问性( private或 protected)的 virtua函数。</li>
-<li>将 virtual函数替换为“函数指针成员变量”,这是 Strategy设计模式的一种分解表现形式。</li>
-<li>以tr1:: function成员变量替换 virtual函数,因而允许使用任何可调用物( callable entit!y)搭配一个兼容于需求的签名式。这也是 Strategy设计模式的某种形式。</li>
-<li>将继承体系内的 virtual函数替换为另一个继承体系内的 virtual函数。这是Strategy设计模式的传统实现手法。</li>
-</ol>
-<p>以上并未彻底而详尽地列出 virtual函数的所有替换方案,但应该足够让你知道的确有不少替换方案。此外,它们各有其相对的优点和缺点,你应该把它们全部列入考虑</p>
-<h3 id="条款36：绝不重新定义继承而来的non-virtual函数"><a href="#条款36：绝不重新定义继承而来的non-virtual函数" class="headerlink" title="条款36：绝不重新定义继承而来的non-virtual函数"></a>条款36：绝不重新定义继承而来的non-virtual函数</h3><p>对于D继承B以及non-virtual成员函数B::mf身上：</p>
-<ul>
-<li>适用于B对象的每一件事,也适用于D对象,因为每个D对象都是一个B对象;</li>
-<li>B的 derived classes一定会继承mf的接口和实现,因为mf是B的一个non-virtual函数。</li>
-</ul>
-<p>现在,如果b重新定义mf,你的设计便出现矛盾。如果D真有必要实现出与B不同的mf,并且如果每一个B对象——不管多么特化—一真的必须使用B所提供的mf实现码,那么“每个D都是一个B”就不为真。既然如此D就不该以 public形式继承B。另一方面,如果D真的必须以 public方式继承B,并且如果D真有需要实现出与B不同的mf,那么mf就无法为B反映出“不变性凌驾特异性”的性质。既然这样mf应该声明为 virtual函数。最后,如果每个D真的是一个B,并且如果mf真的为B反映出“不变性凌驾特异性”的性质,那么D便不需要重新定义mf,而且它也不应该尝试这样做。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>绝对不要重新定义继承而来的 non-virtua函数</li>
-</ul>
-</blockquote>
-<h3 id="条款37：绝不重新定义继承而来的缺省参数值"><a href="#条款37：绝不重新定义继承而来的缺省参数值" class="headerlink" title="条款37：绝不重新定义继承而来的缺省参数值"></a>条款37：绝不重新定义继承而来的缺省参数值</h3><p>让我们一开始就将讨论简化。你只能继承两种函数: virtual和 non-virtual函数。然而重新定义一个继承而来的non-virtual函数永远是错误的(见条款36),所以我们可以安全地将本条款的讨论局限于“继承一个带有缺省参数值的 virtual函数”。</p>
-<p>这种情况下,本条款成立的理由就非常直接而明确了: <strong>virtual函数系动态绑定( dynamically bound),而缺省参数值却是静态绑定( statically bound)</strong>。</p>
-<p>为什么C++坚持以这种乖张的方式来运作呢?答案在于运行期效率。如果缺省参数值是动态绑定,编译器就必须有某种办法在运行期为 virtua函数决定适当的参数缺省值。这比目前实行的“在编译期决定”的机制更慢而且更复杂。为了程序的执行速度和编译器实现上的简易度,C++做了这样的取舍,其结果就是你如今所享受的执行效率。但如果你没有注意本条款所揭示的忠告,很容易发生混淆。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>绝对不要重新定义一个继承而来的缺省参数值,因为缺省参数值都是静态绑定,而 virtual函数—你唯一应该覆写的东西—却是动态绑定。</li>
-</ul>
-</blockquote>
-<h3 id="条款38：通过复合塑模出has-a或”根据某物实现出”"><a href="#条款38：通过复合塑模出has-a或”根据某物实现出”" class="headerlink" title="条款38：通过复合塑模出has-a或”根据某物实现出”"></a>条款38：通过复合塑模出has-a或”根据某物实现出”</h3><p>复合( composition)是类型之间的一种关系,当某种类型的对象内含它种类型的对象,便是这种关系。</p>
-<p>条款32曾说,“public继承”带有is-a(是一种)的意义。复合也有它自己的意义实际上它有两个意义。复合意味has-a(有一个)或 is-implemented-in-terms-of(根据某物实现出)。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>复合( composition)的意义和 public继承完全不同</li>
-<li>在应用域( application domain),复合意味has-a(有一个)。在实现域( implementation domain),复合意味 is-implemented- in-terms-of(根据某物实现出)</li>
-</ul>
-</blockquote>
-<h3 id="条款39：明智而审慎得使用private继承"><a href="#条款39：明智而审慎得使用private继承" class="headerlink" title="条款39：明智而审慎得使用private继承"></a>条款39：明智而审慎得使用private继承</h3><p>统御 private继承的首要规则你刚才已经见过了:如果classes之间的继承关系是 private,编译器不会自动将一个 derived class对象(例如Student)转换为一个 base class对象(例如 Person)。这和 public继承的情况不同。第二条规则是,由 private base class继承而来的所有成员,在 derived class中都会变成 private属性,纵使它们在base class中原本是 protected或 public属性。</p>
-<p>Private继承意味 implemented-in-terms-of(根据某物实现出)。如果你让 class D以 private形式继承 class B,你的用意是为了采用 class B内已经备妥的某些特性,不是因为B对象和D对象存在有任何观念上的关系。 private继承纯粹只是一种实现技术(这就是为什么继承自一个 private baseclass的每样东西在你的clas内都是 private:因为它们都只是实现枝节而已)。借用条款34提出的术语, <strong>private继承意味只有实现部分被继承,接口部分应略去</strong>。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>Private继承意味 is-implemented-in-terms-of(根据某物实现出)。它通常比复合( composition)的级别低。但是当 derived clas需要访问 protected base class的成员,或需要重新定义继承而来的 virtua函数时,这么设计是合理的。</li>
-<li>和复合( composition)不同, private继承可以造成 empty base最优化。这对致力于“对象尺寸最小化”的程序库开发者而言,可能很重要。</li>
-</ul>
-</blockquote>
-<h3 id="条款40：明智而审慎得使用多重继承"><a href="#条款40：明智而审慎得使用多重继承" class="headerlink" title="条款40：明智而审慎得使用多重继承"></a>条款40：明智而审慎得使用多重继承</h3><p>当派生类继承的多个基类中都有某个同名成员函数的时候，可能会产生歧义。这个时候C++处理的方法与C++用来解析( resolving)重载函数调用的规则相符:在看到是否有个函数可取用之前,C++首先确认这个函数对此调用之言是最佳匹配。找出最佳匹配函数后才检验其可取用性。</p>
-<p>从正确行为的观点看, public继承应该总是 virtuale。如果这是唯一一个观点,规则很简单:任何时候当你使用 public继承,请改用 virtual public继承。但是,啊呀,正确性并不是唯一观点。为避免继承得来的成员变量重复,编译器必须提供若干幕后戏法,而其后果是:使用 virtual继承的那些 classes所产生的对象往往比使用non- virtual继承的兄弟们体积大,访问 virtual base classes的成员变量时,也比访问non- virtual base classes的成员变量速度慢。种种细节因编译器不同而异,但基本重点很清楚:你得为 virtual继承付出代价。</p>
-<blockquote>
-<p>重点</p>
-<ul>
-<li>多重继承比单一继承复杂。它可能导致新的歧义性,以及对 virtual继承的需要。</li>
-<li>virtual继承会增加大小、速度、初始化(及赋值)复杂度等等成本。如果 virtual base classes不带任何数据,将是最具实用价值的情况。</li>
-<li>多重继承的确有正当用途。其中一个情节涉及“ public继承某个 Interface class”和“ private继承某个协助实现的 class”的两相组合。</li>
-</ul>
-</blockquote>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;《Effective C++》的副标题是改善程序与设计的55个具体做法。这本书用比较多的示例展示了很多改善C++程序的方法，值得一读。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="C/C++" scheme="https://www.liuin.cn/tags/C-C/"/>
     
   </entry>
   
