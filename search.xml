@@ -178,7 +178,53 @@
 <p><img src="https://data2.liuin.cn/2018-05-27-15274265737476.jpg" alt=""></p>
 <p>要测试的条件由 events成员指定,函数在相应的 revents成员中返回该描述符的状态。</p>
 <p><img src="https://data2.liuin.cn/2018-05-27-15274266342975.jpg" alt=""></p>
-]]></content>
+<h1 id="套接字选项"><a href="#套接字选项" class="headerlink" title="套接字选项"></a>套接字选项</h1><h2 id="getsockopt和setsockopt函数"><a href="#getsockopt和setsockopt函数" class="headerlink" title="getsockopt和setsockopt函数"></a>getsockopt和setsockopt函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getsockopt</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> level, <span class="keyword">int</span> optname, <span class="keyword">void</span> *optval, <span class="keyword">socklen_t</span> *optlen)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setsockopt</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> level, <span class="keyword">int</span> optname, <span class="keyword">const</span> <span class="keyword">void</span> *optval <span class="keyword">socklen_t</span> optlen)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK,–1 on error</span></div></pre></td></tr></table></figure>
+<p>其中sockfd必须指向一个打开的套接字描述符,level(级别)指定系统中解释选项的代码或为通用套接字代码,或为某个特定于协议的代码(例如IPv4、IPv6、TCP或SCTP)。optval是一个指向某个变量(*optval)的指针, setsockopt从*optval中取得选项待设置的新值, getsockopt则把已获取的选项当前值存放到*optval冲中。*optval的大小由最后一个参数指定,它对于setsockopt是一个值参数,对于 getsockopt是一个值-结果参数</p>
+<p>套接字选项粗分为两大基本类型:一是<strong>启用或禁止某个特性的二元选项(称为标志选项)</strong>二是<strong>取得并返回我们可以设置或检查的特定值的选项</strong>(称为值选项)。</p>
+<h2 id="通用套接字选项"><a href="#通用套接字选项" class="headerlink" title="通用套接字选项"></a>通用套接字选项</h2><p>通用套接字选项是与协议无关的，不过其中有些选项只能应用到某些特定类型的套接字中。</p>
+<h3 id="SO-BROADCAST套接字选项"><a href="#SO-BROADCAST套接字选项" class="headerlink" title="SO_BROADCAST套接字选项"></a>SO_BROADCAST套接字选项</h3><p>本选项开启或禁止进程发送广播消息的能力。只有数据报套接字支持广播,并且还必须是在支持广播消息的网络上(例如以太网、令牌环网等)。我们不可能在点对点链路上进行广播,也不可能在基于连接的传输协议(例如TCP和SCTP)之上进行广播。</p>
+<p>由于应用进程在发送广播数据报之前必须设置本套接字选项,因此它能够有效地防止一个进程在其应用程序根本没有设计成可广播时就发送广播数据报。</p>
+<h3 id="SO-DEBUG套接字选项"><a href="#SO-DEBUG套接字选项" class="headerlink" title="SO_DEBUG套接字选项"></a>SO_DEBUG套接字选项</h3><p>本选项仅由TCP支持。当给一个TCP套接字开启本选项时,内核将为TCP在该套接字发送和接收的所有分组保留详细跟踪信息。这些信息保存在内核的某个环形缓冲区中,并可使用trpt程序进行检查。</p>
+<h3 id="SO-DONTROUTE套接字选项"><a href="#SO-DONTROUTE套接字选项" class="headerlink" title="SO_DONTROUTE套接字选项"></a>SO_DONTROUTE套接字选项</h3><p>本选项规定外出的分组将绕过底层协议的正常路由机制</p>
+<h3 id="SO-ERROR套接字选项"><a href="#SO-ERROR套接字选项" class="headerlink" title="SO_ERROR套接字选项"></a>SO_ERROR套接字选项</h3><p>当一个套接字上发生错误时,源自 Berkeley的内核中的协议模块将该套接字的名为so_error的变量设为标准的Unix Exxx值中的一个,我们称它为该套接字的待处理错误( pendingeror)。内核能够以下面两种方式之一立即通知进程这个错误。</p>
+<ol>
+<li>如果进程阻塞在对该套接字的 select调用上,那么无论是检查可读条件还是可写条件, select均返回并设置其中一个或所有两个条件。</li>
+<li>如果进程使用信号驱动式I/O模型,那就给进程或进程组产生一个SIGTO信号。</li>
+</ol>
+<h3 id="SO-KEEPALIVE套接字选项"><a href="#SO-KEEPALIVE套接字选项" class="headerlink" title="SO_KEEPALIVE套接字选项"></a>SO_KEEPALIVE套接字选项</h3><p>给一个TCP套接字设置保持存活( keep-alive)选项后,如果2小时内在该套接字的任一方向上都没有数据交换,TCP就自动给对端发送一个保持存活探测分节( keep-alive probe)。这是一个对端必须响应的TCP分节,它会导致以下三种情况之一</p>
+<ul>
+<li>对端以期望的ACK响应。应用进程得不到通知(因为一切正常)。在又经过仍无动静的时后,TCP将发出另一个探测分节。</li>
+<li>对端以RST响应,它告知本端TCP:对端已崩溃且己重新启动。该套接字的待处理错误被置为 ECONNRESET,套接字本身则被关闭。</li>
+<li>对端对保持存活探测分节没有任何响应。</li>
+</ul>
+<p>本选项的功用是检测对端主机是否崩溃或变得不可达(譬如拨号调制解调器连接掉线,电源发生故障,等等)。如果对端进程崩溃,它的TCP将跨连接发送一个FIN,这可以通过调用select很容易地检测到。同时也要认识到,即使对任何保持存活探测分节均无响应(第三种情况),我们也不能肯定对端主机已经崩溃,因而TCP可能会终止一个有效连接。</p>
+<p>本选项一般由服务器使用,不过客户也可以使用。服务器使用本选项是因为它们花大部分时间阻塞在等待穿越TCP连接的输入上,也就是说在等待客户的请求。然而如果客户主机连接掉线、电源掉电或系统崩溃,服务器进程将永远不会知道,并将继续等待永远不会到达的输入我们称这种情况为半开连接( half-open connection)。保持存活选项将检测出这些半开连接并终止它们。</p>
+<h3 id="SO-LINGER套接字选项"><a href="#SO-LINGER套接字选项" class="headerlink" title="SO_LINGER套接字选项"></a>SO_LINGER套接字选项</h3><p>本选项指定close函数对面向连接的协议(例如TCP和SCTP,但不是UDP)如何操作。默认操作是c1ose立即返回,但是如果有数据残留在套接字发送缓冲区中,系统将试着把这些数据发送给对端。</p>
+<p><img src="http://data3.liuin.cn/2018-05-29-15275638162436.jpg" alt=""></p>
+<p>客户可以设置so_LINGER套接字选项,指定一个正的延滞时间。这种情况下客户的c1ose要到它的数据和FIN已被服务器主机的TCP确认后才返回</p>
+<p><img src="http://data3.liuin.cn/2018-05-29-15275638674270.jpg" alt=""></p>
+<p>然而我们会面临一个问题:在服务器应用进程读剩余数据之前,服务器主机可能崩溃,并且客户应用进程永远不会知道。更糟糕的是，下图展示了当给 SO_LINGER选项设置偏低的延滞时间值时可能发生的现象。</p>
+<p><img src="http://data3.liuin.cn/2018-05-29-15275640017253.jpg" alt=""></p>
+<p>让客户知道服务器已读取其数据的一个方法是改为调用shutdown(并设置它的第二个参数为 SHUT_WR)而不是调用c1ose,并等待对端c1ose连接的当地端(服务器端)。</p>
+<p><img src="http://data3.liuin.cn/2018-05-29-15275641013574.jpg" alt=""></p>
+<h2 id="IPv4套接字选项"><a href="#IPv4套接字选项" class="headerlink" title="IPv4套接字选项"></a>IPv4套接字选项</h2><p>这些套接字选项由IPv4处理,它们的级别(即 getsockopt和 setsockopt函数的第二个参数)为IPPROTO_IP。</p>
+<h3 id="IP-HDRINCL套接字选项"><a href="#IP-HDRINCL套接字选项" class="headerlink" title="IP_HDRINCL套接字选项"></a>IP_HDRINCL套接字选项</h3><p>如果本选项是给一个原始IP套接字设置的,那么我们必须为所有在该原始套接字上发送的数据报构造自己的IP首部。一般情况下,在原始套接字上发送的数据报其IP首部是由内核构造的,不过有些应用程序(特别是路由跟踪程序 traceroute)需要构造自己的IP首部以取代IP置于该首部中的某些字段。</p>
+<h3 id="IP-OPTIONS套接字选项"><a href="#IP-OPTIONS套接字选项" class="headerlink" title="IP_OPTIONS套接字选项"></a>IP_OPTIONS套接字选项</h3><p>本选项的设置允许我们在IPv4首部中设置IP选项</p>
+<h3 id="IP-RECVDSTADDR套接字选项"><a href="#IP-RECVDSTADDR套接字选项" class="headerlink" title="IP_RECVDSTADDR套接字选项"></a>IP_RECVDSTADDR套接字选项</h3><p>本套接字选项导致所收到UDP数据报的且的IP地址由 recvmsg函数作为辅助数据返回</p>
+<h3 id="IP-TOS套接字选项"><a href="#IP-TOS套接字选项" class="headerlink" title="IP_TOS套接字选项"></a>IP_TOS套接字选项</h3><p>本套接字选项允许我们为TCP、UDP或SCTP套接字设置IP首部中的服务类型字段</p>
+<h2 id="TCP套接字选项"><a href="#TCP套接字选项" class="headerlink" title="TCP套接字选项"></a>TCP套接字选项</h2><p>TCP有两个套接字选项,它们的级别(即 get_sockopt和 set_sockopt函数的第二个参数)为IPPROTO_TCP。</p>
+<h3 id="TCP-MAXSEG套接字选项"><a href="#TCP-MAXSEG套接字选项" class="headerlink" title="TCP_MAXSEG套接字选项"></a>TCP_MAXSEG套接字选项</h3><p>本选项允许我们获取或设置TCP连接的最大分节大小(MSS)。返回值是我们的TCP可以发送给对端的最大数据量,它通常是由对端使用SYN分节通告的MSS,除非我们的TCP选择使用个比对端通告的MSS小些的值。如果该值在相应套接字的连接建立之前取得,那么返回值是未从对端收到MSS选项的情况下所用的默认值。</p>
+<h3 id="TCP-NODELAY套接字选项"><a href="#TCP-NODELAY套接字选项" class="headerlink" title="TCP_NODELAY套接字选项"></a>TCP_NODELAY套接字选项</h3><p>开启本选项将禁止TCP的 Nagle算法。默认情况下该算法是启动的。</p>
+<p>Nagle算法的目的在于减少广域网(wAN)上小分组的数目。该算法指出:如果某个给定连接上有待确认数据( outstanding data),那么原本应该作为用戶写操作之响应的在该连接上立即发送相应小分组的行为就不会发生,直到现有数据被确认为止。这里“小”分组的定义就是小于MSS的任何分组。TCP总是尽可能地发送最大大小的分组, Nagle算法的目的在于防止一个连接在任何时刻有多个小分组待确认。</p>
+<p><img src="http://data3.liuin.cn/2018-05-29-15275651499834.jpg" alt=""></p>
+<h2 id="fcntl函数"><a href="#fcntl函数" class="headerlink" title="fcntl函数"></a>fcntl函数</h2><p>与代表“file control”(文件控制)的名字相符,fcntl函数可执行各种描述符控制操作。</p>
+<p>fcntl函数提供了与网络编程相关的如下特性:</p>
+<ul>
+<li>非阻塞式I/O。通过使用F_SETFL命令设置O_NONBLOCK文件状态标志,我们可以把一个套接字设置为非阻塞型。</li>
+<li>信号驱动式I/O。通过使用F_SEFL命令设置o_ASYNC文件状态标志,我们可以把一个套接字设置成一旦其状态发生变化,内核就产生一个SIGIO信号。</li>
+<li>F_SETOWN命令允许我们指定用于接收SIGIO和SIGURG信号的套接字属主(进程ID或进程组IO)。其中 SIGIO信号是套接字被设置为信号驱动式I/O型后产生的,SIGURG信号是在新的带外数据到达套接字时产生的。F_GETOWN命令返回套接字的当前属主。</li>
+</ul>
+<h1 id="基本UDP套接字编程"><a href="#基本UDP套接字编程" class="headerlink" title="基本UDP套接字编程"></a>基本UDP套接字编程</h1>]]></content>
       
         <categories>
             
