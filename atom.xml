@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-05-29T08:40:17.000Z</updated>
+  <updated>2018-05-30T05:58:31.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -16,11 +16,89 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Redis源码剖析——数据库</title>
+    <link href="https://www.liuin.cn/2018/05/30/Redis%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90%E2%80%94%E2%80%94%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    <id>https://www.liuin.cn/2018/05/30/Redis源码剖析——数据库/</id>
+    <published>2018-05-30T01:35:46.000Z</published>
+    <updated>2018-05-30T05:58:31.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文将对Redis服务器的数据库实现进行介绍</p>
+<a id="more"></a>
+<h2 id="服务器中的数据库"><a href="#服务器中的数据库" class="headerlink" title="服务器中的数据库"></a>服务器中的数据库</h2><p>Redis服务器中一般保存了多个数据库，每个数据库用<code>redisDb</code>结构表示，结构的定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> redisDb &#123;</div><div class="line">    <span class="comment">// 数据库键空间，保存着数据库中的所有键值对</span></div><div class="line">    dict *dict;                 <span class="comment">/* The keyspace for this DB */</span></div><div class="line">    <span class="comment">// 键的过期时间，字典的键为键，字典的值为过期事件 UNIX 时间戳</span></div><div class="line">    dict *expires;              <span class="comment">/* Timeout of keys with a timeout set */</span></div><div class="line">    <span class="comment">// 正处于阻塞状态的键</span></div><div class="line">    dict *blocking_keys;        <span class="comment">/* Keys with clients waiting for data (BLPOP) */</span></div><div class="line">    <span class="comment">// 可以解除阻塞的键</span></div><div class="line">    dict *ready_keys;           <span class="comment">/* Blocked keys that received a PUSH */</span></div><div class="line">    <span class="comment">// 正在被 WATCH 命令监视的键</span></div><div class="line">    dict *watched_keys;         <span class="comment">/* WATCHED keys for MULTI/EXEC CAS */</span></div><div class="line">    <span class="keyword">struct</span> evictionPoolEntry *eviction_pool;    <span class="comment">/* Eviction pool of keys */</span></div><div class="line">    <span class="comment">// 数据库号码</span></div><div class="line">    <span class="keyword">int</span> id;                     <span class="comment">/* Database ID */</span></div><div class="line">    <span class="comment">// 数据库的键的平均 TTL ，统计信息</span></div><div class="line">    <span class="keyword">long</span> <span class="keyword">long</span> avg_ttl;          <span class="comment">/* Average TTL, just for stats */</span></div><div class="line">&#125; redisDb;</div></pre></td></tr></table></figure>
+<p>可以从Redis数据库中的定义中看到：数据库的所有键值对都存放在一个字典结构中，同时记录了用于键的删除所需要的过期时间。</p>
+<p><img src="http://data3.liuin.cn/2018-05-30-15276449785249.jpg" alt=""></p>
+<p>在Redis服务器结构中有一个数据库数组，存放各个数据库的指针；有一个记录数据库数量的变量dbnum，服务器初始化的时候根据这个变量来创建相应数量的数据库</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> redisServer &#123;</div><div class="line">    ...</div><div class="line">    <span class="comment">// 数据库</span></div><div class="line">    redisDb *db;</div><div class="line">    <span class="comment">// 数据库数量</span></div><div class="line">    <span class="keyword">int</span> dbnum;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="切换数据库"><a href="#切换数据库" class="headerlink" title="切换数据库"></a>切换数据库</h2><p>每个 Redis客户端都有自己的目标数据库,每当客户端执行数据库写命令或者数据库读命令的时候,目标数据库就会成为这些命令的操作对象。默认情况下, Redis客户端的目标数据库为0号数据库,但客户端可以通过执行SELECT命令来切换目标数据库。</p>
+<p>在客户端结构redisClient结构中用db属性记录客户端当前的目标数据库</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> redisClient &#123;</div><div class="line">    ...</div><div class="line">    <span class="comment">// 记录客户端当前使用的数据库</span></div><div class="line">    redisDb *db;</div><div class="line">    ...</div><div class="line"></div><div class="line">&#125; redisClient</div></pre></td></tr></table></figure>
+<p>redisClient.db指针指向redisServer.db数组的其中一个元素,而被指向的元素就是客户端的目标数据库。</p>
+<p><img src="http://data3.liuin.cn/2018-05-30-15276464513190.jpg" alt=""></p>
+<p>使用select切换数据库的实现：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">selectDb</span><span class="params">(redisClient *c, <span class="keyword">int</span> id)</span> </span>&#123;</div><div class="line">    <span class="comment">// 验证db编号的合法性</span></div><div class="line">    <span class="keyword">if</span> (id &lt; <span class="number">0</span> || id &gt;= server.dbnum)</div><div class="line">        <span class="keyword">return</span> REDIS_ERR;</div><div class="line">    c-&gt;db = &amp;server.db[id];</div><div class="line">    <span class="keyword">return</span> REDIS_OK;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="数据库的键空间"><a href="#数据库的键空间" class="headerlink" title="数据库的键空间"></a>数据库的键空间</h2><p>因为数据库的键空间是一个字典,所以所有针对数据库的操作,比如添加一个键值对到数据库,或者从数据库中删除一个键值对,又或者在数据库中获取某个键值对等,实际上都是通过对键空间字典进行操作来实现的</p>
+<p><img src="http://data3.liuin.cn/2018-05-30-15276486205548.jpg" alt=""></p>
+<h3 id="添加新键"><a href="#添加新键" class="headerlink" title="添加新键"></a>添加新键</h3><p>添加一个新键值对到数据库,实际上就是将一个新键值对添加到键空间字典里面,其中键为字符串对象,而值则为任意一种类型的 Redis对象</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">dbAdd</span><span class="params">(redisDb *db, robj *key, robj *val)</span> </span>&#123;</div><div class="line">    <span class="comment">// 拷贝字符串对象</span></div><div class="line">    sds copy = sdsdup(key-&gt;ptr);</div><div class="line">    <span class="comment">// 加入字典</span></div><div class="line">    <span class="keyword">int</span> retval = dictAdd(db-&gt;dict, copy, val);</div><div class="line"></div><div class="line">    redisAssertWithInfo(<span class="literal">NULL</span>,key,retval == REDIS_OK);</div><div class="line">    <span class="comment">// 如果值对象类型为list，需要判断该键是不是引起阻塞的键</span></div><div class="line">    <span class="keyword">if</span> (val-&gt;type == REDIS_LIST) signalListAsReady(db, key);</div><div class="line">    <span class="comment">// 如果开启的集群选项，则需要做相应的处理</span></div><div class="line">    <span class="keyword">if</span> (server.cluster_enabled) slotToKeyAdd(key);</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p><img src="http://data3.liuin.cn/2018-05-30-15276578873211.jpg" alt=""></p>
+<h3 id="删除键"><a href="#删除键" class="headerlink" title="删除键"></a>删除键</h3><p>删除数据库中的一个键,实际上就是在键空间里面删除键所对应的键值对对象。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dbDelete</span><span class="params">(redisDb *db, robj *key)</span> </span>&#123;</div><div class="line">    <span class="comment">/* Deleting an entry from the expires dict will not free the sds of</span></div><div class="line">     * the key, because it is shared with the main dictionary. */</div><div class="line">    <span class="comment">/* 如果有设定过期键，就去过期键字典中删除该键 */</span></div><div class="line">    <span class="keyword">if</span> (dictSize(db-&gt;expires) &gt; <span class="number">0</span>) dictDelete(db-&gt;expires,key-&gt;ptr);</div><div class="line">    <span class="keyword">if</span> (dictDelete(db-&gt;dict,key-&gt;ptr) == DICT_OK) &#123;</div><div class="line">        <span class="keyword">if</span> (server.cluster_enabled) slotToKeyDel(key);</div><div class="line">        <span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="过期键删除策略"><a href="#过期键删除策略" class="headerlink" title="过期键删除策略"></a>过期键删除策略</h2><p>Reids中有LRU机制，能够实现对数据设置期限（过期时间），在期限到达的时候会执行删除机制。Redis中有三种不同的删除策略:</p>
+<ul>
+<li>定时删除:在设置键的过期时间的同时,创建一个定时器(timer),让定时器在键的过期时间来临时,立即执行对键的删除操作。</li>
+<li>惰性删除:放任键过期不管,但是每次从键空间中获取键时,都检查取得的键是否过期,如果过期的话,就删除该键;如果没有过期,就返回该键。</li>
+<li>定期删除:每隔一段时间,程序就对数据库进行一次检查,删除里面的过期键。至于要删除多少过期键,以及要检查多少个数据库,则由算法决定。</li>
+</ul>
+<p>在这三种策略中,第一种和第三种为主动删除策略,而第二种则为被动删除策略。</p>
+<h3 id="过期时间的保存"><a href="#过期时间的保存" class="headerlink" title="过期时间的保存"></a>过期时间的保存</h3><p>redisDb结构的expires字典保存了数据库中所有键的过期时间,我们称这个字典为过期字典:</p>
+<ul>
+<li>过期字典的键是一个指针,这个指针指向键空间中的某个键对象(也即是某个数据库键)</li>
+<li>过期字典的值是一个1ong 1ong类型的整数,这个整数保存了键所指向的数据库键的过期时间—个毫秒精度的UNIX时间戳。</li>
+</ul>
+<p><img src="http://data3.liuin.cn/2018-05-30-15276582632098.jpg" alt=""></p>
+<h3 id="定时删除"><a href="#定时删除" class="headerlink" title="定时删除"></a>定时删除</h3><p>定时删除策略对内存是最友好的:通过使用定时器,定时删除策略可以保证过期键会尽可能快地被删除,并释放过期键所占用的内存。</p>
+<p>另一方面,定时删除策略的缺点是,它对CPU时间是最不友好的:在过期键比较多的情况下,删除过期键这一行为可能会占用相当一部分CPU时间,在内存不紧张但是CPU时间非常紧张的情况下,将CPU时间用在删除和当前任务无关的过期键上,无疑会对服务器的响应时间和吞吐量造成影响。</p>
+<h3 id="惰性删除"><a href="#惰性删除" class="headerlink" title="惰性删除"></a>惰性删除</h3><p>惰性删除策略对CPU时间来说是最友好的:程序只会在取出键时才对键进行过期检查这可以保证删除过期键的操作只会在非做不可的情况下进行,并且删除的目标仅限于当前处理的键,这个策略<strong>不会在删除其他无关的过期键上花费任何CPU时间</strong>。</p>
+<p>惰性删除策略的缺点是,它对内存是最不友好的:如果一个键已经过期,而这个键又仍然保留在数据库中,那么只要这个过期键不被删除,它所占用的内存就不会释放。</p>
+<p>具体的实现是通过<code>expireIfNeeded</code>函数实现的</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">expireIfNeeded</span><span class="params">(redisDb *db, robj *key)</span> </span>&#123;</div><div class="line">    <span class="comment">// 获取定时时间</span></div><div class="line">    <span class="keyword">mstime_t</span> when = getExpire(db,key);</div><div class="line">    <span class="keyword">mstime_t</span> now;</div><div class="line">    <span class="comment">// 没有设置定时时间</span></div><div class="line">    <span class="keyword">if</span> (when &lt; <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>; <span class="comment">/* No expire for this key */</span></div><div class="line">    <span class="comment">/* 服务器正在加载，不需要处理 */</span></div><div class="line">    <span class="keyword">if</span> (server.loading) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">    <span class="comment">/* lua相关 */</span></div><div class="line">    now = server.lua_caller ? server.lua_time_start : mstime();</div><div class="line">    <span class="comment">/* 主从复制相关 */</span></div><div class="line">    <span class="keyword">if</span> (server.masterhost != <span class="literal">NULL</span>) <span class="keyword">return</span> now &gt; when;</div><div class="line">    <span class="comment">/* 没有过期 */</span></div><div class="line">    <span class="keyword">if</span> (now &lt;= when) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">    <span class="comment">/* 删除键 */</span></div><div class="line">    server.stat_expiredkeys++;</div><div class="line">    propagateExpire(db,key);</div><div class="line">    notifyKeyspaceEvent(REDIS_NOTIFY_EXPIRED,</div><div class="line">        <span class="string">"expired"</span>,key,db-&gt;id);</div><div class="line">    <span class="keyword">return</span> dbDelete(db,key);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="定期删除"><a href="#定期删除" class="headerlink" title="定期删除"></a>定期删除</h3><p>从上面对定时删除和惰性删除的讨论来看,这两种删除方式在单一使用时都有明显的缺陷:</p>
+<ul>
+<li>定时删除占用太多CPU时间,影响服务器的响应时间和吞吐量。</li>
+<li>惰性删除浪费太多内存,有内存泄漏的危险</li>
+</ul>
+<p>定期删除策略是前两种策略的一种整合和折中</p>
+<ul>
+<li>定期删除策略每隔一段时间执行一次删除过期键操作,并通过限制删除操作执行的时长和频率来减少删除操作对CPU时间的影响。</li>
+<li>除此之外,通过定期删除过期键,定期删除策略有效地减少了因为过期键而带来的内存浪费。</li>
+</ul>
+<p>定期删除策略的难点是确定删除操作执行的时长和频率</p>
+<ul>
+<li>如果删除操作执行得太频繁,或者执行的时间太长,定期删除策略就会退化成定时删除策略,以至于将CPU时间过多地消耗在删除过期键上面。</li>
+<li>如果删除操作执行得太少,或者执行的时间太短,定期删除策略又会和惰性删除策略一样,出现浪费内存的情况</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文将对Redis服务器的数据库实现进行介绍&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="源码剖析" scheme="https://www.liuin.cn/categories/%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/"/>
+    
+    
+      <category term="Redis" scheme="https://www.liuin.cn/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Redis源码剖析——对象</title>
     <link href="https://www.liuin.cn/2018/05/29/Redis%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90%E2%80%94%E2%80%94%E5%AF%B9%E8%B1%A1/"/>
     <id>https://www.liuin.cn/2018/05/29/Redis源码剖析——对象/</id>
     <published>2018-05-29T06:39:50.000Z</published>
-    <updated>2018-05-29T08:40:17.000Z</updated>
+    <updated>2018-05-30T01:09:13.000Z</updated>
     
     <content type="html"><![CDATA[<p>这篇文章将剖析Redis提供给用户的5种对象底层的数据结构和接口</p>
 <a id="more"></a>
@@ -68,7 +146,7 @@
 <p>以List为例：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line"> * 释放列表对象</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">freeListObject</span><span class="params">(robj *o)</span> </span>&#123;</div><div class="line">    <span class="keyword">switch</span> (o-&gt;encoding) &#123;</div><div class="line">    <span class="keyword">case</span> REDIS_ENCODING_LINKEDLIST:</div><div class="line">        listRelease((<span class="built_in">list</span>*) o-&gt;ptr);</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">    <span class="keyword">case</span> REDIS_ENCODING_ZIPLIST:</div><div class="line">        zfree(o-&gt;ptr);</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">    <span class="keyword">default</span>:</div><div class="line">        redisPanic(<span class="string">"Unknown list encoding type"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">listRelease</span><span class="params">(<span class="built_in">list</span> *<span class="built_in">list</span>)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> len;</div><div class="line">    listNode *current, *next;</div><div class="line"></div><div class="line">    <span class="comment">// 指向头指针</span></div><div class="line">    current = <span class="built_in">list</span>-&gt;head;</div><div class="line">    <span class="comment">// 遍历整个链表</span></div><div class="line">    len = <span class="built_in">list</span>-&gt;len;</div><div class="line">    <span class="keyword">while</span>(len--) &#123;</div><div class="line">        next = current-&gt;next;</div><div class="line">        <span class="comment">// 如果有设置值释放函数，那么调用它</span></div><div class="line">        <span class="keyword">if</span> (<span class="built_in">list</span>-&gt;<span class="built_in">free</span>) <span class="built_in">list</span>-&gt;<span class="built_in">free</span>(current-&gt;value);</div><div class="line">        <span class="comment">// 释放节点结构</span></div><div class="line">        zfree(current);</div><div class="line">        current = next;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 释放链表结构</span></div><div class="line">    zfree(<span class="built_in">list</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>和创建对象分多钟编码格式相对应，释放对象的时候也要根据编码具体执行释放</p>
-<h3 id="对象交互指令"><a href="#对象交互指令" class="headerlink" title="对象交互指令"></a>对象交互指令</h3><p>Redis提供三个命令用户获取对象的一些参数：</p>
+<h2 id="对象交互指令"><a href="#对象交互指令" class="headerlink" title="对象交互指令"></a>对象交互指令</h2><p>Redis提供三个命令用户获取对象的一些参数：</p>
 <ul>
 <li>object refcount <key> 返回key所指的对象的引用计数</key></li>
 <li>object encoding <key> 返回key所指的对象中存放的数据的编码方式</key></li>
@@ -2407,122 +2485,6 @@
     
     
       <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>I/O多路复用之Select、Poll和Epoll</title>
-    <link href="https://www.liuin.cn/2018/04/20/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E4%B9%8BSelect%E3%80%81Poll%E5%92%8CEpoll/"/>
-    <id>https://www.liuin.cn/2018/04/20/I-O多路复用之Select、Poll和Epoll/</id>
-    <published>2018-04-20T12:45:23.000Z</published>
-    <updated>2018-04-21T08:10:56.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>近期写一个在线聊天室的时候接触到epoll，加上之前腾讯面试的时候面试官有问到这一题。这里就对select、poll和epoll做一个总结，目的是让自己更加深入地理解，大部分内容来自网上，可能存在错误，欢迎大家指正。</p>
-<a id="more"></a>
-<h2 id="I-O多路复用"><a href="#I-O多路复用" class="headerlink" title="I/O多路复用"></a>I/O多路复用</h2><p>之前在讲阻塞/非阻塞和同步/异步的理解的时候讲到，在Unix网络I/O中，有三种同步I/O方式：阻塞式I/O、非阻塞式I/O和I/O复用。</p>
-<p>I/O多路复用简单来说就是对多个文件进行操作，<strong>通过一种机制一个进程能同时等待多个文件描述符</strong>，而这些文件描述符（套接字描述符）其中的任意一个进入读就绪状态，select()函数就可以返回</p>
-<p>select，poll，epoll都是I/O多路复用的机制。I/O多路复用就是通过一种机制，一个进程可以监视多个描述符，一旦某个描述符就绪（一般是读就绪或者写就绪），能够通知程序进行相应的读写操作。但select，poll，epoll本质上都是同步I/O，因为他们都需要在读写事件就绪后自己负责进行读写，也就是说这个读写过程是阻塞的，而异步I/O则无需自己负责进行读写，异步I/O的实现会负责把数据从内核拷贝到用户空间。</p>
-<h2 id="Linux内核的wakeup-callback机制"><a href="#Linux内核的wakeup-callback机制" class="headerlink" title="Linux内核的wakeup callback机制"></a>Linux内核的wakeup callback机制</h2><p>Linux内核的wakeup callback机制是I/O多路复用存在的本质。Linux内核通过睡眠队列来组织所有等待某个事件的task，而wakeup机制则可以异步唤醒整个睡眠队列上的task，每一个睡眠队列上的节点都拥有一个callback，wakeup逻辑在唤醒睡眠队列时，会遍历该队列链表上的每一个节点，调用每一个节点的callback，如果遍历过程中遇到某个节点是排他节点，则终止遍历，不再继续遍历后面的节点。</p>
-<p>总体有两个逻辑：（1）睡眠等待逻辑；（2）唤醒逻辑。</p>
-<blockquote>
-<p>睡眠等待逻辑</p>
-</blockquote>
-<ul>
-<li>select、poll、epoll_wait陷入内核，判断监控的fd是否有关心的事件发生了，如果没，则为当前task构建一个wait_entry节点，然后插入到监控fd的sleep_list</li>
-<li>进入循环的schedule直到关心的事件发生了</li>
-<li>关心的事件发生后，将当前task的wait_entry节点从socket的sleep_list中删除</li>
-</ul>
-<blockquote>
-<p>唤醒逻辑</p>
-</blockquote>
-<ul>
-<li>fd监听的事件发生了，然后fd顺序遍历其睡眠队列，依次调用每个wait_entry节点的callback函数</li>
-<li>直到完成队列的遍历或遇到某个wait_entry节点是排他的才停止</li>
-<li>一般情况下callback包含两个逻辑：1.wait_entry自定义的私有逻辑；2.唤醒的公共逻辑，主要用于将该wait_entry的task放入CPU的就绪队列，让CPU随后可以调度其执行。</li>
-</ul>
-<h2 id="select"><a href="#select" class="headerlink" title="select"></a>select</h2><h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, <span class="keyword">struct</span> timeval *timeout)</span></span>;</div></pre></td></tr></table></figure>
-<p>select 函数监视的文件描述符分3类，分别是writefds、readfds、和exceptfds。nfds表示所有监视的文件描述符中最高的数+1，同时可以定义时间timeout，超过时间将返回0。</p>
-<p>调用后select函数会阻塞，直到有描述副就绪（有数据 可读、可写、或者有except），或者超时（timeout指定等待时间，如果立即返回设为null即可），函数返回。当select函数返回后，可以通过遍历fdset，来找到就绪的描述符。</p>
-<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>当用户进程调用select的时候，select会将需要监控的readfds集合拷贝到内核空间（假设监控的仅仅是fd可读），然后遍历自己监控的fd_sk，挨个调用sk的poll逻辑以便检查该sk是否有可读事件，遍历完所有的sk后，如果没有任何一个sk可读，那么select会调用schedule_timeout进入schedule循环，使得process进入睡眠。如果在timeout时间内某个sk上有数据可读了，或者等待timeout了，则调用select的process会被唤醒，接下来select就是遍历监控的sk集合，挨个收集可读事件并返回给用户了</p>
-<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><p>select目前几乎在所有的平台上支持，其良好跨平台支持也是它的一个优点。</p>
-<p>但是通过上面实现的分析，select还存在的问题是：</p>
-<ul>
-<li>被监控的fds需要从用户空间拷贝到内核空间。为了减少数据拷贝带来的性能损坏，内核对被监控的fds集合大小做了限制，并且这个是通过宏控制的，大小不可改变(限制为1024)。</li>
-<li>被监控的fds集合中，只要有一个有数据可读，整个socket集合就会被遍历一次调用sk的poll函数收集可读事件。由于当初的需求是朴素，仅仅关心是否有数据可读这样一个事件，当事件通知来的时候，由于数据的到来是异步的，我们不知道事件来的时候，有多少个被监控的socket有数据可读了，于是，只能挨个遍历每个socket来收集可读事件，但是我们希望的是能够从通知中得到有可读事件的fds列表，而不是需要遍历整个fds来收集</li>
-</ul>
-<h2 id="poll"><a href="#poll" class="headerlink" title="poll"></a>poll</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">poll</span><span class="params">(<span class="keyword">struct</span> pollfd *fds, <span class="keyword">nfds_t</span> nfds, <span class="keyword">int</span> timeout)</span></span>;</div></pre></td></tr></table></figure>
-<p>不同与select使用三个位图来表示三个fdset的方式，poll使用一个 pollfd的数组实现</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> pollfd &#123;</div><div class="line">   <span class="keyword">int</span>   fd;         <span class="comment">/* file descriptor */</span></div><div class="line">   <span class="keyword">short</span> events;     <span class="comment">/* requested events */</span></div><div class="line">   <span class="keyword">short</span> revents;    <span class="comment">/* returned events */</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>fd表示检测的文件描述符，要测试的条件由 events成员指定,函数在相应的 revents成员中返回该描述符的状态。和select函数一样，poll返回后，需要轮询pollfd来获取就绪的描述符。</p>
-<p>poll虽然解决了fds集合大小1024的限制问题，但是，它并没改变大量描述符数组被整体复制于用户态和内核态的地址空间之间，以及个别描述符就绪触发整体描述符集合的遍历的低效问题。poll随着监控的socket集合的增加性能线性下降，poll不适合用于大并发场景。</p>
-<h2 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h2><p>相对于select和poll来说，epoll更加灵活，没有描述符限制。epoll使用一个文件描述符管理多个描述符，将用户关系的文件描述符的事件存放到内核的一个事件表中，这样在用户空间和内核空间的copy只需一次。</p>
-<h3 id="使用-1"><a href="#使用-1" class="headerlink" title="使用"></a>使用</h3><p>epoll含有的接口有三个：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_create</span><span class="params">(<span class="keyword">int</span> size)</span></span>;   </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_ctl</span><span class="params">(<span class="keyword">int</span> epfd, <span class="keyword">int</span> op, <span class="keyword">int</span> fd, <span class="keyword">struct</span> epoll_event *event)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_wait</span><span class="params">(<span class="keyword">int</span> epfd, <span class="keyword">struct</span> epoll_event *events,</span></span></div><div class="line">                      <span class="keyword">int</span> maxevents, <span class="keyword">int</span> timeout);</div></pre></td></tr></table></figure>
-<blockquote>
-<p>epoll_create</p>
-</blockquote>
-<p>创建一个epoll的句柄，size用来告诉内核这个监听的数目一共有多大，这个参数不同于select()中的第一个参数，给出最大监听的fd+1的值，参数size并不是限制了epoll所能监听的描述符最大个数，只是对内核初始分配内部数据结构的一个建议。</p>
-<p>当创建好epoll句柄后，它就会占用一个fd值，在linux下如果查看/proc/进程id/fd/，是能够看到这个fd的，所以在使用完epoll后，必须调用close()关闭，否则可能导致fd被耗尽</p>
-<blockquote>
-<p>epoll_ctl</p>
-</blockquote>
-<p>对由<code>epfd</code>所引用的epoll实例进行操作，其中<code>op</code>表示操作类型(包含增删改)，<code>fd</code>表示操作的目标文件描述符，<code>event</code>和文件描述符相关联表示具体监听什么事件，以下是<code>event</code>的具体数据结构</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">union</span> epoll_data &#123;</div><div class="line">   <span class="keyword">void</span>        *ptr;</div><div class="line">   <span class="keyword">int</span>          fd;</div><div class="line">   <span class="keyword">uint32_t</span>     u32;</div><div class="line">   <span class="keyword">uint64_t</span>     u64;</div><div class="line">&#125; <span class="keyword">epoll_data_t</span>;</div><div class="line"></div><div class="line"><span class="keyword">struct</span> epoll_event &#123;</div><div class="line">   <span class="keyword">uint32_t</span>     events;      <span class="comment">/* 监听的事件属性，通常包含：读、写、出错、挂断等等 */</span></div><div class="line">   <span class="keyword">epoll_data_t</span> data;        <span class="comment">/* 事件信息 */</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>epoll_wait</p>
-</blockquote>
-<p>等待<code>epfd</code>所引用的epoll实例上的I/O就绪，同时用<code>events</code>来获得从内核得到的事件集合、<code>maxevents</code>表示传入的events有多少</p>
-<p>函数返回以后可以遍历event数组，对已经就绪的I/O进行处理。</p>
-<h3 id="工作模式"><a href="#工作模式" class="headerlink" title="工作模式"></a>工作模式</h3><p>在每个事件的属性中可以设置对文件描述符的工作模式，有两种模式：水平触发LT（level trigger）和边沿出发ET（edge trigger）。LT模式是默认模式。两种模式的区别如下：</p>
-<p>LT模式：当epoll_wait检测到描述符事件发生并将此事件通知应用程序，<strong>应用程序可以不立即处理该事件</strong>。下次调用epoll_wait时，会再次响应应用程序并通知此事件。</p>
-<p>ET模式：当epoll_wait检测到描述符事件发生并将此事件通知应用程序，<strong>应用程序必须立即处理该事件</strong>。如果不处理，下次调用epoll_wait时，不会再次响应应用程序并通知此事件。</p>
-<p>对于可读事件而言，在ET模式下，如果某个socket有新的数据到达，那么该sk就会被排入epoll的ready_list，从而epoll_wait就一定能收到可读事件的通知(调用sk的poll逻辑一定能收集到可读事件)。于是，我们通常理解的缓冲区状态变化(从无到有)的理解是不准确的，准确的理解应该是是否有新的数据达到缓冲区。</p>
-<p>而在LT模式下，某个sk被探测到有数据可读，那么该sk会被重新加入到read_list，那么在该sk的数据被全部取走前，下次调用epoll_wait就一定能够收到该sk的可读事件(调用sk的poll逻辑一定能收集到可读事件)，从而epoll_wait就能返回。</p>
-<h3 id="实现-1"><a href="#实现-1" class="headerlink" title="实现"></a>实现</h3><blockquote>
-<p>fds集合拷贝问题的解决</p>
-</blockquote>
-<p>细看select或poll的函数原型，我们会发现，每次调用select或poll都在重复地准备(集中处理)整个需要监控的fds集合。然而对于频繁调用的select或poll而言，fds集合的变化频率要低得多，我们没必要每次都重新准备(集中处理)整个fds集合。</p>
-<p>于是，epoll引入了epoll_ctl系统调用，将高频调用的epoll_wait和低频的epoll_ctl隔离开。同时，epoll_ctl通过(EPOLL_CTL_ADD、EPOLL_CTL_MOD、EPOLL_CTL_DEL)三个操作来分散对需要监控的fds集合的修改，做到了有变化才变更，将select或poll高频、大块内存拷贝(集中处理)变成epoll_ctl的低频、小块内存的拷贝(分散处理)，避免了大量的内存拷贝。同时，对于高频epoll_wait的可读就绪的fd集合返回的拷贝问题，epoll通过内核与用户空间mmap(内存映射)同一块内存来解决。mmap将用户空间的一块地址和内核空间的一块地址同时映射到相同的一块物理内存地址（不管是用户空间还是内核空间都是虚拟地址，最终要通过地址映射映射到物理地址），使得这块物理内存对内核和对用户均可见，减少用户态和内核态之间的数据交换。</p>
-<p>另外，epoll通过epoll_ctl来对监控的fds集合来进行增、删、改，那么必须涉及到fd的快速查找问题，于是，一个低时间复杂度的增、删、改、查的数据结构来组织被监控的fds集合是必不可少的了。在linux 2.6.8之前的内核，epoll使用hash来组织fds集合，于是在创建epoll fd的时候，epoll需要初始化hash的大小。于是epoll_create(int size)有一个参数size，以便内核根据size的大小来分配hash的大小。在linux 2.6.8以后的内核中，epoll使用红黑树来组织监控的fds集合，于是epoll_create(int size)的参数size实际上已经没有意义了。</p>
-<blockquote>
-<p>按需遍历就绪的fds集合</p>
-</blockquote>
-<h3 id="特点-1"><a href="#特点-1" class="headerlink" title="特点"></a>特点</h3><p>在 select/poll中，进程只有在调用一定的方法后，内核才对所有监视的文件描述符进行扫描，而epoll事先通过epoll_ctl()来注册一个文件描述符，一旦基于某个文件描述符就绪时，内核会采用类似callback的回调机制，迅速激活这个文件描述符，当进程调用epoll_wait() 时便得到通知。(此处去掉了遍历文件描述符，而是通过监听回调的的机制。这正是epoll的魅力所在。)</p>
-<p>其优点主要有如下几点：</p>
-<ul>
-<li>监视的描述符数量不受限制，它所支持的FD上限是最大可以打开文件的数目，这个数字一般远大于1024</li>
-<li>IO的效率不会随着监视fd的数量的增长而下降。epoll不同于select和poll轮询的方式，而是通过每个fd定义的回调函数来实现的。只有就绪的fd才会执行回调函数。</li>
-</ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
-<p>监视事件数量</p>
-</blockquote>
-<p>select受限于1024（依据系统而定），poll虽然数量上没有收到限制，但是因为需要轮询数量非常大的时候性能会下降，epoll在数量和性能上面都没有限制</p>
-<blockquote>
-<p>实现方式</p>
-</blockquote>
-<p>select，poll实现需要自己不断轮询所有fd集合，直到设备就绪，期间可能要睡眠和唤醒多次交替。而epoll其实也需要调用 epoll_wait不断轮询就绪链表，期间也可能多次睡眠和唤醒交替，但是它是设备就绪时，调用回调函数，把就绪fd放入就绪链表中，并唤醒在 epoll_wait中进入睡眠的进程<br>虽然都要睡眠和交替，但是select和poll在“醒着”的时候要遍历整个fd集合，而epoll在“醒着”的 时候只要判断一下就绪链表是否为空就行了，这节省了大量的CPU时间，这就是回调机制带来的性能提升。</p>
-<blockquote>
-<p>开销</p>
-</blockquote>
-<p>select，poll每次调用都要把fd集合从用户态往内核态拷贝一次，并且要把current往设备等待队列中挂一次，而epoll只要一次拷贝，而且把current往等待队列上挂也只挂一次（在epoll_wait的开始，注意这里的等待队列并不是设备等待队列，只是一个epoll内 部定义的等待队列），这也能节省不少的开销</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li>《Unix网络编程》</li>
-<li><a href="https://segmentfault.com/a/1190000003063859#articleHeader9" target="_blank" rel="external">https://segmentfault.com/a/1190000003063859#articleHeader9</a></li>
-<li><a href="https://cloud.tencent.com/developer/article/1005481" target="_blank" rel="external">https://cloud.tencent.com/developer/article/1005481</a></li>
-<li><a href="http://www.cnblogs.com/Anker/p/3265058.html" target="_blank" rel="external">http://www.cnblogs.com/Anker/p/3265058.html</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;近期写一个在线聊天室的时候接触到epoll，加上之前腾讯面试的时候面试官有问到这一题。这里就对select、poll和epoll做一个总结，目的是让自己更加深入地理解，大部分内容来自网上，可能存在错误，欢迎大家指正。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="开发随笔" scheme="https://www.liuin.cn/categories/%E5%BC%80%E5%8F%91%E9%9A%8F%E7%AC%94/"/>
-    
-    
-      <category term="Unix" scheme="https://www.liuin.cn/tags/Unix/"/>
     
   </entry>
   

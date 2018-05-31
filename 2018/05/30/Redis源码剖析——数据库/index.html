@@ -88,7 +88,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="极客," />
+  <meta name="keywords" content="Redis," />
 
 
 
@@ -106,18 +106,24 @@
 
 
 
-<meta name="description" content="讲到极客，大家可能会联想到很多的代名词：科技、钻研、较真…… 很长的一段时间里面我都希望自己是一个极客，但在很多人的心目中极客的定义各不相同，最近看了ZEALER创始人王自如的一个视频，我比较认可他对于极客的理解。">
-<meta name="keywords" content="极客">
+<meta name="description" content="本文将对Redis服务器的数据库实现进行介绍">
+<meta name="keywords" content="Redis">
 <meta property="og:type" content="article">
-<meta property="og:title" content="极客精神">
-<meta property="og:url" content="https://www.liuin.cn/2016/10/01/极客精神/index.html">
+<meta property="og:title" content="Redis源码剖析——数据库">
+<meta property="og:url" content="https://www.liuin.cn/2018/05/30/Redis源码剖析——数据库/index.html">
 <meta property="og:site_name" content="Sixzeroo">
-<meta property="og:description" content="讲到极客，大家可能会联想到很多的代名词：科技、钻研、较真…… 很长的一段时间里面我都希望自己是一个极客，但在很多人的心目中极客的定义各不相同，最近看了ZEALER创始人王自如的一个视频，我比较认可他对于极客的理解。">
+<meta property="og:description" content="本文将对Redis服务器的数据库实现进行介绍">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-03-13T18:03:48.000Z">
+<meta property="og:image" content="http://data3.liuin.cn/2018-05-30-15276449785249.jpg">
+<meta property="og:image" content="http://data3.liuin.cn/2018-05-30-15276464513190.jpg">
+<meta property="og:image" content="http://data3.liuin.cn/2018-05-30-15276486205548.jpg">
+<meta property="og:image" content="http://data3.liuin.cn/2018-05-30-15276578873211.jpg">
+<meta property="og:image" content="http://data3.liuin.cn/2018-05-30-15276582632098.jpg">
+<meta property="og:updated_time" content="2018-05-30T05:58:31.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="极客精神">
-<meta name="twitter:description" content="讲到极客，大家可能会联想到很多的代名词：科技、钻研、较真…… 很长的一段时间里面我都希望自己是一个极客，但在很多人的心目中极客的定义各不相同，最近看了ZEALER创始人王自如的一个视频，我比较认可他对于极客的理解。">
+<meta name="twitter:title" content="Redis源码剖析——数据库">
+<meta name="twitter:description" content="本文将对Redis服务器的数据库实现进行介绍">
+<meta name="twitter:image" content="http://data3.liuin.cn/2018-05-30-15276449785249.jpg">
 
 
 
@@ -147,7 +153,7 @@
 
 
 
-  <link rel="canonical" href="https://www.liuin.cn/2016/10/01/极客精神/"/>
+  <link rel="canonical" href="https://www.liuin.cn/2018/05/30/Redis源码剖析——数据库/"/>
 
 
 
@@ -163,7 +169,7 @@
   </script>
 
 
-  <title>极客精神 | Sixzeroo</title>
+  <title>Redis源码剖析——数据库 | Sixzeroo</title>
   
 
 
@@ -356,7 +362,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2016/10/01/极客精神/">
+    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2018/05/30/Redis源码剖析——数据库/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Sixzeroo">
@@ -373,7 +379,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">极客精神</h2>
+          <h2 class="post-title" itemprop="name headline">Redis源码剖析——数据库</h2>
         
 
         <div class="post-meta">
@@ -385,8 +391,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-01T23:28:55+08:00">
-                2016-10-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-30T09:35:46+08:00">
+                2018-05-30
               </time>
             
 
@@ -408,8 +414,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/杂记/" itemprop="url" rel="index">
-                    <span itemprop="name">杂记</span>
+                  <a href="/categories/源码剖析/" itemprop="url" rel="index">
+                    <span itemprop="name">源码剖析</span>
                   </a>
                 </span>
 
@@ -425,7 +431,7 @@
 
           
           
-             <span id="/2016/10/01/极客精神/" class="leancloud_visitors" data-flag-title="极客精神">
+             <span id="/2018/05/30/Redis源码剖析——数据库/" class="leancloud_visitors" data-flag-title="Redis源码剖析——数据库">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -450,7 +456,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  717 字
+                  2,102 字
                 </span>
               
 
@@ -475,17 +481,62 @@
       
 
       
-        <p>讲到极客，大家可能会联想到很多的代名词：科技、钻研、较真…… 很长的一段时间里面我都希望自己是一个极客，但在很多人的心目中极客的定义各不相同，最近看了ZEALER创始人王自如的一个视频，我比较认可他对于极客的理解。</p>
+        <p>本文将对Redis服务器的数据库实现进行介绍</p>
 <a id="more"></a>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>讲到极客，大家可能会联想到很多的代名词：科技、钻研、较真…… 很长的一段时间里面我都希望自己是一个极客，但在很多人的心目中极客的定义各不相同，最近看了ZEALER创始人王自如的一个视频，我比较认可他对于极客的理解。</p>
-<h3 id="极客精神"><a href="#极客精神" class="headerlink" title="极客精神"></a>极客精神</h3><p>下面就来讲一讲极我认同的极客所具备的品质：</p>
-<h5 id="技术控"><a href="#技术控" class="headerlink" title="技术控"></a>技术控</h5><p>极客是对技术有着很强的的理解和学习能力的人，不仅知道当今的流行技术是什么，还能知道这些技术具体的工作原理。懂技术的不一定能够懂产品，但是懂产品的人是不可能不懂技术的。</p>
-<h5 id="动手能力"><a href="#动手能力" class="headerlink" title="动手能力"></a>动手能力</h5><p>不仅脑袋里面有知识懂得科技的工作原理，还能够将他们应用于实践，像什么装个系统、写个软件等等是必须的。这种动手能力就应该是将所学的东西应用起来或者说要做出个什么东西而去学具体的知识技术所锻炼出来的。当然对技术的热爱，也是锻炼出这种动手能力所必须的。我想每一个极客都有自己动手丰衣足食的经历吧、</p>
-<h5 id="偏执、较真"><a href="#偏执、较真" class="headerlink" title="偏执、较真"></a>偏执、较真</h5><p>一件事，干不到我想要的样，它就是不行。有一丁点的不满意，极客推导重来都可以！极客能够克服技术学习和实践当中的各种枯燥。做不到自己定的目标，就是不甘心，就是不放弃。</p>
-<h5 id="探索精神"><a href="#探索精神" class="headerlink" title="探索精神"></a>探索精神</h5><p>当人咧的始祖第一次对日月更替、下雨打雷产生好奇的时候；当他们第一次抬头看都漫天繁星的时候，人类的科技就已经开始进步了。极客就是具备这样不停发问、不停求知的一些人。他们都是利用自己对技术的痴迷和执拗的方式身体力行去实践。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>极客可以是一群被未知点燃的生物。不管怎样，没有对事物的热爱、对技术的痴迷，是不能够成为极客的。</p>
-<p>由此可见，在极客养成的道路上我还有很长的路要走，不过对于科技的热爱我想我是真心的，希望在这条路上我能够越走越远。</p>
-<p>最后附上视频的<a href="http://www.zealer.com/post/242.html" target="_blank" rel="external">链接</a></p>
+<h2 id="服务器中的数据库"><a href="#服务器中的数据库" class="headerlink" title="服务器中的数据库"></a>服务器中的数据库</h2><p>Redis服务器中一般保存了多个数据库，每个数据库用<code>redisDb</code>结构表示，结构的定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> redisDb &#123;</div><div class="line">    <span class="comment">// 数据库键空间，保存着数据库中的所有键值对</span></div><div class="line">    dict *dict;                 <span class="comment">/* The keyspace for this DB */</span></div><div class="line">    <span class="comment">// 键的过期时间，字典的键为键，字典的值为过期事件 UNIX 时间戳</span></div><div class="line">    dict *expires;              <span class="comment">/* Timeout of keys with a timeout set */</span></div><div class="line">    <span class="comment">// 正处于阻塞状态的键</span></div><div class="line">    dict *blocking_keys;        <span class="comment">/* Keys with clients waiting for data (BLPOP) */</span></div><div class="line">    <span class="comment">// 可以解除阻塞的键</span></div><div class="line">    dict *ready_keys;           <span class="comment">/* Blocked keys that received a PUSH */</span></div><div class="line">    <span class="comment">// 正在被 WATCH 命令监视的键</span></div><div class="line">    dict *watched_keys;         <span class="comment">/* WATCHED keys for MULTI/EXEC CAS */</span></div><div class="line">    <span class="keyword">struct</span> evictionPoolEntry *eviction_pool;    <span class="comment">/* Eviction pool of keys */</span></div><div class="line">    <span class="comment">// 数据库号码</span></div><div class="line">    <span class="keyword">int</span> id;                     <span class="comment">/* Database ID */</span></div><div class="line">    <span class="comment">// 数据库的键的平均 TTL ，统计信息</span></div><div class="line">    <span class="keyword">long</span> <span class="keyword">long</span> avg_ttl;          <span class="comment">/* Average TTL, just for stats */</span></div><div class="line">&#125; redisDb;</div></pre></td></tr></table></figure>
+<p>可以从Redis数据库中的定义中看到：数据库的所有键值对都存放在一个字典结构中，同时记录了用于键的删除所需要的过期时间。</p>
+<p><img src="http://data3.liuin.cn/2018-05-30-15276449785249.jpg" alt=""></p>
+<p>在Redis服务器结构中有一个数据库数组，存放各个数据库的指针；有一个记录数据库数量的变量dbnum，服务器初始化的时候根据这个变量来创建相应数量的数据库</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> redisServer &#123;</div><div class="line">    ...</div><div class="line">    <span class="comment">// 数据库</span></div><div class="line">    redisDb *db;</div><div class="line">    <span class="comment">// 数据库数量</span></div><div class="line">    <span class="keyword">int</span> dbnum;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="切换数据库"><a href="#切换数据库" class="headerlink" title="切换数据库"></a>切换数据库</h2><p>每个 Redis客户端都有自己的目标数据库,每当客户端执行数据库写命令或者数据库读命令的时候,目标数据库就会成为这些命令的操作对象。默认情况下, Redis客户端的目标数据库为0号数据库,但客户端可以通过执行SELECT命令来切换目标数据库。</p>
+<p>在客户端结构redisClient结构中用db属性记录客户端当前的目标数据库</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> redisClient &#123;</div><div class="line">    ...</div><div class="line">    <span class="comment">// 记录客户端当前使用的数据库</span></div><div class="line">    redisDb *db;</div><div class="line">    ...</div><div class="line"></div><div class="line">&#125; redisClient</div></pre></td></tr></table></figure>
+<p>redisClient.db指针指向redisServer.db数组的其中一个元素,而被指向的元素就是客户端的目标数据库。</p>
+<p><img src="http://data3.liuin.cn/2018-05-30-15276464513190.jpg" alt=""></p>
+<p>使用select切换数据库的实现：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">selectDb</span><span class="params">(redisClient *c, <span class="keyword">int</span> id)</span> </span>&#123;</div><div class="line">    <span class="comment">// 验证db编号的合法性</span></div><div class="line">    <span class="keyword">if</span> (id &lt; <span class="number">0</span> || id &gt;= server.dbnum)</div><div class="line">        <span class="keyword">return</span> REDIS_ERR;</div><div class="line">    c-&gt;db = &amp;server.db[id];</div><div class="line">    <span class="keyword">return</span> REDIS_OK;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="数据库的键空间"><a href="#数据库的键空间" class="headerlink" title="数据库的键空间"></a>数据库的键空间</h2><p>因为数据库的键空间是一个字典,所以所有针对数据库的操作,比如添加一个键值对到数据库,或者从数据库中删除一个键值对,又或者在数据库中获取某个键值对等,实际上都是通过对键空间字典进行操作来实现的</p>
+<p><img src="http://data3.liuin.cn/2018-05-30-15276486205548.jpg" alt=""></p>
+<h3 id="添加新键"><a href="#添加新键" class="headerlink" title="添加新键"></a>添加新键</h3><p>添加一个新键值对到数据库,实际上就是将一个新键值对添加到键空间字典里面,其中键为字符串对象,而值则为任意一种类型的 Redis对象</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">dbAdd</span><span class="params">(redisDb *db, robj *key, robj *val)</span> </span>&#123;</div><div class="line">    <span class="comment">// 拷贝字符串对象</span></div><div class="line">    sds copy = sdsdup(key-&gt;ptr);</div><div class="line">    <span class="comment">// 加入字典</span></div><div class="line">    <span class="keyword">int</span> retval = dictAdd(db-&gt;dict, copy, val);</div><div class="line"></div><div class="line">    redisAssertWithInfo(<span class="literal">NULL</span>,key,retval == REDIS_OK);</div><div class="line">    <span class="comment">// 如果值对象类型为list，需要判断该键是不是引起阻塞的键</span></div><div class="line">    <span class="keyword">if</span> (val-&gt;type == REDIS_LIST) signalListAsReady(db, key);</div><div class="line">    <span class="comment">// 如果开启的集群选项，则需要做相应的处理</span></div><div class="line">    <span class="keyword">if</span> (server.cluster_enabled) slotToKeyAdd(key);</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p><img src="http://data3.liuin.cn/2018-05-30-15276578873211.jpg" alt=""></p>
+<h3 id="删除键"><a href="#删除键" class="headerlink" title="删除键"></a>删除键</h3><p>删除数据库中的一个键,实际上就是在键空间里面删除键所对应的键值对对象。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dbDelete</span><span class="params">(redisDb *db, robj *key)</span> </span>&#123;</div><div class="line">    <span class="comment">/* Deleting an entry from the expires dict will not free the sds of</span></div><div class="line">     * the key, because it is shared with the main dictionary. */</div><div class="line">    <span class="comment">/* 如果有设定过期键，就去过期键字典中删除该键 */</span></div><div class="line">    <span class="keyword">if</span> (dictSize(db-&gt;expires) &gt; <span class="number">0</span>) dictDelete(db-&gt;expires,key-&gt;ptr);</div><div class="line">    <span class="keyword">if</span> (dictDelete(db-&gt;dict,key-&gt;ptr) == DICT_OK) &#123;</div><div class="line">        <span class="keyword">if</span> (server.cluster_enabled) slotToKeyDel(key);</div><div class="line">        <span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="过期键删除策略"><a href="#过期键删除策略" class="headerlink" title="过期键删除策略"></a>过期键删除策略</h2><p>Reids中有LRU机制，能够实现对数据设置期限（过期时间），在期限到达的时候会执行删除机制。Redis中有三种不同的删除策略:</p>
+<ul>
+<li>定时删除:在设置键的过期时间的同时,创建一个定时器(timer),让定时器在键的过期时间来临时,立即执行对键的删除操作。</li>
+<li>惰性删除:放任键过期不管,但是每次从键空间中获取键时,都检查取得的键是否过期,如果过期的话,就删除该键;如果没有过期,就返回该键。</li>
+<li>定期删除:每隔一段时间,程序就对数据库进行一次检查,删除里面的过期键。至于要删除多少过期键,以及要检查多少个数据库,则由算法决定。</li>
+</ul>
+<p>在这三种策略中,第一种和第三种为主动删除策略,而第二种则为被动删除策略。</p>
+<h3 id="过期时间的保存"><a href="#过期时间的保存" class="headerlink" title="过期时间的保存"></a>过期时间的保存</h3><p>redisDb结构的expires字典保存了数据库中所有键的过期时间,我们称这个字典为过期字典:</p>
+<ul>
+<li>过期字典的键是一个指针,这个指针指向键空间中的某个键对象(也即是某个数据库键)</li>
+<li>过期字典的值是一个1ong 1ong类型的整数,这个整数保存了键所指向的数据库键的过期时间—个毫秒精度的UNIX时间戳。</li>
+</ul>
+<p><img src="http://data3.liuin.cn/2018-05-30-15276582632098.jpg" alt=""></p>
+<h3 id="定时删除"><a href="#定时删除" class="headerlink" title="定时删除"></a>定时删除</h3><p>定时删除策略对内存是最友好的:通过使用定时器,定时删除策略可以保证过期键会尽可能快地被删除,并释放过期键所占用的内存。</p>
+<p>另一方面,定时删除策略的缺点是,它对CPU时间是最不友好的:在过期键比较多的情况下,删除过期键这一行为可能会占用相当一部分CPU时间,在内存不紧张但是CPU时间非常紧张的情况下,将CPU时间用在删除和当前任务无关的过期键上,无疑会对服务器的响应时间和吞吐量造成影响。</p>
+<h3 id="惰性删除"><a href="#惰性删除" class="headerlink" title="惰性删除"></a>惰性删除</h3><p>惰性删除策略对CPU时间来说是最友好的:程序只会在取出键时才对键进行过期检查这可以保证删除过期键的操作只会在非做不可的情况下进行,并且删除的目标仅限于当前处理的键,这个策略<strong>不会在删除其他无关的过期键上花费任何CPU时间</strong>。</p>
+<p>惰性删除策略的缺点是,它对内存是最不友好的:如果一个键已经过期,而这个键又仍然保留在数据库中,那么只要这个过期键不被删除,它所占用的内存就不会释放。</p>
+<p>具体的实现是通过<code>expireIfNeeded</code>函数实现的</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">expireIfNeeded</span><span class="params">(redisDb *db, robj *key)</span> </span>&#123;</div><div class="line">    <span class="comment">// 获取定时时间</span></div><div class="line">    <span class="keyword">mstime_t</span> when = getExpire(db,key);</div><div class="line">    <span class="keyword">mstime_t</span> now;</div><div class="line">    <span class="comment">// 没有设置定时时间</span></div><div class="line">    <span class="keyword">if</span> (when &lt; <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>; <span class="comment">/* No expire for this key */</span></div><div class="line">    <span class="comment">/* 服务器正在加载，不需要处理 */</span></div><div class="line">    <span class="keyword">if</span> (server.loading) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">    <span class="comment">/* lua相关 */</span></div><div class="line">    now = server.lua_caller ? server.lua_time_start : mstime();</div><div class="line">    <span class="comment">/* 主从复制相关 */</span></div><div class="line">    <span class="keyword">if</span> (server.masterhost != <span class="literal">NULL</span>) <span class="keyword">return</span> now &gt; when;</div><div class="line">    <span class="comment">/* 没有过期 */</span></div><div class="line">    <span class="keyword">if</span> (now &lt;= when) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">    <span class="comment">/* 删除键 */</span></div><div class="line">    server.stat_expiredkeys++;</div><div class="line">    propagateExpire(db,key);</div><div class="line">    notifyKeyspaceEvent(REDIS_NOTIFY_EXPIRED,</div><div class="line">        <span class="string">"expired"</span>,key,db-&gt;id);</div><div class="line">    <span class="keyword">return</span> dbDelete(db,key);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="定期删除"><a href="#定期删除" class="headerlink" title="定期删除"></a>定期删除</h3><p>从上面对定时删除和惰性删除的讨论来看,这两种删除方式在单一使用时都有明显的缺陷:</p>
+<ul>
+<li>定时删除占用太多CPU时间,影响服务器的响应时间和吞吐量。</li>
+<li>惰性删除浪费太多内存,有内存泄漏的危险</li>
+</ul>
+<p>定期删除策略是前两种策略的一种整合和折中</p>
+<ul>
+<li>定期删除策略每隔一段时间执行一次删除过期键操作,并通过限制删除操作执行的时长和频率来减少删除操作对CPU时间的影响。</li>
+<li>除此之外,通过定期删除过期键,定期删除策略有效地减少了因为过期键而带来的内存浪费。</li>
+</ul>
+<p>定期删除策略的难点是确定删除操作执行的时长和频率</p>
+<ul>
+<li>如果删除操作执行得太频繁,或者执行的时间太长,定期删除策略就会退化成定时删除策略,以至于将CPU时间过多地消耗在删除过期键上面。</li>
+<li>如果删除操作执行得太少,或者执行的时间太短,定期删除策略又会和惰性删除策略一样,出现浪费内存的情况</li>
+</ul>
 
       
     </div>
@@ -535,15 +586,15 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://www.liuin.cn/2016/10/01/极客精神/" title="极客精神">https://www.liuin.cn/2016/10/01/极客精神/</a>
+    <a href="https://www.liuin.cn/2018/05/30/Redis源码剖析——数据库/" title="Redis源码剖析——数据库">https://www.liuin.cn/2018/05/30/Redis源码剖析——数据库/</a>
   </li>
   <li class="post-copyright-author">
 	<strong>发布时间: </strong>
-	2016年10月1日 - 23时10分
+	2018年5月30日 - 09时05分
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2017年3月14日 - 02时03分
+	2018年5月30日 - 13时05分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -558,7 +609,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/极客/" rel="tag"># 极客</a>
+            <a href="/tags/Redis/" rel="tag"># Redis</a>
           
         </div>
       
@@ -571,8 +622,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/09/30/Linux学习——在线帮助和档案属性/" rel="next" title="Linux学习——在线帮助和档案属性">
-                <i class="fa fa-chevron-left"></i> Linux学习——在线帮助和档案属性
+              <a href="/2018/05/29/Redis源码剖析——对象/" rel="next" title="Redis源码剖析——对象">
+                <i class="fa fa-chevron-left"></i> Redis源码剖析——对象
               </a>
             
           </div>
@@ -580,10 +631,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/10/09/背包九讲（转）/" rel="prev" title="背包九讲（转）">
-                背包九讲（转） <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -752,7 +799,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#极客精神"><span class="nav-number">2.</span> <span class="nav-text">极客精神</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#技术控"><span class="nav-number">2.0.1.</span> <span class="nav-text">技术控</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#动手能力"><span class="nav-number">2.0.2.</span> <span class="nav-text">动手能力</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#偏执、较真"><span class="nav-number">2.0.3.</span> <span class="nav-text">偏执、较真</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#探索精神"><span class="nav-number">2.0.4.</span> <span class="nav-text">探索精神</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#服务器中的数据库"><span class="nav-number">1.</span> <span class="nav-text">服务器中的数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#切换数据库"><span class="nav-number">2.</span> <span class="nav-text">切换数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库的键空间"><span class="nav-number">3.</span> <span class="nav-text">数据库的键空间</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加新键"><span class="nav-number">3.1.</span> <span class="nav-text">添加新键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除键"><span class="nav-number">3.2.</span> <span class="nav-text">删除键</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过期键删除策略"><span class="nav-number">4.</span> <span class="nav-text">过期键删除策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#过期时间的保存"><span class="nav-number">4.1.</span> <span class="nav-text">过期时间的保存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定时删除"><span class="nav-number">4.2.</span> <span class="nav-text">定时删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#惰性删除"><span class="nav-number">4.3.</span> <span class="nav-text">惰性删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定期删除"><span class="nav-number">4.4.</span> <span class="nav-text">定期删除</span></a></li></ol></li></ol></div>
             
 
           </div>
