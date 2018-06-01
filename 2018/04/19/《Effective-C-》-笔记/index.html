@@ -114,7 +114,7 @@
 <meta property="og:site_name" content="Sixzeroo">
 <meta property="og:description" content="《Effective C++》的副标题是改善程序与设计的55个具体做法。这本书用比较多的示例展示了很多改善C++程序的方法，值得一读。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-05-19T01:33:25.000Z">
+<meta property="og:updated_time" content="2018-05-31T07:09:50.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《Effective C++》 笔记">
 <meta name="twitter:description" content="《Effective C++》的副标题是改善程序与设计的55个具体做法。这本书用比较多的示例展示了很多改善C++程序的方法，值得一读。">
@@ -450,7 +450,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  11,282 字
+                  11,576 字
                 </span>
               
 
@@ -547,7 +547,9 @@
 <li>如果客户需要对某个操作函数运行期间抛出的异常做出反应,那么 class应该提供一个普通函数(而非在析构函数中)执行该操作。</li>
 </ul>
 </blockquote>
-<h3 id="条款09：绝不要在构造函数和析构函数中调用virtual函数"><a href="#条款09：绝不要在构造函数和析构函数中调用virtual函数" class="headerlink" title="条款09：绝不要在构造函数和析构函数中调用virtual函数"></a>条款09：绝不要在构造函数和析构函数中调用virtual函数</h3><p>在base class构造期间，virtual函数不是virtual函数。</p>
+<h3 id="条款09：绝不要在构造函数和析构函数中调用virtual函数"><a href="#条款09：绝不要在构造函数和析构函数中调用virtual函数" class="headerlink" title="条款09：绝不要在构造函数和析构函数中调用virtual函数"></a>条款09：绝不要在构造函数和析构函数中调用virtual函数</h3><p>base class构造期间 virtual函数绝不会下降到derived classes阶层。取而代之的是,对象的作为就像隶属base类型一样。非正式的说法或许比较传神:在 base class构造期间, virtual函数不是 virtual函数。</p>
+<p>由于base class构造函数的执行更早于derived class构造函数,当base class构造函数执行时 derived class的成员变量尚未初始化。如果此期间调用的 virtual函数下降至 derived classes阶层,要知道 derived class的函数几乎必然取用 local成员变量,而那些成员变量尚未初始化。这将是一张通往不明确行为和彻夜调试大会串的直达车票。“要求使用对象内部尚未初始化的成分”是危险的代名词,所以C++不让你走这条路。</p>
+<p>相同道理也适用于析构函数。一旦derived class析构函数开始执行,对象内的derived class成员变量便呈现未定义值,所以C++视它们仿佛不再存在。进入base class析构函数后对象就成为一个base class对象,而C++的任何部分包括virtual函数、 dynamic casts等等也就那么看待它。</p>
 <blockquote>
 <p>重点</p>
 <ul>
@@ -936,7 +938,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年5月19日 - 09时05分
+	2018年5月31日 - 15时05分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -1183,7 +1185,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      335.4k 字
+      335.7k 字
     </span>
   
 
