@@ -6781,7 +6781,7 @@
 <h1 id="模板与泛型编程"><a href="#模板与泛型编程" class="headerlink" title="模板与泛型编程"></a>模板与泛型编程</h1><p>面向对象编程(OOP)和泛型编程都能处理在编写程序时不知道类型的情况。不同之处在于:OOP能处理类型在程序运行之前都未知的情况;而在泛型编程中,在编译时就能获知类型了。</p>
 <p>模板是C++中泛型编程的基础。一个模板就是一个创建类或函数的蓝图或者说公式。</p>
 <h2 id="定义模板"><a href="#定义模板" class="headerlink" title="定义模板"></a>定义模板</h2><h3 id="函数模板"><a href="#函数模板" class="headerlink" title="函数模板"></a>函数模板</h3><p>我们可以定义一个通用的函数模板( function template),而不是为每个类型都定义一个新函数。一个函数模板就是一个公式,可用来生成针对特定类型的函数版本。 compare的模板版本可能像下面这样</p>
-<p><img src="https://data2.liuin.cn/2018-03-10-15206810494191.jpg" alt=""></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">compare</span><span class="params">(<span class="keyword">const</span> T &amp;v1, <span class="keyword">const</span> T &amp;v2)</span></span>&#123;</div><div class="line">    <span class="keyword">if</span>(v1 &lt; v2) <span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line">    <span class="keyword">if</span>(v2 &lt; v1) <span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>模板定义以关键字 template开始,后跟一个模板参数列表( template parameter list.,这是一个逗号分隔的一个或多个模板参数( template parameter)的列表,用小于号(&lt;)和大于号(&gt;)包围起来。<strong>在模板定义中，模板参数列表不能为空</strong>。</p>
 <p>模板参数表示在类或函数定义中用到的类型或值。当使用模板时,我们(隐式地或显式地)指定模板实参( template argument),将其绑定到模板参数上。</p>
 <blockquote>
@@ -6793,6 +6793,7 @@
 <p>模板类型参数</p>
 </blockquote>
 <p>我们的 compare函数有一个模板<strong>类型参数</strong>( type parameter.)。一般来说,我们可以<strong>将类型参数看作类型说明符</strong>,就像内置类型或类类型说明符一样使用。特别是,类型参数可以用来指定返回类型或函数的参数类型,以及在函数体内用于变量声明或类型转换</p>
+<p>类型参数前必须使用关键字c1asS或 typename</p>
 <p><img src="https://data2.liuin.cn/2018-03-10-15206812431993.jpg" alt=""></p>
 <blockquote>
 <p>非类型模板参数</p>
@@ -6831,9 +6832,10 @@
 <blockquote>
 <p>在模板作用域中引用模板类型</p>
 </blockquote>
-<p>为了阅读模板类代码,应该记住类<strong>模板的名字不是一个类型名</strong>。类模板用来实例化类型,而一个实例化的类型总是包含模板参数的可能令人迷惑的是,<strong>一个类模板中的代码如果使用了另外一个模板,通常不将一个实际类型(或值)的名字用作其模板实参。相反的,我们通常将模板自己的参数当作被使用模板的实参</strong>。</p>
+<p>为了阅读模板类代码,应该记住类<strong>模板的名字不是一个类型名</strong>。类模板用来实例化类型,而一个实例化的类型总是包含模板参数的</p>
+<p>可能令人迷惑的是,<strong>一个类模板中的代码如果使用了另外一个模板,通常不将一个实际类型(或值)的名字用作其模板实参。相反的,我们通常将模板自己的参数当作被使用模板的实参</strong>。</p>
 <p>例如,我们的data成员使用了两个模板, vector和 shared_ptr。我们知道,无论何时使用模板都必须提供模板实参。在本例中,我们提供的模板实参就是Bob的模板参数。因此,data的定义如下</p>
-<p><img src="https://data2.liuin.cn/2018-03-10-15206823729019.jpg" alt=""></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">std</span>::share_ptr&lt;<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;T&gt; &gt; data;</div></pre></td></tr></table></figure>
 <blockquote>
 <p>类模板的成员函数</p>
 </blockquote>
