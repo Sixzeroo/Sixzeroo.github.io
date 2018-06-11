@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.liuin.cn/2018/01/14/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E9%85%8D%E7%BD%AEUbuntu%E5%9F%BA%E6%9C%AC%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/</loc>
+    
+    <lastmod>2018-06-11T12:12:47.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.liuin.cn/2018/06/05/Redis%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90%E2%80%94%E2%80%94RDB%E6%8C%81%E4%B9%85%E5%8C%96/</loc>
     
     <lastmod>2018-06-08T03:10:05.000Z</lastmod>
@@ -12,13 +19,6 @@
     <loc>https://www.liuin.cn/2018/04/20/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E4%B9%8BSelect%E3%80%81Poll%E5%92%8CEpoll/</loc>
     
     <lastmod>2018-06-07T09:55:11.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.liuin.cn/2018/01/14/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E9%85%8D%E7%BD%AEUbuntu%E5%9F%BA%E6%9C%AC%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/</loc>
-    
-    <lastmod>2018-06-05T06:06:51.000Z</lastmod>
     
   </url>
   
