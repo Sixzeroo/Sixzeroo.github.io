@@ -508,6 +508,34 @@
 <li>输出第二个数据报</li>
 </ul>
 <p>在这种情况下,内核只复制一次含有目的IP地址和端口号的套接字地址结构,相反当调用两次 sendto时,需复制两次。临时连接未连接的UDP套接字大约会耗费每个UDP传输三分之一的开销。</p>
+<h1 id="名字与地址转换"><a href="#名字与地址转换" class="headerlink" title="名字与地址转换"></a>名字与地址转换</h1><p>到目前为止,以上所有例子都用数值地址来表示主机,用数值端口号来标识服务器。然而出于许多理由,我们应该使用名字而不是数值:名字比较容易记住;数值地址可以变动而名字保持不变;随着往Iv6上转移,数值地址变得相当长,手工键入数值地址更易出错。</p>
+<h2 id="域名系统"><a href="#域名系统" class="headerlink" title="域名系统"></a>域名系统</h2><p>域名系统( Domain Name System,DNS)主要用于主机名字与IP地址之间的映射。主机名既可以是一个简单名字(simple name),,也可以是一个全限定域名(Fully Qualified Domain Name, FQDN), 比如说www.baidu.com</p>
+<h3 id="资源记录"><a href="#资源记录" class="headerlink" title="资源记录"></a>资源记录</h3><p>DNS中记录的条目称为资源记录，主要的有以下几种：</p>
+<ul>
+<li>A记录把一个主机名映射成一个32位的IPV4地址</li>
+<li>AAAA称为“四A”把一个主机名映射成一个128位的Iv6</li>
+<li>称为“指针记录”( pointer record)的PTR记录把IP地址映射成主机名</li>
+<li>MX记录把一个主机指定作为给定主机的“邮件交换器”</li>
+</ul>
+<h3 id="解析器和名字服务器"><a href="#解析器和名字服务器" class="headerlink" title="解析器和名字服务器"></a>解析器和名字服务器</h3><p>每个组织机构往往运行一个或多个名字服务器。常见的解析所做的东西就是把主机名映射成IPv4地址和做相反的映射。</p>
+<p><img src="http://data3.liuin.cn/2018-06-14-15289459622135.jpg" alt=""></p>
+<h3 id="DNS替代方案"><a href="#DNS替代方案" class="headerlink" title="DNS替代方案"></a>DNS替代方案</h3><p>不使用DNS也可能获取名字和地址信息。常用的替代方法有静态主机文件(通常是etc/hosts文件)、网络信息系统( Network Information System,NIS)以及轻权目录访问协议( Lightweight Directory Access Protocol,LDAP)。</p>
+<h2 id="gethostbyname函数"><a href="#gethostbyname函数" class="headerlink" title="gethostbyname函数"></a>gethostbyname函数</h2><p>查找主机名最基本的函数是 gethostbyname。如果调用成功,它就返回一个指向 hostent结构的指针,该结构中含有所查找主机的所有IPv4地址。这个函数的局限是只能返回IPv4地址</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netdb.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">struct</span> hostent *<span class="title">gethostbyname</span> <span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *hostname)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: non-null pointer if OK,NULL on error with h_errno se</span></div></pre></td></tr></table></figure>
+<p>hostent的数据结构如下：</p>
+<p><img src="http://data3.liuin.cn/2018-06-14-15289462083765.jpg" alt=""></p>
+<p><img src="http://data3.liuin.cn/2018-06-14-15289462760527.jpg" alt=""></p>
+<p>gethostbyname执行的是对A记录的查询，所以只能够返回IPv4的地址</p>
+<h2 id="gethostbyaddr函数"><a href="#gethostbyaddr函数" class="headerlink" title="gethostbyaddr函数"></a>gethostbyaddr函数</h2><p>gethostbyaddr的功能刚好和gethostbyname相反，试图由一个二进制的IP地址找到相应的主机名</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netdb.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">struct</span> hostent *<span class="title">gethostbyaddr</span> <span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *addr, <span class="keyword">socklen_t</span> len, <span class="keyword">int</span> family)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: non-null pointer if OK, NULL on error with h_errno set</span></div></pre></td></tr></table></figure>
+<h2 id="getservbyname和-getservbyport函数"><a href="#getservbyname和-getservbyport函数" class="headerlink" title="getservbyname和 getservbyport函数"></a>getservbyname和 getservbyport函数</h2><p>像主机一样,<strong>服务也通常靠名字来认知</strong>。如果我们在程序代码中通过其名字而不是其端口号来指代一个服务,而且从名字到端口号的映射关系保存在一个文件中(通常是/etc/services),那么即使端口号发生变动,我们需修改的仅仅是/etc/services文件中的某行,而不必重新编译应用程序。</p>
+<p>getservtbyname函数用于根据给定名字查找相应服务。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netdb.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">struct</span> servent *<span class="title">getservbyname</span> <span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *servname, <span class="keyword">const</span> <span class="keyword">char</span> *protoname)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: non-null pointer if OK, NULL on error</span></div></pre></td></tr></table></figure>
+<p>返回的servent结构：</p>
+<p><img src="http://data3.liuin.cn/2018-06-14-15289465680796.jpg" alt=""></p>
+<p>服务名参数 servname必须指定。如果同时指定了协议(即protoname参数为非空指针),那么指定服务必须有匹配的协议。有些因特网服务既用TCP也用UDP提供,其他因特网服务则仅仅支持单个协议(例如FTP要求使用TCP)。如果 protoname未指定而 servname指定服务支持多个协议,那么返回哪个端口号取决于实现。</p>
+<p>getservbyport用于根据给定端口号和可选协议査找相应服务。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netdb.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">struct</span> servent *<span class="title">getservbyport</span> <span class="params">(<span class="keyword">int</span> port, <span class="keyword">const</span> <span class="keyword">char</span> *protoname)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: non-null pointer if OK, NULL on error</span></div></pre></td></tr></table></figure>
 ]]></content>
       
         <categories>
