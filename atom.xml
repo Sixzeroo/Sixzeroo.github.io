@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-06-17T12:47:35.000Z</updated>
+  <updated>2018-06-18T07:27:12.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -16,11 +16,106 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Redis源码剖析——客户端和服务器</title>
+    <link href="https://www.liuin.cn/2018/06/19/Redis%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90%E2%80%94%E2%80%94%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    <id>https://www.liuin.cn/2018/06/19/Redis源码剖析——客户端和服务器/</id>
+    <published>2018-06-19T06:52:27.000Z</published>
+    <updated>2018-06-18T07:27:12.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Redis服务器是典型的一对多服务器程序:一个服务器可以与多个客户端建立网络连接。这篇文章将通过源码看看客户端和服务器的底层数据结构和工作过程</p>
+<a id="more"></a>
+<p>在Redis这种一对多的服务模式下，每个客户端可以向服务器发送命令请求,而服务器则接收并处理客户端发送的命令请求,并向客户端返回命令回复。通过使用由I/O多路复用技术实现的文件事件处理器,Redis服务器使用单线程单进程的方式来处理命令请求,并与多个客户端进行网络通信。</p>
+<h2 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h2><h3 id="客户端数据结构"><a href="#客户端数据结构" class="headerlink" title="客户端数据结构"></a>客户端数据结构</h3><p>客户端底层的数据结构如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> redisClient &#123;</div><div class="line">    <span class="keyword">uint64_t</span> id;            <span class="comment">/* Client incremental unique ID. */</span></div><div class="line">    <span class="comment">// 套接字描述符</span></div><div class="line">    <span class="keyword">int</span> fd;</div><div class="line">    redisDb *db;</div><div class="line">    <span class="keyword">int</span> dictid;</div><div class="line">    <span class="comment">// 客户端名字</span></div><div class="line">    robj *name;             <span class="comment">/* As set by CLIENT SETNAME */</span></div><div class="line">    <span class="comment">// 输入缓冲区，保存客户端发送的命令请求</span></div><div class="line">    sds querybuf;</div><div class="line">    <span class="keyword">size_t</span> querybuf_peak;   <span class="comment">/* Recent (100ms or more) peak of querybuf size */</span></div><div class="line">    <span class="comment">// 命令和命令参数</span></div><div class="line">    <span class="keyword">int</span> argc;</div><div class="line">    robj **argv;</div><div class="line">    <span class="comment">// 命令实现函数字典</span></div><div class="line">    <span class="keyword">struct</span> redisCommand *cmd, *lastcmd;</div><div class="line">    <span class="keyword">int</span> reqtype;</div><div class="line">    <span class="keyword">int</span> multibulklen;       <span class="comment">/* number of multi bulk arguments left to read */</span></div><div class="line">    <span class="keyword">long</span> bulklen;           <span class="comment">/* length of bulk argument in multi bulk request */</span></div><div class="line">    <span class="built_in">list</span> *reply;</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> reply_bytes; <span class="comment">/* Tot bytes of objects in reply list */</span></div><div class="line">    <span class="keyword">int</span> sentlen;            <span class="comment">/* Amount of bytes already sent in the current</span></div><div class="line">                               buffer or object being sent. */</div><div class="line">    <span class="comment">// 创建客户端时间</span></div><div class="line">    <span class="keyword">time_t</span> ctime;           <span class="comment">/* Client creation time */</span></div><div class="line">    <span class="comment">// 客户端和服务器最后一次进行互动的时间</span></div><div class="line">    <span class="keyword">time_t</span> lastinteraction; <span class="comment">/* time of the last interaction, used for timeout */</span></div><div class="line">    <span class="keyword">time_t</span> obuf_soft_limit_reached_time;</div><div class="line">    <span class="comment">// 标志，记录客户端的角色</span></div><div class="line">    <span class="keyword">int</span> flags;              <span class="comment">/* REDIS_SLAVE | REDIS_MONITOR | REDIS_MULTI ... */</span></div><div class="line">    <span class="comment">// 标志是否通过身份验证</span></div><div class="line">    <span class="keyword">int</span> authenticated;      <span class="comment">/* when requirepass is non-NULL */</span></div><div class="line">    ... <span class="comment">// 其他相关属性</span></div><div class="line"></div><div class="line">    <span class="comment">/* Response buffer */</span></div><div class="line">    <span class="comment">// 回应缓冲区</span></div><div class="line">    <span class="keyword">int</span> bufpos;</div><div class="line">    <span class="keyword">char</span> buf[REDIS_REPLY_CHUNK_BYTES];</div><div class="line">&#125; redisClient;</div></pre></td></tr></table></figure>
+<p>在客户端的各个属性中：</p>
+<p>fd表示套接字描述符，伪客户端的fd属性的值为-1:伪客户端处理的命令请求来源于AOF文件或者Lua脚本,而不是网络,所以这种客户端不需要套接字连接；普通客户端的fd属性的值为大于-1的整数</p>
+<p>命令和命令参数是对输入缓冲的命令进行解析以后获得命令和参数。</p>
+<p><code>cmd</code>是命令的实现函数的数组，命令实现函数的结构如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> redisCommand &#123;</div><div class="line">    <span class="comment">// 命令名称</span></div><div class="line">    <span class="keyword">char</span> *name;</div><div class="line">    <span class="comment">// 命令执行函数</span></div><div class="line">    redisCommandProc *proc;</div><div class="line">    <span class="comment">// 参数个数</span></div><div class="line">    <span class="keyword">int</span> arity;</div><div class="line">    <span class="comment">// 字符串表示flag</span></div><div class="line">    <span class="keyword">char</span> *sflags; <span class="comment">/* Flags as string representation, one char per flag. */</span></div><div class="line">    <span class="comment">// 实际flag</span></div><div class="line">    <span class="keyword">int</span> flags;    <span class="comment">/* The actual flags, obtained from the 'sflags' field. */</span></div><div class="line">    </div><div class="line">    ...</div><div class="line">    </div><div class="line">    <span class="comment">// 指定哪些参数是key</span></div><div class="line">    <span class="keyword">int</span> firstkey; <span class="comment">/* The first argument that's a key (0 = no keys) */</span></div><div class="line">    <span class="keyword">int</span> lastkey;  <span class="comment">/* The last argument that's a key */</span></div><div class="line">    <span class="keyword">int</span> keystep;  <span class="comment">/* The step between first and last key */</span></div><div class="line">    <span class="comment">// 统计信息</span></div><div class="line">    <span class="keyword">long</span> <span class="keyword">long</span> microseconds, calls;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h3 id="客户端的创建和关闭"><a href="#客户端的创建和关闭" class="headerlink" title="客户端的创建和关闭"></a>客户端的创建和关闭</h3><p>当客户端向服务器发出connect请求的时候，服务器的事件处理器就会对这个事件进行处理，创建相应的客户端状态，并将这个新的客户端状态添加到服务器状态结构clients链表的末尾</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line"> * 创建一个新客户端</div><div class="line"> */</div><div class="line"><span class="function">redisClient *<span class="title">createClient</span><span class="params">(<span class="keyword">int</span> fd)</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 分配空间</span></div><div class="line">    redisClient *c = zmalloc(<span class="keyword">sizeof</span>(redisClient));</div><div class="line"></div><div class="line">    <span class="comment">// 当 fd 不为 -1 时，创建带网络连接的客户端</span></div><div class="line">    <span class="comment">// 如果 fd 为 -1 ，那么创建无网络连接的伪客户端</span></div><div class="line">    <span class="comment">// 因为 Redis 的命令必须在客户端的上下文中使用，所以在执行 Lua 环境中的命令时</span></div><div class="line">    <span class="comment">// 需要用到这种伪终端</span></div><div class="line">    <span class="keyword">if</span> (fd != <span class="number">-1</span>) &#123;</div><div class="line">        <span class="comment">// 非阻塞</span></div><div class="line">        anetNonBlock(<span class="literal">NULL</span>,fd);</div><div class="line">        <span class="comment">// 禁用 Nagle 算法</span></div><div class="line">        anetEnableTcpNoDelay(<span class="literal">NULL</span>,fd);</div><div class="line">        <span class="comment">// 设置 keep alive</span></div><div class="line">        <span class="keyword">if</span> (server.tcpkeepalive)</div><div class="line">            anetKeepAlive(<span class="literal">NULL</span>,fd,server.tcpkeepalive);</div><div class="line">        <span class="comment">// 绑定读事件到事件 loop （开始接收命令请求）</span></div><div class="line">        <span class="keyword">if</span> (aeCreateFileEvent(server.el,fd,AE_READABLE,</div><div class="line">            readQueryFromClient, c) == AE_ERR)</div><div class="line">        &#123;</div><div class="line">            close(fd);</div><div class="line">            zfree(c);</div><div class="line">            <span class="keyword">return</span> <span class="literal">NULL</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 初始化各个属性</span></div><div class="line"></div><div class="line">    <span class="comment">// 默认数据库</span></div><div class="line">    selectDb(c,<span class="number">0</span>);</div><div class="line">    <span class="comment">// 套接字</span></div><div class="line">    c-&gt;fd = fd;</div><div class="line">    ...</div><div class="line">    </div><div class="line">    </div><div class="line">    listSetFreeMethod(c-&gt;pubsub_patterns,decrRefCountVoid);</div><div class="line">    listSetMatchMethod(c-&gt;pubsub_patterns,listMatchObjects);</div><div class="line">    <span class="comment">// 如果不是伪客户端，那么添加到服务器的客户端链表中</span></div><div class="line">    <span class="keyword">if</span> (fd != <span class="number">-1</span>) listAddNodeTail(server.clients,c);</div><div class="line">    <span class="comment">// 初始化客户端的事务状态</span></div><div class="line">    initClientMultiState(c);</div><div class="line"></div><div class="line">    <span class="comment">// 返回客户端</span></div><div class="line">    <span class="keyword">return</span> c;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>对于客户端的启动程序，其大致的逻辑是：读取本地配置，连接服务器获取服务器的配置，获取本地输入的命令并发送到服务器</p>
+<p>一个普通客户端可以因为多种原因而被关闭:</p>
+<ul>
+<li>如果客户端进程退出或者被杀死,那么客户端与服务器之间的网络连接将被关闭,从而造成客户端被关闭。</li>
+<li>如果客户端向服务器发送了带有不符合协议格式的命令请求,那么这个客户端也会被服务器关闭。</li>
+<li>如果客户端成为了CLIENT KLLL命令的目标,那么它也会被关闭。</li>
+</ul>
+<p>关闭客户端的底层实现：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line"> * 释放客户端</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">freeClient</span><span class="params">(redisClient *c)</span> </span>&#123;</div><div class="line">    listNode *ln;</div><div class="line">    </div><div class="line">    ...</div><div class="line">    </div><div class="line">    <span class="comment">/* Free the query buffer */</span></div><div class="line">    sdsfree(c-&gt;querybuf);</div><div class="line">    c-&gt;querybuf = <span class="literal">NULL</span>;</div><div class="line"></div><div class="line">    <span class="comment">/* Deallocate structures used to block on blocking ops. */</span></div><div class="line">    <span class="keyword">if</span> (c-&gt;flags &amp; REDIS_BLOCKED) unblockClient(c);</div><div class="line">    dictRelease(c-&gt;bpop.keys);</div><div class="line"></div><div class="line">    <span class="comment">/* UNWATCH all the keys */</span></div><div class="line">    <span class="comment">// 清空 WATCH 信息</span></div><div class="line">    unwatchAllKeys(c);</div><div class="line">    listRelease(c-&gt;watched_keys);</div><div class="line"></div><div class="line">    <span class="comment">/* Unsubscribe from all the pubsub channels */</span></div><div class="line">    <span class="comment">// 退订所有频道和模式</span></div><div class="line">    pubsubUnsubscribeAllChannels(c,<span class="number">0</span>);</div><div class="line">    pubsubUnsubscribeAllPatterns(c,<span class="number">0</span>);</div><div class="line">    dictRelease(c-&gt;pubsub_channels);</div><div class="line">    listRelease(c-&gt;pubsub_patterns);</div><div class="line"></div><div class="line">    <span class="comment">/* Close socket, unregister events, and remove list of replies and</span></div><div class="line">     * accumulated arguments. */</div><div class="line">    <span class="comment">// 关闭套接字，并从事件处理器中删除该套接字的事件</span></div><div class="line">    <span class="keyword">if</span> (c-&gt;fd != <span class="number">-1</span>) &#123;</div><div class="line">        aeDeleteFileEvent(server.el,c-&gt;fd,AE_READABLE);</div><div class="line">        aeDeleteFileEvent(server.el,c-&gt;fd,AE_WRITABLE);</div><div class="line">        close(c-&gt;fd);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 清空回复缓冲区</span></div><div class="line">    listRelease(c-&gt;reply);</div><div class="line"></div><div class="line">    <span class="comment">// 清空命令参数</span></div><div class="line">    freeClientArgv(c);</div><div class="line"></div><div class="line">    <span class="comment">/* Remove from the list of clients */</span></div><div class="line">    <span class="comment">// 从服务器的客户端链表中删除自身</span></div><div class="line">    <span class="keyword">if</span> (c-&gt;fd != <span class="number">-1</span>) &#123;</div><div class="line">        ln = listSearchKey(server.clients,c);</div><div class="line">        redisAssert(ln != <span class="literal">NULL</span>);</div><div class="line">        listDelNode(server.clients,ln);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 删除客户端的阻塞信息</span></div><div class="line">    <span class="keyword">if</span> (c-&gt;flags &amp; REDIS_UNBLOCKED) &#123;</div><div class="line">        ln = listSearchKey(server.unblocked_clients,c);</div><div class="line">        redisAssert(ln != <span class="literal">NULL</span>);</div><div class="line">        listDelNode(server.unblocked_clients,ln);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    ...</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (c-&gt;name) decrRefCount(c-&gt;name);</div><div class="line">    <span class="comment">// 清除参数空间</span></div><div class="line">    zfree(c-&gt;argv);</div><div class="line">    <span class="comment">// 清除事务状态信息</span></div><div class="line">    freeClientMultiState(c);</div><div class="line">    sdsfree(c-&gt;peerid);</div><div class="line">    <span class="comment">// 释放客户端 redisClient 结构本身</span></div><div class="line">    zfree(c);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="服务器"><a href="#服务器" class="headerlink" title="服务器"></a>服务器</h2>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Redis服务器是典型的一对多服务器程序:一个服务器可以与多个客户端建立网络连接。这篇文章将通过源码看看客户端和服务器的底层数据结构和工作过程&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="源码剖析" scheme="https://www.liuin.cn/categories/%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/"/>
+    
+    
+      <category term="Redis" scheme="https://www.liuin.cn/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>LeetCode总结——字符串相关算法</title>
+    <link href="https://www.liuin.cn/2018/06/18/LeetCode%E6%80%BB%E7%BB%93%E2%80%94%E2%80%94%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95/"/>
+    <id>https://www.liuin.cn/2018/06/18/LeetCode总结——字符串相关算法/</id>
+    <published>2018-06-18T04:37:11.000Z</published>
+    <updated>2018-06-18T04:54:54.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>总结在LeetCode中字符串相关的常用的一些算法</p>
+<a id="more"></a>
+<h2 id="KMP-算法"><a href="#KMP-算法" class="headerlink" title="KMP 算法"></a>KMP 算法</h2><p>KMP算法解决的是两个字符串的匹配问题（一个字符串是不是另外一个字符串的子串）</p>
+<p>暴力法所需要的时间复杂度是O(n*m)，KMP算法能够优化到O(n)。KMP算法的核心是使用一个next数组实现匹配的加速</p>
+<h3 id="next数组"><a href="#next数组" class="headerlink" title="next数组"></a>next数组</h3><p>最长前缀后缀：一个字符串中所有的前缀和其所有的后缀中最长的相等的长度，比如说“abcabc”的最长前缀后缀为”abc”</p>
+<p>给定一个串s的next数组next[]，其每一位next[i]表示串s[0…i-1]中最长前缀后缀</p>
+<p>使用next数据对字符串匹配进行加速：s1中查找是否有子串s2，如果s1[i]匹配到s2[j]的时候不相等，并且此时next[j]=k，此时不需要重新回到s1[1]继续进行匹配，而是用s2[k]继续和s1[i]进行匹配，依次类推</p>
+<p><img src="http://data3.liuin.cn/2018-06-17-15292350043789.jpg" alt=""></p>
+<p>因为next数组是找到了最长前缀后缀的，所以其能够从最长前缀的匹配跳到最长后缀的匹配，因为中间不可能出现匹配的情况，如果出现匹配那么表示当前next计算的不可能是”最长“前缀后缀。</p>
+<h3 id="next数组求法"><a href="#next数组求法" class="headerlink" title="next数组求法"></a>next数组求法</h3><p>规定<code>next[0] = -1</code>， 因为其前面没有字符串；<code>next[1] = 0</code>，因为其前面的字符串中只有一个字符，后面的next值的计算取决于前面的next值：</p>
+<p>判断当前位置的字符和最长前缀的后一个字符是否相等，如果相等则<code>next[i] = next[i-1] + 1</code>，如果不等再判断最长前缀的最长前缀和其相等不相等，如果还不相等就继续找最长前缀，直到最长前缀长度为0的时候表示没有找到，这个时候<code>next[i] = 0</code></p>
+<h3 id="LeetCode-028"><a href="#LeetCode-028" class="headerlink" title="LeetCode 028"></a>LeetCode 028</h3><p><a href="https://leetcode.com/problems/implement-strstr/" target="_blank" rel="external">Implement strStr()</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">strStr</span><span class="params">(<span class="built_in">string</span> s, <span class="built_in">string</span> p)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> len = p.size();</div><div class="line">        <span class="keyword">if</span>(len == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">        <span class="comment">// 生成next数组</span></div><div class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; next(len, <span class="number">0</span>);</div><div class="line">        getNext(next, p);</div><div class="line">        <span class="comment">// 两个数组的遍历指针</span></div><div class="line">        <span class="keyword">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>;</div><div class="line">        <span class="keyword">while</span>(i &lt; s.size() &amp;&amp; j &lt; len)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span>(s[i] == p[j])</div><div class="line">            &#123;</div><div class="line">                i++;</div><div class="line">                j++;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">else</span></div><div class="line">            &#123;</div><div class="line">                <span class="keyword">if</span>(j == <span class="number">0</span>) i++;</div><div class="line">                <span class="comment">// 根据next数组中的信息进行重新指向</span></div><div class="line">                <span class="keyword">else</span> j = next[j];</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> j == len ? i - j : <span class="number">-1</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">getNext</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;next, <span class="built_in">string</span> p)</span></span></div><div class="line">    &#123;</div><div class="line">        next[<span class="number">0</span>] = <span class="number">-1</span>;</div><div class="line">        <span class="comment">// k表示最长前缀后缀的长度</span></div><div class="line">        <span class="keyword">int</span> k = <span class="number">-1</span>, i = <span class="number">0</span>;</div><div class="line">        <span class="comment">// 计算到最后一位</span></div><div class="line">        <span class="keyword">while</span>(i &lt; p.size() - <span class="number">1</span>)</div><div class="line">        &#123;</div><div class="line">            <span class="comment">// 相匹配的时候对next数组赋值</span></div><div class="line">            <span class="keyword">if</span>(k == <span class="number">-1</span> || p[i] == p[k])</div><div class="line">                next[++i] = ++k;</div><div class="line">            <span class="keyword">else</span></div><div class="line">                k = next[k];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h2 id="Manacher-算法"><a href="#Manacher-算法" class="headerlink" title="Manacher 算法"></a>Manacher 算法</h2><p>Manacher 算法解决的是字符串中最长的回文子串的问题</p>
+<p>暴力法（技巧：中间添加辅助字符）解决这个问题的时间复杂度为O(n^2)，Manacher算法能够时间复杂度优化为O(n)</p>
+<h3 id="几个概念"><a href="#几个概念" class="headerlink" title="几个概念"></a>几个概念</h3><ul>
+<li>回文半径数组，以i为中心的的回文的半径长度</li>
+<li>回文右边界，遍历过的回文能够达到的最右的下标</li>
+<li>右边界中心位置，回文右边界对应的回文中心点下标</li>
+</ul>
+<h3 id="算法过程"><a href="#算法过程" class="headerlink" title="算法过程"></a>算法过程</h3><p>和暴力解法一样从左向右扩充判断，有以下几种情况：</p>
+<ol>
+<li>当前位置不在回文右边界里面，暴力扩充</li>
+<li>当前位置在回文右边界里面，其关于右边界中心的对称点的回文区域<strong>在左边界里面</strong>，其回文半径和其对称点一样</li>
+<li>当前位置在回文右边界里面，其关于右边界中心的对称点的回文左区域<strong>超过回文左边界</strong>，其回文半径为r-i</li>
+<li>当前位置在回文右边界里面，其关于右边界中心的对称点的回文左区域<strong>与回文左边界重合（压线）</strong>，其回文半径需要在r-i的基础上往后判断</li>
+</ol>
+<p><img src="http://data3.liuin.cn/2018-06-17-15292498856933.jpg" alt=""></p>
+<h3 id="LeetCode-005"><a href="#LeetCode-005" class="headerlink" title="LeetCode 005"></a>LeetCode 005</h3><p><a href="https://leetcode.com/problems/longest-palindromic-substring/description/" target="_blank" rel="external">Longest Palindromic Substring</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="comment">// Manacher 算法</span></div><div class="line">    <span class="function"><span class="built_in">string</span> <span class="title">longestPalindrome</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</div><div class="line">        <span class="comment">// 添加辅助字符#</span></div><div class="line">        <span class="built_in">string</span> new_s;</div><div class="line">        new_s.push_back(<span class="string">'#'</span>);</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.size(); i++)</div><div class="line">        &#123;</div><div class="line">            new_s.push_back(s[i]);</div><div class="line">            new_s.push_back(<span class="string">'#'</span>);</div><div class="line">        &#125;</div><div class="line">        s = new_s;</div><div class="line">        <span class="keyword">int</span> len = s.size();</div><div class="line">        <span class="keyword">if</span>(len == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">        <span class="comment">// 回文半径数组</span></div><div class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; pArr(len, <span class="number">0</span>);</div><div class="line">        <span class="comment">// C表示回文中心， R表示回文右边界</span></div><div class="line">        <span class="keyword">int</span> C = <span class="number">-1</span>, R = <span class="number">-1</span>;</div><div class="line">        <span class="keyword">int</span> maxv = INT_MIN, maxi = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++)</div><div class="line">        &#123;</div><div class="line">            <span class="comment">// 在回文右边界里面与否的区分</span></div><div class="line">            <span class="comment">// 此时pArr表示的是起码不用验的区域 </span></div><div class="line">            pArr[i] = R &gt; i ? min(pArr[<span class="number">2</span>*C - i], R - i) : <span class="number">1</span>;</div><div class="line">            <span class="comment">// 区域没有越界</span></div><div class="line">            <span class="keyword">while</span>(i + pArr[i] &lt; len &amp;&amp; i - pArr[i] &gt; <span class="number">-1</span>)</div><div class="line">            &#123;</div><div class="line">                <span class="comment">// 情况1+4 扩充</span></div><div class="line">                <span class="keyword">if</span>(s[i + pArr[i]] == s[i - pArr[i]])</div><div class="line">                    pArr[i]++;</div><div class="line">                <span class="comment">// 情况2+3</span></div><div class="line">                <span class="keyword">else</span></div><div class="line">                    <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span>(i + pArr[i] &gt; R)</div><div class="line">            &#123;</div><div class="line">                R = i + pArr[i];</div><div class="line">                C = i;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span>(maxv &lt; pArr[i])</div><div class="line">            &#123;</div><div class="line">                maxv = pArr[i];</div><div class="line">                maxi = i;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="built_in">string</span> res;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = maxi - maxv + <span class="number">1</span>; i &lt;= maxi + maxv - <span class="number">1</span>; i++)</div><div class="line">            <span class="keyword">if</span>(s[i] != <span class="string">'#'</span>) res.push_back(s[i]);</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;总结在LeetCode中字符串相关的常用的一些算法&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="算法" scheme="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="LeetCode" scheme="https://www.liuin.cn/tags/LeetCode/"/>
+    
+  </entry>
+  
+  <entry>
     <title>《大型网站技术架构》 笔记</title>
     <link href="https://www.liuin.cn/2018/06/18/%E3%80%8A%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84%E3%80%8B-%E7%AC%94%E8%AE%B0/"/>
     <id>https://www.liuin.cn/2018/06/18/《大型网站技术架构》-笔记/</id>
     <published>2018-06-18T02:01:58.000Z</published>
-    <updated>2018-06-17T12:47:35.000Z</updated>
+    <updated>2018-06-18T05:56:48.000Z</updated>
     
     <content type="html"><![CDATA[<p>最近用了三天的时间把《大型网站技术架构》看完了，收获颇多。这本书主要讲了一个网站从小到大发展过程在技术架构上的需要注意的地方，这里简短地记录一下我的收获吧。</p>
 <a id="more"></a>
@@ -60,7 +155,7 @@
 </ol>
 <h2 id="导图"><a href="#导图" class="headerlink" title="导图"></a>导图</h2><p>后面的内容比较多，我就整理成思维导图的形式吧</p>
 <p><img src="http://data3.liuin.cn/2018-06-17-15292395484469.jpg" alt=""></p>
-<p>展开的高清大图可以看<a href="">这里</a></p>
+<p>展开的高清大图可以看<a href="https://data2.liuin.cn/2018-060-18-%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84.svg" target="_blank" rel="external">这里</a></p>
 ]]></content>
     
     <summary type="html">
@@ -1958,362 +2053,6 @@
     <summary type="html">
     
       &lt;p&gt;《UNIX环境高级编程》第11章 线程 笔记&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>APUE 进程关系</title>
-    <link href="https://www.liuin.cn/2018/05/01/APUE-%E8%BF%9B%E7%A8%8B%E5%85%B3%E7%B3%BB/"/>
-    <id>https://www.liuin.cn/2018/05/01/APUE-进程关系/</id>
-    <published>2018-05-01T02:55:38.000Z</published>
-    <updated>2018-05-24T11:32:42.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>《UNIX环境高级编程》第9章 进程关系 笔记</p>
-<a id="more"></a>
-<h2 id="终端登录"><a href="#终端登录" class="headerlink" title="终端登录"></a>终端登录</h2><p>我们现在描述的过程用于经由终端登录至UNIX系统。该过程几乎与所使用的终端类型无关,所使用的终端可以是基于字符的终端、仿真基于字符终端的图形终端,或者运行窗口系统的图形终端。</p>
-<ol>
-<li>BSD终端登录</li>
-</ol>
-<p>系统管理者创建通常名为/etc/ttys的文件,其中,每个终端设备都有一行,每一行说明设备名和传到 getty程序的参数。</p>
-<p><img src="https://data2.liuin.cn/2018-05-01-15251450557245.jpg" alt=""></p>
-<p>1ogin能处理多项工作。因为它得到了用户名,所以能调用<code>getpwnam</code>取得相应用户的口令文件登录项。然后调用<code>getpass</code>以显示提示“ Password:”,接着读用户键入的口令(自然,禁止回显用户键入的口令)。它调用 <code>crypt</code>将用户键入的口令加密,并与该用户在阴影口令文件中登录项的<code>pw_passwd</code>字段相比较。如果用户几次键入的口令都无效,则<code>1ogin</code>以参数1调用<code>exit</code>表示登录过程失败。父进程(init)了解到子进程的终止情况后,将再次调用<code>fork</code>,其后又执行了<code>getty</code>,对此终端重复上述过程。</p>
-<p>如果用户正确登录，login就将完成如下工作：</p>
-<ol>
-<li>将当前工作目录更改为该用户的起始目录(chdir)。</li>
-<li>调用chown更改该终端的所有权,使登录用户成为它的所有者。将对该终端设备的访问权限改变成“用户读和写”。</li>
-<li>调用setgid及initgroups设置进程的组ID</li>
-<li>用login得到的所有信息初始化环境:起始目录(HOME)、shell(SHEL)用户名(USER和 LOGNAME)以及一个系统默认路径(PATH)。</li>
-<li>1ogin进程更改为登录用户的用户ID( setuid)并调用该用户的登录 shell</li>
-</ol>
-<p><img src="https://data2.liuin.cn/2018-05-01-15251453247541.jpg" alt=""></p>
-<h2 id="网络登录"><a href="#网络登录" class="headerlink" title="网络登录"></a>网络登录</h2><p>通过串行终端登录至系统和经由网络登录至系统两者之间的主要(物理上的)区别是:网络登录时,在终端和计算机之间的连接不再是点到点的。在网络登录情况下,1ogin仅仅是一种可用的服务,这与其他网络服务(如FIP或SMIP)的性质相同</p>
-<p>为使同一个软件既能处理终端登录,又能处理网络登录,系统使用了一种称为伪终端(pseudo terminal)的软件驱动程序,它仿真串行终端的运行行为,并将终端操作映射为网络操作,反之亦然。</p>
-<ol>
-<li>BSD网络登录</li>
-</ol>
-<p>作为系统启动的一部分,init调用一个shell,,使其执行shell脚本/etc/rc。由此shell脚本启动一个守护进程 inetd。一旦此shell脚本终止, inetd的父进程就变成init。 inetd等待TCP/IP连接请求到达主机,而当一个连接请求到达时,它执行一次fork,然后生成的子进程exec适当的程序。</p>
-<p><img src="https://data2.liuin.cn/2018-05-01-15251533208482.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-05-01-15251534277316.jpg" alt=""></p>
-<p>当通过终端或网络登录时,我们得到一个登录shell,其标准输入、标准输出和标准错误要么连接到一个终端设备,要么连接到一个伪终端设备上。</p>
-<h2 id="进程组"><a href="#进程组" class="headerlink" title="进程组"></a>进程组</h2><p>进程组是一个或多个进程的集合。通常,它们是在同一作业中结合起来的,<strong>同一进程组中的各进程接收来自同一终端的各种信号</strong>。每个进程组有一个唯一的进程组ID。进程组ID类似于进程ID——它是一个正整数,并可存放在pid_t数据类型中。函数 getpgrp返回调用进程的进程组ID。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> getpgrp(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: process group ID of calling process</span></div></pre></td></tr></table></figure>
-<p>getpgid函数返回指定进程所在的进程组ID：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> getpgid(<span class="keyword">pid_t</span> pid);</div><div class="line"></div><div class="line"><span class="comment">// Returns: process group ID if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>每个进程组有一个组长进程。组长进程的进程组ID等于其进程ID。</p>
-<p>进程组组长可以创建一个进程组、创建该组中的进程,然后终止。<strong>只要在某个进程组中有个进程存在,则该进程组就存在,这与其组长进程是否终止无关</strong>。从进程组创建开始到其中最后一个进程离开为止的时间区间称为进程组的生命期。某个进程组中的最后一个进程可以终止,也可以转移到另一个进程组</p>
-<p>进程调用setpgid可以加入一个现有的进程组或者创建一个新进程组</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setpgid</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">pid_t</span> pgid)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>一个进程只能为它自己或它的子进程设置进程组ID。在它的子进程调用了exec后,它就不再更改该子进程的进程组ID</p>
-<h2 id="会话"><a href="#会话" class="headerlink" title="会话"></a>会话</h2><p>会话( session)是一个或多个进程组的集合</p>
-<p><img src="https://data2.liuin.cn/2018-05-01-15251538207763.jpg" alt=""></p>
-<p>通常是由shell管道将几个进程编成一组的。</p>
-<p>进程调用setsid函数建立一个新会话</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> setsid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: process group ID if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>如果调用此函数的进程不是一个进程组的组长,则此函数创建个新会话。具体会发生以下3件事。</p>
-<ol>
-<li>进程变成新会话的会话首进程( session leader,会话首进程是创建该会话的进程)。此时,该进程是新会话中的唯一进程</li>
-<li>该进程成为一个新进程组的组长进程。新进程组ID是该调用进程的进程ID。</li>
-<li>该进程没有控制终端(下一节讨论控制终端)。如果在调用 setid之前该进程有一个控制终端,那么这种联系也被切断。</li>
-</ol>
-<p>如果该调用进程已经是一个进程组的组长,则此函数返回出错。为了保证不处于这种情况,通常先调用fork,然后使其父进程终止,而子进程则继续。因为子进程继承了父进程的进程组ID,而其进程ID则是新分配的,两者不可能相等,这就保证了子进程不是一个进程组的组长</p>
-<p>会话首进程是具有唯一进程ID的单个进程,所以<strong>可以将会话首进程的进程ID视为会话ID</strong></p>
-<p><code>getsid</code>函数返回会话首进程的进程组ID</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> getsid(<span class="keyword">pid_t</span> pid); </div><div class="line"></div><div class="line"><span class="comment">// Returns: session leader’s process group ID if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>如若pid是0, getsid返回调用进程的会话首进程的进程组ID。出于安全方面的考虑些实现有如下限制:如若pid并不属于调用者所在的会话,那么调用进程就不能得到该会话首进程的进程组ID</p>
-<h2 id="控制终端"><a href="#控制终端" class="headerlink" title="控制终端"></a>控制终端</h2><p>会话和进程组还有一些其他特性</p>
-<ul>
-<li>一个会话可以有一个控制终端(controlling terminal)。这通常是终端设备(在终端登录情况下)或伪终端设备(在网络登录情况下)。</li>
-<li>建立与控制终端连接的会话首进程被称为控制进程(controlling process)</li>
-<li>一个会话中的几个进程组可被分成一个前台进程组(foreground process group)以及一个或多个后台进程组(background process group)</li>
-<li>如果一个会话有一个控制终端,则它有一个前台进程组,其他进程组为后台进程组</li>
-<li>无论何时键入终端的中断键(常常是Delete或Ctrl+C),都会将中断信号发送至前台进程组的所有进程。</li>
-<li>无论何时键入终端的退出键(常常是Ctrl+),都会将退出信号发送至前台进程组的所有进程。</li>
-<li>如果终端接口检测到调制解调器(或网络)已经断开连接,则将挂断信号发送至控制进程〔会话首进程)</li>
-</ul>
-<p><img src="https://data2.liuin.cn/2018-05-01-15251544917844.jpg" alt=""></p>
-<p>有时不管标准输入、标准输出是否重定向,程序都要与控制终端交互作用。保证程序能与控制终端对话的方法是open文件/dev/tty。在内核中,此特殊文件是控制终端的同义语。自然地,如果程序没有控制终端,则对于此设备的open将失败。</p>
-<h2 id="函数tcgetpgrp、tcsetpgrp和tcgetsid"><a href="#函数tcgetpgrp、tcsetpgrp和tcgetsid" class="headerlink" title="函数tcgetpgrp、tcsetpgrp和tcgetsid"></a>函数tcgetpgrp、tcsetpgrp和tcgetsid</h2><p>需要有一种方法来通知内核哪一个进程组是前台进程组,这样,终端设备驱动程序就能知道将终端输入和终端产生的信号发送到何处</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> tcgetpgrp(<span class="keyword">int</span> fd); </div><div class="line"></div><div class="line"><span class="comment">// Returns: process group ID of foreground process group if OK, −1 on error </span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcsetpgrp</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">pid_t</span> pgrpid)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>函数tcgetpgrp返回前台进程组ID,它与在fd上打开的终端相关联</p>
-<p>如果进程有一个控制终端,则该进程可以调用 tcsetpgrp将前台进程组ID设置为pergid值应当是在同一会话中的一个进程组的ID。fd必须引用该会话的控制终端。</p>
-<p>给出控制TTY的文件描述符,通过 tcgetsid函数,应用程序就能获得会话首进程的进程组ID</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;termios.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> tcgetsid(<span class="keyword">int</span> fd); </div><div class="line"></div><div class="line"><span class="comment">// Returns: session leader’s process group ID if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<h2 id="作业控制"><a href="#作业控制" class="headerlink" title="作业控制"></a>作业控制</h2><p>作业控制允许<strong>在一个终端上启动多个作业(进程组)</strong>，它控制哪一个作业可以访问该终端以及哪些作业在后台运行。作业控制要求以下3种形式的支持。</p>
-<ol>
-<li>支持作业控制的 shell</li>
-<li>内核中的终端驱动程序必须支持作业控制。</li>
-<li>内核必须提供对某些作业控制信号的支持。</li>
-</ol>
-<p>从 shell使用作业控制功能的角度观察,用户可以在前台或后台启动一个作业。一个作业只是几个进程的集合,通常是一个进程管道。</p>
-<p>当启动一个后台作业时，shell赋予其一个作业标识符，并打印一个或者多个进程ID，如下图所示：</p>
-<p><img src="https://data2.liuin.cn/2018-05-01-15251551733307.jpg" alt=""></p>
-<p>我们可以键入一个影响前台作业的特殊字符—挂起键(通常采用Ctrl+z),与终端驱动程序进行交互作用。键入此字符使终端驱动程序将信号SIGTSTP发送至前台进程组中的所有进程,后台进程组作业则不受影响。实际上有3个特殊字符可使终端驱动程序产生信号,并将它们发送至前台进程组，他们是：</p>
-<ul>
-<li>中断字符(一般采用Delete或Ctrl+C)产生 SIGINT</li>
-<li>退出字符(一般采用Ctrl+)产生 SIGQUIT</li>
-<li>挂起字符(一般采用Ctrl+Z)产生 SIGTSTE。</li>
-</ul>
-<p><img src="https://data2.liuin.cn/2018-05-01-15251552824446.jpg" alt=""></p>
-<p>是否需要作业控制是一个有争议的问题。作业控制是在窗口终端广泛得到应用之前设计和实现的。很多人认为设计得好的窗口系统已经免除了对作业控制的需要。某些人抱怨作业控制的实现要求得到内核、终端驱动程序、 shell以及某些应用程序的支持,是吃力不讨好的事情。</p>
-<h2 id="shell-执行程序"><a href="#shell-执行程序" class="headerlink" title="shell 执行程序"></a>shell 执行程序</h2><p><img src="https://data2.liuin.cn/2018-05-01-15251555962605.jpg" alt=""></p>
-<h2 id="孤儿进程组"><a href="#孤儿进程组" class="headerlink" title="孤儿进程组"></a>孤儿进程组</h2><p>我们曾提及,一个其父进程己终止的进程称为孤儿进程( orphan process),这种进程由init进程“收养”。现在我们要说明整个进程组也可成为“孤儿”,以及POSIX.1如何处理它。</p>
-<p>POSIX.1将孤儿进程组( orphaned process group)定义为:该组中每个成员的父进程要么是该组的一个成员,要么不是该组所属会话的成员。对孤儿进程组的另一种描述可以是:一个进程组不是孤儿进程组的条件是——该组中有一个进程,其父进程在属于同一会话的另一个组中。如果进程组不是孤儿进程组那么在属于同一会话的另一个组中的父进程就有机会重新启动该组中停止的进程。在这里,进程组中每一个进程的父进程(例如,进程6100的父进程是进程1)都属于另一个会话。所以此进程组是孤儿进程组</p>
-<p>父进程终止后,进程组包含一个停止的进程,进程组成为孤儿进程组,POSIX.1要求向新孤儿进程组中处于停止状态的每一个进程发送挂断信号( SIGHUP),接着又向其发送继续信号( SIGCONT)。</p>
-<p>在处理了挂断信号后,子进程继续。对挂断信号的系统默认动作是终止该进程,为此必须提供一个信号处理程序以捕捉该信号。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;《UNIX环境高级编程》第9章 进程关系 笔记&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>APUE 进程控制</title>
-    <link href="https://www.liuin.cn/2018/04/30/APUE-%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6/"/>
-    <id>https://www.liuin.cn/2018/04/30/APUE-进程控制/</id>
-    <published>2018-04-30T08:07:20.000Z</published>
-    <updated>2018-05-24T09:07:25.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>《UNIX环境高级编程》第8章 进程控制 笔记</p>
-<a id="more"></a>
-<h2 id="进程标识"><a href="#进程标识" class="headerlink" title="进程标识"></a>进程标识</h2><p>每个进程都有一个非负整型表示的唯一进程ID。因为进程ID标识符总是唯一的,常将其用作其他标识符的一部分以保证其唯一性。</p>
-<p>虽然是唯一的,但是<strong>进程ID是可复用的</strong>。当一个进程终止后,其进程ID就成为复用的候选者。大多数UNIX系统实现延迟复用算法,使得赋予新建进程的DD不同于最近终止进程所使用的ID。这防止了将新进程误认为是使用同一ID的某个已终止的先前进程。</p>
-<p>系统中有一些专用进程,但具体细节随实现而不同。<strong>ID为0的进程通常是调度进程,常常被称为交换进程</strong>(swapper)。该进程是内核的一部分,它并不执行任何磁盘上的程序,因此也被称为系统进程。</p>
-<p>进程ID为1通常是init进程,在自举过程结束时由内核调用。该进程的程序文件在UNIX的早期版本中是/etc/init,在较新版本中是/sbin/init。此进程负责在自举内核后启动一个UNIX系统。init通常读取与系统有关的初始化文件(/etc/rc*文件或/etc/inittab文件,以及在/etc/init.d中的文件),并将系统引导到一个状态(如多用户)。init进程决不会终止。它是一个普通的用户进程(与交换进程不同,它不是内核中的系统进程),但是它以超级用户特权运行。</p>
-<p>每个UNIX系统实现都有它自己的一套提供操作系统服务的内核进程,例如,在某些UNIX的虚拟存储器实现中,进程ID2是页守护进程( page daemon),此进程负责支持虚拟存储器系统的分页操作。</p>
-<p>返回进程标识符的函数如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> getpid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: process ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> getppid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: parent process ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">uid_t</span> getuid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: real user ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">uid_t</span> geteuid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: effective user ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">gid_t</span> getgid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: real group ID of calling process</span></div><div class="line"></div><div class="line"><span class="keyword">gid_t</span> getegid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: effective group ID of calling process</span></div></pre></td></tr></table></figure>
-<h2 id="函数fork"><a href="#函数fork" class="headerlink" title="函数fork"></a>函数fork</h2><p>一个现有进程调用fork函数创建一个新的进程</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> fork(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 in child, process ID of child in parent, −1 on error</span></div></pre></td></tr></table></figure>
-<p>由fork创建的新进程被称为子进程(child process) fork函数被调用一次,但返回两次。两次返回的区别是子进程的返回值是0,而父进程的返回值则是新建子进程的进程ID。</p>
-<p>将子进程ID返回给父进程的理由是:因为一个进程的子进程可以有多个,<strong>并且没有一个函数使一个进程可以获得其所有子进程的进程ID</strong>。fork使子进程得到返回值0的理由是:一个进程只会有一个父进程,所以子进程总是可以调用 getppid以获得其父进程的进程ID(进程ID0总是由内核交换进程使用,所以一个子进程的进程ID不可能为0)</p>
-<p>子进程和父进程继续执行fork调用之后的指令。子进程是父进程的副本。</p>
-<p>由于在fork之后经常跟随着exec,所以现在的很多实现并不执行一个父进程数据段栈和堆的完全副本。作为替代,使用了<strong>写时复制</strong>( copy-on-write,COW)技术。这些区域由父进程和子进程共享,而且内核将它们的访问权限改变为只读。如果父进程和子进程中的任一个试图修改这些区域,则内核只为修改区域的那块内存制作一个副本,通常是虚拟存储系统中的一“页”。</p>
-<p>一般来说,在fork之后是父进程先执行还是子进程先执行是不确定的,这取决于内核所使用的调度算法。如果要求父进程和子进程之间相互同步,则要求某种形式的进程间通信。</p>
-<blockquote>
-<p>strlen 和 sizeof 的区别</p>
-</blockquote>
-<p>str1en计算不包含终止nul字节的字符串长度,而sizeof则计算包括终止nul字节的缓冲区长度。两者之间的另一个差别是,使用strlen需进行一次函数调用,而对于sizeof而言,因为缓冲区已用已知字符串进行初始化,其长度是固定的,所以 sizeof是在编译时计算缓冲区长度。</p>
-<blockquote>
-<p>文件共享</p>
-</blockquote>
-<p>fork的一个特性是父进程的所有打开文件描述符都被复制到子进程中。我们说“复制”是因为对每个文件描述符来说,就好像执行了dup函数。<strong>父进程和子进程每个相同的打开描述符共享一个文件表项</strong>，因此他们共享的是一个文件偏移量。</p>
-<p><img src="https://data2.liuin.cn/2018-04-30-15250766871953.jpg" alt=""></p>
-<p>如果父进程和子进程写同一描述符指向的文件,但又没有任何形式的同步(如使父进程等待子进程),那么它们的输出就会相互混合(假定所用的描述符是在foxk之前打开的)。</p>
-<p>在fork之后处理文件描述符有以下两种情况：</p>
-<ol>
-<li>父进程等待子进程完成</li>
-<li>父进程和子进程各自执行不同的程序段</li>
-</ol>
-<p>除了打开文件之外,<strong>子进程继承父进程的属性</strong>有：</p>
-<ul>
-<li>实际用户ID、实际组ID、有效用户ID、有效组ID</li>
-<li>附属组ID</li>
-<li>进程组ID</li>
-<li>会话ID</li>
-<li>控制终端</li>
-<li>设置用户ID标志和设置组ID标志</li>
-<li>当前工作目录</li>
-<li>根目录</li>
-<li>文件模式创建屏蔽字</li>
-<li>信号屏蔽和安排</li>
-<li>对任一打开文件描述符的执行时关闭( close-on-exec)标志</li>
-<li>环境</li>
-<li>连接的共享存储段</li>
-<li>存储映像</li>
-<li>资源限制</li>
-</ul>
-<p>父进程和子进程的区别如下：</p>
-<ul>
-<li>fork的返回值不同</li>
-<li>进程ID不同</li>
-<li>这两个进程的父进程ID不同:子进程的父进程ID是创建它的进程的ID,而父进程的父进程ID则不变。</li>
-<li>进程的 tms_utime、 tms_stime、 tms_cutime和tms_ultime的值设置为0</li>
-<li>子进程不继承父进程设置的文件锁</li>
-<li>子进程的未处理闹钟被清除</li>
-<li>子进程的未处理信号集设置为空集</li>
-</ul>
-<p>使fork失败的原因主要有以下几个：</p>
-<ol>
-<li>系统中已经有了太多的进程</li>
-<li>该实际用户ID的进程总数超过了系统限制</li>
-</ol>
-<p>fork有如下两种用法：</p>
-<ol>
-<li>一个父进程希望复制自己,使父进程和子进程同时执行不同的代码段</li>
-<li>一个进程要执行一个不同的程序</li>
-</ol>
-<h2 id="函数vfork"><a href="#函数vfork" class="headerlink" title="函数vfork"></a>函数vfork</h2><p>vfork函数的调用序列和返回值与fork相同,但两者的语义不同</p>
-<p>vfork函数用于创建一个新进程,而该新进程的目的是exec一个新程序。但是它并不将父进程的地址空间完全复制到子进程中,因为子进程会立即调用exec(或exit),于是也就<strong>不会引用该地址空间</strong>。不过在子进程调用exec或exit之前,它在父进程的空间中运行。这种优化工作方式在某些UNIX系统的实现中提高了效率,但如果子进程修改数据(除了用于存放 vfork返回值的变量)、进行函数调用、或者没有调用exec或exit就返回都可能会带来未知的结果。(就像上一节中提及的,实现采用写时复制技术以提高fork之后跟随exec操作的效率,但是不复制比部分复制还是要快一些)</p>
-<p>vfork和fork之间的另一个区别是: <strong>vfork保证子进程先运行,在它调用exec或exit之后父进程才可能被调度运行,当子进程调用这两个函数中的任意一个时,父进程会恢复运行</strong>。</p>
-<h2 id="函数exit"><a href="#函数exit" class="headerlink" title="函数exit"></a>函数exit</h2><p>进程有5种正常终止和3种异常终止的方式，5种正常终止的方式如下：</p>
-<ol>
-<li>从main返回</li>
-<li>调用exit</li>
-<li>调用_exit或_Exit</li>
-<li>最后一个线程从其启动例程返回</li>
-<li>从最后一个线程调用 pthread_exit</li>
-</ol>
-<p>3种异常终止方式：</p>
-<ol>
-<li>调用 abort</li>
-<li>接到一个信号</li>
-<li>最后一个线程对取消请求做出响应</li>
-</ol>
-<p>不管进程如何终止,最后都会执行内核中的同一段代码。这段代码为相应进程<strong>关闭所有打开描述符,释放它所使用的存储器等</strong>。</p>
-<p>对上述任意一种终止情形,我们都希望终止进程能够通知其父进程它是如何终止的。对于3个终止函数(exit、_exit和_Exit),实现这一点的方法是,将其退出状态( exit status)作为参数传送给函数。在异常终止情况,内核(不是进程本身)<strong>产生一个指示其异常终止原因的终止状态</strong>( termination status)。在任意一种情况下,该终止进程的父进程都能用wait或wa1tpid函数(将在下一节说明)取得其终止状态。</p>
-<p>上面说明了子进程将其终止状态返回给其父进程，但是如果父进程在子进程之前终止,又将如何呢?其回答是:<strong>对于父进程已经终止的所有进程,它们的父进程都改变为init进程</strong>。我们称这些进程由init进程收养。其操作过程大致是:在一个进程终止时,内核逐个检查所有活动进程,以判断它是否是正要终止进程的子进程,如果是,则该进程的父进程ID就更改为1(init进程的ID)。这种处理方法保证了每个进程有一个父进程。</p>
-<p>如果子进程在父进程之前终止,那么父进程又如何能在做相应检查时得到子进程的终止状态呢?如果子进程完全消失了,父进程在最终准备好检查子进程是否终止时是无法获取它的终止状态的。内核为每个终止子进程保存了一定量的信息,所以当终止进程的父进程调用wait或 waitpid时,可以得到这些信息。</p>
-<p>在UNIX术语中,一个已经终止、但是其父进程尚未对其进行善后处理(获取终止子进程的有关信息、释放它仍占用的资源)的进程被称为<strong>僵死进程</strong>(zombie)。ps(1)命令将僵死进程的状态打印为Z。如果编写一个长期运行的程序,它fork了很多子进程,那么除非父进程等待取得子进程的终止状态,不然这些子进程终止后就会变成僵死进程</p>
-<p>最后一个要考虑的问题是:一个由init进程收养的进程终止时会发生什么?它会不会变成一个僵死进程?对此问题的回答是“否”,因为init被编写成无论何时只要有一个子进程终止,init就会调用一个wait函数取得其终止状态。这样也就防止了在系统中塞满僵死进程。</p>
-<h2 id="函数wait-和-waitpid"><a href="#函数wait-和-waitpid" class="headerlink" title="函数wait 和 waitpid"></a>函数wait 和 waitpid</h2><p>当一个进程正常或异常终止时,内核就向其父进程发送 SIGCHLD信号。因为子进程终止是个异步事件(这可以在父进程运行的任何时候发生),所以这种信号也是内核向父进程发的异步通知。父进程可以选择忽略该信号,或者提供一个该信号发生时即被调用执行的函数(信号处理程序)。对于这种信号的系统默认动作是忽略它。</p>
-<p>现在我们要知道的是调用wait和waitpid时进程都发生什么：</p>
-<ul>
-<li>如果其所有子进程都还在运行,则阻塞。</li>
-<li>如果一个子进程已终止,正等待父进程获取其终止状态,则取得该子进程的终止状态立即返回</li>
-<li>如果它没有任何子进程,则立即出错返回。</li>
-</ul>
-<p>如果进程由于接收到 SIGCHLD信号而调用wait,我们期望wait会立即返回。但是如果在间点调用wait,则进程可能会阻塞</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> wait(<span class="keyword">int</span> *statloc); </div><div class="line"><span class="keyword">pid_t</span> waitpid(<span class="keyword">pid_t</span> pid, <span class="keyword">int</span> *statloc, <span class="keyword">int</span> options); </div><div class="line"></div><div class="line"><span class="comment">// Both return: process ID if OK, 0 (see later), or −1 on error</span></div></pre></td></tr></table></figure>
-<p>两个函数的区别如下：</p>
-<ul>
-<li>在一个子进程终止前,wait使其调用者阻塞,而 waitpid有一选项,可使调用者不阻塞</li>
-<li>waitpid并不等待在其调用之后的第一个终止子进程,它有若千个选项,可以控制它所等待的进程</li>
-</ul>
-<p>这两个函数的参数statloc是一个整型指针。如果statloc不是一个空指针,则终止进程的终止状态就存放在它所指向的单元内。如果不关心终止状态,则可将该参数指定为空指针</p>
-<p>对于waitpid函数中pid参数的作用解释如下。</p>
-<ul>
-<li>pid == -1  等待任一子进程。此种情况下, waitpid与wait等效</li>
-<li>pid &gt; 0  等待进程ID与pid相等的子进程</li>
-<li>pid == 0  等待组ID等于调用进程组ID的任一子进程。</li>
-<li>pid &lt; -1  等待组ID等于pid绝对值的任一子进程</li>
-</ul>
-<p>waitpid函数返回终止子进程的进程ID,并将该子进程的终止状态存放在由saoc指向的存储单元中。</p>
-<p>options参数可以使我们能够进一步控制waitpid函数的操作</p>
-<p><img src="https://data2.liuin.cn/2018-04-30-15250876888707.jpg" alt=""></p>
-<h2 id="函数waitid"><a href="#函数waitid" class="headerlink" title="函数waitid"></a>函数waitid</h2><p>另一个取得进程终止状态的函数waited,此函数类似于 waitpid,但提供了更多的灵活性。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">waitid</span><span class="params">(<span class="keyword">idtype_t</span> idtype, <span class="keyword">id_t</span> id, <span class="keyword">siginfo_t</span> *infop, <span class="keyword">int</span> options)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>与 waitpid相似, waitid允许一个进程指定要等待的子进程。但它使用两个单独的参数表示要等待的子进程所属的类型,而不是将此与进程DD或进程组ID组合成一个参数。</p>
-<p>idtype参数：</p>
-<p><img src="https://data2.liuin.cn/2018-04-30-15250878149783.jpg" alt=""></p>
-<p>options参数：</p>
-<p><img src="https://data2.liuin.cn/2018-04-30-15250878305949.jpg" alt=""></p>
-<h2 id="函数wait3和wait4"><a href="#函数wait3和wait4" class="headerlink" title="函数wait3和wait4"></a>函数wait3和wait4</h2><p>wait3和wait4提供的功能比上面的函数多一个，该参数允许内核返回由终止进程及其所有子进程使用的资源概况。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt; </span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt; </span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/resource.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> wait3(<span class="keyword">int</span> *statloc, <span class="keyword">int</span> options, <span class="keyword">struct</span> rusage *rusage);</div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> wait4(<span class="keyword">pid_t</span> pid, <span class="keyword">int</span> *statloc, <span class="keyword">int</span> options, <span class="keyword">struct</span> rusage *rusage);</div><div class="line"></div><div class="line"><span class="comment">// Both return: process ID if OK, 0, or −1 on error</span></div></pre></td></tr></table></figure>
-<p>资源统计信息包括用户CPU时间总量、系统CPU时间总量、缺页次数、接收到信号的次数等。</p>
-<h2 id="竞争条件"><a href="#竞争条件" class="headerlink" title="竞争条件"></a>竞争条件</h2><p>当多个进程都企图对共享数据进行某种处理,而最后的结果又取决于进程运行的顺序时,我们认为发生了竞争条件(race condition)。如果在fork之后的某种逻辑显式或隐式地依赖于在fork之后是父进程先运行还是子进程先运行,那么fork函数就会是竞争条件活跃的滋生地</p>
-<p>如果一个进程希望等待一个子进程终止,则它必须调用wait函数中的一个。如果一个进程要等待其父进程终止,则可使用下列形式的循环</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">while</span>(getppid() != <span class="number">1</span>)</div><div class="line">    sleep(<span class="number">1</span>);</div></pre></td></tr></table></figure>
-<p>这种形式的循环称为轮询( polling),它的问题是浪费了CPU时间,因为调用者每隔1s都被唤醒,然后进行条件测试</p>
-<p>为了避免竞争条件和轮询,在多个进程之间需要有某种形式的信号发送和接收的方法。在UNIX中可以使用信号机制。各种形式的进程间通信(IPC)也可使用。</p>
-<h2 id="函数exec"><a href="#函数exec" class="headerlink" title="函数exec"></a>函数exec</h2><p>用fork函数创建新的子进程后,子进程往往要调用一种exec函数以执行另个程序。当进程调用一种exec函数时,该进程执行的程序完全替换为新程序,而新程序则从其main函数开始执行。因为调用exec并不创建新进程,所以前后的进程ID并未改变。<strong>exec只是用磁盘上的一个新程序替换了当前进程的正文段、数据段、堆段和栈段</strong>。</p>
-<p>有7中不同的exec函数可以使用：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">execl</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">const</span> <span class="keyword">char</span> *arg0, ... <span class="comment">/* (char *)0 */</span> )</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">execv</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">char</span> *<span class="keyword">const</span> argv[])</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">execle</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">const</span> <span class="keyword">char</span> *arg0, ...<span class="comment">/* (char *)0, char *const envp[] */</span> )</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">execve</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">char</span> *<span class="keyword">const</span> argv[], <span class="keyword">char</span> *<span class="keyword">const</span> envp[])</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">execlp</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *ﬁlename, <span class="keyword">const</span> <span class="keyword">char</span> *arg0, ... <span class="comment">/* (char *)0 */</span> )</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">execvp</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *ﬁlename, <span class="keyword">char</span> *<span class="keyword">const</span> argv[])</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fexecve</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">char</span> *<span class="keyword">const</span> argv[], <span class="keyword">char</span> *<span class="keyword">const</span> envp[])</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// All seven return: −1 on error, no return on success</span></div></pre></td></tr></table></figure></p>
-<p>这些函数之间的第一个区别是前4个函数取路径名作为参数,后两个函数则取文件名作为参数,最后一个取文件描述符作为参数。</p>
-<p>第二个区别与参数表的传递有关(1表示列表list,v表示矢量vector)。函数exec1、exec1p和 execle要求将新程序的每个命令行参数都说明为一个单独的参数。这种参数表以空指针结尾。对于另外4个函数( execv、 execvp、execve和 fexecve),则应先构造一个指向各参数的指针数组,然后将该数组地址作为这4个函数的参数。</p>
-<p>最后一个区别与向新程序传递环境表相关。以e结尾的3个函数(eXec1e、 execve和 fexecve)可以传递一个指向环境字符串指针数组的指针。其他4个函数则使用调用进程中的 environ变量为新程序复制现有的环境</p>
-<p><img src="https://data2.liuin.cn/2018-04-30-15251006856272.jpg" alt=""></p>
-<p>前面曾提及,在执行exec后,进程ID没有改变。但新程序从调用进程继承了的下列属性:</p>
-<ul>
-<li>进程ID和父进程ID</li>
-<li>实际用户ID和实际组ID</li>
-<li>附属组ID</li>
-<li>进程组ID</li>
-<li>会话ID</li>
-<li>控制终端</li>
-<li>闹钟尚余留的时间</li>
-<li>当前工作目录</li>
-<li>根目录</li>
-<li>文件模式创建屏蔽字</li>
-<li>文件锁</li>
-<li>进程信号屏蔽</li>
-<li>未处理信号</li>
-<li>资源限制</li>
-<li>nice值</li>
-<li>tms_utime、tms_stime、tms_cutime以及tms_ctime值</li>
-</ul>
-<p>在很多UNIX实现中,这7个函数中只有<code>execve</code>是内核的系统调用。另外6个只是库函数它们最终都要调用该系统调用。</p>
-<p><img src="https://data2.liuin.cn/2018-04-30-15251008959267.jpg" alt=""></p>
-<h2 id="更改用户ID和更改组ID"><a href="#更改用户ID和更改组ID" class="headerlink" title="更改用户ID和更改组ID"></a>更改用户ID和更改组ID</h2><p>在UNIX系统中,特权(如能改变当前日期的表示法)以及访问控制(如熊否读、写一个特定文件),是基于用户ID和组ID的。当程序需要增加特权,或需要访问当前并不允许访问的资源时,我们需要更换自己的用户ID或组ID,使得新ID具有合适的特权或访问权限。与此类似当程序需要降低其特权或阻止对某些资源的访问时,也需要更换用户ID或组ID,新ID不具有相应特权或访问这些资源的能力</p>
-<p>在设计应用时,我们总是试图使用<strong>最小特权( least privilege)模型</strong>。依照此模型我们的程序应当只具有为完成给定任务所需的最小特权。这降低了由恶意用户试图哄骗我们的程序以未预料的方式使用特权造成的安全性风险</p>
-<p>设置用户ID和组ID的函数如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setuid</span><span class="params">(<span class="keyword">uid_t</span> uid)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setgid</span><span class="params">(<span class="keyword">gid_t</span> gid)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>使用时注意如下：</p>
-<ul>
-<li>若进程具有超级用户特权,则 setuid函数将实际用户ID、有效用户ID以及保存的设置用户ID设置为uid</li>
-<li>若进程没有超级用户特权,但是uid等于实际用户ID或保存的设置用户ID,则 setid只将有效用户ID设置为uid。不更改实际用户ID和保存的设置用户ID</li>
-<li>如果上面两个条件都不满足,则 errno设置为 EPERM,并返回-1</li>
-</ul>
-<p>关于内核所维护的3个ID，需要注意的事项如下：</p>
-<ul>
-<li>只有超级用户才可以更改实际用户ID，通常,实际用户ID是在用户登录时,由1ogin(1)程序设置的,而且决不会改变它。</li>
-<li>仅当对程序文件设置了设置用户ID位时,exec函数才设置有效用户ID</li>
-<li>保存的设置用户ID是由exec复制有效用户ID而得到的</li>
-</ul>
-<p><img src="https://data2.liuin.cn/2018-04-30-15251013810789.jpg" alt=""></p>
-<ol>
-<li>函数setreuid和setregid</li>
-</ol>
-<p>其功能是交换实际用户ID和有效用户ID的值。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setreuid</span><span class="params">(<span class="keyword">uid_t</span> ruid, <span class="keyword">uid_t</span> euid)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setregid</span><span class="params">(<span class="keyword">gid_t</span> rgid, <span class="keyword">gid_t</span> egid)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<ol>
-<li>函数seteuid和setegid</li>
-</ol>
-<p>它们类似于 setuid和 setgid,但只更改有效用户ID和有效组ID</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">seteuid</span><span class="params">(<span class="keyword">uid_t</span> uid)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setegid</span><span class="params">(<span class="keyword">gid_t</span> gid)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>各个函数之间的区别</p>
-<p><img src="https://data2.liuin.cn/2018-04-30-15251015827722.jpg" alt=""></p>
-<h2 id="解释器文件"><a href="#解释器文件" class="headerlink" title="解释器文件"></a>解释器文件</h2><p>所有现今的UNIX系统都支持解释器文件(interpreter file)。这种文件是文本文件,其起始行的形式是：</p>
-<p><code>#! pathname [optional-argument]</code></p>
-<p>最常见的如下：</p>
-<p><code>#! /bin/sh</code></p>
-<p>对这种文件的识别是由内核作为exec系统调用处理的一部分来完成的。内核使调用exec函数的进程<strong>实际执行的并不是该解释器文件,而是在该解释器文件第一行中 pathname所指定的文件</strong>。一定要将解释器文件(文本文件,它以#!开头)和解释器(由该解释器文件第一行中的 pathname指定)区分开来</p>
-<p>当内核exec解释器(/home/sar/bin/echoarg)时,argv[0]是该解释器的 pathname,argv[1]是解释器文件中的可选参数</p>
-<h2 id="函数system"><a href="#函数system" class="headerlink" title="函数system"></a>函数system</h2><p>ISO C定义了system函数,但是其操作对系统的依赖性很强</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">system</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *cmdstring)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: (see below)</span></div></pre></td></tr></table></figure>
-<p>如果 cmdstring是一个空指针,则仅当命令处理程序可用时, system返回非0值,这一特征可以确定在一个给定的操作系统上是否支持 system函数。在UNIX中, system总是可用的。</p>
-<p>因为 system在其实现中调用了fork、exec和 waitpid,因此有3种返回值<br>(1)fork失败或者 waitpid返回除 EINTR之外的出错,则 system返回-1,并且设置errno以指示错误类型。<br>(2)如果 exec失败(表示不能执行shel1),则其返回值如同 shell执行了exit(127)一样<br>(3)否则所有3个函数(fork、exec和 waitpid)都成功,那么 system的返回值是 shell的终止状态,其格式已在 waitpid中说明。</p>
-<p>使用 system而不是直接使用fork和exec的优点是: system进行了所需的各种出错处理以及各种信号处理</p>
-<h2 id="进程会计"><a href="#进程会计" class="headerlink" title="进程会计"></a>进程会计</h2><p>大多数UNIX系统提供了一个选项以进行进程会计( process accounting)处理。启用该选项后,每当进程结束时内核就写一个会计记录。典型的会计记录包含总量较小的二进制数据,一般包括<strong>命令名、所使用的CPU时间总量、用户ID和组ID、启动时间</strong>等。</p>
-<p>一个至今没有说明的函数(acct)启用和禁用进程会计。唯一使用这一函数的是<code>accton(8)</code>命令(这是在几种平台上都类似的少数几条命令中的一条)。超级用户执行一个带路径名参数的accton命令启用会计处理。会计记录写到指定的文件中</p>
-<p>会计记录结构定义在头文件<sys acct.h="">中，每个系统都有不同，但是基本样式如下：</sys></p>
-<p><img src="https://data2.liuin.cn/2018-05-01-15251417041152.jpg" alt=""></p>
-<p>会计记录所需的各个数据(各CPU时间、传输的字符数等)都由内核保存在进程表中,并在个新进程被创建时初始化(如fork之后在子进程中)。进程终止时写一个会计记录。</p>
-<p>这产生两个后果:</p>
-<p>第一,我们不能获取永远不终止的进程的会计记录。像init这样的进程在系统生命周期中直在运行,并不产生会计记录。这也同样适合于内核守护进程,它们通常不会终止<br>第二,在会计文件中记录的顺序对应于进程终止的顺序,而不是它们启动的顺序。</p>
-<h2 id="用户标识"><a href="#用户标识" class="headerlink" title="用户标识"></a>用户标识</h2><p>任一进程都可以得到其实际用户ID和有效用户ID及组ID。但是,我们有时希望找到运行该程序用户的登录名。</p>
-<p>系统通常记录用户登录时使用的名字(见68节),用get1ogin函数可以获取此登录名。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">getlogin</span><span class="params">(<span class="keyword">void</span>)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to string giving login name if OK, NULL on error</span></div></pre></td></tr></table></figure>
-<p>如果调用此函数的进程没有连接到用户登录时所用的终端,则函数会失败。通常称这些进程为守护进程(daemon)</p>
-<h2 id="进程调度"><a href="#进程调度" class="headerlink" title="进程调度"></a>进程调度</h2><p>UNIX系统历史上对进程提供的只是基于调度优先级的粗粒度的控制。调度策略和调度优先级是由内核确定的。<strong>进程可以通过调整nice值选择以更低优先级运行</strong>(通过调整nice值降低它对CPU的占有,因此该进程是“友好的”)。只有特权进程允许提高调度权限</p>
-<p>Single UNIX Specification中nice值的范围在0~(2*NZERO)-1之间,有些实现支持0~2*NERO。nice值越小,优先级越高。虽然这看起来有点倒退,但实际上是有道理的:你越友好,你的调度优先级就越低。 NERO是系统默认的nice值。</p>
-<p>进程可以通过nice函数获取或更改它的nice值。使用这个函数,进程只能影响自己的nce值,不能影响任何其他进程的nice值</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">nice</span><span class="params">(<span class="keyword">int</span> incr)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: new nice value − NZERO if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>getpriority函数可以像nice函数那样用于获取进程的nice值,但是 getpriority还可以获取一组相关进程的nice值。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/resource.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getpriority</span><span class="params">(<span class="keyword">int</span> which, <span class="keyword">id_t</span> who)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: nice value between −NZERO and NZERO−1 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>setpriority函数可用于为进程、进程组和属于特定用户ID的所有进程设置优先级</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/resource.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setpriority</span><span class="params">(<span class="keyword">int</span> which, <span class="keyword">id_t</span> who, <span class="keyword">int</span> value)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<h2 id="进程时间"><a href="#进程时间" class="headerlink" title="进程时间"></a>进程时间</h2><p>我们可以度量的3个时间:墙上时钟时间、用户CPU时间和系统CPU时间。任一进程都可调用 times函数获得它自己以及已终止子进程的土述值。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/times.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">clock_t</span> times(<span class="keyword">struct</span> tms *buf );</div><div class="line"></div><div class="line"><span class="comment">// Returns: elapsed wall clock time in clock ticks if OK, −1 on error</span></div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;《UNIX环境高级编程》第8章 进程控制 笔记&lt;/p&gt;
     
     </summary>
     
