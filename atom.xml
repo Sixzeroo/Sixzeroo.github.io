@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-06-24T07:42:03.000Z</updated>
+  <updated>2018-08-30T15:07:45.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,43 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>LeetCode总结——Minimax算法</title>
+    <link href="https://www.liuin.cn/2018/06/30/LeetCode%E6%80%BB%E7%BB%93%E2%80%94%E2%80%94Minimax%E7%AE%97%E6%B3%95/"/>
+    <id>https://www.liuin.cn/2018/06/30/LeetCode总结——Minimax算法/</id>
+    <published>2018-06-30T14:23:56.000Z</published>
+    <updated>2018-08-30T15:07:45.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>总结在解决博弈问题中会用到的一个算法——Minimax算法</p>
+<a id="more"></a>
+<h2 id="什么是Minimax算法"><a href="#什么是Minimax算法" class="headerlink" title="什么是Minimax算法"></a>什么是Minimax算法</h2><p>什么是Minimax，它是用在决策轮、博弈论和概率论中的一条决策规则。它被用来最小化最坏情况下的可能损失。“最坏”情况是对手带来的最坏情况，“最小”是我要执行的一个最优策略的目标。</p>
+<p>实际使用中一般，DFS来遍历当前局势以后所有可能的结果，通过『最大化』自己和『最小化』对手的方法获取下一步的动作。</p>
+<h2 id="LeetCode-486"><a href="#LeetCode-486" class="headerlink" title="LeetCode 486"></a>LeetCode 486</h2><p>给定一个数组，双方轮流从数组的两边取出一个数，判断最后谁取的数多。</p>
+<p>这是一个博弈问题，站在我的角度一定是要使自己的收益最大，但是站在对方的角度一定是要使我的收益最小。此时我们可以用f[i][j]表示我方在i~j这个数组下的收益，s[i][j]表示对方从两边拿了一个数以后我方的收益。此时不难得出状态转移方程：<code>f[i][j] = max(nums[i] + s[i+1][j], nums[j] + s[i][j-1])</code> 和 <code>min(f[i+1][j], f[i][j-1])</code> </p>
+<p>代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="comment">// Minimax 算法</span></div><div class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">PredictTheWinner</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> len = nums.size();</div><div class="line">        <span class="keyword">if</span>(len == <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &gt; f(len, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(len, <span class="number">0</span>)), s(len, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(len, <span class="number">0</span>));</div><div class="line">        <span class="keyword">int</span> sum = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i : nums) sum += i;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; len; j++)</div><div class="line">        &#123;</div><div class="line">            f[j][j] = nums[j];</div><div class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i = j<span class="number">-1</span>; i &gt;= <span class="number">0</span>; i--)</div><div class="line">            &#123;</div><div class="line">                f[i][j] = max(nums[i] + s[i+<span class="number">1</span>][j], nums[j] + s[i][j<span class="number">-1</span>]);</div><div class="line">                s[i][j] = min(f[i+<span class="number">1</span>][j], f[i][j<span class="number">-1</span>]);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> f[<span class="number">0</span>][len<span class="number">-1</span>] &gt;= (sum+<span class="number">1</span>)/<span class="number">2</span>;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<h2 id="LeetCode-375"><a href="#LeetCode-375" class="headerlink" title="LeetCode 375"></a>LeetCode 375</h2><p>题意：某人从1~n中选一个数k，你每次给出一个数x，他会告诉你x与n的关系(大于，小于或等于)，每次询问你都需要花费x的代价，问你至少需要花费多少钱才能保证查找到k是多少。</p>
+<p>一道比较典型的Minimax题目，最小化最大值，当确定中间的一个数x的时候，为了保证找到k一定是选取两边的代价中最大的。但是你可以选取这个x时，你可以选取一个代价最小的x。dp[i][j]表示从i到j猜出值所需要的代价，这时我们可以得到状态转移方程：<code>dp[i][j] = min(x + max(dp[i][k-1], dp[k+1][j]) ) {i &lt;= k &lt;= j}</code></p>
+<p>代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="comment">// Minimax算法，dp思路</span></div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getMoneyAmount</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</div><div class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &gt; dp(n + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(n + <span class="number">1</span>, INT_MAX));</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= n; i++)</div><div class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= n; j++)</div><div class="line">            &#123;</div><div class="line">                <span class="keyword">if</span>(i == j) dp[i][j] = <span class="number">0</span>;</div><div class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (i &gt; j) dp[i][j] = <span class="number">0</span>;</div><div class="line">            &#125;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++)</div><div class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= n-i; j++)</div><div class="line">            &#123;</div><div class="line">                <span class="keyword">int</span> tem = INT_MAX;</div><div class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> k = j; k &lt;= j+i; k++)</div><div class="line">                &#123;</div><div class="line">                    <span class="keyword">if</span>(k == <span class="number">0</span>)</div><div class="line">                        tem = min(tem, k + dp[k+<span class="number">1</span>][j+i]);</div><div class="line">                    <span class="keyword">else</span> <span class="keyword">if</span>(k == n)</div><div class="line">                        tem = min(tem, k + dp[j][k<span class="number">-1</span>]);</div><div class="line">                    <span class="keyword">else</span></div><div class="line">                        tem = min(tem, k + max(dp[j][k<span class="number">-1</span>], dp[k+<span class="number">1</span>][j+i]));</div><div class="line">                &#125;</div><div class="line">                dp[j][j+i] = tem;</div><div class="line">            &#125;</div><div class="line">        <span class="keyword">return</span> dp[<span class="number">0</span>][n];</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<h2 id="LeetCode-464"><a href="#LeetCode-464" class="headerlink" title="LeetCode 464"></a>LeetCode 464</h2><p>题意：给定两个数m和target，两人依次从1到m的m个数中取出一个数，当轮到的人取出一个数以后使得所有取出的数不小于target这个人就获胜了，判断第一个取的能不能取得游戏的胜利</p>
+<p>按照Minimax的思路，当我方作出决策的时候一定作出的是最我方损失最小的决策。当我方所在一个状态数组（1到m中各个数的取出状态数组）和一个target的时候，这个时候我们要做的是从这个状态数组中标记一个数为拿出状态，使得其大于target或者使得轮到对方决策后一定是输。</p>
+<p>这里比较棘手的就是这个状态数组了，但是题目给了一个条件，m的值不会超过20个，这个时候我们就可以做一个状态压缩——用status一个数表示整个状态数组：那么这个时候我们就可以得到状态转移方程：<code>dp[n][status] = ((1 &lt;&lt; x) &amp; status) == 0 &amp;&amp; (x &gt;= n || dp[n-x][status | (1 &lt;&lt; x)])</code>，其中<code>((1 &lt;&lt; x) &amp; status)</code>表示当前选择的数x是否被选择过；<code>status | (1 &lt;&lt; x)</code>表示选择了x以后的状态数组的状态</p>
+<p>虽然得到状态转移方程，但是我们不好通过遍历求解，这个时候就可以将动态规划“退化”成递归加上状态记录。这里dp按理说是一个二维数组，但是status和n是有关系的，n表示的是总数减去其取出的数。这里使用map来表示这个dp数组，因为能够表示出三种状态：没有访问过、true、false</p>
+<p>代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">private</span>:</div><div class="line">    <span class="keyword">int</span> n;</div><div class="line">    <span class="built_in">map</span>&lt;<span class="keyword">int</span>, <span class="keyword">bool</span>&gt; dp;</div><div class="line">    </div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="comment">// Minimax算法思想，最小化对手的收益</span></div><div class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">canIWin</span><span class="params">(<span class="keyword">int</span> maxChoosableInteger, <span class="keyword">int</span> desiredTotal)</span> </span>&#123;</div><div class="line">        n = maxChoosableInteger;</div><div class="line">        <span class="keyword">if</span>(n &gt;= desiredTotal) <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">        <span class="keyword">if</span>((<span class="number">1</span> + n) * n / <span class="number">2</span> &lt; desiredTotal) <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">        <span class="keyword">return</span> solute(desiredTotal, <span class="number">0</span>);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 因为status和nowNum是有关联关系的，所以map中需要一个</span></div><div class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">solute</span><span class="params">(<span class="keyword">int</span> nowNum, <span class="keyword">int</span> status)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span>(dp.find(status) != dp.end()) <span class="keyword">return</span> dp[status];</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">int</span> tem = (<span class="number">1</span> &lt;&lt; i);</div><div class="line">            <span class="keyword">if</span>((tem &amp; status) == <span class="number">0</span> &amp;&amp; (i &gt;= nowNum || !solute(nowNum - i, tem | status)))</div><div class="line">            &#123;</div><div class="line">                dp[status] = <span class="literal">true</span>;</div><div class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        dp[status] = <span class="literal">false</span>;</div><div class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;总结在解决博弈问题中会用到的一个算法——Minimax算法&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="算法" scheme="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="LeetCode" scheme="https://www.liuin.cn/tags/LeetCode/"/>
+    
+  </entry>
   
   <entry>
     <title>推荐两个终端代理工具：ProxyChains 和 Proxifier</title>
@@ -1867,73 +1904,6 @@
     <summary type="html">
     
       &lt;p&gt;《UNIX环境高级编程》第14章 高级I/O 笔记&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>APUE 守护进程</title>
-    <link href="https://www.liuin.cn/2018/05/04/APUE-%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/"/>
-    <id>https://www.liuin.cn/2018/05/04/APUE-守护进程/</id>
-    <published>2018-05-04T01:06:24.000Z</published>
-    <updated>2018-05-04T01:35:02.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>《UNIX环境高级编程》第13章 守护进程 笔记</p>
-<a id="more"></a>
-<p>守护进程(daemon)是生存期长的一种进程。它们常常在系统引导装入时启动,仅在系统关闭时才终止。因为它们没有控制终端,所以说它们是在后台运行的。UNIX系统有很多守护进程,它们执行日常事务活动。</p>
-<h2 id="守护进程的特征"><a href="#守护进程的特征" class="headerlink" title="守护进程的特征"></a>守护进程的特征</h2><p>系统进程依赖于操作系统实现。父进程ID为0的各进程通常是内核进程,它们作为系统引导装入过程的一部分而启动。(init是个例外,它是一个由内核在引导装入时启动的用户层次的命令。)内核进程是特殊的,通常存在于系统的整个生命期中。它们以超级用户特权运行,无控制终端,无命令行。</p>
-<p>对于需要在进程上下文执行工作但却不被用户层进程上下文调用的每一个内核组件,通常有它自己的内核守护进程。例如,在Linux中</p>
-<ul>
-<li><code>kswapd</code>守护进程也称为内存换页守护进程。它支持虚拟内存子系统在经过一段时间后将脏页面慢慢地写回磁盘来回收这些页面</li>
-<li><code>f1ush</code>守护进程在可用内存达到设置的最小阅值时将脏页面冲洗至磁盘。它也定期地将脏页面冲洗回磁盘来减少在系统出现故障时发生的数据丢失。多个冲洗守护进程可以同时存在,每个写回的设备都有一个冲洗守护进程。</li>
-<li><code>sync_supers</code>守护进程定期将文件系统元数据冲洗至磁盘。</li>
-<li><code>jbd</code>守护进程帮助实现了ext4文件系统中的日志功能。</li>
-<li><code>cron</code>守护进程在定期安排的日期和时间执行命令。许多系统管理任务是通过<code>cron</code>每隔一段固定的时间就运行相关程序而得以实现的。</li>
-<li><code>atd</code>守护进程与cron类似,它允许用户在指定的时间执行任务,但是每个任务它只执行一次,而非在定期安排的时间反复执行。</li>
-<li><code>cupsa</code>守护进程是个打印假脱机进程,它处理对系统提出的各个打印请求。</li>
-<li><code>sshd</code>守护进程提供了安全的远程登录和执行设施注意,大多数守护进程都以超级用户(root)特权运行。所有的守护进程都没有控制终端其终端名设置为问号。</li>
-</ul>
-<p>内核守护进程以无控制终端方式启动。用户层守护进程缺少控制终端可能是守护进程调用了 setid的结果。</p>
-<h2 id="编程规则"><a href="#编程规则" class="headerlink" title="编程规则"></a>编程规则</h2><p>在编写守护进程程序时需遵循一些基本规则,以防止产生不必要的交互作用。下面先说明这些规则,</p>
-<ol>
-<li>首先要做的是调用<code>umask</code>将文件模式创建屏蔽字设置为一个已知值(通常是0)。由继承得来的文件模式创建屏蔽字可能会被设置为拒绝某些权限。如果守护进程要创建文件,那么它可能要设置特定的权限。</li>
-<li>调用fork,然后使父进程exit。这样做实现了下面几点。第一,如果该守护进程是作为一条简单的shell命令启动的,那么父进程终止会让shell认为这条命令已经执行完毕。第二,虽然子进程继承了父进程的进程组ID,但获得了一个新的进程ID,这就保证了子进程不是一个进程组的组长进程。这是下面将要进行的setid调用的先决条件。</li>
-<li>调用setid创建一个新会话，执行3步：成为新会话的首进程、成为新进程组的组长进程、没有控制终端</li>
-<li>将当前工作目录更改为根目录</li>
-<li>关闭不再需要的文件描述符</li>
-<li>某些守护进程打开<code>/dev/null</code>使其具有文件描述符0、1和2,这样,任何一个试图读标准输入、写标准输出或标准错误的库例程都不会产生任何效果。因为守护进程并不与终端设备相关联所以其输出无处显示,也无处从交互式用户那里接收输入。</li>
-</ol>
-<h2 id="出错记录"><a href="#出错记录" class="headerlink" title="出错记录"></a>出错记录</h2><p>守护进程存在的一个问题是如何处理出错消息。因为它本就不应该有控制终端,所以不能只是简单地写到标准错误上。我们不希望所有守护进程都写到控制台设备上,因为在很多工作站上控制台设备都运行着一个窗口系统。我们也不希望每个守护进程将它自己的出错消息写到一个单独的文件中。对任何一个系统管理人员而言,如果要关心哪一个守护进程写到哪一个记录文件中并定期地检查这些文件,那么一定会使他感到头痛。所以,需要有一个集中的守护进程出错记录设施。</p>
-<p>BSD的<code>sys1og</code>设施得到了广泛的应用。大多数守护进程都使用这一设施</p>
-<p>有下面3种产生日志消息的方法：</p>
-<ol>
-<li>内核例程可以调用log函数</li>
-<li>大多数用户进程(守护进程)调用sys1og(3)函数来产生日志消息</li>
-<li>无论一个用户进程是在此主机上,还是在通过TCP/IP网络连接到此主机的其他主机上,都可将日志消息发向UDP端口514。</li>
-</ol>
-<p><img src="https://data2.liuin.cn/2018-05-04-15253968653919.jpg" alt=""></p>
-<p>通常, syslogd守护进程读取所有3种格式的日志消息。此守护进程在启动时读一个配置文件,其文件名一般为<code>/etc/sys1og.conf</code>,该文件决定了不同种类的消息应送向何处。例如,紧急消息可发送至系统管理员(若已登录),并在控制台上打印,而警告消息则可记录到一个文件中。</p>
-<p>该设施的接口是：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;syslog.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">openlog</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *ident, <span class="keyword">int</span> option, <span class="keyword">int</span> facility)</span></span>; </div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">syslog</span><span class="params">(<span class="keyword">int</span> priority, <span class="keyword">const</span> <span class="keyword">char</span> *format, ...)</span></span>; </div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">closelog</span><span class="params">(<span class="keyword">void</span>)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setlogmask</span><span class="params">(<span class="keyword">int</span> maskpri)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: previous log priority mask value</span></div></pre></td></tr></table></figure></p>
-<h2 id="单实例守护进程"><a href="#单实例守护进程" class="headerlink" title="单实例守护进程"></a>单实例守护进程</h2><p>为了正常运作,某些守护进程会实现为,在任一时刻只运行该守护进程的一个副本。例如,这种守护进程可能需要排它地访问一个设备。对cron守护进程而言,如果同时有多个实例运行,那么每个副本都可能试图开始某个预定的操作,于是造成该操作的重复执行,这很可能导致出错。</p>
-<p>文件和记录锁机制为一种方法提供了基础,该方法保证一个守护进程只有一个副本在运行。</p>
-<h2 id="守护进程的惯例"><a href="#守护进程的惯例" class="headerlink" title="守护进程的惯例"></a>守护进程的惯例</h2><p>在UNIX系统中,守护进程遵循下列通用惯例：</p>
-<ol>
-<li>若守护进程使用锁文件,那么该文件通常存储在<code>/var/run</code>目录中</li>
-<li>若守护进程支持配置选项,那么配置文件通常存放在<code>/etc</code>目录中</li>
-<li>守护进程可用命令行启动,但通常它们是由系统初始化脚本之一(<code>/etc/rc*</code>或<code>etc/init.d/*</code>)启动的。如果在守护进程终止时,应当自动地重新启动它,则我们可在<code>/etc/inittab</code>中为该守护进程包括 respawn记录项,这样,init就将重新启动该守护进程。</li>
-<li>若一个守护进程有一个配置文件,那么当该守护进程启动时会读该文件,但在此之后般就不会再查看它。若某个管理员更改了配置文件,那么该守护进程可能需要被停止,然后再启动,以使配置文件的更改生效。</li>
-</ol>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;《UNIX环境高级编程》第13章 守护进程 笔记&lt;/p&gt;
     
     </summary>
     
