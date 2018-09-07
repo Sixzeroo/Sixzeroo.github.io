@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-08-30T15:19:15.000Z</updated>
+  <updated>2018-09-07T15:06:34.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,149 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>LeetCode总结——和为定值</title>
+    <link href="https://www.liuin.cn/2018/07/16/LeetCode%E6%80%BB%E7%BB%93%E2%80%94%E2%80%94%E5%92%8C%E4%B8%BA%E5%AE%9A%E5%80%BC/"/>
+    <id>https://www.liuin.cn/2018/07/16/LeetCode总结——和为定值/</id>
+    <published>2018-07-16T09:48:48.000Z</published>
+    <updated>2018-09-07T15:06:34.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>总结在LeetCode中遇到的和为定值的一系列题目</p>
+<a id="more"></a>
+<p>在数组中碰到数组和为定值的大致可以分为这两类，一类是这些数不连续，从两个数和为定值到多个数和为定值，最后升级到动态规划的多重部分和问题；另一类是数必须是连续的子数组问题</p>
+<h2 id="两个数和为定值"><a href="#两个数和为定值" class="headerlink" title="两个数和为定值"></a>两个数和为定值</h2><p>这类题应该是最常见的题型了，常见的有两种方法：</p>
+<ol>
+<li>Hash，对每个a[i]，通过hash表快速判断出target-a[i]是否在数列中，这种方法不管数组是有序的还是无序的时间复杂度都是O(n)</li>
+<li>双指针，用两个指针i，j分别指向数组的两端，依次判断<code>a[i] + a[j]</code>与target的大小情况，大于target则j–，小于target则i++，如果数组是有序时间复杂度为O(n)，如果数组不是有序的时间复杂度为O(nlogn)</li>
+</ol>
+<h3 id="LeetCode-1"><a href="#LeetCode-1" class="headerlink" title="LeetCode 1"></a>LeetCode 1</h3><p>题意</p>
+<p>给定有序的一个数组，求其中两个数的和刚好为定值target，返回这两个数的索引值</p>
+<p>代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; twoSum(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> target) &#123;</div><div class="line">        <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; m;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.size(); ++i) &#123;</div><div class="line">            <span class="keyword">if</span> (m.count(target - nums[i])) &#123;</div><div class="line">                <span class="keyword">return</span> &#123;i, m[target - nums[i]]&#125;;</div><div class="line">            &#125;</div><div class="line">            m[nums[i]] = i;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> &#123;&#125;;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<h2 id="多个数和为定值"><a href="#多个数和为定值" class="headerlink" title="多个数和为定值"></a>多个数和为定值</h2><p>对于求解数组中m个数的和为定值的问题，枚举最开始的一个数都可以转换为m-1个数和为定值的问题，其最优的时间复杂度为O(n^m)。因为m如果大于2，排序的开销就不算在里面了，所以采用双指针的方法更加简单</p>
+<h3 id="LeetCode-3"><a href="#LeetCode-3" class="headerlink" title="LeetCode 3"></a>LeetCode 3</h3><p>题意：</p>
+<p>求数组中3个数的和为定值的这个3个数的索引值</p>
+<p>代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; threeSum(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums) &#123;</div><div class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; res;</div><div class="line">        </div><div class="line">        sort(nums.begin(),nums.end());</div><div class="line">        </div><div class="line">        <span class="keyword">int</span> len = nums.size();</div><div class="line">        </div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;len;i++)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span>(i==<span class="number">0</span> || nums[i]!=nums[i<span class="number">-1</span>]) <span class="comment">// 去重</span></div><div class="line">            &#123;</div><div class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> j=i+<span class="number">1</span>,k=len<span class="number">-1</span>;j&lt;k;)</div><div class="line">                &#123;</div><div class="line">                    <span class="keyword">if</span>(nums[i]+nums[j]+nums[k] == <span class="number">0</span>)</div><div class="line">                    &#123;</div><div class="line">                        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; tmp = &#123;nums[i],nums[j],nums[k]&#125;;</div><div class="line">                        res.push_back(tmp);</div><div class="line">                        j++;</div><div class="line">                        <span class="keyword">while</span>(j&lt;k &amp;&amp; nums[j]==nums[j<span class="number">-1</span>]) j++;</div><div class="line">                        k=len<span class="number">-1</span>;</div><div class="line">                    &#125;</div><div class="line">                    <span class="keyword">else</span> <span class="keyword">if</span>(nums[j]+nums[k]+nums[i]&gt;<span class="number">0</span>)</div><div class="line">                    &#123;</div><div class="line">                        k--;</div><div class="line">                        </div><div class="line">                    &#125;</div><div class="line">                    <span class="keyword">else</span></div><div class="line">                        j++;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<h2 id="多重部分和问题"><a href="#多重部分和问题" class="headerlink" title="多重部分和问题"></a>多重部分和问题</h2><p>进阶可以转换成一个DP的题：有 n 种大小不同的数字 a[i]，每种 m[i] 个，判断是否可以从这些数字中选出若干个使他们的和恰好为 K。<br>设 dp[i+1][j] 为前 i 种数加和为 j 时第 i 种数最多能剩余多少个。（不能得到为-1）</p>
+<p>这样状态转移方程为：<br><img src="http://data3.liuin.cn/2018-09-07-15363320821084.jpg" alt=""></p>
+<p>模板代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> a[maxn],m[maxn],dp[maxm];    <span class="comment">//a表示数，m表示数的个数，dp范围是所有数的和的范围</span></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">fun</span><span class="params">(<span class="keyword">int</span> n,<span class="keyword">int</span> K)</span> <span class="comment">//n表示数字种类,K表示组成的和</span></span></div><div class="line">&#123;</div><div class="line">	<span class="built_in">memset</span>(dp, <span class="number">-1</span>, <span class="keyword">sizeof</span>(dp));</div><div class="line">	dp[<span class="number">0</span>] = <span class="number">0</span>;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;n; ++i) &#123;    <span class="comment">//根据存储方式作出改变</span></div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>; j&lt;=K; ++j) &#123;</div><div class="line">			<span class="keyword">if</span>(dp[j] &gt;= <span class="number">0</span>) dp[j] = m[i]; <span class="comment">// 前i-1个数已经能凑成j了</span></div><div class="line">			<span class="keyword">else</span> <span class="keyword">if</span>(j &lt; a[i] || dp[j-a[i]] &lt;= <span class="number">0</span>) dp[j] = <span class="number">-1</span>; <span class="comment">// 否则，凑不成j或者a[i]已经用完，则无法满足</span></div><div class="line">			<span class="keyword">else</span> dp[j] = dp[j-a[i]] - <span class="number">1</span>; <span class="comment">// 否则可以凑成</span></div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> dp[K]&gt;=<span class="number">0</span>;   </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="非负数组的子数组和为定值"><a href="#非负数组的子数组和为定值" class="headerlink" title="非负数组的子数组和为定值"></a>非负数组的子数组和为定值</h2><p>这个题应该是比较基础的一道题：因为数组和一定递增的，所以采用滑动窗口的思想，维护滑动窗口的两个指针i和j，如果当前窗口和小于target时j++，如果当前窗口和大于target时i++</p>
+<h2 id="子数组和为定值"><a href="#子数组和为定值" class="headerlink" title="子数组和为定值"></a>子数组和为定值</h2><p>还是遍历一遍数组，使得总体的时间复杂度为O(n)，同时记录从第一个数到当前位置数的和为一张hash表，这个表对应的映射项可以是最早出现这个sum的index（以此来求最长子数组的长度），也可以是对应这个sum出现的次数（对应求满足条件的子数组个数）</p>
+<h3 id="LeetCode-560"><a href="#LeetCode-560" class="headerlink" title="LeetCode 560"></a>LeetCode 560</h3><p>给定一个整数数组和一个整数 k，你需要找到该数组中和为 k 的连续的子数组的个数</p>
+<p>代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">subarraySum</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> k)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> len = nums.size();</div><div class="line">        <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; m;</div><div class="line">        <span class="keyword">int</span> sum = <span class="number">0</span>, res = <span class="number">0</span>;</div><div class="line">        m[<span class="number">0</span>] = <span class="number">1</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++)</div><div class="line">        &#123;</div><div class="line">            sum += nums[i];</div><div class="line">            <span class="comment">// 加上剩余的值出现的次数</span></div><div class="line">            res += m[sum - k];</div><div class="line">            m[sum] ++;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<h3 id="变式"><a href="#变式" class="headerlink" title="变式"></a>变式</h3><p>在上面那道题的基础上改为求满足条件的最长子数组的长度</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">subarraySum</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> k)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> len = nums.size();</div><div class="line">        <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; m;</div><div class="line">        <span class="keyword">int</span> sum = <span class="number">0</span>, res = <span class="number">0</span>;</div><div class="line">        m[<span class="number">0</span>] = <span class="number">-1</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++)</div><div class="line">        &#123;</div><div class="line">            sum += nums[i];</div><div class="line">            <span class="keyword">if</span> (m.find(sum - k) != m.end())</div><div class="line">                res = max(res, i - m[sum - k]);</div><div class="line">            <span class="keyword">else</span></div><div class="line">                m[sum] = i;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h2 id="子数组和小于等于定值"><a href="#子数组和小于等于定值" class="headerlink" title="子数组和小于等于定值"></a>子数组和小于等于定值</h2><p>这里用到了两个辅助数组：<code>min_value</code>、<code>min_index</code>：<code>min_value[i]</code>表示以i位置开始往后加的最小累加和；<code>min_index</code>表示<code>min_value</code>对应的最小累加和的右边界，举个例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">arr         5   4   -3  -1</div><div class="line">index       0   1   2   3</div><div class="line">min_value   5   0   -4  -1</div><div class="line">min_index   0   3   3   3</div></pre></td></tr></table></figure>
+<p>这两个辅助数组是能够在O(n)时间复杂内计算出来的：倒序遍历，min_value[i] 只需要判断min_value[i+1]的值是不是负数，如果是负数就加上，不是就到本身这里结尾。得到这样一个数组以后我们就可能轻易得到从某一个位置开始和最小的子数组。</p>
+<p>有了这两个辅助数组以后，就可以采用滑动窗口的思想，左右两个指针都不回退，右指针以上面辅助数组进行累加，左指针正常遍历，使得总体的时间复杂度为O(n)</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">subarraySum</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> k)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> len = nums.size();</div><div class="line">        <span class="comment">// 计算两个辅助数组</span></div><div class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; min_value(k, <span class="number">0</span>), min_index(k, <span class="number">0</span>);</div><div class="line">        min_value[len<span class="number">-1</span>] = nums[len<span class="number">-1</span>];</div><div class="line">        min_index[len<span class="number">-1</span>] = len<span class="number">-1</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = len - <span class="number">2</span>; i &gt;= <span class="number">0</span>; i--)</div><div class="line">        &#123;</div><div class="line">            min_value[i] = min_value[i+<span class="number">1</span>] &lt; <span class="number">0</span> ? min_value[i+<span class="number">1</span>] + nums[i] : nums[i];</div><div class="line">            <span class="keyword">if</span>(min_value[i+<span class="number">1</span>] &lt; <span class="number">0</span>)</div><div class="line">            &#123;</div><div class="line">                min_value[i] = min_value[i+<span class="number">1</span>] + nums[i];</div><div class="line">                min_index[i] = min_index[i+<span class="number">1</span>];</div><div class="line">            &#125; </div><div class="line">            <span class="keyword">else</span></div><div class="line">            &#123;</div><div class="line">                min_value[i] = nums[i];</div><div class="line">                min_index[i] = i;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 滑动窗口求解</span></div><div class="line">        <span class="keyword">int</span> l = <span class="number">0</span>, r = <span class="number">0</span>, sum = <span class="number">0</span>, res = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span>( ; l &lt; len; l++)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">while</span>(sum &lt;= k)</div><div class="line">            &#123;</div><div class="line">                sum += min_value[r];</div><div class="line">                r = min_index[r] + <span class="number">1</span>;</div><div class="line">            &#125;</div><div class="line">            res = max(res, r - l);</div><div class="line">            sum -= nums[l];</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;总结在LeetCode中遇到的和为定值的一系列题目&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="算法" scheme="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="LeetCode" scheme="https://www.liuin.cn/tags/LeetCode/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>分布式消息队列 NSQ 和 Kafka 对比</title>
+    <link href="https://www.liuin.cn/2018/07/11/%E5%88%86%E5%B8%83%E5%BC%8F%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97-NSQ-%E5%92%8C-Kafka-%E5%AF%B9%E6%AF%94/"/>
+    <id>https://www.liuin.cn/2018/07/11/分布式消息队列-NSQ-和-Kafka-对比/</id>
+    <published>2018-07-11T14:25:58.000Z</published>
+    <updated>2018-09-07T14:28:12.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>谈谈分布式消息队列的一些特性，比较两种比较常用的消息队列——NSQ和Kafka</p>
+<a id="more"></a>
+<h2 id="消息队列的作用"><a href="#消息队列的作用" class="headerlink" title="消息队列的作用"></a>消息队列的作用</h2><ol>
+<li>解耦，将一个流程加入一层数据接口拆分成两个部分，上游专注通知，下游专注处理</li>
+<li>缓冲，应对流量的突然上涨变更，消息队列有很好的缓冲削峰作用</li>
+<li>异步，上游发送消息以后可以马上返回，处理工作交给下游进行</li>
+<li>广播，让一个消息被多个下游进行处理</li>
+<li>冗余，保存处理的消息，防止消息处理失败导致的数据丢失</li>
+</ol>
+<h2 id="NSQ"><a href="#NSQ" class="headerlink" title="NSQ"></a>NSQ</h2><h3 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h3><p>NSQ主要包含3个组件：</p>
+<ul>
+<li>nsqd：在服务端运行的守护进程，负责接收，排队，投递消息给客户端。能够独立运行，不过通常是由 nsqlookupd 实例所在集群配置的</li>
+<li>nsqlookup：为守护进程，负责管理拓扑信息并提供发现服务。客户端通过查询 nsqlookupd 来发现指定话题（topic）的生产者，并且 nsqd 节点广播话题（topic）和通道（channel）信息</li>
+<li>nsqadmin：一套WEB UI，用来汇集集群的实时统计，并执行不同的管理任务</li>
+</ul>
+<p><img src="http://data3.liuin.cn/2018-09-07-15363304761012.png" alt=""></p>
+<h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><ol>
+<li>消息默认不可持久化，虽然系统支持消息持久化存储在磁盘中（通过 –mem-queue-size ），不过默认情况下消息都在内存中</li>
+<li>消息最少会被投递一次，假设成立于 nsqd 节点没有错误</li>
+<li>消息无序，是由重新队列(requeues)，内存和磁盘存储的混合导致的，实际上，节点间不会共享任何信息。它是相对的简单完成疏松队列</li>
+<li>支持无 SPOF 的分布式拓扑，nsqd 和 nsqadmin 有一个节点故障不会影响到整个系统的正常运行</li>
+<li>支持requeue，延迟消费机制</li>
+<li>消息push给消费者</li>
+</ol>
+<h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><p>单个nsqd可以有多个Topic，每个Topic又可以有多个Channel。Channel能够接收Topic所有消息的副本，从而实现了消息多播分发；而Channel上的每个消息被分发给它的订阅者，从而实现负载均衡，所有这些就组成了一个可以表示各种简单和复杂拓扑结构的强大框架。</p>
+<h2 id="Kafka"><a href="#Kafka" class="headerlink" title="Kafka"></a>Kafka</h2><h3 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h3><p><img src="http://data3.liuin.cn/2018-09-07-15363304860656.png" alt=""></p>
+<h3 id="角色"><a href="#角色" class="headerlink" title="角色"></a>角色</h3><ul>
+<li>Producer：消息发布者，负责发布消息到Kafka broker</li>
+<li>Consumer：消息消费者，向Kafka broker读取消息的客户端</li>
+<li>Broker：Kafka集群中的一个服务器</li>
+<li>Topic：每条发布到Kafka集群的消息都有一个类别，这个类别被称为Topic。（物理上不同Topic的消息分开存储，逻辑上一个Topic的消息虽然保存于一个或多个broker上但用户只需指定消息的Topic即可生产或消费数据而不必关心数据存于何处）</li>
+<li>Partition：Parition是物理上的概念，每个Topic包含一个或多个Partition</li>
+<li>每个Consumer属于一个特定的Consumer Group（可为每个Consumer指定group name，若不指定group name则属于默认的group）</li>
+</ul>
+<blockquote>
+<p>Topic &amp; Partition</p>
+</blockquote>
+<p>Topic在逻辑上可以被认为是一个queue，每条消费都必须指定它的Topic，可以简单理解为必须指明把这条消息放进哪个queue里。为了使得Kafka的吞吐率可以线性提高，物理上把Topic分成一个或多个Partition，每个Partition在物理上对应一个文件夹，该文件夹下存储这个Partition的所有消息和索引文件。</p>
+<blockquote>
+<p>Producer消息路由</p>
+</blockquote>
+<p>Producer发送消息到broker时，会根据Paritition机制选择将其存储到哪一个Partition。如果Partition机制设置合理，所有消息可以均匀分布到不同的Partition里，这样就实现了负载均衡。<br>在发送一条消息时，可以指定这条消息的key，Producer根据这个key和Partition机制来判断应该将这条消息发送到哪个Parition。</p>
+<blockquote>
+<p>Consumer Group</p>
+</blockquote>
+<p>使用Consumer high level API时，同一Topic的一条消息只能被同一个Consumer Group内的一个Consumer消费，但多个Consumer Group可同时消费这一消息。</p>
+<p>这是Kafka用来实现一个Topic消息的广播（发给所有的Consumer）和单播（发给某一个Consumer）的手段。一个Topic可以对应多个Consumer Group。如果需要实现广播，只要每个Consumer有一个独立的Group就可以了。要实现单播只要所有的Consumer在同一个Group里。用Consumer Group还可以将Consumer进行自由的分组而不需要多次发送消息到不同的Topic。</p>
+<h3 id="Consumer-API"><a href="#Consumer-API" class="headerlink" title="Consumer API"></a>Consumer API</h3><blockquote>
+<p>Low Level API/Assign</p>
+</blockquote>
+<ul>
+<li>指定目标 Partition</li>
+<li>指定消费的起始Offset</li>
+<li>指定每次消费的消息长度</li>
+<li>只能消费特定Topic中特定Partition中的消息</li>
+</ul>
+<blockquote>
+<p>High Level API/Subscribe</p>
+</blockquote>
+<ul>
+<li>每个Consumer实例属于Consumer Group</li>
+<li>默认情况下，Consumer Group会顺序消费某Topic的所有信息</li>
+<li>Offset存于Zookeeper或者Kafka或者自定义存储</li>
+<li>实现Rebalance机制</li>
+</ul>
+<h3 id="特性-1"><a href="#特性-1" class="headerlink" title="特性"></a>特性</h3><ul>
+<li>支持Replica持久化</li>
+<li>投递保证支持 at least one / at most one / exactly once</li>
+<li>Partition / Comsumer Group内消息保证有序</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;谈谈分布式消息队列的一些特性，比较两种比较常用的消息队列——NSQ和Kafka&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="开发随笔" scheme="https://www.liuin.cn/categories/%E5%BC%80%E5%8F%91%E9%9A%8F%E7%AC%94/"/>
+    
+    
+      <category term="消息队列" scheme="https://www.liuin.cn/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
+    
+  </entry>
   
   <entry>
     <title>Python 多线程与多进程</title>
@@ -1569,270 +1712,6 @@
     <summary type="html">
     
       &lt;p&gt;《UNIX环境高级编程》第17章 高级进程间通信 笔记&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>APUE 网络IPC：套接字</title>
-    <link href="https://www.liuin.cn/2018/05/05/APUE-%E7%BD%91%E7%BB%9CIPC%EF%BC%9A%E5%A5%97%E6%8E%A5%E5%AD%97/"/>
-    <id>https://www.liuin.cn/2018/05/05/APUE-网络IPC：套接字/</id>
-    <published>2018-05-05T00:38:42.000Z</published>
-    <updated>2018-05-05T01:37:03.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>《UNIX环境高级编程》第16章 网络IPC：套接字 笔记</p>
-<a id="more"></a>
-<h2 id="套接字描述"><a href="#套接字描述" class="headerlink" title="套接字描述"></a>套接字描述</h2><p>套接字是通信端点的抽象。正如使用文件描述符访问文件,应用程序用套接字描述符访问套接字。<strong>套接字描述符在UNIX系统中被当作是一种文件描述符</strong>。事实上,许多处理文件描述符的函数(如read和 write)可以用于处理套接字描述符。</p>
-<p>为创建一个套接字,调用socket函数：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">socket</span><span class="params">(<span class="keyword">int</span> domain, <span class="keyword">int</span> type, <span class="keyword">int</span> protocol)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: ﬁle (socket) descriptor if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>参数 domain(域)确定通信的特性,包括地址格式</p>
-<p><img src="https://data2.liuin.cn/2018-05-05-15254808968863.jpg" alt=""></p>
-<p>参数type确定套接字的类型,进一步确定通信特征。</p>
-<p><img src="https://data2.liuin.cn/2018-05-05-15254809237060.jpg" alt=""></p>
-<p>参数protocol通常是0,表示为给定的域和套接字类型选择默认协议。当对同一域和套接字类型支持多个协议时,可以使用 protocol选择一个特定协议</p>
-<p><img src="https://data2.liuin.cn/2018-05-05-15254809947426.jpg" alt=""></p>
-<p>对于数据报(SOCK_DGRAM)接口,两个对等进程之间通信时不需要逻辑连接。只需要向对等进程所使用的套接字送出一个报文。字节流(SOCK_STREAM)要求在交换数据之前,在本地套接字和通信的对等进程的套接字之间建立一个逻辑连接。</p>
-<p>调用socket与调用open相类似。在两种情况下,均可获得用于I/O的文件描述符。当不再需要该文件描述符时,调用c1ose来关闭对文件或套接字的访问,并且释放该描述符以便重新使用虽然套接字描述符本质上是一个文件描述符,但不是所有参数为文件描述符的函数都可以接受套接字描述符。</p>
-<h2 id="寻址"><a href="#寻址" class="headerlink" title="寻址"></a>寻址</h2><p>在学习用套接字做一些有意义的事情之前,需要知道如何标识一个目标通信进程。进程标识由两部分组成。一部分是<strong>计算机的网络地址</strong>,它可以帮助标识网络上我们想与之通信的计算机;另一部分是该<strong>计算机上用端口号</strong>表示的服务,它可以帮助标识特定的进程。</p>
-<h3 id="字节序"><a href="#字节序" class="headerlink" title="字节序"></a>字节序</h3><p>字节序是一个处理器架构特性用于指示像整数这样的大数据类型内部的字节如何排序。</p>
-<p>如果处理器架构支持大端(big-endian)字节序,那么<strong>最大字节地址出现在最低有效字节</strong>( Least Significant Byte,LSB)上，小端(little-endian)字节序则相反:<strong>最低有效字节包含最小字节地址</strong>。</p>
-<p><img src="https://data2.liuin.cn/2018-05-05-15254815015116.jpg" alt=""></p>
-<p>网络协议指定了字节序,因此异构计算机系统能够交换协议信息而不会被字节序所混淆。TCPP协议栈使用大端字节序。应用程序交换格式化数据时,字节序问题就会出现</p>
-<p>对于TCPP应用程序,有4个用来在处理器字节序和网络字节序之间实施转换的函数:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">uint32_t</span> htonl(<span class="keyword">uint32_t</span> hostint32);</div><div class="line"><span class="comment">// Returns: 32-bit integer in network byte order</span></div><div class="line"></div><div class="line"><span class="keyword">uint16_t</span> htons(<span class="keyword">uint16_t</span> hostint16);</div><div class="line"><span class="comment">// Returns: 16-bit integer in network byte order</span></div><div class="line"></div><div class="line"><span class="keyword">uint32_t</span> ntohl(<span class="keyword">uint32_t</span> netint32);</div><div class="line"></div><div class="line"><span class="comment">// Returns: 32-bit integer in host byte order</span></div><div class="line"></div><div class="line"><span class="keyword">uint16_t</span> ntohs(<span class="keyword">uint16_t</span> netint16);</div><div class="line"></div><div class="line"><span class="comment">// Returns: 16-bit integer in host byte order</span></div></pre></td></tr></table></figure>
-<p>h表示“主机”字节序,n表示“网络”字节序。1表示“长”(即4字节)整数,s表示“短”</p>
-<h3 id="地址格式"><a href="#地址格式" class="headerlink" title="地址格式"></a>地址格式</h3><p>一个地址标识一个特定通信域的套接字端点,地址格式与这个特定的通信域相关。为使不同格式地址能够传入到套接字函数,地址会被<strong>强制转换</strong>成一个通用的地址结构sockaddr</p>
-<p><img src="https://data2.liuin.cn/2018-05-05-15254817776056.jpg" alt=""></p>
-<p>不同的系统实现可能会不一样</p>
-<p>因特网地址定义在<netinet in.h="">头文件中。在IPv4因特网域(AF_INET)中,套接字地址用结构 sockaddr_in表示</netinet></p>
-<p><img src="https://data2.liuin.cn/2018-05-05-15254818310427.jpg" alt=""></p>
-<p>有时,需要打印出能被人理解而不是计算机所理解的地址格式。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">const</span> <span class="keyword">char</span> *<span class="title">inet_ntop</span><span class="params">(<span class="keyword">int</span> domain, <span class="keyword">const</span> <span class="keyword">void</span> *<span class="keyword">restrict</span> addr, <span class="keyword">char</span> *<span class="keyword">restrict</span> str, <span class="keyword">socklen_t</span> size)</span></span>;</div><div class="line"><span class="comment">// Returns: pointer to address string on success, NULL on error </span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">inet_pton</span><span class="params">(<span class="keyword">int</span> domain, <span class="keyword">const</span> <span class="keyword">char</span> *<span class="keyword">restrict</span> str, <span class="keyword">void</span> *<span class="keyword">restrict</span> addr)</span></span>;</div><div class="line"><span class="comment">// Returns: 1 on success, 0 if the format is invalid, or −1 on error</span></div></pre></td></tr></table></figure>
-<p>函数inet_ntop将网络字节序的二进制地址转换成文本字符串格式。inet_pton将文本字符串格式转换成网络字节序的二进制地址。</p>
-<h3 id="将套接字和地址关联"><a href="#将套接字和地址关联" class="headerlink" title="将套接字和地址关联"></a>将套接字和地址关联</h3><p>将一个客户端的套接字关联上一个地址没有多少新意,可以让系统选一个默认的地址。然而,<strong>对于服务器,需要给一个接收客户端请求的服务器套接字关联上一个众所周知的地址</strong>。客户端应有一种方法来发现连接服务器所需要的地址,最简单的方法就是服务器保留一个地址并且注册在/etc/services或者某个名字服务中。</p>
-<p>使用bind函数来关联地址和套接字</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">bind</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">struct</span> sockaddr *addr, <span class="keyword">socklen_t</span> len)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>对于使用的地址有以下一些限制:</p>
-<ul>
-<li>在进程正在运行的计算机上,指定的地址必须有效，不能指定一个其他机器的地址。</li>
-<li>地址必须和创建套接字时的地址族所支持的格式相匹配。</li>
-<li>地址中的端口号必须不小于1024,除非该进程具有相应的特权(即超级用户)</li>
-<li>一般只能将一个套接字端点绑定到一个给定地址上,尽管有些协议允许多重绑定</li>
-</ul>
-<p>可以调用 getsockname函数来发现绑定到套接字上的地址：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getsockname</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">struct</span> sockaddr *<span class="keyword">restrict</span> addr, <span class="keyword">socklen_t</span> *<span class="keyword">restrict</span> alenp)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>调用 getsockname之前,将 alenp设置为一个指向整数的指针,该整数指定缓冲区sockaddr的长度。返回时,该整数会被设置成返回地址的大小。如果地址和提供的缓冲区长</p>
-<p>如果套接字已经和对等方连接,可以调用 getpeername函数来找到对方的地址。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getpeername</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">struct</span> sockaddr *<span class="keyword">restrict</span> addr, <span class="keyword">socklen_t</span> *<span class="keyword">restrict</span> alenp)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<h2 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h2><p>如果要处理一个面向连接的网络服务(SOCK_STREAM或SOCK_SEQPACKET),那么在开始交换数据以前,需要在请求服务的进程套接字(客户端)和提供服务的进程套接字(服务器)之间建立一个连接。使用connect函数来建立连接。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">connect</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">struct</span> sockaddr *addr, <span class="keyword">socklen_t</span> len)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>在connect中指定的地址是我们想与之通信的服务器地址。如果 sockfd没有绑定到一个地址, connect会给调用者绑定一个默认地址。</p>
-<p>服务器调用listen函数来宣告它愿意接受连接请求。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">listen</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> backlog)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>一旦服务器调用了listen,所用的套接字就能接收连接请求。使用accept函数获得连接请求并建立连接</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">accept</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">struct</span> sockaddr *<span class="keyword">restrict</span> addr, <span class="keyword">socklen_t</span> *<span class="keyword">restrict</span> len)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: ﬁle (socket) descriptor if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>函数accept所返回的文件描述符是套接字描述符,该描述符连接到调用connect的客户端。这个新的套接字描述符和原始套接字(sockfd)具有相同的套接字类型和地址族。传给accept原始套接字没有关联到这个连接,而是继续保持可用状态并接收其他连接请求。</p>
-<p>如果服务器调用accept,并且当前没有连接请求,服务器会阻塞直到一个请求到来。另外服务器可以使用poll或se1ect来等待一个请求的到来。在这种情况下,一个带有等待连接请求的套接字会以可读的方式出现</p>
-<h2 id="数据传输"><a href="#数据传输" class="headerlink" title="数据传输"></a>数据传输</h2><p>既然一个套接字端点表示为一个文件描述符,那么只要建立连接,就可以使用read和 write来通过套接字通信。</p>
-<p>尽管可以通过read和write交换数据,但这就是这两个函数所能做的一切。如果想指定选项,从多个客户端接收数据包,或者发送带外数据,就需要使用6个为数据传递而设计的套接字函数中的一个</p>
-<p>3个函数用来发送数据,3个用于接收数据。首先,考查用于发送数据的函数。最简单的是send,它和 write很像,但是可以指定标志来改变处理传输数据的方式</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> send(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> nbytes, <span class="keyword">int</span> ﬂags);</div><div class="line"></div><div class="line"><span class="comment">// Returns: number of bytes sent if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>前面3个参数和write参数一样，不同的是第4个参数flags：</p>
-<p><img src="https://data2.liuin.cn/2018-05-05-15254833405785.jpg" alt=""></p>
-<p>即使send成功返回,也并不表示连接的另一端的进程就一定接收了数据。我们所能保证的只是当send成功返回时,数据已经被无错误地发送到网络驱动程序上</p>
-<p>函数 sendto和send很类似。区别在于sendto可以在无连接的套接字上指定一个目标地址。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> sendto(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> nbytes, <span class="keyword">int</span> ﬂags, <span class="keyword">const</span> <span class="keyword">struct</span> sockaddr *destaddr, <span class="keyword">socklen_t</span> destlen); </div><div class="line"></div><div class="line"><span class="comment">// Returns: number of bytes sent if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>对于面向连接的套接字,目标地址是被忽略的,因为连接中隐含了目标地址。对于无连接的套接字,除非先调用 connect设置了目标地址,否则不能使用send。 sendto提供了发送报文的另一种方式</p>
-<p>通过套接字发送数据时,还有一个选择。可以调用带有msghdr结构的sendmsg来指定多重缓冲区传输数据,这和 writev函数很相似</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> sendmsg(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">struct</span> msghdr *msg, <span class="keyword">int</span> ﬂags);</div><div class="line"></div><div class="line"><span class="comment">// Returns: number of bytes sent if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>与发送数据相对应的，接受数据也有三个函数：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> recv(<span class="keyword">int</span> sockfd, <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> nbytes, <span class="keyword">int</span> ﬂags);</div><div class="line"></div><div class="line"><span class="comment">// Returns: length of message in bytes, 0 if no messages are available and peer has done an orderly shutdown, or −1 on error</span></div></pre></td></tr></table></figure>
-<p><img src="https://data2.liuin.cn/2018-05-05-15254835445782.jpg" alt=""></p>
-<p>如果有兴趣定位发送者,可以使用 recvfrom来得到数据发送者的源地址</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> recvfrom(<span class="keyword">int</span> sockfd, <span class="keyword">void</span> *<span class="keyword">restrict</span> buf, <span class="keyword">size_t</span> len, <span class="keyword">int</span> ﬂags, <span class="keyword">struct</span> sockaddr *<span class="keyword">restrict</span> addr, <span class="keyword">socklen_t</span> *<span class="keyword">restrict</span> addrlen); </div><div class="line"></div><div class="line"><span class="comment">// Returns: length of message in bytes, 0 if no messages are available and peer has done an orderly shutdown, or −1 on error</span></div></pre></td></tr></table></figure>
-<p>为了将接收到的数据送入多个缓冲区,类似于 readv,或者想接收辅助数据,可以使用 recvmso</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> recvmsg(<span class="keyword">int</span> sockfd, <span class="keyword">struct</span> msghdr *msg, <span class="keyword">int</span> ﬂags);</div><div class="line"></div><div class="line"><span class="comment">// Returns: length of message in bytes, 0 if no messages are available and peer has done an orderly shutdown, or −1 on error</span></div></pre></td></tr></table></figure>
-<h2 id="套接字选项"><a href="#套接字选项" class="headerlink" title="套接字选项"></a>套接字选项</h2><p>套接字机制提供了两个套接字选项接口来控制套接字行为。一个接口用来设置选项,另一个接口可以查询选项的状态。可以获取或设置以下3种选项</p>
-<ol>
-<li>通用选项,工作在所有套接字类型上</li>
-<li>在套接字层次管理的选项,但是依赖于下层协议的支持</li>
-<li>特定于某协议的选项,每个协议独有的</li>
-</ol>
-<p>可以使用 setsockopt函数来设置套接字选项。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setsockopt</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> level, <span class="keyword">int</span> option, <span class="keyword">const</span> <span class="keyword">void</span> *val, <span class="keyword">socklen_t</span> len)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>参数 level标识了选项应用的协议。</p>
-<p><img src="https://data2.liuin.cn/2018-05-05-15254838324441.jpg" alt=""></p>
-<p>参数val根据选项的不同指向一个数据结构或者一个整数。一些选项是on/off开关。如果整数非0,则启用选项。如果整数为0,则禁止选项。参数len指定了val指向的对象的大小</p>
-<p>可以使用getsockopt来查看选项的当前值</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getsockopt</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> level, <span class="keyword">int</span> option, <span class="keyword">void</span> *<span class="keyword">restrict</span> val, <span class="keyword">socklen_t</span> *<span class="keyword">restrict</span> lenp)</span></span>;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<h2 id="带外数据"><a href="#带外数据" class="headerlink" title="带外数据"></a>带外数据</h2><p>带外数据( out-of-band data)是一些通信协议所支持的可选功能,与普通数据相比,它允许更高优先级的数据传输。带外数据先行传输,即使传输队列已经有数据。TCP支持带外数据,但是UDP不支持。套接字接口对带外数据的支持很大程度上受TCP带外数据具体实现的影响。TCP将带外数据称为紧急数据( urgent data)。</p>
-<p>TCP仅支持一个字节的紧急数据,但是允许紧急数据在普通数据传递机制数据流之外传输。</p>
-<h2 id="非阻塞和异步I-O"><a href="#非阻塞和异步I-O" class="headerlink" title="非阻塞和异步I/O"></a>非阻塞和异步I/O</h2><p>在基于套接字的异步LO中,当从套接字中读取数据时,或者当套接字写队列中空间变得可用时,可以安排要发送的信号 SIGIO。</p>
-<p>启用异步IO是一个两步骤的过程</p>
-<ol>
-<li>建立套接字所有权,这样信号可以被传递到合适的进程</li>
-<li>通知套接字当IO操作不会阻塞时发信号</li>
-</ol>
-<p>可以使用3种方式来完成第一个步骤</p>
-<ul>
-<li>在fcnt1中使用 F_SETOWN命令</li>
-<li>在ioct1中使用 FIOSETOWN命令</li>
-<li>在ioctl中使用 SIOCSPGRP命令</li>
-</ul>
-<p>要完成第二个步骤,有两个选择</p>
-<ul>
-<li>在fcnt1中使用F_SETFL命令并且启用文件标志O_ASYNO</li>
-<li>在ioctl中使用FI命令</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;《UNIX环境高级编程》第16章 网络IPC：套接字 笔记&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>APUE 进程间通信</title>
-    <link href="https://www.liuin.cn/2018/05/04/APUE-%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/"/>
-    <id>https://www.liuin.cn/2018/05/04/APUE-进程间通信/</id>
-    <published>2018-05-04T06:00:08.000Z</published>
-    <updated>2018-05-27T12:01:19.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>《UNIX环境高级编程》第15章 进程间通信 笔记</p>
-<a id="more"></a>
-<h2 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h2><p>管道是UNX系统IPC的最古老形式,所有UNX系统都提供此种通信机制。</p>
-<p>管道有以下两种局限性：</p>
-<ol>
-<li>历史上,它们是半双工的(即数据只能在一个方向上流动)。现在,某些系统提供全双工管道,但是为了最佳的可移植性,我们决不应预先假定系统支持全双工管道</li>
-<li>管道只能在具有公共祖先的两个进程之间使用。通常,一个管道由一个进程创建,在进程调用fork之后,这个管道就能在父进程和子进程之间使用了。</li>
-</ol>
-<p>每当在管道中键入一个命令序列,让shell执行时,shell都会为每一条命令单独创建一个进程,然后用管道将前一条命令进程的标准输出与后一条命令的标准输入相连接。</p>
-<p>管道是通过调用pipe函数创建的。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pipe</span><span class="params">(<span class="keyword">int</span> fd[<span class="number">2</span>])</span></span>;</div><div class="line"></div><div class="line">Returns: <span class="number">0</span> <span class="keyword">if</span> OK, −<span class="number">1</span> on error</div></pre></td></tr></table></figure>
-<p>经由参数fd返回两个文件描述符:fd[0]为读而打开,fd[1]为写而打开。fd[1]的输出是fd[0]的输入。</p>
-<p>单个进程中的管道几乎没有任何用处。通常,进程会先调用pipe,接着调用fork,从而创建从父进程到子进程的IPC通道,反之亦然</p>
-<p><img src="https://data2.liuin.cn/2018-05-04-15254214499352.jpg" alt=""></p>
-<p>对于一个从子进程到父进程的管道,父进程关闭fd[1],子进程关闭fd[0]当管道的一端被关闭后,下列两条规则起作用。<br>(1)当读(read)一个写端已被关闭的管道时,在所有数据都被读取后,read返回0,表示文件结束。(从技术上来讲,如果管道的写端还有进程,就不会产生文件的结束。可以复制一个管道的描述符,使得有多个进程对它具有写打开文件描述符。但是,通常一个管道只有一个读进程和一个写进程。）<br>(2)如果写(write)一个读端已被关闭的管道,则产生信号 SIGPIPE。如果忽略该信号或者捕捉该信号并从其处理程序返回,则 write返回-1, errno设置为 EPIPE。</p>
-<h2 id="函数popen和pclose"><a href="#函数popen和pclose" class="headerlink" title="函数popen和pclose"></a>函数popen和pclose</h2><p>常见的操作是创建一个连接到另一个进程的管道,然后读其输出或向其输入端发送数据,为此,标准I/O库提供了两个函数 popen和 pclose。这两个函数实现的操作是:创建一个管道,fork一个子进程,关闭未使用的管道端,执行一个shell运行命令,然后等待命令终止。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">`<span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function">FILE *<span class="title">popen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *cmdstring, <span class="keyword">const</span> <span class="keyword">char</span> *type)</span></span>;</div><div class="line"><span class="comment">// Returns: ﬁle pointer if OK, NULL on error </span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pclose</span><span class="params">(FILE *fp)</span></span>; </div><div class="line"><span class="comment">// Returns: termination status of cmdstring, or −1 on error</span></div></pre></td></tr></table></figure>
-<p>函数 popen先执行fork,然后调用exec执行cstring,并且返回一个标准I/O文件指针。如果type是”r”,则文件指针连接到cstring的标准输出。如果type是”w”,则文件指针连接到 cmdstring的标准输入，表示写FILE中的东西</p>
-<p><img src="https://data2.liuin.cn/2018-05-04-15254216672075.jpg" alt=""></p>
-<p>可以将最后一个参数的使用方法和fopen类比，如果type是”r”,则返回的文件指针是可读的,如果type是”w”,则是可写的</p>
-<h2 id="协同进程"><a href="#协同进程" class="headerlink" title="协同进程"></a>协同进程</h2><p>UNIX系统过滤程序从标准输入读取数据,向标准输出写数据。几个过滤程序通常在shell管道中线性连接。当一个过滤程序既产生某个过滤程序的输入,又读取该过滤程序的输出时,它就变成了协同进程(coprocess)。</p>
-<p>协同进程通常在shell的后台运行,其标准输入和标准输出通过管道连接到另一个程序。</p>
-<p>popen只提供连接到另一个进程的标准输入或标准输出的一个单向管道,而协同进程则有连接到另一个进程的两个单向管道:一个接到其标准输入,另一个则来自其标准输出。</p>
-<p><img src="https://data2.liuin.cn/2018-05-04-15254220325027.jpg" alt=""></p>
-<h2 id="FIFO"><a href="#FIFO" class="headerlink" title="FIFO"></a>FIFO</h2><p>FIFO有时被称为命名管道。未命名的管道只能在两个相关的进程之间使用,而且这两个相关的进程还要有一个共同的创建了它们的祖先进程。但是,通过FIFO,不相关的进程也能交换数据。</p>
-<p>FIFO是一种文件类型。通过<code>stat</code>结构的<code>st_mode</code>成员的编码可以知道文件是否是FIFO类型。可以用S_ ISFTEO宏对此进行测试。</p>
-<p><strong>创建FIFO类似于创建文件</strong>。确实,FIFO的路径名存在于文件系统中。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">mkfifo</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *path, <span class="keyword">mode_t</span> mode)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">mkfifoat</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span> *path, <span class="keyword">mode_t</span> mode)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>当我们用 mkfifo或者 mkfifoat创建FIFO时,要用open来打开它。设置非阻塞以及对错误的处理和普通文件的处理是一样的。</p>
-<p>类似于管道,若 write一个尚无进程为读而打开的FIFO,则产生信号SIGPIPE。若某个FIFO的最后一个写进程关闭了该FIFO,则将为该FIFO的读进程产生一个文件结束标志。</p>
-<p>FIFO有以下两种用途</p>
-<ul>
-<li>shell命令使用FIFO将数据从一条管道传送到另一条时,无需创建中间临时文件</li>
-<li>客户进程服务器进程应用程序中,FIFO用作汇聚点,在客户进程和服务器进程二者之间传递数据</li>
-</ul>
-<p><img src="https://data2.liuin.cn/2018-05-04-15254224287657.jpg" alt=""></p>
-<h2 id="XSI-IPC"><a href="#XSI-IPC" class="headerlink" title="XSI IPC"></a>XSI IPC</h2><p>有3种称作XSI IPC的IPC:消息队列、信号量以及共享存储器。它们之间有很多相似之处</p>
-<h3 id="标识符与键"><a href="#标识符与键" class="headerlink" title="标识符与键"></a>标识符与键</h3><p>每个内核中的IPC结构(消息队列、信号量或共享存储段)都用一个非负整数的标识符(identifier)加以引用。</p>
-<p>标识符是IPC对象的内部名。为使多个合作进程能够在同一IPC对象上汇聚,需要提供一个外部命名方案。为此,每个IPC对象都与一个键(key)相关联,将这个键作为该对象的外部名。键的数据结构是<code>key_t</code></p>
-<p>有多种方法使客户进程和服务器进程在同一IPC结构上汇聚：</p>
-<ol>
-<li>服务器进程可以指定键IPC_PRIVATE创建一个新IPC结构,将返回的标识符存放在某处(如一个文件)以便客户进程取用。</li>
-<li>可以在一个公用头文件中定义一个客户进程和服务器进程都认可的键。</li>
-<li>客户进程和服务器进程认同一个路径名和项目ID，接着调用函数ftok将这两个值变成一个键</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ipc.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">key_t</span> ftok(<span class="keyword">const</span> <span class="keyword">char</span> *path, <span class="keyword">int</span> id);</div><div class="line"></div><div class="line"><span class="comment">// Returns: key if OK, (key_t)−1 on error</span></div></pre></td></tr></table></figure>
-<p>ftok创建的键通常是用下列方式构成的:按给定的路径名取得其stat结构中的部分 st_dev和 st_ino字段,然后再将它们与项目ID组合起来。如果两个路径名引用的是两个不同的文件,那么ftok通常会为这两个路径名返回不同的键。但是,因为i节点编号和键通常都存放在长整型中,所以创建键时可能会丢失信息。这意味着,对于不同文件的两个路径名,如果使用同一项目ID,那么可能产生相同的键。</p>
-<p>3个get函数( msgget、 semget和 shmget)都有两个类似的参数:一个key和一个整型flag。在创建新的IPC结构(通常由服务器进程创建)时,如果key是 IPC_PRIVATE或者和当前某种类型的IPC结构无关,则需要指明fag的 IPC_CREAT标志位。为了引用一个现有队列(通常由客户进程创建),key必须等于队列创建时指明的key的值,并且 IPC_CREAT必须不被指明。</p>
-<p>注意,决不能指定 IPC_PRIVATE作为键来引用一个现有队列,因为这个特殊的键值总是用于创建一个新队列。为了引用一个用 IPC_PRIVATE键创建的现有队列,一定要知道这个相关的标识符,然后在其他IPC调用中(如 msgsnd、 nserc)使用该标识符,这样可以绕过get函数</p>
-<p>如果希望创建一个新的IPC结构,而且要确保没有引用具有同一标识符的一个现有IPC结构,那么必须在flag中同时指定 IPC_CREAT和IPC_EXCL位。这样做了以后,如果IPC结构已经存在就会造成出错,返回 EEXIST(这与指定了O_CREAT和O_EXCL标志的open相类似)</p>
-<h3 id="权限结构"><a href="#权限结构" class="headerlink" title="权限结构"></a>权限结构</h3><p>XSI IPC为每一个IPC结构关联了一个ipc_perm结构。该结构规定了权限和所有者,它至少包括下列成员:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">struct ipc_perm &#123; </div><div class="line">    uid_t uid; /* owner’s effective user ID */ </div><div class="line">    gid_t gid; /* owner’s effective group ID */ </div><div class="line">    uid_t cuid; /* creator’s effective user ID */ </div><div class="line">    gid_t cgid; /* creator’s effective group ID */ </div><div class="line">    mode_t mode; /* access modes */ </div><div class="line">    .</div><div class="line">    .</div><div class="line">    .</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>每个实现会包括另外一些成员。在创建IPC结构时,对所有字段都赋初值。</p>
-<p>mode字段的值如下图所示，<strong>对于任何IPC结构都不存在执行权限</strong>。</p>
-<p><img src="https://data2.liuin.cn/2018-05-27-15274218221632.jpg" alt=""></p>
-<h3 id="优点和缺点"><a href="#优点和缺点" class="headerlink" title="优点和缺点"></a>优点和缺点</h3><p>XSI IPC的一个基本问题是:<strong>IPC结构是在系统范围内起作用的,没有引用计数</strong>。例如,如果进程创建了一个消息队列,并且在该队列中放入了几则消息,然后终止,那么该消息队列及其内容不会被删除。它们会一直留在系统中直至发生下列动作为止:由某个进程调用 msgrcv或msct1读消息或删除消息队列;或某个进程执行 ipcri(1)命令删除消息队列;或正在自举的系统删除消息队列。</p>
-<p>将此与管道相比,当最后一个引用管道的进程终止时,管道就被完全地删除了。对于FIFO而言,在最后一个引用FIFO的进程终止时,虽然FIFO的名字仍保留在系统中,直至被显式地删除,但是留在FIFO中的数据已被删除了</p>
-<p>XSI IPC的另一个问题是:这些IPC结构在文件系统中没有名字，为了支持这些IPC对象，系统增加了许多的系统调用</p>
-<p>因为这些形式的IPC不使用文件描述符,所以<strong>不能对它们使用多路转接I/O函数</strong></p>
-<h2 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h2><p>消息队列是消息的链接表,<strong>存储在内核中</strong>,由消息队列标识符标识。</p>
-<p><code>msgget</code>用于创建一个新队列或打开一个现有队列。<code>msgsnd</code>将新消息添加到队列尾端。每个消息包含一个正的长整型类型的字段、一个非负的长度以及实际数据字节数(对应于长度),所有这些都在将消息添加到队列时,传送给<code>msgsnd</code>。 <code>msgrcv</code>用于从队列中取消息。我们并不定要以先进先出次序取消息,也可以按消息的类型字段取消息。</p>
-<p>每个队列有一个msqid_ds结构与其相关联</p>
-<p><img src="https://data2.liuin.cn/2018-05-04-15254293881565.jpg" alt=""></p>
-<p>创建一个队列或者打开一个现有队列函数<code>msgget</code></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/msg.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">msgget</span><span class="params">(<span class="keyword">key_t</span> key, <span class="keyword">int</span> ﬂag)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: message queue ID if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>msgctl函数对队列执行多种操作：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/msg.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">msgctl</span><span class="params">(<span class="keyword">int</span> msqid, <span class="keyword">int</span> cmd, <span class="keyword">struct</span> msqid_ds *buf )</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>cmd参数指定对msqid队列要执行的命令：</p>
-<ul>
-<li>IPC_STAT  获取此队列的msqid_ds结构</li>
-<li>IPC_SET  设置队列结构</li>
-<li>IPC_RMID  从系统中删除该消息队列以及仍在该消息队列中的所有数据</li>
-</ul>
-<p>调用msgsnd将数据放到消息队列中：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/msg.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">msgsnd</span><span class="params">(<span class="keyword">int</span> msqid, <span class="keyword">const</span> <span class="keyword">void</span> *ptr, <span class="keyword">size_t</span> nbytes, <span class="keyword">int</span> ﬂag)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure></p>
-<p>消息类型结构：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> mymesg &#123; </div><div class="line">    <span class="keyword">long</span> mtype; <span class="comment">/* positive message type */</span> </div><div class="line">    <span class="keyword">char</span> mtext[<span class="number">512</span>]; <span class="comment">/* message data, of length nbytes */</span> </div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>msgrcv从队列中取用消息</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/msg.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> msgrcv(<span class="keyword">int</span> msqid, <span class="keyword">void</span> *ptr, <span class="keyword">size_t</span> nbytes, <span class="keyword">long</span> type, <span class="keyword">int</span> ﬂag); </div><div class="line"></div><div class="line"><span class="comment">// Returns: size of data portion of message if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><p>信号量与已经介绍过的IPC机构(管道、FIFO以及消息列队)不同。它是一个计数器,用于为多个进程提供对共享数据对象的访问</p>
-<p>为了正确地实现信号量,信号量值的测试及减1操作应当是原子操作。为此,信号量通常是在内核中实现的</p>
-<p>常用的信号量形式被称为二元信号量(binary semaphore)。它控制单个资源,其初始值为1。但是,一般而言,信号量的初值可以是任意一个正值,该值表明有多少个共享资源单位可供共享应用。</p>
-<p>下面3个特性造成了XSI信号量比较复杂：</p>
-<ol>
-<li>信号量并非是单个非负值,而必需定义为含有一个或多个信号量值的集合。</li>
-<li>信号量的创建(semget)是独立于它的初始化(sectl)的。这是一个致命的缺点,因为不能原子地创建一个信号量集合,并且对该集合中的各个信号量值赋初值。</li>
-<li>即使没有进程正在使用各种形式的XSI IPO,它们仍然是存在的。有的程序在终止时并没有释放已经分配给它的信号量,所以我们不得不为这种程序担心。</li>
-</ol>
-<p>当我们想使用XSI信号量时,首先需要通过调用函数 semget来获得一个信号量ID</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/sem.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">semget</span><span class="params">(<span class="keyword">key_t</span> key, <span class="keyword">int</span> nsems, <span class="keyword">int</span> ﬂag)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: semaphore ID if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>semctl函数包含对信号量的各种操作：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/sem.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">semctl</span><span class="params">(<span class="keyword">int</span> semid, <span class="keyword">int</span> semnum, <span class="keyword">int</span> cmd, ... <span class="comment">/* union semun arg */</span> )</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: (see following)</span></div></pre></td></tr></table></figure></p>
-<p>函数semop自动执行信号集合上面的操作数组</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/sem.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">semop</span><span class="params">(<span class="keyword">int</span> semid, <span class="keyword">struct</span> sembuf semoparray[], <span class="keyword">size_t</span> nops)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>参数 semoparray是一个指针,它指向一个由 sembuf结构表示的信号量操作数组:</p>
-<p><img src="https://data2.liuin.cn/2018-05-04-15254305267397.jpg" alt=""></p>
-<h2 id="共享存储"><a href="#共享存储" class="headerlink" title="共享存储"></a>共享存储</h2><p>共享存储允许两个或多个进程共享一个给定的存储区。因为数据不需要在客户进程和服务器进程之间复制,所以这是最快的一种IPC。使用共享存储时要掌握的唯一窍门是,在多个进程之间同步访问一个给定的存储区。若服务器进程正在将数据放入共享存储区,则在它做完这一操作之前,客户进程不应当去取这些数据。通常,信号量用于同步共享存储访问。下面可以看到共享内存为什么是最快的一种IPC方式：</p>
-<p><img src="https://data2.liuin.cn/2018-05-27-15274224200311.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-05-27-15274224241716.jpg" alt=""></p>
-<p>我们已经看到了共享存储的一种形式,就是在多个进程将同一个文件映射到它们的地址空间的时候。XSI共享存储和内存映射的文件的不同之处在于,前者没有相关的文件。XSI共享存储段是内存的匿名段</p>
-<p>内核为每一个共享存储段维护一个结构，包含以下成员：</p>
-<p><img src="https://data2.liuin.cn/2018-05-04-15254405323155.jpg" alt=""></p>
-<p>使用函数shmgget获取一个共享存储标识符：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/shm.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">shmget</span><span class="params">(<span class="keyword">key_t</span> key, <span class="keyword">size_t</span> size, <span class="keyword">int</span> ﬂag)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: shared memory ID if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>函数shmctl对共享存储段执行多种操作：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/shm.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">shmctl</span><span class="params">(<span class="keyword">int</span> shmid, <span class="keyword">int</span> cmd, <span class="keyword">struct</span> shmid_ds *buf )</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>一旦创建了一个共享存储段,进程就可调用 shmat将其连接到它的地址空间中</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/shm.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> *<span class="title">shmat</span><span class="params">(<span class="keyword">int</span> shmid, <span class="keyword">const</span> <span class="keyword">void</span> *addr, <span class="keyword">int</span> ﬂag)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to shared memory segment if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>共享存储段连接到调用进程的哪个地址上与addr参数以及flag中是否指定SHM_RND位有关</p>
-<ul>
-<li>如果addr为0,则此段连接到由内核选择的第一个可用地址上。这是推荐的使用方式。</li>
-<li>如果add非0,并且没有指定 SHM_RND,则此段连接到addr所指定的地址上。</li>
-<li>如果add非0,并且指定了 SHM_RND,则此段连接到(addr-( addr mod SHMLBA))所表示的地址上。 SHM_RND命令的意思是“取整”。 SHMLBA的意思是“低边界地址倍数”,它总是2的乘方。该算式是将地址向下取最近1个 SHMLBA的倍数。</li>
-</ul>
-<p>当对共享存储段的操作已经结束时,则调用 shmdt与该段分离。注意,这<strong>并不从系统中删除其标识符以及其相关的数据结构</strong>。该标识符仍然存在,直至某个进程(一般是服务器进程)带IPC_RMID命令的调用shmctl特地删除它为止</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/shm.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">shmdt</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *addr)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>回忆一下mmap函数,它可将一个文件的若干部分映射至进程地址空间。这在概念上类似于用 shmat XSI IPC函数连接一个共享存储段。两者之间的主要区别是,用mmap映射的存储段是与文件相关联的,而XSI共享存储段则并无这种关联。</p>
-<p><img src="https://data2.liuin.cn/2018-05-04-15254410116645.jpg" alt=""></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;《UNIX环境高级编程》第15章 进程间通信 笔记&lt;/p&gt;
     
     </summary>
     
