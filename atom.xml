@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-09-08T08:54:43.000Z</updated>
+  <updated>2018-09-08T12:04:27.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,46 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>LeetCode——单调栈结构</title>
+    <link href="https://www.liuin.cn/2018/07/27/LeetCode%E2%80%94%E2%80%94%E5%8D%95%E8%B0%83%E6%A0%88%E7%BB%93%E6%9E%84/"/>
+    <id>https://www.liuin.cn/2018/07/27/LeetCode——单调栈结构/</id>
+    <published>2018-07-27T15:57:14.000Z</published>
+    <updated>2018-09-08T12:04:27.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>总结在LeetCode中遇到的单调栈的一系列题目</p>
+<a id="more"></a>
+<h2 id="单调栈"><a href="#单调栈" class="headerlink" title="单调栈"></a>单调栈</h2><p>单调栈是这样的一种数据结构：栈中从栈底到栈顶的数都是递减的，为了维护这种结构在插入比当前栈顶大的数的时候都需要先将栈顶的数弹出，这样我们就能够知道弹出的这个数两边比它大的数了。在某些题目中，单调栈的这种特定能够给我们提供很大的帮助。</p>
+<h2 id="LeetCode-84"><a href="#LeetCode-84" class="headerlink" title="LeetCode 84"></a>LeetCode 84</h2><p><a href="https://leetcode.com/problems/largest-rectangle-in-histogram/description/" target="_blank" rel="external">Largest Rectangle in Histogram</a></p>
+<p>题意：<br>给出一个直方图，求直方图中所能够围成矩形的最大面积<br><img src="http://data3.liuin.cn/2018-09-08-15364073032884.jpg" alt=""></p>
+<p>题解：<br>维护一个递增的单调栈，如果需要将栈顶数据弹出则表示形成了山峰的形状，这样我们就可以计算出这个山峰里能够围成的矩形的面积，因为弹出的这一个数能够知道其左右比它小的数。当遍历完以后还有一些矩形需要计算，再将这个栈依次弹出，这个时候右边没有比它小的数了，他左边比它小的数就是栈顶的数。每弹出一个数就能够计算出一个矩形的面积。</p>
+<p>代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="comment">// 维护单调栈</span></div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">largestRectangleArea</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; heights)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> len = heights.size();</div><div class="line">        <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; s;</div><div class="line">        <span class="keyword">int</span> res = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">while</span>(!s.empty() &amp;&amp; heights[s.top()] &gt; heights[i])</div><div class="line">            &#123;</div><div class="line">                <span class="keyword">int</span> tem = s.top();</div><div class="line">                s.pop();</div><div class="line">                <span class="comment">// 计算面积</span></div><div class="line">                <span class="keyword">int</span> curArea = s.empty() ? i*heights[tem] : (i - s.top() - <span class="number">1</span>)*heights[tem];</div><div class="line">                res = max(res, curArea);</div><div class="line">            &#125;</div><div class="line">            s.push(i);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">while</span>(!s.empty())</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">int</span> tem = s.top();</div><div class="line">            s.pop();</div><div class="line">            <span class="keyword">int</span> curArea = s.empty() ? len*heights[tem] : (len - s.top() - <span class="number">1</span>) * heights[tem];</div><div class="line">            res = max(res, curArea);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<h2 id="LeetCode-85"><a href="#LeetCode-85" class="headerlink" title="LeetCode 85"></a>LeetCode 85</h2><p><a href="https://leetcode.com/problems/maximal-rectangle/description/" target="_blank" rel="external">Maximal Rectangle</a></p>
+<p>题意：<br>给出一个只包含0和1的二维矩阵，求出其中1围成的矩形的最大面积</p>
+<p>题解：<br>这道题可以说是上面那道题的变形，因为把这个n*m的矩阵转换成m个直方图就是上面的那道题，计算m次即可</p>
+<p>代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; getSlice(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt;&amp; matrix, <span class="keyword">int</span> h)</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; ret;</div><div class="line">        <span class="keyword">int</span> len = matrix[<span class="number">0</span>].size();</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">int</span> tem = h, count = <span class="number">0</span>;</div><div class="line">            <span class="keyword">while</span>(tem &gt;= <span class="number">0</span> &amp;&amp; matrix[tem][i] == <span class="string">'1'</span>)</div><div class="line">            &#123;</div><div class="line">                tem --;</div><div class="line">                count ++;</div><div class="line">            &#125;</div><div class="line">            ret.push_back(count);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> ret;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maximalRectangle</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt;&amp; matrix)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> len1 = matrix.size();</div><div class="line">        <span class="keyword">if</span>(len1 == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">        <span class="keyword">int</span> len2 = matrix[<span class="number">0</span>].size();</div><div class="line">        <span class="keyword">if</span>(len2 == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">        <span class="keyword">int</span> res = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> t = <span class="number">0</span>; t &lt; len1; t++)</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; heights = getSlice(matrix, t);</div><div class="line">            <span class="keyword">int</span> len3 = heights.size();</div><div class="line">            <span class="comment">// 使用栈来保存一个递增的序列</span></div><div class="line">            <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; s;</div><div class="line">            <span class="keyword">int</span> tem_res = <span class="number">0</span>;</div><div class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len3; i++)</div><div class="line">            &#123;</div><div class="line">                <span class="keyword">while</span>(!s.empty() &amp;&amp; heights[s.top()] &gt; heights[i])</div><div class="line">                &#123;</div><div class="line">                    <span class="keyword">int</span> tem = s.top();</div><div class="line">                    s.pop();</div><div class="line">                    <span class="comment">// 计算不在序列内的区块的面积</span></div><div class="line">                    <span class="keyword">int</span> curArea = s.empty() ? i*heights[tem] : (i - s.top() - <span class="number">1</span>)*heights[tem];</div><div class="line">                    tem_res = max(tem_res, curArea);</div><div class="line">                    <span class="comment">// cout&lt;&lt;i&lt;&lt;" "&lt;&lt;tem_res&lt;&lt;endl;</span></div><div class="line">                &#125;</div><div class="line">                s.push(i);</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// 对递增序列中的序列面积进行计算</span></div><div class="line">            <span class="keyword">while</span>(!s.empty())</div><div class="line">            &#123;</div><div class="line">                <span class="keyword">int</span> tem = s.top();</div><div class="line">                s.pop();</div><div class="line">                <span class="keyword">int</span> curArea = s.empty() ? len3*heights[tem] : (len3 - s.top() - <span class="number">1</span>) * heights[tem];</div><div class="line">                tem_res = max(tem_res, curArea);</div><div class="line">                <span class="comment">// cout&lt;&lt;tem&lt;&lt;" "&lt;&lt;tem_res&lt;&lt;endl;</span></div><div class="line">            &#125;</div><div class="line">            res = max(res, tem_res);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<h2 id="LeetCode-456"><a href="#LeetCode-456" class="headerlink" title="LeetCode 456"></a>LeetCode 456</h2><p><a href="https://leetcode.com/problems/132-pattern/description/" target="_blank" rel="external">132 Pattern</a></p>
+<p>题意：</p>
+<p>给出一个数组，判断是否存在这样的三个数：i &lt; j &lt; k，同时a[i] &lt; a[k] &lt; a[j] 类似于132的组合</p>
+<p>题解：<br>从后往前去维护一个递减的单调栈，同时记录淘汰掉的数的最大值s3（这里相当于a[k]），从后往前遍历的过程中如果有数比s3要小，则表明存在上述的结构</p>
+<p>代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="comment">// 单调栈结构巧妙解法</span></div><div class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">find132pattern</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums)</span> </span>&#123;</div><div class="line">        <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; s;</div><div class="line">        <span class="keyword">int</span> len = nums.size();</div><div class="line">        <span class="keyword">if</span> (len &lt; <span class="number">3</span>) <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">        <span class="keyword">int</span> s3 = INT_MIN;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = len - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span>(nums[i] &lt; s3) <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">            <span class="keyword">while</span>(!s.empty() &amp;&amp; nums[i] &gt; s.top())</div><div class="line">            &#123;</div><div class="line">                s3 = max(s3, s.top());</div><div class="line">                s.pop();</div><div class="line">            &#125;</div><div class="line">            s.push(nums[i]);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;总结在LeetCode中遇到的单调栈的一系列题目&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="算法" scheme="https://www.liuin.cn/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="LeetCode" scheme="https://www.liuin.cn/tags/LeetCode/"/>
+    
+      <category term="算法总结" scheme="https://www.liuin.cn/tags/%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/"/>
+    
+  </entry>
   
   <entry>
     <title>Redis 代理方案 Twemproxy</title>
@@ -71,7 +111,7 @@
     <link href="https://www.liuin.cn/2018/07/16/LeetCode%E6%80%BB%E7%BB%93%E2%80%94%E2%80%94%E5%92%8C%E4%B8%BA%E5%AE%9A%E5%80%BC/"/>
     <id>https://www.liuin.cn/2018/07/16/LeetCode总结——和为定值/</id>
     <published>2018-07-16T09:48:48.000Z</published>
-    <updated>2018-09-07T15:06:34.000Z</updated>
+    <updated>2018-09-08T09:56:48.000Z</updated>
     
     <content type="html"><![CDATA[<p>总结在LeetCode中遇到的和为定值的一系列题目</p>
 <a id="more"></a>
@@ -114,6 +154,8 @@
     
     
       <category term="LeetCode" scheme="https://www.liuin.cn/tags/LeetCode/"/>
+    
+      <category term="算法总结" scheme="https://www.liuin.cn/tags/%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/"/>
     
   </entry>
   
@@ -283,7 +325,7 @@
     <link href="https://www.liuin.cn/2018/06/30/LeetCode%E6%80%BB%E7%BB%93%E2%80%94%E2%80%94Minimax%E7%AE%97%E6%B3%95/"/>
     <id>https://www.liuin.cn/2018/06/30/LeetCode总结——Minimax算法/</id>
     <published>2018-06-30T14:23:56.000Z</published>
-    <updated>2018-08-30T15:07:45.000Z</updated>
+    <updated>2018-09-08T09:56:52.000Z</updated>
     
     <content type="html"><![CDATA[<p>总结在解决博弈问题中会用到的一个算法——Minimax算法</p>
 <a id="more"></a>
@@ -312,6 +354,8 @@
     
     
       <category term="LeetCode" scheme="https://www.liuin.cn/tags/LeetCode/"/>
+    
+      <category term="算法总结" scheme="https://www.liuin.cn/tags/%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/"/>
     
   </entry>
   
@@ -514,7 +558,7 @@
     <link href="https://www.liuin.cn/2018/06/18/LeetCode%E6%80%BB%E7%BB%93%E2%80%94%E2%80%94%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95/"/>
     <id>https://www.liuin.cn/2018/06/18/LeetCode总结——字符串相关算法/</id>
     <published>2018-06-18T04:37:11.000Z</published>
-    <updated>2018-06-18T04:54:54.000Z</updated>
+    <updated>2018-09-08T09:56:57.000Z</updated>
     
     <content type="html"><![CDATA[<p>总结在LeetCode中字符串相关的常用的一些算法</p>
 <a id="more"></a>
@@ -558,6 +602,8 @@
     
     
       <category term="LeetCode" scheme="https://www.liuin.cn/tags/LeetCode/"/>
+    
+      <category term="算法总结" scheme="https://www.liuin.cn/tags/%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/"/>
     
   </entry>
   
@@ -1609,103 +1655,6 @@
     <summary type="html">
     
       &lt;p&gt;《UNIX环境高级编程》第19章 伪终端 笔记&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="APUE" scheme="https://www.liuin.cn/tags/APUE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>APUE 终端I/O</title>
-    <link href="https://www.liuin.cn/2018/05/05/APUE-%E7%BB%88%E7%AB%AFI-O/"/>
-    <id>https://www.liuin.cn/2018/05/05/APUE-终端I-O/</id>
-    <published>2018-05-05T02:53:52.000Z</published>
-    <updated>2018-05-05T08:09:10.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>《UNIX环境高级编程》第18章 终端I/O 笔记</p>
-<a id="more"></a>
-<h2 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h2><p>终端I/O有两种不同的工作模式:</p>
-<ol>
-<li>规范模式输入处理。在这种模式中,对终端输入以行为单位进行处理。对于每个读请求终端驱动程序最多返回一行</li>
-<li>非规范模式输入处理。输入字符不装配成行</li>
-</ol>
-<p>如果不做特殊处理,则默认模式是规范模式</p>
-<p>可以认为终端设备是由通常位于内核中的终端驱动程序控制的。每个终端设备都有一个输入列和一个输出队列,如图所示：</p>
-<p><img src="https://data2.liuin.cn/2018-05-05-15255055612367.jpg" alt=""></p>
-<p>有以下几点说明：</p>
-<ul>
-<li>如果打开了回显功能,则在输入队列和输出队列之间有一个隐含的连接</li>
-<li>输入队列的长度MAX_INPUT是有限值。当一个特定设备的输入队列已经填满时,系统的行为将依赖于实现。这种情况发生时大多数UNIX系统回显响铃字符。</li>
-<li>图中没有显示另一个输入限制MAX_CANON。这个限制是一个规范输入行的最大字节数</li>
-<li>虽然输出队列的长度通常也是有限的,但是程序并不能获得这个定义其长度的常量为当输出队列将要填满时,内核便直接使写进程休眠,直至写队列中有可用的空间。</li>
-</ul>
-<p>大多数UNIX系统在一个称为终端行规程(terminal linediscipline)的模块中进行全部的规范处理。可以将这个模块设想成一个盒子,<strong>位于内核通用读、写函数和实际设备驱动程序之间</strong>。</p>
-<p><img src="https://data2.liuin.cn/2018-05-05-15255057246778.jpg" alt=""></p>
-<p>由于将规范处理分离为单独的模块,所有的终端驱动程序都能够一致地支持规范处理。</p>
-<p>所有可以检测和更改的终端设备特性都包含在termios结构中。该结构定义在头文件<termios.h>中,本章使用这一头文件。</termios.h></p>
-<p><img src="https://data2.liuin.cn/2018-05-05-15255057581968.jpg" alt=""></p>
-<p>各个标志位的作用：</p>
-<ul>
-<li>输入标志通过终端设备驱动程序控制字符的输入(例如,剥除输入字节的第8位,允许输入奇偶校验)</li>
-<li>输出标志则控制驱动程序输出(例如,执行输出处理、将换行符转换为CRLF)</li>
-<li>控制标志影响RS232串行线(例如,忽略调制解调器的状态线、每个字符的一个或两个停止位)</li>
-<li>本地标志影响驱动程序和用户之间的接口(例如,回显打开或关闭、可视地擦除字符、允许终端产生的信号以及对后台输出的作业控制停止信号</li>
-</ul>
-<p><img src="https://data2.liuin.cn/2018-05-05-15255058794969.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-05-05-15255058823469.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-05-05-15255058855001.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-05-05-15255058879538.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-05-05-15255058906529.jpg" alt=""></p>
-<p>与终端有关的各个函数之间的关系</p>
-<p><img src="https://data2.liuin.cn/2018-05-05-15255059407734.jpg" alt=""></p>
-<h2 id="特殊输入字符"><a href="#特殊输入字符" class="headerlink" title="特殊输入字符"></a>特殊输入字符</h2><p>POSIX.1定义了11个在输入时要特殊处理的字符。实现定义了另外一些特殊字符</p>
-<p><img src="https://data2.liuin.cn/2018-05-05-15255061027706.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-05-05-15255061066356.jpg" alt=""></p>
-<p>在POSIX的11个特殊字符中,其中有9个字符的值可以任意更改。不能更改的两个特殊字符是换行符和回车符(分别是\n和\r),也可能是STOP和START字符(依赖于实现)。为了更改,只需要修改termios结构中c_cc数组的相应项。该数组中的元素都用名字作为下标进行引用,每个名字都以字母V开头。</p>
-<p>对各个字符的详细解释可见原书内容</p>
-<h2 id="获得和设置终端属性"><a href="#获得和设置终端属性" class="headerlink" title="获得和设置终端属性"></a>获得和设置终端属性</h2><p>为了获得和设置 termios结构,可以调用 tcgetattr和 tcsetattr函数。这样就可以检测和修改各种终端选项标志和特殊字符,使终端按我们所希望的方式进行操作。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;termios.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcgetattr</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">struct</span> termios *termptr)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcsetattr</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> opt, <span class="keyword">const</span> <span class="keyword">struct</span> termios *termptr)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>tcsetattr的参数opt使我们可以指定在什么时候新的终端属性才起作用。opt可以指定为下列常量中的一个:</p>
-<ul>
-<li>TCSANOW   更改立即发生。</li>
-<li>TCSADRAIN 发送了所有输出后更改才发生。若更改输出参数则应使用此选项。</li>
-<li>TCSAFLUSH 发送了所有输出后更改才发生。更进一步,在更改发生时未读的所有输入数据都被丢弃(冲洗)。</li>
-</ul>
-<h2 id="终端选项标志"><a href="#终端选项标志" class="headerlink" title="终端选项标志"></a>终端选项标志</h2><p>包含终端选项标志的所有的解释，具体可查看原书</p>
-<h2 id="stty命令"><a href="#stty命令" class="headerlink" title="stty命令"></a>stty命令</h2><p>上节说明的所有选项都可以被检查和更改:在程序中用tcgetattr和tcsetattr函数进行检查和更改;在命令行(或shell脚本)中用stty(1)命令进行检查和更改。简单地说,stty(1)命令就是终端I/O所列的前6个函数的接口。</p>
-<h2 id="波特率函数"><a href="#波特率函数" class="headerlink" title="波特率函数"></a>波特率函数</h2><p>术语波特率(baud rate)是一个历史沿用的术语,现在它指的是“位/秒”(bit per second)。虽然大多数终端设备对输入和输出使用同一波特率,但是只要硬件许可,可以将它们设置为两个不同值。</p>
-<p>设置波特率函数：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;termios.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">speed_t</span> cfgetispeed(<span class="keyword">const</span> <span class="keyword">struct</span> termios *termptr); </div><div class="line"><span class="keyword">speed_t</span> cfgetospeed(<span class="keyword">const</span> <span class="keyword">struct</span> termios *termptr); </div><div class="line"></div><div class="line"><span class="comment">// Both return: baud rate value </span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">cfsetispeed</span><span class="params">(<span class="keyword">struct</span> termios *termptr, <span class="keyword">speed_t</span> speed)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">cfsetospeed</span><span class="params">(<span class="keyword">struct</span> termios *termptr, <span class="keyword">speed_t</span> speed)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<h2 id="行控制函数"><a href="#行控制函数" class="headerlink" title="行控制函数"></a>行控制函数</h2><p>下列4个函数提供了终端设备的行控制能力：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;termios.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcdrain</span><span class="params">(<span class="keyword">int</span> fd)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcflow</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> action)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcflush</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> <span class="built_in">queue</span>)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcsendbreak</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> duration)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// All four return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>tcdrain函数等待所有输出都被传递。<br>tcflow函数用于对输入和输出流控制进行控制。<br>tcflush函数冲洗(抛弃)输入缓冲区(其中的数据是终端驱动程序已接收到,但用户程序尚未读取的)或输出缓冲区(其中的数据是用户程序已经写入,但尚未被传递的)。<br>tcsendbreak函数在一个指定的时间区间内发送连续的0值位流。</p>
-<h2 id="终端标识"><a href="#终端标识" class="headerlink" title="终端标识"></a>终端标识</h2><p>历史上,在大多数UNIX系统版本中,控制终端的名字一直是/dev/tty。POSIX.1提供了个运行时函数,可用来确定控制终端的名字。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">ctermid</span><span class="params">(<span class="keyword">char</span> *ptr)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to name of controlling terminal on success, pointer to empty string on error</span></div></pre></td></tr></table></figure>
-<p>另外还有两个UNIX系统比较感兴趣的函数: isatty和 ttyname。如果文件描述符引用个终端设备,则 isatty返回真。 ttyname返回的是在该文件描述符上打开的终端设备的路径名</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">isatty</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 1 (true) if terminal device, 0 (false) otherwise</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">ttyname</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to pathname of terminal, NULL on error</span></div></pre></td></tr></table></figure>
-<h2 id="规范模式"><a href="#规范模式" class="headerlink" title="规范模式"></a>规范模式</h2><p>规范模式很简单:发一个读请求,<strong>当一行已经输入后,终端驱动程序即返回</strong>。以下几个条件造成读返回。</p>
-<ol>
-<li>所请求的字节数已读到时,读返回。无需读一个完整的行。如果读了部分行,那么也不会丢失任何信息,下一次读从前一次读的停止处开始。</li>
-<li>当读到一个行定界符时,读返回。</li>
-<li>如果捕捉到信号,并且该函数不再自动重启,则读也返回</li>
-</ol>
-<h2 id="非规范模式"><a href="#非规范模式" class="headerlink" title="非规范模式"></a>非规范模式</h2><p>可以通过关闭termios结构中c_lf1ag字段的ICANON标志来指定非规范模式。在非规范模式中,输入数据不装配成行,不处理下列特殊字符: ERASE、KILL、EOF、NLEOL、EOL2、CR、REPRINT、STATUS和 WERASE。</p>
-<p>如前所述,规范模式很容易理解:系统每次至多返回一行。但在非规范模式下,系统如何知道在什么时候将数据返回给我们呢?如果它一次返回一个字节,那么系统开销就会过大。在启动读数据之前,往往不知道要读多少数据,所以系统不能总是一次返回多个字节解决方法是,当已读了指定量的数据后,或者已经超过了给定量的时间后,即通知系统返回。</p>
-<p>这种技术使用了 termios结构中c_cc数组的两个变量:MIN和TIME。c_cc数组中的这两个元素的下标名为VMIN和VTIM。</p>
-<p>MIN指定一个read返回前的最小字节数。TIME指定等待数据到达的分秒数(分秒为秒的1/10)。</p>
-<p><img src="https://data2.liuin.cn/2018-05-05-15255076147395.jpg" alt=""></p>
-<h2 id="终端窗口大小"><a href="#终端窗口大小" class="headerlink" title="终端窗口大小"></a>终端窗口大小</h2><p>大多数UNⅨX系统都提供了一种跟踪当前终端窗口大小的方法,在窗口大小发生变化时,使内核通知前台进程组。内核为每个终端和伪终端都维护了一个wins1ze结构</p>
-<p><img src="https://data2.liuin.cn/2018-05-05-15255076954042.jpg" alt=""></p>
-<p>提供这种功能的目的是,当窗口大小发生变化时应用程序能够得到通知(如v1编辑器)。应用程序接收此信号后,可以获取窗口大小的新值,然后重绘屏幕。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;《UNIX环境高级编程》第18章 终端I/O 笔记&lt;/p&gt;
     
     </summary>
     
