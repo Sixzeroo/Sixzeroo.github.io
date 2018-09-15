@@ -109,15 +109,15 @@
 <meta name="description" content="总结在LeetCode中遇到的单调栈的一系列题目">
 <meta name="keywords" content="LeetCode,算法总结">
 <meta property="og:type" content="article">
-<meta property="og:title" content="LeetCode——单调栈结构">
-<meta property="og:url" content="https://www.liuin.cn/2018/07/27/LeetCode——单调栈结构/index.html">
+<meta property="og:title" content="LeetCode——单调数据结构">
+<meta property="og:url" content="https://www.liuin.cn/2018/07/27/LeetCode——单调数据结构/index.html">
 <meta property="og:site_name" content="Sixzeroo">
 <meta property="og:description" content="总结在LeetCode中遇到的单调栈的一系列题目">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://data3.liuin.cn/2018-09-08-15364073032884.jpg">
-<meta property="og:updated_time" content="2018-09-08T12:04:27.000Z">
+<meta property="og:updated_time" content="2018-09-15T02:55:54.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="LeetCode——单调栈结构">
+<meta name="twitter:title" content="LeetCode——单调数据结构">
 <meta name="twitter:description" content="总结在LeetCode中遇到的单调栈的一系列题目">
 <meta name="twitter:image" content="http://data3.liuin.cn/2018-09-08-15364073032884.jpg">
 
@@ -149,7 +149,7 @@
 
 
 
-  <link rel="canonical" href="https://www.liuin.cn/2018/07/27/LeetCode——单调栈结构/"/>
+  <link rel="canonical" href="https://www.liuin.cn/2018/07/27/LeetCode——单调数据结构/"/>
 
 
 
@@ -165,7 +165,7 @@
   </script>
 
 
-  <title>LeetCode——单调栈结构 | Sixzeroo</title>
+  <title>LeetCode——单调数据结构 | Sixzeroo</title>
   
 
 
@@ -358,7 +358,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2018/07/27/LeetCode——单调栈结构/">
+    <link itemprop="mainEntityOfPage" href="https://www.liuin.cn/2018/07/27/LeetCode——单调数据结构/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Sixzeroo">
@@ -375,7 +375,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">LeetCode——单调栈结构</h2>
+          <h2 class="post-title" itemprop="name headline">LeetCode——单调数据结构</h2>
         
 
         <div class="post-meta">
@@ -427,7 +427,7 @@
 
           
           
-             <span id="/2018/07/27/LeetCode——单调栈结构/" class="leancloud_visitors" data-flag-title="LeetCode——单调栈结构">
+             <span id="/2018/07/27/LeetCode——单调数据结构/" class="leancloud_visitors" data-flag-title="LeetCode——单调数据结构">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -452,7 +452,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  895 字
+                  1,158 字
                 </span>
               
 
@@ -480,19 +480,24 @@
         <p>总结在LeetCode中遇到的单调栈的一系列题目</p>
 <a id="more"></a>
 <h2 id="单调栈"><a href="#单调栈" class="headerlink" title="单调栈"></a>单调栈</h2><p>单调栈是这样的一种数据结构：栈中从栈底到栈顶的数都是递减的，为了维护这种结构在插入比当前栈顶大的数的时候都需要先将栈顶的数弹出，这样我们就能够知道弹出的这个数两边比它大的数了。在某些题目中，单调栈的这种特定能够给我们提供很大的帮助。</p>
-<h2 id="LeetCode-84"><a href="#LeetCode-84" class="headerlink" title="LeetCode 84"></a>LeetCode 84</h2><p><a href="https://leetcode.com/problems/largest-rectangle-in-histogram/description/" target="_blank" rel="external">Largest Rectangle in Histogram</a></p>
+<h3 id="LeetCode-84"><a href="#LeetCode-84" class="headerlink" title="LeetCode 84"></a>LeetCode 84</h3><p><a href="https://leetcode.com/problems/largest-rectangle-in-histogram/description/" target="_blank" rel="external">Largest Rectangle in Histogram</a></p>
 <p>题意：<br>给出一个直方图，求直方图中所能够围成矩形的最大面积<br><img src="http://data3.liuin.cn/2018-09-08-15364073032884.jpg" alt=""></p>
 <p>题解：<br>维护一个递增的单调栈，如果需要将栈顶数据弹出则表示形成了山峰的形状，这样我们就可以计算出这个山峰里能够围成的矩形的面积，因为弹出的这一个数能够知道其左右比它小的数。当遍历完以后还有一些矩形需要计算，再将这个栈依次弹出，这个时候右边没有比它小的数了，他左边比它小的数就是栈顶的数。每弹出一个数就能够计算出一个矩形的面积。</p>
 <p>代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="comment">// 维护单调栈</span></div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">largestRectangleArea</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; heights)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> len = heights.size();</div><div class="line">        <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; s;</div><div class="line">        <span class="keyword">int</span> res = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">while</span>(!s.empty() &amp;&amp; heights[s.top()] &gt; heights[i])</div><div class="line">            &#123;</div><div class="line">                <span class="keyword">int</span> tem = s.top();</div><div class="line">                s.pop();</div><div class="line">                <span class="comment">// 计算面积</span></div><div class="line">                <span class="keyword">int</span> curArea = s.empty() ? i*heights[tem] : (i - s.top() - <span class="number">1</span>)*heights[tem];</div><div class="line">                res = max(res, curArea);</div><div class="line">            &#125;</div><div class="line">            s.push(i);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">while</span>(!s.empty())</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">int</span> tem = s.top();</div><div class="line">            s.pop();</div><div class="line">            <span class="keyword">int</span> curArea = s.empty() ? len*heights[tem] : (len - s.top() - <span class="number">1</span>) * heights[tem];</div><div class="line">            res = max(res, curArea);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<h2 id="LeetCode-85"><a href="#LeetCode-85" class="headerlink" title="LeetCode 85"></a>LeetCode 85</h2><p><a href="https://leetcode.com/problems/maximal-rectangle/description/" target="_blank" rel="external">Maximal Rectangle</a></p>
+<h3 id="LeetCode-85"><a href="#LeetCode-85" class="headerlink" title="LeetCode 85"></a>LeetCode 85</h3><p><a href="https://leetcode.com/problems/maximal-rectangle/description/" target="_blank" rel="external">Maximal Rectangle</a></p>
 <p>题意：<br>给出一个只包含0和1的二维矩阵，求出其中1围成的矩形的最大面积</p>
 <p>题解：<br>这道题可以说是上面那道题的变形，因为把这个n*m的矩阵转换成m个直方图就是上面的那道题，计算m次即可</p>
 <p>代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; getSlice(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt;&amp; matrix, <span class="keyword">int</span> h)</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; ret;</div><div class="line">        <span class="keyword">int</span> len = matrix[<span class="number">0</span>].size();</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">int</span> tem = h, count = <span class="number">0</span>;</div><div class="line">            <span class="keyword">while</span>(tem &gt;= <span class="number">0</span> &amp;&amp; matrix[tem][i] == <span class="string">'1'</span>)</div><div class="line">            &#123;</div><div class="line">                tem --;</div><div class="line">                count ++;</div><div class="line">            &#125;</div><div class="line">            ret.push_back(count);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> ret;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maximalRectangle</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&gt;&amp; matrix)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> len1 = matrix.size();</div><div class="line">        <span class="keyword">if</span>(len1 == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">        <span class="keyword">int</span> len2 = matrix[<span class="number">0</span>].size();</div><div class="line">        <span class="keyword">if</span>(len2 == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">        <span class="keyword">int</span> res = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> t = <span class="number">0</span>; t &lt; len1; t++)</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; heights = getSlice(matrix, t);</div><div class="line">            <span class="keyword">int</span> len3 = heights.size();</div><div class="line">            <span class="comment">// 使用栈来保存一个递增的序列</span></div><div class="line">            <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; s;</div><div class="line">            <span class="keyword">int</span> tem_res = <span class="number">0</span>;</div><div class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len3; i++)</div><div class="line">            &#123;</div><div class="line">                <span class="keyword">while</span>(!s.empty() &amp;&amp; heights[s.top()] &gt; heights[i])</div><div class="line">                &#123;</div><div class="line">                    <span class="keyword">int</span> tem = s.top();</div><div class="line">                    s.pop();</div><div class="line">                    <span class="comment">// 计算不在序列内的区块的面积</span></div><div class="line">                    <span class="keyword">int</span> curArea = s.empty() ? i*heights[tem] : (i - s.top() - <span class="number">1</span>)*heights[tem];</div><div class="line">                    tem_res = max(tem_res, curArea);</div><div class="line">                    <span class="comment">// cout&lt;&lt;i&lt;&lt;" "&lt;&lt;tem_res&lt;&lt;endl;</span></div><div class="line">                &#125;</div><div class="line">                s.push(i);</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// 对递增序列中的序列面积进行计算</span></div><div class="line">            <span class="keyword">while</span>(!s.empty())</div><div class="line">            &#123;</div><div class="line">                <span class="keyword">int</span> tem = s.top();</div><div class="line">                s.pop();</div><div class="line">                <span class="keyword">int</span> curArea = s.empty() ? len3*heights[tem] : (len3 - s.top() - <span class="number">1</span>) * heights[tem];</div><div class="line">                tem_res = max(tem_res, curArea);</div><div class="line">                <span class="comment">// cout&lt;&lt;tem&lt;&lt;" "&lt;&lt;tem_res&lt;&lt;endl;</span></div><div class="line">            &#125;</div><div class="line">            res = max(res, tem_res);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<h2 id="LeetCode-456"><a href="#LeetCode-456" class="headerlink" title="LeetCode 456"></a>LeetCode 456</h2><p><a href="https://leetcode.com/problems/132-pattern/description/" target="_blank" rel="external">132 Pattern</a></p>
+<h3 id="LeetCode-456"><a href="#LeetCode-456" class="headerlink" title="LeetCode 456"></a>LeetCode 456</h3><p><a href="https://leetcode.com/problems/132-pattern/description/" target="_blank" rel="external">132 Pattern</a></p>
 <p>题意：</p>
 <p>给出一个数组，判断是否存在这样的三个数：i &lt; j &lt; k，同时a[i] &lt; a[k] &lt; a[j] 类似于132的组合</p>
 <p>题解：<br>从后往前去维护一个递减的单调栈，同时记录淘汰掉的数的最大值s3（这里相当于a[k]），从后往前遍历的过程中如果有数比s3要小，则表明存在上述的结构</p>
 <p>代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="comment">// 单调栈结构巧妙解法</span></div><div class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">find132pattern</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums)</span> </span>&#123;</div><div class="line">        <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; s;</div><div class="line">        <span class="keyword">int</span> len = nums.size();</div><div class="line">        <span class="keyword">if</span> (len &lt; <span class="number">3</span>) <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">        <span class="keyword">int</span> s3 = INT_MIN;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = len - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span>(nums[i] &lt; s3) <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">            <span class="keyword">while</span>(!s.empty() &amp;&amp; nums[i] &gt; s.top())</div><div class="line">            &#123;</div><div class="line">                s3 = max(s3, s.top());</div><div class="line">                s.pop();</div><div class="line">            &#125;</div><div class="line">            s.push(nums[i]);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<h2 id="单调队列"><a href="#单调队列" class="headerlink" title="单调队列"></a>单调队列</h2><p>单调队列能够维护一个滑动窗口的最大值或者最小值</p>
+<p>一般队列中存放的是数组中的index。以最大值为例，队列加数时：判断最后一个数是不是小于等于当前数，如果如果是就弹出最后这个数，不断重复直到无法弹出最后那个数后加当前数加入队尾，使得这个队列中是单调的。队列减数：通过index的差值判断在不在窗口内，通过差值计算是否值是否过期。</p>
+<h3 id="LeetCode-239"><a href="#LeetCode-239" class="headerlink" title="LeetCode 239"></a>LeetCode 239</h3><p><a href="https://leetcode.com/problems/sliding-window-maximum/description/" target="_blank" rel="external">题目链接</a></p>
+<p>典型的滑动窗口内的最大值问题，这里要求每一个滑动窗口的最大值并加入到一个动态数组中</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="comment">// 单调队列数据结构</span></div><div class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; maxSlidingWindow(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> k) &#123;</div><div class="line">        <span class="keyword">int</span> len = nums.size(), l = <span class="number">0</span>, r = <span class="number">0</span>;</div><div class="line">        <span class="built_in">deque</span>&lt;<span class="keyword">int</span>&gt; de;</div><div class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; res;</div><div class="line">        <span class="keyword">for</span>(; r &lt; len; r++)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">while</span>(!de.empty() &amp;&amp; nums[r] &gt;= nums[de.back()])</div><div class="line">                de.pop_back();</div><div class="line">            de.push_back(r);</div><div class="line">            <span class="keyword">if</span>(r &gt;= k<span class="number">-1</span>)</div><div class="line">            &#123;</div><div class="line">                res.push_back(nums[de.front()]);</div><div class="line">                <span class="keyword">if</span>(de.front() &lt;= l)</div><div class="line">                    de.pop_front();</div><div class="line">                l++;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
 
       
     </div>
@@ -542,7 +547,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://www.liuin.cn/2018/07/27/LeetCode——单调栈结构/" title="LeetCode——单调栈结构">https://www.liuin.cn/2018/07/27/LeetCode——单调栈结构/</a>
+    <a href="https://www.liuin.cn/2018/07/27/LeetCode——单调数据结构/" title="LeetCode——单调数据结构">https://www.liuin.cn/2018/07/27/LeetCode——单调数据结构/</a>
   </li>
   <li class="post-copyright-author">
 	<strong>发布时间: </strong>
@@ -550,7 +555,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年9月8日 - 20时09分
+	2018年9月15日 - 10时09分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -761,7 +766,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#单调栈"><span class="nav-number">1.</span> <span class="nav-text">单调栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-84"><span class="nav-number">2.</span> <span class="nav-text">LeetCode 84</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-85"><span class="nav-number">3.</span> <span class="nav-text">LeetCode 85</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-456"><span class="nav-number">4.</span> <span class="nav-text">LeetCode 456</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#单调栈"><span class="nav-number">1.</span> <span class="nav-text">单调栈</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LeetCode-84"><span class="nav-number">1.1.</span> <span class="nav-text">LeetCode 84</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LeetCode-85"><span class="nav-number">1.2.</span> <span class="nav-text">LeetCode 85</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LeetCode-456"><span class="nav-number">1.3.</span> <span class="nav-text">LeetCode 456</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单调队列"><span class="nav-number">2.</span> <span class="nav-text">单调队列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LeetCode-239"><span class="nav-number">2.1.</span> <span class="nav-text">LeetCode 239</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -799,7 +804,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      360.4k 字
+      360.7k 字
     </span>
   
 
