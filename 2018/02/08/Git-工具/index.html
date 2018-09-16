@@ -116,7 +116,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_7_1518003024258.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_7_1518007500384.jpg">
-<meta property="og:updated_time" content="2018-02-23T04:05:57.000Z">
+<meta property="og:updated_time" content="2018-09-16T14:02:53.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Git 工具">
 <meta name="twitter:description" content="《Pro Git》读书笔记">
@@ -453,7 +453,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  5,757 字
+                  5,753 字
                 </span>
               
 
@@ -546,7 +546,29 @@
 <p>假设已经从另一个源代码控制系统中导入，并且有几个没意义的子目录（trunk、tags 等等）。如果想要让trunk 子目录作为每一个提交的新的项目根目录，filter-branch 也可以帮助你那么做：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git filter-branch --subdirectory-filter trunk HEAD</div></pre></td></tr></table></figure></p>
 <h2 id="重置揭秘"><a href="#重置揭秘" class="headerlink" title="重置揭秘"></a>重置揭秘</h2><p>这里将讨论reset与checkout</p>
 <h3 id="三棵树"><a href="#三棵树" class="headerlink" title="三棵树"></a>三棵树</h3><p>理解 reset 和 checkout 的最简方法，就是以 Git 的思维框架（将其作为内容管理器）来管理三棵不同的树。“树” 在我们这里的实际意思是 “文件的集合”，而不是指特定的数据结构</p>
-<p>Git 作为一个系统，是以它的一般操作来管理并操纵这三棵树的：<br>| 树 | 用途 |<br>| – | – |<br>| HEAD | 上一次提交的快照，下一次提交的父结点|<br>| Index| 预期的下一次提交的快照|<br>|Working Directory| 沙盒|</p>
+<p>Git 作为一个系统，是以它的一般操作来管理并操纵这三棵树的：</p>
+<table>
+<thead>
+<tr>
+<th>树</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HEAD</td>
+<td>上一次提交的快照，下一次提交的父结点</td>
+</tr>
+<tr>
+<td>Index</td>
+<td>预期的下一次提交的快照</td>
+</tr>
+<tr>
+<td>Working Directory</td>
+<td>沙盒</td>
+</tr>
+</tbody>
+</table>
 <blockquote>
 <p>HEAD</p>
 </blockquote>
@@ -578,17 +600,15 @@
 <p>压缩</p>
 </blockquote>
 <p>我们来看看如何利用这种新的功能来做一些有趣的事情 - 压缩提交</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git reset --soft HEAD~2</div><div class="line"> git commit</div></pre></td></tr></table></figure>
-<h3 id="检出（checkout）"><a href="#检出（checkout）" class="headerlink" title="检出（checkout）"></a>检出（checkout）</h3><pre><code>运行 `git checkout [branch] `与运行` git reset --hard [branch] `非常相似，它会更新所有三棵树使其看起来像 \[branch\]，不过有两点重要的区别。
-
- 首先不同于 reset --hard，checkout 对工作目录是安全的，它会通过检查来确保不会将已更改的文件吹走。其实它还更聪明一些。它会在工作目录中先试着简单合并一下，这样所有_还未修改过的_文件都会被更新。而 reset --hard 则会不做检查就全面地替换所有东西。
-
- 第二个重要的区别是如何更新 HEAD。reset 会移动 HEAD 分支的指向，而 checkout 只会移动 HEAD 自身来指向另一个分支。
-
- &gt; 带路径情况
-
- 运行 checkout 的另一种方式就是指定一个文件路径，这会像 reset 一样不会移动 HEAD。它就像是 `git reset --hard [branch] file`（如果 reset 允许你这样运行的话）- 这样对工作目录并不安全，它也不会移动 HEAD。
-</code></pre><h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p><img src="https://data2.liuin.cn/story-writer/2018_2_7_1518007500384.jpg" alt="enter description here"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git reset --soft HEAD~2</div><div class="line">git commit</div></pre></td></tr></table></figure>
+<h3 id="检出（checkout）"><a href="#检出（checkout）" class="headerlink" title="检出（checkout）"></a>检出（checkout）</h3><p>运行 <code>git checkout [branch]</code>与运行<code>git reset --hard [branch]</code>非常相似，它会更新所有三棵树使其看起来像 [branch]，不过有两点重要的区别。</p>
+<p>首先不同于 reset –hard，checkout 对工作目录是安全的，它会通过检查来确保不会将已更改的文件吹走。其实它还更聪明一些。它会在工作目录中先试着简单合并一下，这样所有<em>还未修改过的</em>文件都会被更新。而 reset –hard 则会不做检查就全面地替换所有东西。</p>
+<p>第二个重要的区别是如何更新 HEAD。reset 会移动 HEAD 分支的指向，而 checkout 只会移动 HEAD 自身来指向另一个分支。</p>
+<blockquote>
+<p>带路径情况</p>
+</blockquote>
+<p>运行 checkout 的另一种方式就是指定一个文件路径，这会像 reset 一样不会移动 HEAD。它就像是 <code>git reset --hard [branch] file</code>（如果 reset 允许你这样运行的话）- 这样对工作目录并不安全，它也不会移动 HEAD。</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p><img src="https://data2.liuin.cn/story-writer/2018_2_7_1518007500384.jpg" alt="enter description here"></p>
 <h2 id="高级合并"><a href="#高级合并" class="headerlink" title="高级合并"></a>高级合并</h2><p>Git 并不会尝试过于聪明的合并冲突解决方案。Git的哲学是聪明地决定无歧义的合并方案，但是如果有冲突，它不会尝试智能地自动解决它。</p>
 <h3 id="合并冲突"><a href="#合并冲突" class="headerlink" title="合并冲突"></a>合并冲突</h3><p>首先，在做一次可能有冲突的合并前尽可能保证工作目录是干净的。</p>
 <p>在遇到冲突的时候，你可以有以下几种解决方案：</p>
@@ -699,7 +719,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年2月23日 - 12时02分
+	2018年9月16日 - 22时09分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -820,7 +840,7 @@
             
               <a href="/archives">
             
-                <span class="site-state-item-count">184</span>
+                <span class="site-state-item-count">185</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -946,7 +966,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      360.7k 字
+      361.4k 字
     </span>
   
 

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-09-14T15:26:07.000Z</updated>
+  <updated>2018-09-16T14:17:20.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,56 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Git 闯关游戏——githug</title>
+    <link href="https://www.liuin.cn/2018/08/08/Git-%E9%97%AF%E5%85%B3%E6%B8%B8%E6%88%8F%E2%80%94%E2%80%94githug/"/>
+    <id>https://www.liuin.cn/2018/08/08/Git-闯关游戏——githug/</id>
+    <published>2018-08-08T13:26:19.000Z</published>
+    <updated>2018-09-16T14:17:20.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>学习Git过程中缺乏实践？不如来玩一玩这款Git闯关游戏，通过git命令来闯关。玩着玩着就学会了Git，美滋滋！</p>
+<a id="more"></a>
+<h2 id="githug"><a href="#githug" class="headerlink" title="githug"></a>githug</h2><p>githug 是用Ruby开发为了帮助学习使用git的一个闯关游戏。和我之前推荐的学习Linux命令的<a href="https://www.liuin.cn/2017/11/01/Bandit-%E9%80%9A%E5%85%B3%E9%A2%98%E8%A7%A3/">Bandit</a>游戏有点像。</p>
+<p>其Github地址：<a href="https://github.com/Gazler/githug" target="_blank" rel="external">https://github.com/Gazler/githug</a></p>
+<p>安装过程也比较简单，首先安装好基本的Ruby环境（1.8.7）以上</p>
+<p>因为国内可能会遇到用gem安装相关包因为https网络问题报错的情况，如果出现<code>Unable to download data from https://rubygems.org/</code>这样的报错信息</p>
+<p>可以通过如下方式解决<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo gem sources -r https://rubygems.org</div><div class="line">sudo gem sources <span class="_">-a</span> http://rubygems.org</div></pre></td></tr></table></figure></p>
+<p>当然安装完以后也别忘了设置回来<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo gem sources -r http://rubygems.org</div><div class="line">sudo gem sources <span class="_">-a</span> https://rubygems.org</div></pre></td></tr></table></figure></p>
+<p>然后进行安装：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo gem install githug</div></pre></td></tr></table></figure></p>
+<p>安装完成以后运行<code>githug</code>会提示创建相关的文件夹，回复<code>y</code>就行了。</p>
+<p>githug有4个基本命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">play - 默认命令，查看当前状态和题目</div><div class="line">hint - 给你当前level的一些提示</div><div class="line">reset - 重新开始当前关卡</div><div class="line">levels - 列出所有关卡</div></pre></td></tr></table></figure></p>
+<h2 id="通过题解"><a href="#通过题解" class="headerlink" title="通过题解"></a>通过题解</h2><p>有一些关卡比较简单，选取一些我觉得有点意思的关卡给出题解吧。</p>
+<h3 id="20-commit-in-futue"><a href="#20-commit-in-futue" class="headerlink" title="20 commit_in_futue"></a>20 commit_in_futue</h3><p>使用一个未来的时间作为提交，提交的时候指定–date选项，能够自定义提交的时间</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ git commit -m <span class="string">"future commit"</span> --date=12.12.2018T22:00:00</div><div class="line"></div><div class="line">[master (root-commit) 2f27bee] future commit</div><div class="line"> Date: Wed Dec 12 22:00:00 2018 +0800</div><div class="line"> 1 file changed, 0 insertions(+), 0 deletions(-)</div><div class="line"> create mode 100644 README</div></pre></td></tr></table></figure>
+<h3 id="21-reset"><a href="#21-reset" class="headerlink" title="21 reset"></a>21 reset</h3><p>git reset 常用来进行版本回推。要了解<code>reset</code>命令首先要了解git中的三棵树：<br><code>HEAD</code>：是当前分支引用的指针，它总是指向该分支上的最后一次提交。 这表示 HEAD 将是下一次提交的父结点。<br><code>暂存区（Index）</code>：预期的下一次提交<br><code>工作区</code>：git 实际管理的文件的目录</p>
+<p><img src="http://data3.liuin.cn/2018-09-16-15371061297360.jpg" alt=""></p>
+<p><code>reset</code> 命令以一种简单可预见的方式直接操纵三棵树，它做了三个基本操作：移动 HAED，重置索引，重置工作目录。实际上 reset 是以特定的顺序来重写三棵树，并在指定相应选项时停止：</p>
+<ol>
+<li>移动 HEAD 分支的指向 （若指定了 –soft，则到此停止）</li>
+<li>使索引看起来像 HEAD （–mixed，默认到此停止）</li>
+<li>使工作目录看起来像索引 （若指定了 –hard，则进行这一步）</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git reset to_commit_second.rb</div></pre></td></tr></table></figure>
+<h3 id="22-reset-soft"><a href="#22-reset-soft" class="headerlink" title="22 reset_soft"></a>22 reset_soft</h3><p>使用 reset 命令的 –soft 选项</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git reset --soft HEAD~</div></pre></td></tr></table></figure>
+<h3 id="23-checkout-file"><a href="#23-checkout-file" class="headerlink" title="23 checkout_file"></a>23 checkout_file</h3><p>checkout 作用于文件的时候，会将文件从当前HEAD中检出，即让当前工作区的文件变成HEAD中的样子，命令格式为<code>git checkout [-q] [&lt;commit&gt;] [--] &lt;paths&gt;...</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git checkout config.rb</div></pre></td></tr></table></figure>
+<p>### </p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;学习Git过程中缺乏实践？不如来玩一玩这款Git闯关游戏，通过git命令来闯关。玩着玩着就学会了Git，美滋滋！&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="软件使用" scheme="https://www.liuin.cn/categories/%E8%BD%AF%E4%BB%B6%E4%BD%BF%E7%94%A8/"/>
+    
+    
+      <category term="Git" scheme="https://www.liuin.cn/tags/Git/"/>
+    
+  </entry>
   
   <entry>
     <title>算法总结——二分法</title>
@@ -425,7 +475,7 @@
     <link href="https://www.liuin.cn/2018/06/24/%E6%8E%A8%E8%8D%90%E4%B8%A4%E4%B8%AA%E7%BB%88%E7%AB%AF%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%EF%BC%9AProxyChains-%E5%92%8C-Proxifier/"/>
     <id>https://www.liuin.cn/2018/06/24/推荐两个终端代理工具：ProxyChains-和-Proxifier/</id>
     <published>2018-06-24T07:10:19.000Z</published>
-    <updated>2018-06-24T07:42:03.000Z</updated>
+    <updated>2018-09-16T12:55:38.000Z</updated>
     
     <content type="html"><![CDATA[<p>Shadowsocks代理是sock5代理，但是我们的终端中的很多应用都是不走sock5代理的，这个时候就需要一些工具来让这些数据通过sock5进行传输，这里推荐两个Linux和Mac中常用的工具：ProxyChains 和 Proxifier</p>
 <a id="more"></a>
@@ -464,7 +514,7 @@
 <p><img src="http://data3.liuin.cn/2018-06-24-15298257914991.jpg" alt=""></p>
 <h3 id="设置代理规则"><a href="#设置代理规则" class="headerlink" title="设置代理规则"></a>设置代理规则</h3><p>在<code>Rules</code>模块中，我们可以设置指定应用、目标主机、目标端口走我们刚才添加的代理</p>
 <p><img src="http://data3.liuin.cn/2018-06-24-15298261213304.jpg" alt=""></p>
-<p>需要注意的是，我们给我们提供的代理的Shadowsocks要设置成直接连接不能加入代理中，否则会造成整个代理链成了一条环，最后上不了网。</p>
+<p>需要注意的是，给我们提供的代理的Shadowsocks要设置成直接连接不能加入代理中，否则会造成整个代理链成了一条环，最后上不了网。</p>
 <p>设置以后就可能在终端中享受代理服务了~</p>
 ]]></content>
     
@@ -1558,81 +1608,6 @@
     
     
       <category term="STL" scheme="https://www.liuin.cn/tags/STL/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《UNIX网络编程卷1》笔记 简介部分</title>
-    <link href="https://www.liuin.cn/2018/05/15/%E3%80%8AUNIX%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%8D%B71%E3%80%8B%E7%AC%94%E8%AE%B0%20%E7%AE%80%E4%BB%8B%E9%83%A8%E5%88%86/"/>
-    <id>https://www.liuin.cn/2018/05/15/《UNIX网络编程卷1》笔记 简介部分/</id>
-    <published>2018-05-15T12:37:20.000Z</published>
-    <updated>2018-05-21T13:35:53.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>UNIX网络编程必读书籍——《UNIX网络编程卷1》  简介部分 笔记</p>
-<a id="more"></a>
-<h1 id="传输层：TCP、UDP和SCTP"><a href="#传输层：TCP、UDP和SCTP" class="headerlink" title="传输层：TCP、UDP和SCTP"></a>传输层：TCP、UDP和SCTP</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>UDP是一个<strong>简单的、不可靠的数据报协议</strong>,而TCP是一个<strong>复杂、可靠的字节流协议</strong>。SCTP与TCP类似之处在于它<strong>也是一个可靠的传输协议,但它还提供消息边界、传输级别多宿</strong>（multihoming)支持以及将头端阻塞( head-of-line blockin)减少到最小的一种方法。我们必须了解由这些传输层协议提供给应用进程的服务,这样才能弄清这些协议处理什么,应用进程中又需要处理什么。</p>
-<h2 id="总图"><a href="#总图" class="headerlink" title="总图"></a>总图</h2><p>TCP/IP协议族除了TCP和IP这两个协议以外，还有许多其他的成员：</p>
-<p><img src="https://data2.liuin.cn/2018-05-21-15269068803801.jpg" alt=""></p>
-<h2 id="用户数据报协议（UDP）"><a href="#用户数据报协议（UDP）" class="headerlink" title="用户数据报协议（UDP）"></a>用户数据报协议（UDP）</h2><p>应用进程往一个UDP套接字写入一个消息,该消息随后被封装( encapsulating)到一个UDP数据报,该UDP数据报进而又被封装到一个IP数据报,然后发送到目的地。UDP不保证UDP数据报会到达其最终目的地,不保证各个数据报的先后顺序跨网络后保持不变,也不保证每个数据报只到达一次</p>
-<p>使用UDP进行网络编程所遇到的问题是它缺乏可靠性。如果一个数据报到达了其最终目的地,但是校验和检测发现有错误,或者该数据报在网络传输途中被丢弃了,它就无法被投递给UDP套接字,也不会被源端自动重传。</p>
-<p>每个UDP数据报都有一个长度。如果一个数据报正确地到达其目的地,那么该数据报的长度将随数据一道传递给接收端应用进程。同时TCP是一个字节流(byte-stream)协议,没有任何记录边界,这一点不同于UDP</p>
-<h2 id="传输控制协议（TCP）"><a href="#传输控制协议（TCP）" class="headerlink" title="传输控制协议（TCP）"></a>传输控制协议（TCP）</h2><p>首先，TCP客户先与某个给定服务器<strong>建立一个连接</strong>,再跨该连接与那个服务器交换数据,然后终止这个连接。</p>
-<p>其次,TCP还提供了<strong>可靠性</strong>( reliability)。当TCP向另一端发送数据时,它要求对端返回个确认。如果没有收到确认,TCP就自动重传数据并等待更长时间。在数次重传失败后,TCP才放弃。TCP通过给其中每个字节关联一个序列号对所发送的数据进行排序，从而达到确认重传的目的。</p>
-<p>再次,TCP提供<strong>流量控制</strong>( flow control)。TCP总是告知对端在任何时刻它一次能够从对端接收多少字节的数据,这称为通告窗口( advertised window)。在任何时刻,该窗口指出接收缓冲区中当前可用的空间量,从而确保发送端发送的数据不会使接收缓冲区溢出。该窗口时刻动态变化。</p>
-<p>最后,TCP连接是全双工的( full-duplex)。这意味着在一个给定的连接上应用可以在任何时刻在进出两个方向上既发送数据又接收数据。因此,TCP必须为每个数据流方向跟踪诸如序列号和通告窗口大小等状态信息。当然UDP也是全双工的。</p>
-<h2 id="流控制传输协议（SCTP）"><a href="#流控制传输协议（SCTP）" class="headerlink" title="流控制传输协议（SCTP）"></a>流控制传输协议（SCTP）</h2><p>SCTP提供的服务与UDP和TCP提供的类似。SCTP在客户和服务器之间提供关联( association),并像TCP那样给应用提供可靠性、排序、流量控制以及全双工的数据传送。SCTP中使用“关联”一词取代“连接”是为了避免这样的内涵:一个连接只涉及两个IP地址之间的通信。一个关联指代两个系统之间的一次通信,它可能因为SCTP支持多宿而涉及不止两个地址</p>
-<p>与TCP不同的是,SCTP是面向消息的(message-oriented)。它提供各个记录的按序递送服务。与UDP一样,由发送端写入的每条记录的长度随数据一道传递给接收端应用SCTP能够在所连接的端点之间提供多个流,每个流各自可靠地按序递送消息。</p>
-<h2 id="TCP连接的建立和终止"><a href="#TCP连接的建立和终止" class="headerlink" title="TCP连接的建立和终止"></a>TCP连接的建立和终止</h2><h3 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h3><p><img src="https://data2.liuin.cn/2018-05-21-15269078619660.jpg" alt=""></p>
-<h3 id="TCP选项"><a href="#TCP选项" class="headerlink" title="TCP选项"></a>TCP选项</h3><p>每一个SYN可以含有多个TCP选项，下面是一些常用的：</p>
-<ul>
-<li>MSS选项。发送SYN的TCP一端使用本选项通告对端它的最大分节大小( maximunsegment size)即MSS,也就是它在本连接的每个TCP分节中愿意接受的最大数据量。</li>
-<li>窗口规模选项。TCP连接任何一端能够通告对端的最大窗口大小是65535,因为在TCP首部中相应的字段占16位。</li>
-<li>时间戳选项。这个选项对于高速网络连接是必要的,它可以防止由失而复现的分组°可能造成的数据损坏。</li>
-</ul>
-<h3 id="TCP-连接终止"><a href="#TCP-连接终止" class="headerlink" title="TCP 连接终止"></a>TCP 连接终止</h3><p><img src="https://data2.liuin.cn/2018-05-21-15269079942940.jpg" alt=""></p>
-<h3 id="TCP-状态转换图"><a href="#TCP-状态转换图" class="headerlink" title="TCP 状态转换图"></a>TCP 状态转换图</h3><p>TCP建立连接和连接终止的操作可以用状态转换图来进行表示，其中一共有11种状态</p>
-<p><img src="https://data2.liuin.cn/2018-05-21-15269080313206.jpg" alt=""></p>
-<h3 id="观察分组"><a href="#观察分组" class="headerlink" title="观察分组"></a>观察分组</h3><p>下图展示了一个完整的TCP连接所发生的实际分组交换情况，包括建立连接、数据传送和连接终止3个阶段</p>
-<p><img src="https://data2.liuin.cn/2018-05-21-15269082100424.jpg" alt=""></p>
-<h2 id="TIME-WAIT状态"><a href="#TIME-WAIT状态" class="headerlink" title="TIME_WAIT状态"></a>TIME_WAIT状态</h2><p>TIME WAIT状态有两个存在的理由:</p>
-<ol>
-<li>可靠地实现TCP全双工连接的终止，当最终的ACK丢失的时候，客户端必须重新发出这个ACK，在这之前客户端必须维护之前的状态，以允许重新发送那个ACK</li>
-<li>允许老的重复分节在网络中消逝，防止影响后面的TCP连接</li>
-</ol>
-<h2 id="端口号"><a href="#端口号" class="headerlink" title="端口号"></a>端口号</h2><p>任何时候,多个进程可能同时使用TCP、UDP和SCTP这3种传输层协议中的任何一种。这3种协议都使用16位整数的端口号(port number)来区分这些进程</p>
-<p>当一个客户想要跟一个服务器联系时,它必须标识想要与之通信的这个服务器。TCP、UDP和SCTP定义了一组众所周知的端口(well- known port),用于标识众所周知的服务。</p>
-<p>另一方面,客户通常使用短期存活的临时端口( ephemeral port)。这些端口号通常<strong>由传输层协议自动赋予客户</strong>。客户通常不关心其临时端口的具体值,而只需确信该端口在所在主机中是唯一的就行。传输协议的代码确保这种唯一性</p>
-<p>端口号被划分成以下3段：</p>
-<ol>
-<li>众所周知的端口为0~1023。这些端口由IANA分配和控制。可能的话,相同端口号就分配给TCP、UDP和SCTP的同一给定服务。</li>
-<li>已登记的端口( registered port)为1024~49151。这些端口不受IANA控制,不过由LANA登记并提供它们的使用情况清单,以方便整个群体。</li>
-<li>49152~65535是动态的( dynamic)或私用的( private)端口。IANA不管这些端口。它们就是我们所称的临时端口。(49152这个魔数是65536的四分之三。）</li>
-</ol>
-<blockquote>
-<p>套接字对</p>
-</blockquote>
-<p>一个TCP连接的套接字对( socket pair)是一个定义该连接的两个端点的四元组:本地P地址、本地TCP端口号、外地IP地址、外地TCP端口号。套接字对唯一标识一个网络上的每个TCP连接。</p>
-<h2 id="TCP端口号与并发服务器"><a href="#TCP端口号与并发服务器" class="headerlink" title="TCP端口号与并发服务器"></a>TCP端口号与并发服务器</h2><p>并发服务器中主服务器循环通过派生一个子进程来处理每个新的连接</p>
-<p>我们必须在服务器主机上区分监听套接字和已连接套接字( connected socket)。注意已连接套接字使用与监听套接字相同的本地端口(21)。</p>
-<p><img src="https://data2.liuin.cn/2018-05-21-15269091556898.jpg" alt=""></p>
-<p>从上面我们可以看到：TCP无法仅仅通过查看目的端口号来分离外来的分节到不同的端点。它必须查看套接字对的所有4个元素才能确定由哪个端点接收某个到达的分节。</p>
-<h2 id="缓冲区大小和限制"><a href="#缓冲区大小和限制" class="headerlink" title="缓冲区大小和限制"></a>缓冲区大小和限制</h2><h3 id="TCP输出"><a href="#TCP输出" class="headerlink" title="TCP输出"></a>TCP输出</h3><p>每一个TCP套接字有一个发送缓冲区,我们可以使用 SO_SNDBUF套接字选项来更改该缓冲区的大小。当某个应用进程调用 write时,内核从该应用进程的缓冲区中复制所有数据到所写套接字的发送缓冲区。如果该套接字的发送缓冲区容不下该应用进程的所有数据(或是应用进程的缓冲区大于套接字的发送缓冲区,或是套接字的发送缓冲区中已有其他数据),该应用进程将被投入睡眠。这里假设该套接字是阻塞的,它是通常的默认设置。内核将不从wite系统调用返回,<strong>直到应用进程缓冲区中的所有数据都复制到套接字发送缓冲区</strong>。因此,从写一个TCP套接字的 write调用成功返回仅仅表示我们可以重新使用原来的应用进程缓冲区,<strong>并不表明对端的TCP或应用进程已接收到数据</strong>。</p>
-<p><img src="https://data2.liuin.cn/2018-05-21-15269096002757.jpg" alt=""></p>
-<h3 id="UDP输出"><a href="#UDP输出" class="headerlink" title="UDP输出"></a>UDP输出</h3><p>任何UDP套接字都有发送缓冲区大小(我们可以使用 SO SNDBUE套接字选项更改它,见75节),不过它仅仅是可写到该套接字的UDP数据报的大小上限。如果一个应用进程写一个大于套接字发送缓冲区大小的数据报,内核将返回该进程一个 EMSGSIZE错误。既然UDP是不可靠的,它不必保存应用进程数据的一个副本,因此无需一个真正的发送缓冲区。</p>
-<p><img src="https://data2.liuin.cn/2018-05-21-15269096922589.jpg" alt=""></p>
-<h2 id="常见因特网应用的协议使用"><a href="#常见因特网应用的协议使用" class="headerlink" title="常见因特网应用的协议使用"></a>常见因特网应用的协议使用</h2><p><img src="https://data2.liuin.cn/2018-05-21-15269097511476.jpg" alt=""></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;UNIX网络编程必读书籍——《UNIX网络编程卷1》  简介部分 笔记&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Linux" scheme="https://www.liuin.cn/tags/Linux/"/>
     
   </entry>
   
