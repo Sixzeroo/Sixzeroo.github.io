@@ -115,7 +115,8 @@
 <meta property="og:description" content="学习Git过程中缺乏实践？不如来玩一玩这款Git闯关游戏，通过git命令来闯关。玩着玩着就学会了Git，美滋滋！">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://data3.liuin.cn/2018-09-16-15371061297360.jpg">
-<meta property="og:updated_time" content="2018-09-16T14:17:20.000Z">
+<meta property="og:image" content="http://data3.liuin.cn/2018-09-17-15371452668045.jpg">
+<meta property="og:updated_time" content="2018-09-17T01:15:45.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Git 闯关游戏——githug">
 <meta name="twitter:description" content="学习Git过程中缺乏实践？不如来玩一玩这款Git闯关游戏，通过git命令来闯关。玩着玩着就学会了Git，美滋滋！">
@@ -452,7 +453,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  707 字
+                  1,230 字
                 </span>
               
 
@@ -504,7 +505,29 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git reset --soft HEAD~</div></pre></td></tr></table></figure>
 <h3 id="23-checkout-file"><a href="#23-checkout-file" class="headerlink" title="23 checkout_file"></a>23 checkout_file</h3><p>checkout 作用于文件的时候，会将文件从当前HEAD中检出，即让当前工作区的文件变成HEAD中的样子，命令格式为<code>git checkout [-q] [&lt;commit&gt;] [--] &lt;paths&gt;...</code></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git checkout config.rb</div></pre></td></tr></table></figure>
-<p>### </p>
+<h3 id="30-blame"><a href="#30-blame" class="headerlink" title="30 blame"></a>30 blame</h3><p>可以通过 <code>git blame</code> 命令查看项目中具体哪一行代码是谁写的，什么时候引入的。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git blame config.rb</div></pre></td></tr></table></figure>
+<h3 id="33-checkout-tag"><a href="#33-checkout-tag" class="headerlink" title="33 checkout_tag"></a>33 checkout_tag</h3><p>检出到指定标签，通过<code>checkout</code>命令实现，能够创建一个临时分支指向tag所在的提交</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git checkout v1.2</div></pre></td></tr></table></figure>
+<h3 id="34-checkout-tag-over-branch"><a href="#34-checkout-tag-over-branch" class="headerlink" title="34 checkout_tag_over_branch"></a>34 checkout_tag_over_branch</h3><p>有的时候会遇到标签和分支的名字一样的情况，通过在前面添加前缀<code>tags/</code>来指定是tag的名字</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git checkout tags/v1.2</div></pre></td></tr></table></figure>
+<h3 id="35-branch-at"><a href="#35-branch-at" class="headerlink" title="35 branch_at"></a>35 branch_at</h3><p>检出指定提交到一个新的命名分支</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git checkout -b test_branch HEAD~</div></pre></td></tr></table></figure>
+<h3 id="40-rebase"><a href="#40-rebase" class="headerlink" title="40 rebase"></a>40 rebase</h3><p>rebase命令可以用来整合来自不同分支</p>
+<p><img src="http://data3.liuin.cn/2018-09-17-15371452668045.jpg" alt=""></p>
+<p>如上图所示，提取在 C4 中引入的补丁和修改，然后在 C3 的基础上再应用一次。在 Git 中，这种操作就叫做 变基</p>
+<p><code>git rebase [&lt;upstream&gt; [&lt;branch&gt;]</code> 命令将upstream的修改在branch上再应用一次</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git checkout feature</div><div class="line">git rebase master</div></pre></td></tr></table></figure>
+<h3 id="41-rebase-onto"><a href="#41-rebase-onto" class="headerlink" title="41 rebase-onto"></a>41 rebase-onto</h3><p>在对两个分支进行变基时，所生成的“重演”并不一定要在目标分支上应用，你也可以指定另外的一个分支进行应用。就像 从一个特性分支里再分出一个特性分支的提交历史 中的例子这样。</p>
+<p><code>$ git rebase --onto master server client</code></p>
+<p>以上命令的意思是：“取出 client 分支，找出处于 client 分支和 server 分支的共同祖先之后的修改，然后把它们在 master 分支上重演一遍”。</p>
+<p>当master 和server 一致的时候，只需要写一个</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git rebase --onto master wrong_branch</div></pre></td></tr></table></figure>
+<h3 id="42-repack"><a href="#42-repack" class="headerlink" title="42 repack"></a>42 repack</h3><p>git repack 对松散对象进行打包，凡是有引用关联的对象都被打在包里，未被关联的对象仍旧以松散对象的形式保存</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git repack</div></pre></td></tr></table></figure>
+<h3 id="43-cherry-pick"><a href="#43-cherry-pick" class="headerlink" title="43 cherry-pick"></a>43 cherry-pick</h3><p>应用某一个提交的修改到当前分支</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git checkout new-feature</div><div class="line">git <span class="built_in">log</span></div><div class="line">git cherry-pick ca32a6dac7b6f97975edbe19a4296c2ee7682f68</div></pre></td></tr></table></figure>
+<h3 id="45-rename-commit"><a href="#45-rename-commit" class="headerlink" title="45 rename commit"></a>45 rename commit</h3><p>当涉及提交修改时，应该想到 <code>git rebase -i</code> 命令，它接受可以一个参数（提交的哈希值），它将罗列出此提交之后的所有提交，将此提交作为一个root commit。</p>
 
       
     </div>
@@ -562,7 +585,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年9月16日 - 22时09分
+	2018年9月17日 - 09时09分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -767,7 +790,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#githug"><span class="nav-number">1.</span> <span class="nav-text">githug</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过题解"><span class="nav-number">2.</span> <span class="nav-text">通过题解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#20-commit-in-futue"><span class="nav-number">2.1.</span> <span class="nav-text">20 commit_in_futue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#21-reset"><span class="nav-number">2.2.</span> <span class="nav-text">21 reset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#22-reset-soft"><span class="nav-number">2.3.</span> <span class="nav-text">22 reset_soft</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#23-checkout-file"><span class="nav-number">2.4.</span> <span class="nav-text">23 checkout_file</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#githug"><span class="nav-number">1.</span> <span class="nav-text">githug</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过题解"><span class="nav-number">2.</span> <span class="nav-text">通过题解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#20-commit-in-futue"><span class="nav-number">2.1.</span> <span class="nav-text">20 commit_in_futue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#21-reset"><span class="nav-number">2.2.</span> <span class="nav-text">21 reset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#22-reset-soft"><span class="nav-number">2.3.</span> <span class="nav-text">22 reset_soft</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#23-checkout-file"><span class="nav-number">2.4.</span> <span class="nav-text">23 checkout_file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#30-blame"><span class="nav-number">2.5.</span> <span class="nav-text">30 blame</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#33-checkout-tag"><span class="nav-number">2.6.</span> <span class="nav-text">33 checkout_tag</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#34-checkout-tag-over-branch"><span class="nav-number">2.7.</span> <span class="nav-text">34 checkout_tag_over_branch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#35-branch-at"><span class="nav-number">2.8.</span> <span class="nav-text">35 branch_at</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#40-rebase"><span class="nav-number">2.9.</span> <span class="nav-text">40 rebase</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#41-rebase-onto"><span class="nav-number">2.10.</span> <span class="nav-text">41 rebase-onto</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#42-repack"><span class="nav-number">2.11.</span> <span class="nav-text">42 repack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#43-cherry-pick"><span class="nav-number">2.12.</span> <span class="nav-text">43 cherry-pick</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#45-rename-commit"><span class="nav-number">2.13.</span> <span class="nav-text">45 rename commit</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -805,7 +828,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      361.4k 字
+      361.9k 字
     </span>
   
 
