@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-09-17T01:15:45.000Z</updated>
+  <updated>2018-09-18T01:06:08.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="https://www.liuin.cn/2018/08/08/Git-%E9%97%AF%E5%85%B3%E6%B8%B8%E6%88%8F%E2%80%94%E2%80%94githug/"/>
     <id>https://www.liuin.cn/2018/08/08/Git-闯关游戏——githug/</id>
     <published>2018-08-08T13:26:19.000Z</published>
-    <updated>2018-09-17T01:15:45.000Z</updated>
+    <updated>2018-09-18T01:06:08.000Z</updated>
     
     <content type="html"><![CDATA[<p>学习Git过程中缺乏实践？不如来玩一玩这款Git闯关游戏，通过git命令来闯关。玩着玩着就学会了Git，美滋滋！</p>
 <a id="more"></a>
@@ -71,7 +71,36 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git repack</div></pre></td></tr></table></figure>
 <h3 id="43-cherry-pick"><a href="#43-cherry-pick" class="headerlink" title="43 cherry-pick"></a>43 cherry-pick</h3><p>应用某一个提交的修改到当前分支</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git checkout new-feature</div><div class="line">git <span class="built_in">log</span></div><div class="line">git cherry-pick ca32a6dac7b6f97975edbe19a4296c2ee7682f68</div></pre></td></tr></table></figure>
-<h3 id="45-rename-commit"><a href="#45-rename-commit" class="headerlink" title="45 rename commit"></a>45 rename commit</h3><p>当涉及提交修改时，应该想到 <code>git rebase -i</code> 命令，它接受可以一个参数（提交的哈希值），它将罗列出此提交之后的所有提交，将此提交作为一个root commit。</p>
+<h3 id="45-rename-commit"><a href="#45-rename-commit" class="headerlink" title="45 rename commit"></a>45 rename commit</h3><p>当涉及提交修改时，应该想到 <code>git rebase -i</code> 命令，它接受可以一个参数（提交的哈希值），它将罗列出此提交之后的所有提交，将此提交作为一个root commit。用途为修改提交历史，其后跟一个某一条提交日志的哈希值，表示要修改这条日志之前的提交历史。</p>
+<p>输入命令以后，会将提交从前到后显示。每一行的前面有一个命令词，表示对此次更新执行什么操作。</p>
+<p>类似下面这种：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">pick 06973a3 First coommit</div><div class="line">pick 771b71d Second commit</div></pre></td></tr></table></figure>
+<p>前面的命令有以下几种：</p>
+<ul>
+<li>“pick”，表示执行此次提交；</li>
+<li>“reword”，表示执行此次提交，但要修改备注内容；</li>
+<li>“edit”，表示可以修改此次提交，比如再追加文件或修改文件；</li>
+<li>“squash”，表示把此次提交的内容合并到上次提交中，备注内容也合并到上次提交中；</li>
+<li>“fixup”，和 “squash” 类似，但会丢弃掉此次备注内容；</li>
+<li>“exec”，执行命令行下的命令；</li>
+<li>“drop”，删除此次提交。</li>
+</ul>
+<p>这一关是需要把第2次提交错误额comment修改过来，所以对第二次提交执行reword并修改备注就行了</p>
+<h3 id="46-squash"><a href="#46-squash" class="headerlink" title="46 squash"></a>46 squash</h3><p>把多次修改合并成一次，这里用到的还是上面的<code>git rebase -i</code>的命令，只不过是将后面动作命令都变成<code>squash</code></p>
+<h3 id="47-merge-squash"><a href="#47-merge-squash" class="headerlink" title="47 merge_squash"></a>47 merge_squash</h3><p>为了把分支的多次提交合并为主干上的一次提交，可以在merge命令后面加一个 squash 参数</p>
+<p><code>git merge branch-name --squash</code></p>
+<p>过关命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git merge long-feature-branch --squash</div><div class="line">git commit -m <span class="string">"comment"</span></div></pre></td></tr></table></figure></p>
+<h3 id="48-reorder"><a href="#48-reorder" class="headerlink" title="48 reorder"></a>48 reorder</h3><p>你提交了几次但是提交顺序多了，想把顺序换一下，这里用到的还是<code>git rebase -i</code>命令。需要把几次提交的顺序更换一下即可。</p>
+<h3 id="49-bisect"><a href="#49-bisect" class="headerlink" title="49 bisect"></a>49 bisect</h3><p>在程序持续迭代的过程中不免会引入 bug，除了定位 bug 的代码片断，我们还想知道 bug 是在什么时间被引入的，这时就可以<strong>借助 Git 提供的 bisect 工具来查找是哪次提交引入了 bug</strong>。bisect 是用二分法来查找的，就像用二分查找法查找数组元素那样。</p>
+<p>其查找流程也比较简单，首先确定查找的commit范围，然后在每一次二分查找时给出程序执行是否正确的判断。这个时候bisect就会自动进行二分查找。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ git bisect start</div><div class="line">$ git bisect good f608824888b</div><div class="line">$ git bisect bad 12628f463f4</div><div class="line">$ make <span class="built_in">test</span></div><div class="line">$ git bisect good</div><div class="line">...</div></pre></td></tr></table></figure>
+<h3 id="50-stage-lines"><a href="#50-stage-lines" class="headerlink" title="50 stage_lines"></a>50 stage_lines</h3><p>用 <code>git add</code> 命令可以把文件添加到暂存区，但如果你不想把文件中的全部修改都提交到暂存区，或者说你只想把文件中的部分修改提交到缓存区，那么你需要加上<code>edit</code>参数</p>
+<p>这时 Git 会自动打开文本编辑器，编辑的内容就是 <code>git diff</code> 命令的结果，这时你就可以编辑2个文件之间的差异，只保留要提交到暂存区的差异，而删除不需要提交到暂存区的差异，然后保存退出，Git 就会按你编辑过的差异把相应的内容提交到暂存区。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git add file-name --edit</div></pre></td></tr></table></figure>
+<h3 id="51-find-old-branch"><a href="#51-find-old-branch" class="headerlink" title="51 find_old_branch"></a>51 find_old_branch</h3><p>使用<code>git reflog</code> 可以查看历史所在的分支和提交在哪里</p>
+<h3 id="52-revert"><a href="#52-revert" class="headerlink" title="52 revert"></a>52 revert</h3><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://wiki.jikexueyuan.com/project/githug-walkthrough/" target="_blank" rel="external">http://wiki.jikexueyuan.com/project/githug-walkthrough/</a></li>
+</ul>
 ]]></content>
     
     <summary type="html">
