@@ -116,7 +116,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://data3.liuin.cn/2018-09-16-15371061297360.jpg">
 <meta property="og:image" content="http://data3.liuin.cn/2018-09-17-15371452668045.jpg">
-<meta property="og:updated_time" content="2018-09-18T01:06:08.000Z">
+<meta property="og:updated_time" content="2018-09-19T00:03:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Git 闯关游戏——githug">
 <meta name="twitter:description" content="学习Git过程中缺乏实践？不如来玩一玩这款Git闯关游戏，通过git命令来闯关。玩着玩着就学会了Git，美滋滋！">
@@ -453,7 +453,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2,024 字
+                  2,170 字
                 </span>
               
 
@@ -554,7 +554,12 @@
 <p>这时 Git 会自动打开文本编辑器，编辑的内容就是 <code>git diff</code> 命令的结果，这时你就可以编辑2个文件之间的差异，只保留要提交到暂存区的差异，而删除不需要提交到暂存区的差异，然后保存退出，Git 就会按你编辑过的差异把相应的内容提交到暂存区。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git add file-name --edit</div></pre></td></tr></table></figure>
 <h3 id="51-find-old-branch"><a href="#51-find-old-branch" class="headerlink" title="51 find_old_branch"></a>51 find_old_branch</h3><p>使用<code>git reflog</code> 可以查看历史所在的分支和提交在哪里</p>
-<h3 id="52-revert"><a href="#52-revert" class="headerlink" title="52 revert"></a>52 revert</h3><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<h3 id="52-revert"><a href="#52-revert" class="headerlink" title="52 revert"></a>52 revert</h3><p><code>git revert</code> 命令能够对某一次提交执行逆操作，这适用于某次提交出现问题的情况，添加<code>--no-edit</code>能够让系统自动生成备注</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git <span class="built_in">log</span></div><div class="line">git revert 3873913 --no-edit</div></pre></td></tr></table></figure>
+<h3 id="55-submodule"><a href="#55-submodule" class="headerlink" title="55 submodule"></a>55 submodule</h3><p>如果你想把别人的仓库代码作为自己项目一个库来使用，可以采用模块化的思路，把这个库作为模块进行管理。Git 专门提供了相应的工具，用如下命令把第三方仓库作为模块引入：</p>
+<p><code>git submodule add module-url</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git submodule add https://github.com/jackmaney/githug-include-me</div></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a href="http://wiki.jikexueyuan.com/project/githug-walkthrough/" target="_blank" rel="external">http://wiki.jikexueyuan.com/project/githug-walkthrough/</a></li>
 </ul>
 
@@ -614,7 +619,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年9月18日 - 09时09分
+	2018年9月19日 - 08时09分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -819,7 +824,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#githug"><span class="nav-number">1.</span> <span class="nav-text">githug</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过题解"><span class="nav-number">2.</span> <span class="nav-text">通过题解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#20-commit-in-futue"><span class="nav-number">2.1.</span> <span class="nav-text">20 commit_in_futue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#21-reset"><span class="nav-number">2.2.</span> <span class="nav-text">21 reset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#22-reset-soft"><span class="nav-number">2.3.</span> <span class="nav-text">22 reset_soft</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#23-checkout-file"><span class="nav-number">2.4.</span> <span class="nav-text">23 checkout_file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#30-blame"><span class="nav-number">2.5.</span> <span class="nav-text">30 blame</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#33-checkout-tag"><span class="nav-number">2.6.</span> <span class="nav-text">33 checkout_tag</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#34-checkout-tag-over-branch"><span class="nav-number">2.7.</span> <span class="nav-text">34 checkout_tag_over_branch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#35-branch-at"><span class="nav-number">2.8.</span> <span class="nav-text">35 branch_at</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#40-rebase"><span class="nav-number">2.9.</span> <span class="nav-text">40 rebase</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#41-rebase-onto"><span class="nav-number">2.10.</span> <span class="nav-text">41 rebase-onto</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#42-repack"><span class="nav-number">2.11.</span> <span class="nav-text">42 repack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#43-cherry-pick"><span class="nav-number">2.12.</span> <span class="nav-text">43 cherry-pick</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#45-rename-commit"><span class="nav-number">2.13.</span> <span class="nav-text">45 rename commit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#46-squash"><span class="nav-number">2.14.</span> <span class="nav-text">46 squash</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#47-merge-squash"><span class="nav-number">2.15.</span> <span class="nav-text">47 merge_squash</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#48-reorder"><span class="nav-number">2.16.</span> <span class="nav-text">48 reorder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#49-bisect"><span class="nav-number">2.17.</span> <span class="nav-text">49 bisect</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#50-stage-lines"><span class="nav-number">2.18.</span> <span class="nav-text">50 stage_lines</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#51-find-old-branch"><span class="nav-number">2.19.</span> <span class="nav-text">51 find_old_branch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#52-revert"><span class="nav-number">2.20.</span> <span class="nav-text">52 revert</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#githug"><span class="nav-number">1.</span> <span class="nav-text">githug</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过题解"><span class="nav-number">2.</span> <span class="nav-text">通过题解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#20-commit-in-futue"><span class="nav-number">2.1.</span> <span class="nav-text">20 commit_in_futue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#21-reset"><span class="nav-number">2.2.</span> <span class="nav-text">21 reset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#22-reset-soft"><span class="nav-number">2.3.</span> <span class="nav-text">22 reset_soft</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#23-checkout-file"><span class="nav-number">2.4.</span> <span class="nav-text">23 checkout_file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#30-blame"><span class="nav-number">2.5.</span> <span class="nav-text">30 blame</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#33-checkout-tag"><span class="nav-number">2.6.</span> <span class="nav-text">33 checkout_tag</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#34-checkout-tag-over-branch"><span class="nav-number">2.7.</span> <span class="nav-text">34 checkout_tag_over_branch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#35-branch-at"><span class="nav-number">2.8.</span> <span class="nav-text">35 branch_at</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#40-rebase"><span class="nav-number">2.9.</span> <span class="nav-text">40 rebase</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#41-rebase-onto"><span class="nav-number">2.10.</span> <span class="nav-text">41 rebase-onto</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#42-repack"><span class="nav-number">2.11.</span> <span class="nav-text">42 repack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#43-cherry-pick"><span class="nav-number">2.12.</span> <span class="nav-text">43 cherry-pick</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#45-rename-commit"><span class="nav-number">2.13.</span> <span class="nav-text">45 rename commit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#46-squash"><span class="nav-number">2.14.</span> <span class="nav-text">46 squash</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#47-merge-squash"><span class="nav-number">2.15.</span> <span class="nav-text">47 merge_squash</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#48-reorder"><span class="nav-number">2.16.</span> <span class="nav-text">48 reorder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#49-bisect"><span class="nav-number">2.17.</span> <span class="nav-text">49 bisect</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#50-stage-lines"><span class="nav-number">2.18.</span> <span class="nav-text">50 stage_lines</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#51-find-old-branch"><span class="nav-number">2.19.</span> <span class="nav-text">51 find_old_branch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#52-revert"><span class="nav-number">2.20.</span> <span class="nav-text">52 revert</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#55-submodule"><span class="nav-number">2.21.</span> <span class="nav-text">55 submodule</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
@@ -857,7 +862,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      362.7k 字
+      362.9k 字
     </span>
   
 

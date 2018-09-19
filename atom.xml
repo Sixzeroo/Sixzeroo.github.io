@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-09-18T01:06:08.000Z</updated>
+  <updated>2018-09-19T00:03:33.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="https://www.liuin.cn/2018/08/08/Git-%E9%97%AF%E5%85%B3%E6%B8%B8%E6%88%8F%E2%80%94%E2%80%94githug/"/>
     <id>https://www.liuin.cn/2018/08/08/Git-闯关游戏——githug/</id>
     <published>2018-08-08T13:26:19.000Z</published>
-    <updated>2018-09-18T01:06:08.000Z</updated>
+    <updated>2018-09-19T00:03:33.000Z</updated>
     
     <content type="html"><![CDATA[<p>学习Git过程中缺乏实践？不如来玩一玩这款Git闯关游戏，通过git命令来闯关。玩着玩着就学会了Git，美滋滋！</p>
 <a id="more"></a>
@@ -98,7 +98,12 @@
 <p>这时 Git 会自动打开文本编辑器，编辑的内容就是 <code>git diff</code> 命令的结果，这时你就可以编辑2个文件之间的差异，只保留要提交到暂存区的差异，而删除不需要提交到暂存区的差异，然后保存退出，Git 就会按你编辑过的差异把相应的内容提交到暂存区。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git add file-name --edit</div></pre></td></tr></table></figure>
 <h3 id="51-find-old-branch"><a href="#51-find-old-branch" class="headerlink" title="51 find_old_branch"></a>51 find_old_branch</h3><p>使用<code>git reflog</code> 可以查看历史所在的分支和提交在哪里</p>
-<h3 id="52-revert"><a href="#52-revert" class="headerlink" title="52 revert"></a>52 revert</h3><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<h3 id="52-revert"><a href="#52-revert" class="headerlink" title="52 revert"></a>52 revert</h3><p><code>git revert</code> 命令能够对某一次提交执行逆操作，这适用于某次提交出现问题的情况，添加<code>--no-edit</code>能够让系统自动生成备注</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git <span class="built_in">log</span></div><div class="line">git revert 3873913 --no-edit</div></pre></td></tr></table></figure>
+<h3 id="55-submodule"><a href="#55-submodule" class="headerlink" title="55 submodule"></a>55 submodule</h3><p>如果你想把别人的仓库代码作为自己项目一个库来使用，可以采用模块化的思路，把这个库作为模块进行管理。Git 专门提供了相应的工具，用如下命令把第三方仓库作为模块引入：</p>
+<p><code>git submodule add module-url</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git submodule add https://github.com/jackmaney/githug-include-me</div></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a href="http://wiki.jikexueyuan.com/project/githug-walkthrough/" target="_blank" rel="external">http://wiki.jikexueyuan.com/project/githug-walkthrough/</a></li>
 </ul>
 ]]></content>
