@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.liuin.cn/"/>
-  <updated>2018-09-19T00:03:33.000Z</updated>
+  <updated>2018-09-27T00:43:15.000Z</updated>
   <id>https://www.liuin.cn/</id>
   
   <author>
@@ -14,6 +14,62 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Redis 实践中的问题与优化</title>
+    <link href="https://www.liuin.cn/2018/08/16/Redis-%E5%AE%9E%E8%B7%B5%E4%B8%AD%E7%9A%84%E9%97%AE%E9%A2%98%E4%B8%8E%E4%BC%98%E5%8C%96/"/>
+    <id>https://www.liuin.cn/2018/08/16/Redis-实践中的问题与优化/</id>
+    <published>2018-08-16T10:09:30.000Z</published>
+    <updated>2018-09-27T00:43:15.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>总结在常见的在Redis实践中遇到的问题和优化方法</p>
+<a id="more"></a>
+<h2 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h2><h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>缓存中存储的是数据库中命中的数据，如果没有命中，则会去数据库中去取然后回溯到缓存中。这个时候如果一直访问一个数据库中也没有的数据，就可能造成大量请求直接访问数据库。</p>
+<h3 id="优化方案"><a href="#优化方案" class="headerlink" title="优化方案"></a>优化方案</h3><ol>
+<li>如果从数据库中查询的结果也为空，那么将这个空结果也放到缓存中。这样可能会造成数据不一致的情况（具体取决数据库和缓存的一致性策略），所以要设置一个比较短的过期时间。</li>
+<li>查询数据库的时候使用互斥锁，查询前首先要得到锁再去查询，没有得到锁的要先等待直到锁可用。但是这种方案可能减低其查询的性能，因为只能够有一个查询存在，所以对于不属于缓存穿透的场景的查询性能会收到影响。</li>
+<li>知道key的规则或者合法性，可以在业务层就进行一个过滤（通过规则或者布隆过滤器）</li>
+</ol>
+<h2 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h2><h3 id="问题-1"><a href="#问题-1" class="headerlink" title="问题"></a>问题</h3><p>缓存中设置了失效时间，如果大量缓存在短时间内一起失效，这样访问的压力就都移到数据库中去了。就像发生雪崩一样。</p>
+<h3 id="优化方案-1"><a href="#优化方案-1" class="headerlink" title="优化方案"></a>优化方案</h3><ul>
+<li>采用加锁或消息队列，采用单线程的方式，防止失效时大量线程请求数据库。</li>
+<li>在设置缓存时间的时候，在原来缓存时间的技术上加一个比较小的随机值，避免大量缓存在同一时间失效</li>
+</ul>
+<h2 id="热key问题"><a href="#热key问题" class="headerlink" title="热key问题"></a>热key问题</h2><h3 id="问题-2"><a href="#问题-2" class="headerlink" title="问题"></a>问题</h3><p>业务层可能因为一些新闻或者热点事件对一个相同的key在短时间内发出大量请求。如果此时没有命中缓存，就需要构建缓存，但是构建缓存需要时间，在这个时间里面所有对key的请求还是会打到下面的数据库上，造成后端和数据库的压力过大。同时热key本身对缓存系统也会带来非常大的压力。</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><ul>
+<li>还是可以用互斥锁进行解决，确保同一时间只有一个线程查询数据库</li>
+<li>对于大量请求打到Redis上的解决可以采用在本地构建local cache的方法</li>
+</ul>
+<h2 id="大key问题"><a href="#大key问题" class="headerlink" title="大key问题"></a>大key问题</h2><h3 id="问题-3"><a href="#问题-3" class="headerlink" title="问题"></a>问题</h3><p>Redis作为缓存通常是以接口为单位进行存储，也就是说Redis中存储的数据就是接口中返回的东西。</p>
+<p>这样能够使得每次请求只有一个原子操作，但是带来的问题就是key会非常大，造成了大key存储的问题。这会导致用这个Redis作为缓存的服务非常不稳定，因为单次请求这个key的读写时间过长数据过多导致后面redis的原子操作可能发生I/O超时，从而导致redis实例命中率波动较大。当缓存命中率比较低的时候，瞬间大量数据请求就会打到数据库，导致带宽不足、数据库压力过大、数据库慢查询过多和平均查询时间变长。</p>
+<p>因为我们服务的时间=redis超时时间+数据库慢查询时间+接口逻辑时间，所以大key可能大致整个服务的恶性循环。</p>
+<h3 id="优化方案-2"><a href="#优化方案-2" class="headerlink" title="优化方案"></a>优化方案</h3><p>可以采用将存储单位从接口数据变为原子数据。每个接口数据都是由原子数据拼接而成，这个拼接可以在业务层完成。从而减小Redis请求超时的情况。</p>
+<h2 id="批量请求问题"><a href="#批量请求问题" class="headerlink" title="批量请求问题"></a>批量请求问题</h2><h3 id="问题-4"><a href="#问题-4" class="headerlink" title="问题"></a>问题</h3><p>接着上面的问题，当把存储单位从接口数据变成了原子数据以后，势必会造成每个接口的请求数据变多。如果这些请求都通过单个连接去处理，就会造成总体的处理事件过长的问题</p>
+<h3 id="优化方案-3"><a href="#优化方案-3" class="headerlink" title="优化方案"></a>优化方案</h3><p>这个时候可以使用到批量请求的相关接口：批量存取字符串类型的方式分别为mget、mset、pipeline。三者都会将多次操作合并到一次，也就是进行以此连接返回所有数据。但是之间的差异还是比较明显的，比如：</p>
+<ul>
+<li>pipeline：可以支持多个不同类型的操作在一次请求中，但是使用pipeline需要客户端和服务端都支持。当某个命令的执行需要依赖前一个命令的返回结果时，无法使用pipeline。</li>
+<li>mget：只支持get请求，megt过大的时候会导致内存暴涨，然后一直持有不释放</li>
+<li>mset：只支持set请求，且不支持设置过期时间</li>
+</ul>
+<p>参考：</p>
+<ul>
+<li><a href="https://blog.csdn.net/mayfla/article/details/80112241" target="_blank" rel="external">https://blog.csdn.net/mayfla/article/details/80112241</a></li>
+<li><a href="https://www.cnblogs.com/rjzheng/p/9096228.html" target="_blank" rel="external">https://www.cnblogs.com/rjzheng/p/9096228.html</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;总结在常见的在Redis实践中遇到的问题和优化方法&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="开发随笔" scheme="https://www.liuin.cn/categories/%E5%BC%80%E5%8F%91%E9%9A%8F%E7%AC%94/"/>
+    
+    
+      <category term="Redis" scheme="https://www.liuin.cn/tags/Redis/"/>
+    
+  </entry>
   
   <entry>
     <title>Git 闯关游戏——githug</title>
@@ -1499,171 +1555,6 @@
     
     
       <category term="Linux" scheme="https://www.liuin.cn/tags/Linux/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《STL源码剖析》 笔记</title>
-    <link href="https://www.liuin.cn/2018/05/20/%E3%80%8ASTL%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90%E3%80%8B-%E7%AC%94%E8%AE%B0/"/>
-    <id>https://www.liuin.cn/2018/05/20/《STL源码剖析》-笔记/</id>
-    <published>2018-05-20T00:52:59.000Z</published>
-    <updated>2018-05-29T06:35:33.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>侯捷老师的《STL源码剖析》可谓是学习STL的经典。在书籍的自序中侯捷老师提到的”我的确认为99.99%的程序员所写的程序，在SGI STL面前都是三流水平“，这让我等菜鸟根本把持不住呀。</p>
-<a id="more"></a>
-<h1 id="空间配置其（allocator）"><a href="#空间配置其（allocator）" class="headerlink" title="空间配置其（allocator）"></a>空间配置其（allocator）</h1><p>以STL的运用角度而言，空间配置器是最不需要介绍的东西，它总是隐藏在切组件(更具体地说是指容器， container)的背后，默默工作，默默付出。但若以STL的实现角度而言，第一个需要介绍的就是空间配置器，因为整个<strong>STL的操作对象(所有的数值)都存放在容器之内</strong>，而容器一定需要配置空间以置放资料不先掌握空间配置器的原理，难免在阅读其它STL组件的实现时处处遇到挡路石。</p>
-<h2 id="空间配置器的标准接口"><a href="#空间配置器的标准接口" class="headerlink" title="空间配置器的标准接口"></a>空间配置器的标准接口</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">allocator::value_type</div><div class="line">allocator::pointer</div><div class="line">allocator::const_pointer</div><div class="line">allocator::reference</div><div class="line">allocator::const_reference</div><div class="line">allocator::sieze_type</div><div class="line">allocator::defference_type</div><div class="line"><span class="comment">// 一个嵌套的(nested) class template。 class rebind&lt;U&gt;拥有唯一成员other，那是一个 typedef，代表allocator&lt;U&gt;</span></div><div class="line">allocator::rebind</div><div class="line"><span class="comment">// default constructor</span></div><div class="line">allocator::allocator()</div><div class="line"><span class="comment">// copy constructor</span></div><div class="line">allocator::allocator(<span class="keyword">const</span> allocator&amp;)</div><div class="line"><span class="comment">// 泛化的 copy constructor</span></div><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> U&gt;allocator::allocator(<span class="keyword">const</span> allocator&lt;U&gt;&amp;)</div><div class="line"><span class="comment">// 默认析构</span></div><div class="line">allocator::~allocator()</div><div class="line"><span class="comment">// 返回某个对象的地址</span></div><div class="line">pointer allocator::address(reference x) <span class="keyword">const</span></div><div class="line"><span class="comment">// 返回某个const对象的地址</span></div><div class="line">const_pointer allocator::address(const_reference x) <span class="keyword">const</span></div><div class="line"><span class="comment">// 配置空间，足以存储n个T对象</span></div><div class="line">pointer allocator::allocate(size_type n， <span class="keyword">const</span> <span class="keyword">void</span>* = <span class="number">0</span>)</div><div class="line"><span class="comment">// 归还先前配置的空间</span></div><div class="line"><span class="keyword">void</span> allocator::deallocate(pointer p， size_type n)</div><div class="line"><span class="comment">// 返回可成功配置的最大量</span></div><div class="line">size_type allocator::max_size() <span class="keyword">const</span></div><div class="line"><span class="comment">// 等同于 new(const void*) p) T(x)</span></div><div class="line"><span class="keyword">void</span> allocator::construct(pointer p， <span class="keyword">const</span> T&amp; x)</div><div class="line"><span class="comment">// 等同于 p-&gt;~T()</span></div><div class="line"><span class="keyword">void</span> allocator::destory(pointer p)</div></pre></td></tr></table></figure>
-<h2 id="具备次配置力-sub-allocation-的SGI空间配置器"><a href="#具备次配置力-sub-allocation-的SGI空间配置器" class="headerlink" title="具备次配置力(sub-allocation)的SGI空间配置器"></a>具备次配置力(sub-allocation)的SGI空间配置器</h2><p>SGI STI的配置器与众不同，也与标准规范不同，其名称是a1loc而非allocator，而且不接受任何参数。</p>
-<h3 id="SGI的标准空间配置器，std-allocator"><a href="#SGI的标准空间配置器，std-allocator" class="headerlink" title="SGI的标准空间配置器，std::allocator"></a>SGI的标准空间配置器，std::allocator</h3><p>虽然SGI也定义有一个符合部分标准、名为allocator的配置器，但SGI自己从未用过它，也不建议我们使用。主要原因是效率不佳，只把C++的<code>::operator new</code>和<code>::operator delete</code>做一层薄薄的包装而已。</p>
-<h3 id="SGI特殊的空间配置器，std-alloc"><a href="#SGI特殊的空间配置器，std-alloc" class="headerlink" title="SGI特殊的空间配置器，std::alloc"></a>SGI特殊的空间配置器，std::alloc</h3><p>一般而言，我们所习惯的C++内存配置操作和释放操作是这样的：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Foo &#123; ... &#125;;</div><div class="line"></div><div class="line">Foo* pf = <span class="keyword">new</span> Foo;</div><div class="line"><span class="keyword">delete</span> pf;</div></pre></td></tr></table></figure>
-<p>这其中的new算式内含两阶段操作(1)调用:: operator new配置内存;(2)调用Foo::Foo()构造对象内容。<br>delete算式也内含两阶段操作:(1)调用Foo::~FOO()将对象析构:(2)调用::operator delete释放内存</p>
-<p>为了精密分工， STL allocator决定将这两阶段操作区分开来。内存配置操作由a11c:allocate()负责，内存释放操作由alloc::deallocate()负责对象构造操作由::construct()负责，对象析构操作由::destroy()负责。</p>
-<p>配置器定义在<memory>中，SGI<memory>的主要组成如下：</memory></memory></p>
-<p><img src="https://data2.liuin.cn/2018-05-23-15270395375460.jpg" alt=""></p>
-<h3 id="构造和析构基本工具-construct-和-destroy"><a href="#构造和析构基本工具-construct-和-destroy" class="headerlink" title="构造和析构基本工具: construct()和 destroy()"></a>构造和析构基本工具: construct()和 destroy()</h3><p><img src="https://data2.liuin.cn/2018-05-23-15270396596949.jpg" alt=""></p>
-<h3 id="空间的配置与释放"><a href="#空间的配置与释放" class="headerlink" title="空间的配置与释放"></a>空间的配置与释放</h3><p>对象构造前的空间配置和对象析构后的空间释放，由<stla1loc.h>负责，SGI对此的设计哲学如下:</stla1loc.h></p>
-<ul>
-<li>向 system heap要求空间</li>
-<li>考虑多线程( multi-threads)状态</li>
-<li>考虑内存不足时的应变措施</li>
-<li>考虑过多“小型区块”可能造成的内存碎片( fragment)问题</li>
-</ul>
-<p>考虑到小型区块所可能造成的内存破碎问题，SGI设计了<strong>双层级配置器</strong>：</p>
-<p>第一级配置器直接使用malloc()和free()，第二级配置器则视情况采用不同的策略:当配置区块超过128 bytes时，视之为“足够大”，便调用第一级配置器;<strong>当配置区块小于128 bytes时，视之为“过小”，为了降低额外负担，便采用复杂的memory pool整理方式，而不再求助于第一级配置器</strong>。整个设计究竟只开放第一级配置器，或是同时开放第二级配置器</p>
-<p><img src="https://data2.liuin.cn/2018-05-23-15270402949330.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-05-23-15270403004835.jpg" alt=""></p>
-<h3 id="第一级配置器"><a href="#第一级配置器" class="headerlink" title="第一级配置器"></a>第一级配置器</h3><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div></pre></td><td class="code"><pre><div class="line">template &lt;int inst&gt;</div><div class="line">class __malloc_alloc_template &#123;</div><div class="line">private:</div><div class="line">//malloc调用内存不足时调用函数</div><div class="line">static void *oom_malloc(size_t);</div><div class="line">//realloc调用内存不足时调用函数</div><div class="line">static void *oom_realloc(void *, size_t);</div><div class="line">//错误处理函数，类似C++的set_new_handler，默认值为０，如果不设置，则内存分配失败时，返回THROW_BAD_ALLOC</div><div class="line">#ifndef __STL_STATIC_TEMPLATE_MEMBER_BUG</div><div class="line">    static void (* __malloc_alloc_oom_handler)();</div><div class="line">#endif</div><div class="line">public:</div><div class="line">static void * allocate(size_t n)</div><div class="line">&#123;</div><div class="line">    void *result = malloc(n);	第一级配置器直接使用malloc分配内存</div><div class="line">    if (0 == result) result = oom_malloc(n);//如果分配失败，则调用oom_malloc()</div><div class="line">    return result;</div><div class="line">&#125;</div><div class="line">static void deallocate(void *p, size_t /* n */)</div><div class="line">&#123;</div><div class="line">    free(p);	//第一级配置器用free回收内存</div><div class="line">&#125;</div><div class="line">static void * reallocate(void *p, size_t /* old_sz */, size_t new_sz)</div><div class="line">&#123;</div><div class="line">    void * result = realloc(p, new_sz);	//第一级配置器用reallocate重分配内存</div><div class="line">    if (0 == result) result = oom_realloc(p, new_sz);／／分配失败，调用oom_realloc分配</div><div class="line">    return result;</div><div class="line">&#125;</div><div class="line">// 设置分配错误处理函数，用于在oom_malloc和oom_realloc中使用</div><div class="line">static void (* set_malloc_handler(void (*f)()))()</div><div class="line">&#123;</div><div class="line">    void (* old)() = __malloc_alloc_oom_handler;</div><div class="line">    __malloc_alloc_oom_handler = f;</div><div class="line">    return(old);</div><div class="line">&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">template &lt;int inst&gt;</div><div class="line">void * __malloc_alloc_template&lt;inst&gt;::oom_malloc(size_t n)</div><div class="line">&#123;</div><div class="line">    void (* my_malloc_handler)();//声明一个函数指针，用于赋值 __malloc_alloc_oom_handler</div><div class="line">    void *result;//返回的内存指针</div><div class="line">    for (;;) &#123;	// 不断尝试释放内存，分配，再释放，再分配...</div><div class="line">        my_malloc_handler = __malloc_alloc_oom_handler;</div><div class="line">        if (0 == my_malloc_handler) &#123; __THROW_BAD_ALLOC; &#125;//为设置处理函数时，抛出错误</div><div class="line">        (*my_malloc_handler)();		// 调用处理函数，尝试释放内存</div><div class="line">        result = malloc(n);			// 再重新分配内存。</div><div class="line">        if (result) return(result);//如果分配成功，返回指针</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">template &lt;int inst&gt;</div><div class="line">void * __malloc_alloc_template&lt;inst&gt;::oom_realloc(void *p, size_t n)</div><div class="line">&#123;</div><div class="line">    void (* my_malloc_handler)();</div><div class="line">    void *result;</div><div class="line">    for (;;) &#123;	// 不断尝试释放内存，分配，再释放，再分配...</div><div class="line">        my_malloc_handler = __malloc_alloc_oom_handler;</div><div class="line">        if (0 == my_malloc_handler) &#123; __THROW_BAD_ALLOC; &#125;////为设置处理函数时，抛出错误</div><div class="line">        (*my_malloc_handler)();	//  调用处理函数，尝试释放内存</div><div class="line">        result = realloc(p, n);	// 再重新分配内存。</div><div class="line">        if (result) return(result);////如果分配成功，返回指针</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>第一级配置器以malloc(),free(), realloc()等C函数执行实际的内存配置、释放、重配置操作,并实现出类似C++ new-handler 的机制。所谓C++ new handler机制是,你可以要求系统在内存配置需求无法被满足时,调用一个你所指定的函数。</p>
-<p>SGI第一级配置器的allocate()和 realloc()都是在调用ma11oc()和rea11oc()不成功后,改调用 oom_ma11oc()和oom_realloc()。后两者都有内循环,不断调用“内存不足处理例程”,期望在某次调用之后,获得足够的内存而圆满完成任务。</p>
-<h3 id="第二级配置器"><a href="#第二级配置器" class="headerlink" title="第二级配置器"></a>第二级配置器</h3><p>第二级配置器多了一些机制,避免太多小额区块造成内存的碎片。小额区块带来的其实不仅是内存碎片,配置时的额外负担(overhead)也是一个大问题。额外负担永远无法避免,毕竟系统要靠这多出来的空间来管理内存。但是区块愈小,额外负担所占的比例就愈大,愈显得浪费</p>
-<p>SGI第二级配置器的做法是,如果区块够大,超过128 bytes时,就移交第级配置器处理。当区块小于128 bytes时,则以内存池( memory pool)管理,此法又称为次层配置(sub-allocation):每次配置一大块内存,并维护对应之自由链表(free-list)。下次若再有相同大小的内存需求,就直接从free-lists中拨出。如果客端释还小额区块,就由配置器回收到free-lists中——是的,别忘了,配置器除了负责配置,也负责回收。</p>
-<p>为了方便管理,SGl第二级配置器会主动将任何小额区块的内存<strong>需求量上调至8的倍数</strong>(例如客端要求30 bytes,就自动调整为32 bytes)并维护16个free-lists,各自管理大小分别为8,16,24,32,40,48,56,64,72,80,88,96,104,l12,120,128 bytes的小额区块。 </p>
-<p>free-lists的节点结构如下:</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">union</span> obj &#123;</div><div class="line">      <span class="keyword">union</span> obj * free_list_link;<span class="comment">//指向下一个内存的地址</span></div><div class="line">      <span class="keyword">char</span> client_data[<span class="number">1</span>];    <span class="comment">//内存的首地址</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p><img src="https://data2.liuin.cn/2018-05-23-15270421196298.jpg" alt=""></p>
-<h1 id="迭代器概念与traits编程技法"><a href="#迭代器概念与traits编程技法" class="headerlink" title="迭代器概念与traits编程技法"></a>迭代器概念与traits编程技法</h1><p>在设计模式中有一种迭代器模式，其定义如下：提供一种方法，使之能够依序巡访某个聚合物(容器)所含的各个元素，而又无需暴露该聚合物的内部表述方式</p>
-<h2 id="迭代器设计思维——STL关键所在"><a href="#迭代器设计思维——STL关键所在" class="headerlink" title="迭代器设计思维——STL关键所在"></a>迭代器设计思维——STL关键所在</h2><p>STL的中心思想在于:将数据容器( containers)和算法 algorithms)分开，彼此独立设计，最后再以一帖胶着剂将它们撮合在一起。容器和算法的泛型化，从技术角度来看并不困难，C++的class templates和 function templates可分别达成目标。如何设计出两者之间的良好胶着剂，才是大难题</p>
-<h2 id="迭代器是一种smart-pointer"><a href="#迭代器是一种smart-pointer" class="headerlink" title="迭代器是一种smart pointer"></a>迭代器是一种smart pointer</h2><p>迭代器是一种行为类似指针的对象，而指针的各种行为中最常见也最重要的便是内容提领(dereference)和成员访问( member access)，因此，迭代器最重要的编程工作就是对 operator*和 operator-&gt;进行重载( overloading)工作。</p>
-<p>在设计实现每一个容器的迭代器的时候都会暴露许多这些容器的一些实现细节的东西，要设计出 LIstitem，首先必须对List的实现细节有非常丰富的了解。既然这无可避免，干脆就把迭代器的开发工作交给List的设计者好了，如此一来，所有实现细节反而得以封装起来不被使用者看到。<strong>这正是为什么每一种STL容器都提供有专属迭代器的缘故</strong></p>
-<h2 id="迭代器相应的型别"><a href="#迭代器相应的型别" class="headerlink" title="迭代器相应的型别"></a>迭代器相应的型别</h2><p>迭代器中相应的型别之一是迭代器所指之物的型别</p>
-<p>迭代器相应型别(associated types)不只是“迭代器所指对象的型别”一种而已。根据经验，最常用的相应型别有五种，然而并非任何情况下任何一种都可利用上述的 template参数推导机制来取得.我们需要更全面的解法</p>
-<h1 id="序列式容器"><a href="#序列式容器" class="headerlink" title="序列式容器"></a>序列式容器</h1><h2 id="容器的概观与分类"><a href="#容器的概观与分类" class="headerlink" title="容器的概观与分类"></a>容器的概观与分类</h2><p>研究数据的特定排列方式，以利于搜寻或排序或其它特殊目的，这一专门学科我们称为数据结构( Data Structures)。大学信息类相关教育里面，与编程最有直接关系的科目，首推数据结构与算法( Algorithms)。几乎可以说，任何特定的数据结构都是为了实现某种特定的算法。STL容器即是将运用最广的一些数据结构实现出来</p>
-<p><img src="https://data2.liuin.cn/2018-05-20-15267795512022.jpg" alt=""></p>
-<blockquote>
-<p>序列式容器</p>
-</blockquote>
-<p>所谓序列式容器，其中的<strong>元素都可序( ordered)，但未必有序( sorted)</strong>。C++语言本身提供了一个序列式容器 array，STL另外再提供 vector， list， deque， stack， queue， priority-queue等等序列式容器。其中 stack和 queue由于只是将 deque改头换面而成，技术上被归类为一种配接器( adapter)</p>
-<h2 id="vector"><a href="#vector" class="headerlink" title="vector"></a>vector</h2><h3 id="vector-概述"><a href="#vector-概述" class="headerlink" title="vector 概述"></a>vector 概述</h3><p>vector的数据安排以及操作方式，与 array非常相似。两者的唯一差别在于空间的运用的灵活性。 array是静态空间，一旦配置了就不能改变，如果需要更多的空间需要用户自己解决。vector是动态空间，随着元素的加人，它的内部机制会自行扩充空间以容纳新元素。因此， vector的运用对于内存的合理利用与运用的灵活性有很大的帮助，我们再也不必因为害怕空间不足而开始就要求一个大块头 array了，我们可以安心使用 vector，吃多少用多少</p>
-<h3 id="vector-迭代器"><a href="#vector-迭代器" class="headerlink" title="vector 迭代器"></a>vector 迭代器</h3><p>vector维护的是一个连续线性空间，所以不论其元素型别为何，<strong>普通指针都可以作为 vector的迭代器而满足所有必要条件</strong>，因为 vector迭代器所需要的操作行为普通指针天生就具备。 vector支持随机存取，而普通指针正有着这样的能力。所以， vector提供的是 Random Access Iterators。</p>
-<h3 id="vector-的数据结构"><a href="#vector-的数据结构" class="headerlink" title="vector 的数据结构"></a>vector 的数据结构</h3><p>vector所采用的数据结构非常简单:线性连续空间。它以两个迭代器 start和 finish分别指向配置得来的连续空间中目前已被使用的范围，并以迭代器end_of_storage指向整块连续空间(含备用空间)的尾端</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T， <span class="keyword">class</span> Alloc = alloc&gt;</div><div class="line"><span class="keyword">class</span> <span class="built_in">vector</span>&#123;</div><div class="line">...</div><div class="line"><span class="keyword">protected</span>:</div><div class="line">    iterator start;</div><div class="line">    iterator finish;</div><div class="line">    iterator end_of_storage;</div><div class="line">...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>为了降低空间配置时的速度成本， vector实际配置的大小可能比客户端需求量更大一些，以备将来可能的扩充。这便是容量( capacity)的观念。换句话说个 vector的容量永远大于或等于其大小。一旦容量等于大小，便是满载，下次再有新增元素，整个 vector就得另觅居所</p>
-<p><img src="https://data2.liuin.cn/2018-05-20-15267802557974.jpg" alt=""></p>
-<h3 id="vector-的构造和内存管理"><a href="#vector-的构造和内存管理" class="headerlink" title="vector 的构造和内存管理"></a>vector 的构造和内存管理</h3><p>当我们以 push_back()将新元素插入于 vector尾端时，该函数首先检查是否还有备用空间，如果有就直接在备用空间上构造元素，并调整迭代器 finish，使vector变大。如果没有备用空间了，就扩充空间(重新配置、移动数据、释放原空间)</p>
-<p>注意，所谓动态增加大小，并不是在原空间之后接续新空间(因为无法保证原空间之后尚有可供配置的空间)，而是以原大小的两倍另外配置一块较大空间，然后将原内容拷贝过来，然后才开始在原内容之后构造新元素，并释放原空间。因此对 vector的任何操作，<strong>一旦引起空间重新配置，指向原 vector的所有迭代器就都失效了</strong>。这是程序员易犯的一个错误，务需小心</p>
-<h2 id="list"><a href="#list" class="headerlink" title="list"></a>list</h2><h3 id="list-概述"><a href="#list-概述" class="headerlink" title="list 概述"></a>list 概述</h3><p>相较于vector的连续线性空间，list就显得复杂许多，它的好处是每次插人或删除一个元素，就配置或释放一个元素空间。因此，list对于空间的运用有绝对的精准，一点也不浪费。而且，对于任何位置的元素插入或元素移除，list永远是常数时间。</p>
-<p>list和 vector是两个最常被使用的容器。什么时机下最适合使用哪一种容器，必须视元素的多寡、元素的构造复杂度、元素存取行为的特性而定。</p>
-<h3 id="list的节点-node"><a href="#list的节点-node" class="headerlink" title="list的节点(node)"></a>list的节点(node)</h3><p>list的节点是一个典型的双向链表的结构</p>
-<p><img src="https://data2.liuin.cn/2018-05-20-15267809077014.jpg" alt=""></p>
-<h3 id="list的迭代器"><a href="#list的迭代器" class="headerlink" title="list的迭代器"></a>list的迭代器</h3><p>list不再能够像vector一样以普通指针作为迭代器，因为其节点不保证在储存空间中连续存在。list迭代器必须有能力指向list的节点，并有能力进行正确的递增、递减、取值、成员存取等操作。</p>
-<p>由于STL list是一个双向链表(double linked-ist)，迭代器必须具备前移后移的能力，所以list提供的是 Bidirectional iteratorslist</p>
-<p>有一个重要性质:插入操作( insert)和接合操作( splice)都不会造成原有的list迭代器失效。这在 vector是不成立的，因为 vector的插人操作可能造成内存的重新配置，导致原有的迭代器全部失效。甚至list的元素删除操作( erase)，也只有“指向被删除元素”的那个迭代器失效，其它迭代器不受任何影响</p>
-<h3 id="list的数据结构"><a href="#list的数据结构" class="headerlink" title="list的数据结构"></a>list的数据结构</h3><p>SGL list不仅是一个双向链表，而且还是一个环状双向链表。所以它只需要个指针，便可以完整表现整个链表</p>
-<p>如果让指针node指向刻意置于尾端的一个空白节点，node便能符合STL对于“前闭后开”区间的要求，成为1ast迭代器，如图所示</p>
-<p><img src="https://data2.liuin.cn/2018-05-20-15267812961833.jpg" alt=""></p>
-<h2 id="deque"><a href="#deque" class="headerlink" title="deque"></a>deque</h2><h3 id="deque概述"><a href="#deque概述" class="headerlink" title="deque概述"></a>deque概述</h3><p>vector是单向开口的连续线性空间， deque则是一种双向开口的连续线性空间。所谓双向开口，意思是<strong>可以在头尾两端分别做元素的插入和删除操作</strong>。 vector当然也可以在头尾两端进行操作(从技术观点)，但是其头部操作效率奇差，无法被接受</p>
-<p><img src="https://data2.liuin.cn/2018-05-20-15267815267741.jpg" alt=""></p>
-<p>deque和 vector的最大差异，一在于deque允许于常数时间内对起头端进行元素的插入或移除操作，二在于 deque没有所谓容量( capacity)观念，因为它是动态地以分段连续空间组合而成，随时可以增加一段新的空间并链接起来。换句话说，像 vector那样“因旧空间不足而重新配置一块更大空间，然后复制元素，再释放旧空间”这样的事情在 deque是不会发生的。也因此， deque没有必要提供所谓的空间保留( reserve)功能</p>
-<p>虽然 deque也提供 Ramdon Access iterator，但<strong>它的迭代器并不是普通指针，其复杂度和 vector不可以道里计</strong>(稍后看到源代码，你便知道)，这当然影响了各个运算层面。因此，除非必要，我们应尽可能选择使用 vector而非 deque</p>
-<h3 id="deque的中控器"><a href="#deque的中控器" class="headerlink" title="deque的中控器"></a>deque的中控器</h3><p>deque是连续空间(至少逻辑上看来如此)，连续线性空间总令我们联想到array或 vector。 array无法成长， vector虽可成长，却只能向尾端成长，而且其所谓成长原是个假象，事实上是(1)另觅更大空间;(2)将原数据复制过去;(3)释放原空间三部曲。如果不是 <strong>vector每次配置新空间时都有留下一些余裕，其成长”假象所带来的代价将是相当高昂</strong></p>
-<p>deque系由一段一段的定量连续空间构成。一旦有必要在 deque的前端或尾端增加新空间，便配置一段定量连续空间，串接在整个 deque的头端或尾端deque的最大任务，便是在这些分段的定量连续空间上，维护其整体连续的假象并提供随机存取的接口·避开了“重新配置、复制、释放”的轮回，<strong>代价则是复杂的迭代器架构</strong></p>
-<p>受到分段连续线性空间的字面影响，我们可能以为 deque的实现复杂度和vector相比虽不中亦不远矣，其实不然。主要因为，既日<strong>分段连续线性空间，就必须有中央控制，而为了维持整体连续的假象，数据结构的设计及迭代器前进后退等操作都颇为繁琐</strong>。 deque的实现代码分量远比 vector或list都多得多</p>
-<p>deque采用一块所谓的mqp(注意，不是STL的map容器)作为主控。这里所谓map是一小块连续空间，其中每个元素(此处称为一个节点，node)都是指针，指向另一段(较大的)连续线性空间，称为缓冲区。缓冲区才是 deque的储存空间主体。 </p>
-<p>把令人头皮发麻的各种型别定义(为了型别安全，那其实是有必要的)整理下，我们便可发现，map其实是一个T**，也就是说它是一个指针，所指之物又是个指针，指向型别为T的一块空间，如图所示</p>
-<p><img src="https://data2.liuin.cn/2018-05-20-15267828260370.jpg" alt=""></p>
-<h3 id="deque的迭代器"><a href="#deque的迭代器" class="headerlink" title="deque的迭代器"></a>deque的迭代器</h3><p>deque是分段连续空间。维持其“整体连续”假象的任务，落在了迭代器的operator++和operator–两个运算子身上</p>
-<p>让我们思考一下， deque迭代器应该具备什么结构。首先，它必须能够<strong>指出分段连续空间(亦即缓冲区)在哪里，其次它必须能够判断自己是否已经处于其所在缓冲区的边缘</strong>，如果是，一旦前进或后退时就必须跳跃至下一个或上一个缓冲区为了能够正确跳跃， deque必须<strong>随时掌握管控中心</strong>(map)。</p>
-<p><img src="https://data2.liuin.cn/2018-05-20-15267830496256.jpg" alt=""></p>
-<h3 id="deque的数据结构"><a href="#deque的数据结构" class="headerlink" title="deque的数据结构"></a>deque的数据结构</h3><p>deque除了维护一个先前说过的指向map的指针外，也维护 start，fini两个迭代器，分别指向第一缓冲区的第一个元素和最后缓冲区的最后一个元素(的下一位置)。此外，它当然也必须记住目前的mqp大小。因为一旦mqp所提供的节点不足，就必须重新配置更大的一块map</p>
-<h2 id="stack"><a href="#stack" class="headerlink" title="stack"></a>stack</h2><h3 id="stack-概述"><a href="#stack-概述" class="headerlink" title="stack 概述"></a>stack 概述</h3><p>stack是一种先进后出( First In last out，FILO)的数据结构。它只有一个出口，形式如图4-18所示。 stack允许新增元素、移除元素、取得最顶端元素。但除了最顶端外，没有任何其它方法可以存取 stack的其它元素。换言之， stack不允许有遍历行为</p>
-<p><img src="https://data2.liuin.cn/2018-05-20-15267835939355.jpg" alt=""></p>
-<h3 id="stack-定义完整列表"><a href="#stack-定义完整列表" class="headerlink" title="stack 定义完整列表"></a>stack 定义完整列表</h3><p>以某种既有容器作为底部结构，将其接口改变，使之符合“先进后出”的特性，形成一个 stack，是很容易做到的， deque是双向开口的数据结构，若以dequ为底部结构并封闭其头端开口，便轻而易举地形成了一个 stack。因此， SGI STI便以 deque作为缺省情况下的 stack底部结构， stack的实现因而非常简单，源代码十分简短，本处完整列出</p>
-<p>由于 stack系以底部容器完成其所有工作，而具有这种“修改某物接口，形成另一种风貌”之性质者，称为 adapter(配接器)，因此STL stack往往不被归类为 container(容器)，而被归类为 container adapter</p>
-<h3 id="stack-没有迭代器"><a href="#stack-没有迭代器" class="headerlink" title="stack 没有迭代器"></a>stack 没有迭代器</h3><p>stack所有元素的进出都必须符合“先进后出”的条件，只有 stack顶端的元素，才有机会被外界取用。 stack不提供走访功能，也不提供迭代器</p>
-<h2 id="queue"><a href="#queue" class="headerlink" title="queue"></a>queue</h2><h3 id="queue概述"><a href="#queue概述" class="headerlink" title="queue概述"></a>queue概述</h3><p>queue是一种先进先出( First In First Out，FIFO)的数据结构。它有两个出口。 queue允许新增元素、移除元素、从最底端加入元素、取得最顶端元素。但除了最底端可以加入、最顶端可以取出外，没有任何其它方法可以存取 queue的其它元素。换言之， queue不允许有遍历行为。</p>
-<p><img src="https://data2.liuin.cn/2018-05-20-15267838406632.jpg" alt=""></p>
-<h3 id="queue定义完整列表"><a href="#queue定义完整列表" class="headerlink" title="queue定义完整列表"></a>queue定义完整列表</h3><p>以某种既有容器为底部结构，将其接口改变，使其符合“先进先出”的特性形成一个 queue，是很容易做到的. deque是双向开口的数据结构，若以 deque为底部结构并封闭其底端的出口和前端的入口，便轻而易举地形成了一个 queue。因此， SGI STL便以 deque作为缺省情况下的 queue底部结构。</p>
-<h3 id="queue没有迭代器"><a href="#queue没有迭代器" class="headerlink" title="queue没有迭代器"></a>queue没有迭代器</h3><p>queue所有元素的进出都必须符合“先进先出”的条件，只有 queue顶端的元素，才有机会被外界取用。 queue不提供遍历功能，也不提供迭代器</p>
-<h2 id="heap"><a href="#heap" class="headerlink" title="heap"></a>heap</h2><h3 id="heap概述"><a href="#heap概述" class="headerlink" title="heap概述"></a>heap概述</h3><p>heap并不归属于STL容器组件，它是个幕后英雄，扮演 priority queue的助手。顾名思义， priority queue允许用户以任何次序将任何元素推入容器内，但取出时一定是从优先权最高(也就是数值最高)的元素开始取。 binary max heap正是具有这样的特性，适合作为 priority queue的底层机制</p>
-<p>如果使用list作为 priority queue的底层机制，元素插入操作可享常数时间。但是要找到list中的极值，却需要对整个list进行线性扫描。我们也可以改变做法，让元素插入前先经过排序这一关，使得list的元素值总是由小到大(或由大到小)，但这么一来，收之东隅却失之桑榆:虽然取得极值以及元素删除操作达到最高效率，可元素的插人却只有线性表现</p>
-<p>比较麻辣的做法是以 binary search tree作为 prlorltyqueue的底层机制。这么一来，元素的插入和极值的取得就有O(logN)的表现但杀鸡用牛刀，未免小题大做，一来 binary search tree的输人需要足够的随机性，二来 binary search tree并不容易实现。 </p>
-<p>比较适合的是binary heap的方案，所谓 binary heap就是一种 complete binary tree(完全二叉树)，也就是说，整棵 binary tree除了最底层的叶节点之外，是填满的，而最底层的叶节点(s)由左至右又不得有空隙。</p>
-<p><img src="https://data2.liuin.cn/2018-05-20-15267842482184.jpg" alt=""></p>
-<p>这么一来，我们需要的工具就很简单了:一个 array和一组heap算法(用来插入元素、删除元素、取极值，将某一整组数据排列成一个heap)</p>
-<h3 id="heap算法"><a href="#heap算法" class="headerlink" title="heap算法"></a>heap算法</h3><h4 id="push-heap-算法"><a href="#push-heap-算法" class="headerlink" title="push_heap 算法"></a>push_heap 算法</h4><p><img src="https://data2.liuin.cn/2018-05-20-15267844079830.jpg" alt=""></p>
-<h4 id="pop-heap-算法"><a href="#pop-heap-算法" class="headerlink" title="pop_heap 算法"></a>pop_heap 算法</h4><p><img src="https://data2.liuin.cn/2018-05-20-15267844125899.jpg" alt=""></p>
-<h4 id="sort-heap-算法"><a href="#sort-heap-算法" class="headerlink" title="sort_heap 算法"></a>sort_heap 算法</h4><p>堆排序思想，不断对heap进行pop操作，达到排序效果</p>
-<h2 id="priority-queue"><a href="#priority-queue" class="headerlink" title="priority_queue"></a>priority_queue</h2><h3 id="priority-queue概述"><a href="#priority-queue概述" class="headerlink" title="priority_queue概述"></a>priority_queue概述</h3><p>顾名思义， priority_queue是一个拥有权值观念的 queue，它允许加人新元素、移除旧元素、审视元素值等功能。由于这是一个 queue，所以只允许在底端加入元素，并从顶端取出元素，除此之外别无其它存取元素的途径</p>
-<p>priority_queue带有权值观念，其内的元素并非依照被推入的次序排列，而是自动依照元素的权值排列(通常权值以实值表示)。权值最高者，排在最前面</p>
-<p>缺省情况下 priority_queue系利用一个max-heap完成，后者是一个以vector表现的 complete binary tree。max-heap可以满足priority_queue所需要的“依权值高低自动递增排序”的特性。</p>
-<p><img src="https://data2.liuin.cn/2018-05-20-15267846191674.jpg" alt=""></p>
-<h3 id="priority-queue定义完整列表"><a href="#priority-queue定义完整列表" class="headerlink" title="priority_queue定义完整列表"></a>priority_queue定义完整列表</h3><p>由于 priority-queue完全以底部容器为根据，再加上heap处理规则，所以其实现非常简单。缺省情况下是以 vector为底部容器。</p>
-<p>queue以底部容器完成其所有工作。具有这种“修改某物接口，形成另一种风貌”之性质者，称为 adapter(配接器)，因此， STL prior1ty_ queue往往不被归类为 container(容器)，而被归类为 container adapter</p>
-<h3 id="priority-queue没有迭代器"><a href="#priority-queue没有迭代器" class="headerlink" title="priority_queue没有迭代器"></a>priority_queue没有迭代器</h3><p>priority-queue的所有元素，进出都有一定的规则，只有 queue顶端的元素(权值最高者)，才有机会被外界取用。 priority_queue不提供遍历功能，也不提供迭代器。</p>
-<h1 id="关联式容器"><a href="#关联式容器" class="headerlink" title="关联式容器"></a>关联式容器</h1><p>标准的STL关联式容器分为set(集合)和map(映射表)两大类，以及这两大类的衍生体 multiset(多键集合)和multimap(多键映射表)。这些容器的底层机制均以RB-tree(红黑树)完成。RB-tree也是一个独立容器，但并不开放给外界使用</p>
-<p><img src="https://data2.liuin.cn/2018-05-21-15268607936529.jpg" alt=""></p>
-<p>所谓关联式容器，观念上类似关联式数据库(实际上则简单许多):每笔数据(每个元素)都有一个键值(key)和一个实值( value)。当元素被插人到关联式容器中时，容器内部结构(可能是RB-tree，也可能是hash-tab1e)便依照其键值大小，以某种特定规则将这个元素放置于适当位置.关联式容器没有所谓头尾(只有最大元素和最小元素)</p>
-<h2 id="RB-tree（红黑树）"><a href="#RB-tree（红黑树）" class="headerlink" title="RB-tree（红黑树）"></a>RB-tree（红黑树）</h2><p>AVL-tree之外，另一个颇具历史并被广泛运用的平衡二又搜索树是RB-tree(红黑树)。所谓RB-tree，不仅是一个二叉搜索树，而且必须满足以下规则</p>
-<ol>
-<li>每个节点不是红色就是黑色</li>
-<li>根节点为黑色</li>
-<li>如果节点为红，其子节点必须为黑</li>
-<li>任一节点至NULL(树尾端)的任何路径，所含之黑节点数必须相同</li>
-</ol>
-<h3 id="插入节点"><a href="#插入节点" class="headerlink" title="插入节点"></a>插入节点</h3><p>当插入一个新节点的时候，就会导致红黑树上面的规则被破坏。这个时候就要进行调整，其中包括了四种情况：</p>
-<p><img src="https://data2.liuin.cn/2018-05-21-15268627862296.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-05-21-15268628337631.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-05-21-15268628547016.jpg" alt=""></p>
-<p><img src="https://data2.liuin.cn/2018-05-21-15268628574449.jpg" alt=""></p>
-<h3 id="RB-tree的元素操作"><a href="#RB-tree的元素操作" class="headerlink" title="RB-tree的元素操作"></a>RB-tree的元素操作</h3><p>RB-tree提供两种插入操作:insert_unique()和 insert_equal()，前者表示被插入节点的键值(key)在整棵树中必须独一无二(因此，如果树中已存在相同的键值，插入操作就不会真正进行)，后者表示被插入节点的键值在整棵树中可以重复，因此，无论如何插入都会成功(除非空间不足导致配置失败)。</p>
-<h2 id="set"><a href="#set" class="headerlink" title="set"></a>set</h2><p>set的特性是，所有元素都会根据元素的键值自动被排序。set的元素不像map那样可以同时拥有实值( value)和键值(key)，set元素的键值就是实值实值就是键值。<strong>set不允许两个元素有相同的键值</strong></p>
-<p>我们可以通过set的迭代器改变set的元素值吗?不行，因为set元素值就是其键值，关系到set元素的排列规则。如果任意改变set元素值，会严重破坏set组织。set iterators是一种constant iterators(相对于 mutable iterators)</p>
-<p>set拥有与1ist相同的某些性质:当<strong>客户端对它进行元素新增操作( insert)或删除操作( erase)时，操作之前的所有迭代器，在操作完成之后都依然有效</strong>。当然，被删除的那个元素的迭代器必然是个例外</p>
-<p>由于RB-tree是一种平衡二叉搜索树，自动排序的效果很不错，所以标准的STL set即以RB-tree为底层机制。又由于set所开放的各种操作接口，RB-tree也都提供了，所以几乎所有的set操作行为，都只是转调用RB→tree的操作行为而已</p>
-<h2 id="map"><a href="#map" class="headerlink" title="map"></a>map</h2><p>map的特性是，所有元素都会根据元素的键值自动被排序。map的所有元素都是pair，同时拥有实值( value)和键值(key)。pair的第一元素被视为键值第二元素被视为实值.map不允许两个元素拥有相同的键值。</p>
-<p>可以通过map的迭代器修改value的值，但是不能更改key的值，因为修改key会破坏map的组织结构。因此， map iterators既不是一种constant iterators，也不是一种 mutable iterators</p>
-<p>map拥有和1ist相同的某些性质:当客户端对它进行元素新增操作或删除操作时，操作之前的所有迭代器，在操作完成之后都依然有效。当然，被删除的那个元素的迭代器必然是个例外</p>
-<p>map底层以RB-tree为实现机制，主要调用的是底层RB-tree的各种接口</p>
-<h2 id="multiset"><a href="#multiset" class="headerlink" title="multiset"></a>multiset</h2><p>multiset的特性以及用法和set完全相同，唯一的差别在于它允许键值重复，因此它的插入操作采用的是底层机制RB-tree的 insert_equa1()而非insert unique()。</p>
-<h2 id="multimap"><a href="#multimap" class="headerlink" title="multimap"></a>multimap</h2><p>multimap的特性以及用法与map完全相同，唯一的差别在于它允许键值重复，因此它的插入操作采用的是底层机制RB-tree的 insert_equal()而非insert_unique()。</p>
-<h2 id="hashtable"><a href="#hashtable" class="headerlink" title="hashtable"></a>hashtable</h2><p>二叉搜索树具有对数平均时间(logarithmic average time)的表现，但这样的表现构造在一个假设上:输入数据有足够的随机性。这一节要介绍一种名为hashtable(散列表)的数据结构，这种结构在插人、删除、搜寻等操作上也具有“常数平均时间”的表现，而且这种表现是以统计为基础，不需仰赖输入元素的随机性</p>
-<h3 id="hashtable-概述"><a href="#hashtable-概述" class="headerlink" title="hashtable 概述"></a>hashtable 概述</h3><p>hash table可提供对任何有名项( named item)的存取操作和删除操作。由于操作对象是有名项，所以 hash table也可被视为一种字典结构( dictionary)这种结构的用意在于提供常数时间之基本操作，就像 stack或 queue那样。乍听之下这几乎是不可能的任务，因为约束制条件如此之少，而元素个数增加，搜寻操作必定耗费更多时间</p>
-<p>通过hash function来进行key和index之间的转换。但是使用hash function会产生冲突的问题</p>
-<p>解决冲突的方法主要有以下几种：</p>
-<ol>
-<li>线性探测法，产生冲突的时候向下一个地址进行存储</li>
-<li>二次探测法，产生冲突的时候以H+1^2，H+2^2…的形式进行存储</li>
-<li>开链法，在表格中维护一个list</li>
-</ol>
-<h3 id="hashtable-的buckets与nodes"><a href="#hashtable-的buckets与nodes" class="headerlink" title="hashtable 的buckets与nodes"></a>hashtable 的buckets与nodes</h3><p>下图是以开链法( separate chaining)完成 hash table的图形表述。为了解说 SGI STL源代码，我遵循SGI的命名，称 hash table表格内的元素为桶子( bucket)，此名称的大约意义是，表格内的每个单元，涵盖的不只是个节点(元素)，甚且可能是一“桶”节点</p>
-<p><img src="https://data2.liuin.cn/2018-05-21-15268653336402.jpg" alt=""></p>
-<h2 id="hash-set"><a href="#hash-set" class="headerlink" title="hash_set"></a>hash_set</h2><p>STL set多半以RB-tree为底层机制。SGI则是在STL标准规格之外另又提供了一个所谓的hash_set，以 hash table为底层机制。由于hash_set所供应的操作接口hashtable都提供了，所以几乎所有的hash_set操作行为，都只是转调用hashtab1e的操作行为而已</p>
-<p>运用set，为的是能够快速搜寻元素。这一点，不论其底层是RB-tree或是hash table，都可以达成任务。但是请注意，<strong>RB-tree有自动排序功能而 hashtable没有，反应出来的结果就是，set的元素有自动排序功能而hash_set没有</strong>。</p>
-<h2 id="hash-map"><a href="#hash-map" class="headerlink" title="hash_map"></a>hash_map</h2><p>SGI在STL标准规格之外，另提供了一个所谓的 hash_map，以 hash table为底层机制。由于 hash_map所供应的操作接口， hash table都提供了，所以几乎所有的hash_map操作行为，都只是转调用 hashtable的操作行为而已。</p>
-<p>运用map，为的是能够根据键值快速搜寻元素。这一点，不论其底层是RB-tree或是 hash table，都可以达成任务。但是请注意，RB-tree有自动排序功能而hashtable没有，反应出来的结果就是，<strong>map的元素有自动排序功能而hash_map没有</strong></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;侯捷老师的《STL源码剖析》可谓是学习STL的经典。在书籍的自序中侯捷老师提到的”我的确认为99.99%的程序员所写的程序，在SGI STL面前都是三流水平“，这让我等菜鸟根本把持不住呀。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="读书笔记" scheme="https://www.liuin.cn/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="STL" scheme="https://www.liuin.cn/tags/STL/"/>
     
   </entry>
   
