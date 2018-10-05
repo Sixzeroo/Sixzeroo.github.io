@@ -150,7 +150,7 @@
 <meta property="og:image" content="http://data3.liuin.cn/2018-06-14-15289462083765.jpg">
 <meta property="og:image" content="http://data3.liuin.cn/2018-06-14-15289462760527.jpg">
 <meta property="og:image" content="http://data3.liuin.cn/2018-06-14-15289465680796.jpg">
-<meta property="og:updated_time" content="2018-06-14T03:28:41.000Z">
+<meta property="og:updated_time" content="2018-10-04T06:36:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《UNIX网络编程卷1》笔记 基本套接字编程部分">
 <meta name="twitter:description" content="UNIX网络编程必读书籍——《UNIX网络编程卷1》  基本套接字编程 笔记">
@@ -600,7 +600,7 @@
 <h2 id="并发服务器"><a href="#并发服务器" class="headerlink" title="并发服务器"></a>并发服务器</h2><p>然而当服务一个客户请求可能花费较长时间时,我们并不希望整个服务器被单个客户长期占用,而是希望同时服务多个客户。Unix中编写并发服务器程序最简单的办法就是foxk一个子进程来服务每个客户。</p>
 <p>当一个连接建立时, accept返回,服务器接着调用fork,然后由子进程服务客户(通过已连接套接字clientfd),父进程则等待另一个连接(通过监听套接字listened)。既然新的客户由子进程提供服务,父进程就关闭已连接套接。</p>
 <h2 id="close函数"><a href="#close函数" class="headerlink" title="close函数"></a>close函数</h2><p>close一个TCP套接字的默认行为是把该套接字标记成已关闭,然后立即返回到调用进程。该套接字描述符不能再由调用进程使用,也就是说它不能再作为read或wrie的第一个参数。然而TCP将尝试发送已排队等待发送到对端的任何数据,发送完毕后发生的是正常的TCP连接终止序列。</p>
-<p>并发服务器中父进程关闭已连接套接字只是导致相应描述符的引用计数值减1。既然引用计数值仍大于0,这个<strong>c1ose调用并不引发TCP的四分组连接终止序列</strong>。对于父进程与子进程共享已连接套接字的并发服务器来说,这正是所期望的。如果我们确实想在某个TCP连接上发送一个FⅠN,那么可以改用shutdow函数以代替c1ose。</p>
+<p>并发服务器中父进程关闭已连接套接字只是导致相应描述符的引用计数值减1。既然引用计数值仍大于0,这个<strong>close调用并不引发TCP的四分组连接终止序列</strong>。对于父进程与子进程共享已连接套接字的并发服务器来说,这正是所期望的。如果我们确实想在某个TCP连接上发送一个FⅠN,那么可以改用shutdow函数以代替close。</p>
 <h1 id="I-O复用：select和poll函数"><a href="#I-O复用：select和poll函数" class="headerlink" title="I/O复用：select和poll函数"></a>I/O复用：select和poll函数</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>有的时候，进程需要一种预先告知内核的能力,使得内核一旦发现进程指定的一个或多个I/O条件就绪(也就是说输入已准备好被读取,或者描述符已能承接更多的输出),它就通知进程。这个能力称为I/O复用(I/O multiplexing),是由se1ect和po11这两个函数支持的。</p>
 <p>IO复用典型使用在下列网络应用场合:</p>
 <ul>
@@ -660,7 +660,7 @@
 </ol>
 <p>如果一个套接字存在带外数据或者仍处于带外标记,那么它有异常条件待处理。</p>
 <p><img src="https://data2.liuin.cn/2018-05-27-15274255486025.jpg" alt=""></p>
-<h2 id="shutdown函数"><a href="#shutdown函数" class="headerlink" title="shutdown函数"></a>shutdown函数</h2><p>终止网络连接的通常方法是调用c1ose函数。不过cose有两个限制,却可以使用shutdown来避免：</p>
+<h2 id="shutdown函数"><a href="#shutdown函数" class="headerlink" title="shutdown函数"></a>shutdown函数</h2><p>终止网络连接的通常方法是调用close函数。不过cose有两个限制,却可以使用shutdown来避免：</p>
 <ol>
 <li>close把描述符的引用计数减1,仅在该计数变为0时才关闭套接字。使用 shutdown可以不管引用计数就激发TCP的正常连接终止序列</li>
 <li>close终止读和写两个方向的数据传送。既然TCP连接是全双工的,有时候我们需要告知对端我们已经完成了数据发送,即使对端仍有数据要发送给我们。</li>
@@ -706,13 +706,13 @@
 </ul>
 <p>本选项的功用是检测对端主机是否崩溃或变得不可达(譬如拨号调制解调器连接掉线,电源发生故障,等等)。如果对端进程崩溃,它的TCP将跨连接发送一个FIN,这可以通过调用select很容易地检测到。同时也要认识到,即使对任何保持存活探测分节均无响应(第三种情况),我们也不能肯定对端主机已经崩溃,因而TCP可能会终止一个有效连接。</p>
 <p>本选项一般由服务器使用,不过客户也可以使用。服务器使用本选项是因为它们花大部分时间阻塞在等待穿越TCP连接的输入上,也就是说在等待客户的请求。然而如果客户主机连接掉线、电源掉电或系统崩溃,服务器进程将永远不会知道,并将继续等待永远不会到达的输入我们称这种情况为半开连接( half-open connection)。保持存活选项将检测出这些半开连接并终止它们。</p>
-<h3 id="SO-LINGER套接字选项"><a href="#SO-LINGER套接字选项" class="headerlink" title="SO_LINGER套接字选项"></a>SO_LINGER套接字选项</h3><p>本选项指定close函数对面向连接的协议(例如TCP和SCTP,但不是UDP)如何操作。默认操作是c1ose立即返回,但是如果有数据残留在套接字发送缓冲区中,系统将试着把这些数据发送给对端。</p>
+<h3 id="SO-LINGER套接字选项"><a href="#SO-LINGER套接字选项" class="headerlink" title="SO_LINGER套接字选项"></a>SO_LINGER套接字选项</h3><p>本选项指定close函数对面向连接的协议(例如TCP和SCTP,但不是UDP)如何操作。默认操作是close立即返回,但是如果有数据残留在套接字发送缓冲区中,系统将试着把这些数据发送给对端。</p>
 <p><img src="http://data3.liuin.cn/2018-05-29-15275638162436.jpg" alt=""></p>
-<p>客户可以设置so_LINGER套接字选项,指定一个正的延滞时间。这种情况下客户的c1ose要到它的数据和FIN已被服务器主机的TCP确认后才返回</p>
+<p>客户可以设置so_LINGER套接字选项,指定一个正的延滞时间。这种情况下客户的close要到它的数据和FIN已被服务器主机的TCP确认后才返回</p>
 <p><img src="http://data3.liuin.cn/2018-05-29-15275638674270.jpg" alt=""></p>
 <p>然而我们会面临一个问题:在服务器应用进程读剩余数据之前,服务器主机可能崩溃,并且客户应用进程永远不会知道。更糟糕的是，下图展示了当给 SO_LINGER选项设置偏低的延滞时间值时可能发生的现象。</p>
 <p><img src="http://data3.liuin.cn/2018-05-29-15275640017253.jpg" alt=""></p>
-<p>让客户知道服务器已读取其数据的一个方法是改为调用shutdown(并设置它的第二个参数为 SHUT_WR)而不是调用c1ose,并等待对端c1ose连接的当地端(服务器端)。</p>
+<p>让客户知道服务器已读取其数据的一个方法是改为调用shutdown(并设置它的第二个参数为 SHUT_WR)而不是调用close,并等待对端close连接的当地端(服务器端)。</p>
 <p><img src="http://data3.liuin.cn/2018-05-29-15275641013574.jpg" alt=""></p>
 <h2 id="IPv4套接字选项"><a href="#IPv4套接字选项" class="headerlink" title="IPv4套接字选项"></a>IPv4套接字选项</h2><p>这些套接字选项由IPv4处理,它们的级别(即 getsockopt和 setsockopt函数的第二个参数)为IPPROTO_IP。</p>
 <h3 id="IP-HDRINCL套接字选项"><a href="#IP-HDRINCL套接字选项" class="headerlink" title="IP_HDRINCL套接字选项"></a>IP_HDRINCL套接字选项</h3><p>如果本选项是给一个原始IP套接字设置的,那么我们必须为所有在该原始套接字上发送的数据报构造自己的IP首部。一般情况下,在原始套接字上发送的数据报其IP首部是由内核构造的,不过有些应用程序(特别是路由跟踪程序 traceroute)需要构造自己的IP首部以取代IP置于该首部中的某些字段。</p>
@@ -856,7 +856,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年6月14日 - 11时06分
+	2018年10月4日 - 14时10分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>

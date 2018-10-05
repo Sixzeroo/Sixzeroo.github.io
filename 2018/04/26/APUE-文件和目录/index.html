@@ -121,7 +121,7 @@
 <meta property="og:image" content="https://data2.liuin.cn/2018-04-26-15247278729393.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-04-26-15247296049968.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-04-26-15247306715849.jpg">
-<meta property="og:updated_time" content="2018-04-26T08:17:53.000Z">
+<meta property="og:updated_time" content="2018-10-04T06:41:58.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="APUE 文件和目录">
 <meta name="twitter:description" content="《UNIX环境高级编程》第4章 文件和目录 笔记">
@@ -610,7 +610,7 @@
 <p>对符号链接以及它指向何种对象并无任何文件系统限制,任何用户都可以创建指向目录的符号链接。符号链接一般用于将一个文件或整个目录结构移到系统中另一个位置</p>
 <h2 id="创建和读取符号链接"><a href="#创建和读取符号链接" class="headerlink" title="创建和读取符号链接"></a>创建和读取符号链接</h2><p>可以用symlink或symlikat函数创建一个符号链接。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">symlink</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *actualpath, <span class="keyword">const</span> <span class="keyword">char</span> *sympath)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">symlinkat</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *actualpath, <span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span> *sympath)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
-<p>因为open函数跟随符号链接,所以需要有一种方法打开该链接本身,并读该链接中的名字read1ink和 readlinkat函数提供了这种功能。</p>
+<p>因为open函数跟随符号链接,所以需要有一种方法打开该链接本身,并读该链接中的名字readlink和 readlinkat函数提供了这种功能。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> readlink(<span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> pathname, <span class="keyword">char</span> *<span class="keyword">restrict</span> buf, <span class="keyword">size_t</span> bufsize); </div><div class="line"><span class="keyword">ssize_t</span> readlinkat(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> pathname, <span class="keyword">char</span> *<span class="keyword">restrict</span> buf, <span class="keyword">size_t</span> bufsize); </div><div class="line"></div><div class="line"><span class="comment">// Both return: number of bytes read if OK, −1 on error</span></div></pre></td></tr></table></figure>
 <h2 id="文件的时间"><a href="#文件的时间" class="headerlink" title="文件的时间"></a>文件的时间</h2><p>每个文件属性所保存的实际精度依赖于文件系统的实现。对于把时间戳记录在秒级的文件系统来说,纳秒这个字段就会被填充为0。对于时间戳的记录精度高于秒级的文件系统来说,不足秒的值被转换成纳秒并记录在纳秒这个字段中。</p>
 <p>每个文件维护3个时间字段：<br><img src="https://data2.liuin.cn/2018-04-26-15247296049968.jpg" alt=""></p>
@@ -688,7 +688,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年4月26日 - 16时04分
+	2018年10月4日 - 14时10分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>

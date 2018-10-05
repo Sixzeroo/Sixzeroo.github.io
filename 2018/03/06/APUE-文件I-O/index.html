@@ -117,7 +117,7 @@
 <meta property="og:image" content="https://data2.liuin.cn/2018-03-07-15203821021363.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-03-07-15203822136634.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-03-07-15203828993104.jpg">
-<meta property="og:updated_time" content="2018-03-07T03:29:51.000Z">
+<meta property="og:updated_time" content="2018-10-04T06:37:50.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="APUE 文件I&#x2F;O">
 <meta name="twitter:description" content="《UNIX环境高级编程》第2章 文件I/O 笔记">
@@ -481,7 +481,7 @@
       
         <p>《UNIX环境高级编程》第2章 文件I/O 笔记</p>
 <a id="more"></a>
-<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>UNX系统中的大多数文件只需用到5个函数:open、read、 write、 lseek以及c1ose。</p>
+<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>UNX系统中的大多数文件只需用到5个函数:open、read、 write、 lseek以及close。</p>
 <p>本章描述的函数经常被称为不带缓冲的I/O( unbuffered I/O,与将在第5章中说明的标准I/O函数相对照)。术语不带缓冲指的是每个read和 write都调用内核中的一个系统调用。</p>
 <p>只要涉及在多个进程间共享资源,原子操作的概念就变得非常重要。我们将通过文件IO和open函数的参数来讨论此概念。</p>
 <h2 id="文件描述符"><a href="#文件描述符" class="headerlink" title="文件描述符"></a>文件描述符</h2><p>对于内核而言,<strong>所有打开的文件都通过文件描述符引用</strong>。文件描述符是一个非负整数。当打开一个现有文件或创建一个新文件时,内核向进程返回一个文件描述符。</p>
@@ -496,7 +496,7 @@
 <p>creat的一个不足之处是它以只写方式打开所创建的文件。</p>
 <h2 id="函数close"><a href="#函数close" class="headerlink" title="函数close"></a>函数close</h2><p>调用close函数关闭一个打开的文件：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">close</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">//Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure></p>
 <p>关闭一个文件时还会释放该进程加在该文件上的所有记录锁。</p>
-<p>当一个进程终止时,内核自动关闭它所有的打开文件。很多程序都利用了这一功能而不显式地用c1ose关闭打开文件。</p>
+<p>当一个进程终止时,内核自动关闭它所有的打开文件。很多程序都利用了这一功能而不显式地用close关闭打开文件。</p>
 <h2 id="函数lseek"><a href="#函数lseek" class="headerlink" title="函数lseek"></a>函数lseek</h2><p>每个打开文件都有一个与其相关联的“<strong>当前文件偏移量</strong>”( current file offset)。它通常是一个非负整数,用以度量从文件开始处计算的字节数。</p>
 <p>调用1seek显式地为一个打开文件设置偏移量：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="keyword">off_t</span> lseek(<span class="keyword">int</span> fd, <span class="keyword">off_t</span> offset, <span class="keyword">int</span> whence);</div><div class="line"></div><div class="line"><span class="comment">//Returns: new ﬁle offset if OK, −1 on error</span></div></pre></td></tr></table></figure></p>
 <p>对参数offet的解释与参数 whence的值有关。</p>
@@ -634,7 +634,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年3月7日 - 11时03分
+	2018年10月4日 - 14时10分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>

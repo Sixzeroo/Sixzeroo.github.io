@@ -117,7 +117,7 @@
 <meta property="og:image" content="https://data2.liuin.cn/2018-04-30-15250569958373.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-04-30-15250572321583.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-04-30-15250574049036.jpg">
-<meta property="og:updated_time" content="2018-05-24T06:39:19.000Z">
+<meta property="og:updated_time" content="2018-10-04T06:46:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="APUE 进程环境">
 <meta name="twitter:description" content="《UNIX环境高级编程》第7章 进程环境 笔记">
@@ -504,7 +504,7 @@
 </blockquote>
 <p>3个函数用于正常终止一个程序:_exit和_Exit立即进入内核,exit则先执行一些清理处理,然后返回内核。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">exit</span><span class="params">(<span class="keyword">int</span> status)</span></span>; </div><div class="line"><span class="keyword">void</span> _Exit(<span class="keyword">int</span> status);</div><div class="line"> </div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">void</span> _exit(<span class="keyword">int</span> status);</div></pre></td></tr></table></figure>
-<p><code>exit</code>函数总是执行一个标准I/O库的清理关闭操作:对于所有打开流调用fc1ose函数。这造成输出缓冲中的所有数据都被冲洗(写到文件上)</p>
+<p><code>exit</code>函数总是执行一个标准I/O库的清理关闭操作:对于所有打开流调用fclose函数。这造成输出缓冲中的所有数据都被冲洗(写到文件上)</p>
 <p>3个退出函数都带一个整型参数,称为终止状态(或退出状态, exit status)。大多数UNIX系统 shell都提供检查进程终止状态的方法。</p>
 <blockquote>
 <p>函数atexit</p>
@@ -535,9 +535,9 @@
 <h2 id="共享库"><a href="#共享库" class="headerlink" title="共享库"></a>共享库</h2><p>共享库使得<strong>可执行文件中不再需要包含公用的库函数</strong>,而只需在所有进程都可引用的存储区中保存这种库例程的一个副本。程序第一次执行或者第一次调用某个库函数时,<strong>用动态链接方法将程序与共享库函数相链接</strong>。这减少了每个可执行文件的长度,但增加了一些运行时间开销。这种时间开销发生在该程序第一次被执行时,或者每个共享库函数第一次被调用时。共享库的另一个优点是<strong>可以用库函数的新版本代替老版本而无需对使用该库的程序重新连接编辑</strong>(假定参数的数目和类型都没有发生改变)</p>
 <h2 id="存储空间分配"><a href="#存储空间分配" class="headerlink" title="存储空间分配"></a>存储空间分配</h2><p>ISO C说明了3个用于存储空间动态分配的函数</p>
 <ol>
-<li>ma11oc,分配指定字节数的存储区。此存储区中的初始值不确定。</li>
-<li>cal1oc,为指定数量指定长度的对象分配存储空间。该空间中的每一位(bit)都初始化为0</li>
-<li>rea11oc,增加或减少以前分配区的长度。当增加长度时,可能需将以前分配区的内容移到另一个足够大的区域,以便在尾端提供增加的存储区,而新增区域内的初始值则不确定。</li>
+<li>malloc,分配指定字节数的存储区。此存储区中的初始值不确定。</li>
+<li>calloc,为指定数量指定长度的对象分配存储空间。该空间中的每一位(bit)都初始化为0</li>
+<li>realloc,增加或减少以前分配区的长度。当增加长度时,可能需将以前分配区的内容移到另一个足够大的区域,以便在尾端提供增加的存储区,而新增区域内的初始值则不确定。</li>
 </ol>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> *<span class="title">malloc</span><span class="params">(<span class="keyword">size_t</span> size)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> *<span class="title">calloc</span><span class="params">(<span class="keyword">size_t</span> nobj, <span class="keyword">size_t</span> size)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> *<span class="title">realloc</span><span class="params">(<span class="keyword">void</span> *ptr, <span class="keyword">size_t</span> newsize)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// All three return: non-null pointer if OK, NULL on error</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">free</span><span class="params">(<span class="keyword">void</span> *ptr)</span></span>;</div></pre></td></tr></table></figure>
 <p>这3个分配函数所返回的指针一定是适当对齐的,使其可用于任何数据对象。</p>
@@ -619,7 +619,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年5月24日 - 14时05分
+	2018年10月4日 - 14时10分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
