@@ -150,7 +150,7 @@
 <meta property="og:image" content="http://data3.liuin.cn/2018-06-14-15289462083765.jpg">
 <meta property="og:image" content="http://data3.liuin.cn/2018-06-14-15289462760527.jpg">
 <meta property="og:image" content="http://data3.liuin.cn/2018-06-14-15289465680796.jpg">
-<meta property="og:updated_time" content="2018-10-04T06:36:54.000Z">
+<meta property="og:updated_time" content="2018-10-09T13:45:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《UNIX网络编程卷1》笔记 基本套接字编程部分">
 <meta name="twitter:description" content="UNIX网络编程必读书籍——《UNIX网络编程卷1》  基本套接字编程 笔记">
@@ -601,7 +601,7 @@
 <p>当一个连接建立时, accept返回,服务器接着调用fork,然后由子进程服务客户(通过已连接套接字clientfd),父进程则等待另一个连接(通过监听套接字listened)。既然新的客户由子进程提供服务,父进程就关闭已连接套接。</p>
 <h2 id="close函数"><a href="#close函数" class="headerlink" title="close函数"></a>close函数</h2><p>close一个TCP套接字的默认行为是把该套接字标记成已关闭,然后立即返回到调用进程。该套接字描述符不能再由调用进程使用,也就是说它不能再作为read或wrie的第一个参数。然而TCP将尝试发送已排队等待发送到对端的任何数据,发送完毕后发生的是正常的TCP连接终止序列。</p>
 <p>并发服务器中父进程关闭已连接套接字只是导致相应描述符的引用计数值减1。既然引用计数值仍大于0,这个<strong>close调用并不引发TCP的四分组连接终止序列</strong>。对于父进程与子进程共享已连接套接字的并发服务器来说,这正是所期望的。如果我们确实想在某个TCP连接上发送一个FⅠN,那么可以改用shutdow函数以代替close。</p>
-<h1 id="I-O复用：select和poll函数"><a href="#I-O复用：select和poll函数" class="headerlink" title="I/O复用：select和poll函数"></a>I/O复用：select和poll函数</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>有的时候，进程需要一种预先告知内核的能力,使得内核一旦发现进程指定的一个或多个I/O条件就绪(也就是说输入已准备好被读取,或者描述符已能承接更多的输出),它就通知进程。这个能力称为I/O复用(I/O multiplexing),是由se1ect和po11这两个函数支持的。</p>
+<h1 id="I-O复用：select和poll函数"><a href="#I-O复用：select和poll函数" class="headerlink" title="I/O复用：select和poll函数"></a>I/O复用：select和poll函数</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>有的时候，进程需要一种预先告知内核的能力,使得内核一旦发现进程指定的一个或多个I/O条件就绪(也就是说输入已准备好被读取,或者描述符已能承接更多的输出),它就通知进程。这个能力称为I/O复用(I/O multiplexing),是由select和poll这两个函数支持的。</p>
 <p>IO复用典型使用在下列网络应用场合:</p>
 <ul>
 <li>当客户处理多个描述符(通常是交互式输入和网络套接字)时,必须使用I/O复用。</li>
@@ -615,7 +615,7 @@
 <ul>
 <li>阻塞式I/O;</li>
 <li>非阻塞式I/O;</li>
-<li>IO复用(se1ect和po11);</li>
+<li>IO复用(select和poll);</li>
 <li>信号驱动式IO(SIGIO);</li>
 <li>异步I/O(POSIX的aio_系列函数)。</li>
 </ul>
@@ -625,9 +625,9 @@
 <h3 id="非阻塞式I-O模型"><a href="#非阻塞式I-O模型" class="headerlink" title="非阻塞式I/O模型"></a>非阻塞式I/O模型</h3><p>进程把一个套接字设置成非阻塞是在通知内核：当所请求的I/O操作非得把本进程投入睡眠才能完成时,不要把本进程投入睡眠,而是返回一个错误。</p>
 <p><img src="https://data2.liuin.cn/2018-05-27-15274241782814.jpg" alt=""></p>
 <p>当一个应用进程像这样对一个非阻塞描述符循环调用 recvfrom时,我们称之为轮询</p>
-<h3 id="IO复用模型"><a href="#IO复用模型" class="headerlink" title="IO复用模型"></a>IO复用模型</h3><p>有了I/O复用(I/O multiplexing),我们就可以调用select或po11,<strong>阻塞在这两个系统调用中的某一个之上,而不是阻塞在真正的I/O系统调用上</strong>。</p>
+<h3 id="IO复用模型"><a href="#IO复用模型" class="headerlink" title="IO复用模型"></a>IO复用模型</h3><p>有了I/O复用(I/O multiplexing),我们就可以调用select或poll,<strong>阻塞在这两个系统调用中的某一个之上,而不是阻塞在真正的I/O系统调用上</strong>。</p>
 <p><img src="https://data2.liuin.cn/2018-05-27-15274242724836.jpg" alt=""></p>
-<p>我们阻塞于se]ect调用,等待数据报套接字变为可读。当se1ect返回套接字可读这一条件时,我们调用 recvfrom把所读数据报复制到应用进程缓冲区。</p>
+<p>我们阻塞于se]ect调用,等待数据报套接字变为可读。当select返回套接字可读这一条件时,我们调用 recvfrom把所读数据报复制到应用进程缓冲区。</p>
 <h3 id="信号驱动式IO模型"><a href="#信号驱动式IO模型" class="headerlink" title="信号驱动式IO模型"></a>信号驱动式IO模型</h3><p>我们也可以用信号,让内核在描述符就绪时发送SIGIO信号通知我们。我们称这种模型为信号驱动式I/O( signal-driven I/O)</p>
 <p><img src="https://data2.liuin.cn/2018-05-27-15274243322666.jpg" alt=""></p>
 <h3 id="异步I-O模型"><a href="#异步I-O模型" class="headerlink" title="异步I/O模型"></a>异步I/O模型</h3><p>这些函数的工作机制是:告知内核启动某个操作,并让内核在整个操作(包括将数据从内核复制到我们自己的缓冲区)完成后通知我们。这种模型与前一节介绍的信号驱动模型的主要区别在于:<strong>信号驱动式IO是由内核通知我们何时可以启动一个O操作,而异步LO模型是由内核通知我们IO操作何时完成</strong>。</p>
@@ -638,10 +638,10 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/select.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> maxfdp1, fd_set *readset, fd_set *writeset, fd_set *exceptset, <span class="keyword">const</span> <span class="keyword">struct</span> timeval *timeout)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: positive count of ready descriptors, 0 on timeout, –1 on error</span></div></pre></td></tr></table></figure>
 <p>最后一个参数它告知内核等待所指定描述符中的任何一个就绪可花多少时间。</p>
 <p>中间的三个参数 readset、 writeset和 excepts指定我们要让内核测试读、写和异常条件的描述符。目前支持的异常条件只有两个:<br>(1)某个套接字的带外数据的到达<br>(2)某个已置为分组模式的伪终端存在可从其主端读取的控制状态信息</p>
-<p>如何给这3个参数中的每一个参数指定一个或多个描述符值是一个设计上的问题。se1ect使用描述符集,通常是一个整数数组,其中每个整数中的每一位对应一个描述符</p>
+<p>如何给这3个参数中的每一个参数指定一个或多个描述符值是一个设计上的问题。select使用描述符集,通常是一个整数数组,其中每个整数中的每一位对应一个描述符</p>
 <p>select函数的中间三个参数 readset、 writeset和 excepts中,如果我们对某一个的条件不感兴趣,就可以把它设为空指针。事实上,如果这三个指针}均为空,我们就有了一个比UNIX的s1eep函数更为精确的定时器( sleep睡眠以秒为最小单位)。</p>
 <p>头文件<sys select.h="">中定义的 FD_SETSIZE常值是数据类型 fd_set中的描述符总数,其值通常是1024,不过很少有程序用到那么多的描述符。<strong>maxfdpl参数迫使我们计算出所关心的最大描述符并告知内核该值</strong>。</sys></p>
-<p>se1ect函数修改由指针 readset、 writeset和 excepts所指向的的描述符集,因而这三个参数都是值结果参数。调用该函数时,我们指定所关心的描述符的值,该函数返回时,结果将指示哪些描述符已就绪。该函数返回后,我们使用 FD_ISSET宏来测试 fa_set数据类型中的描述符描述符集内任何与未就绪描述符对应的位返回时均清成0。为此,每次重新调用se1ect函数时,我们都得再次把所有描述符集内所关心的位均置为1。</p>
+<p>select函数修改由指针 readset、 writeset和 excepts所指向的的描述符集,因而这三个参数都是值结果参数。调用该函数时,我们指定所关心的描述符的值,该函数返回时,结果将指示哪些描述符已就绪。该函数返回后,我们使用 FD_ISSET宏来测试 fa_set数据类型中的描述符描述符集内任何与未就绪描述符对应的位返回时均清成0。为此,每次重新调用select函数时,我们都得再次把所有描述符集内所关心的位均置为1。</p>
 <p>该函数的<strong>返回值表示跨所有描述符集的已就绪的总位数</strong>。如果在任何描述符就绪之前定时器到时,那么返回0。返回-1表示出错(这是可能发生的,譬如本函数被一个所捕获的信号中断)。</p>
 <h3 id="描述符就绪条件"><a href="#描述符就绪条件" class="headerlink" title="描述符就绪条件"></a>描述符就绪条件</h3><p>我们一直在讨论等待某个描述符准备好I/O(读或写)或是等待其上发生一个待处理的异常条件(带外数据)。尽管可读性和可写性对于普通文件这样的描述符显而易见,然而对于引起select返回套接字“就绪”的条件我们必须讨论得更明确些</p>
 <p>满足下列四个条件中的任何一个时,一个套接字准备好读</p>
@@ -679,7 +679,7 @@
 <li>pselect使用timespec结构,而不使用timeval结构。前者指定纳秒数，后者指定微秒数</li>
 <li>pselect函数增加了第六个参数:一个指向信号掩码的指针。该参数允许程序先禁止递交某些信号,再测试由这些当前被禁止信号的信号处理函数设置的全局变量,然后调用select,告诉它重新设置信号掩码。</li>
 </ul>
-<h2 id="poll-函数"><a href="#poll-函数" class="headerlink" title="poll 函数"></a>poll 函数</h2><p>po11提供的功能与se1ect类似,不过在处理流设备时,它能够提供额外的信息。</p>
+<h2 id="poll-函数"><a href="#poll-函数" class="headerlink" title="poll 函数"></a>poll 函数</h2><p>poll提供的功能与select类似,不过在处理流设备时,它能够提供额外的信息。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;poll.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">poll</span> <span class="params">(<span class="keyword">struct</span> pollfd *fdarray, <span class="keyword">unsigned</span> <span class="keyword">long</span> nfds, <span class="keyword">int</span> timeout)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: count of ready descriptors, 0 on timeout, –1 on error</span></div></pre></td></tr></table></figure>
 <p>第一个参数是指向一个结构数组第一个元素的指针。每个数组元素都是一个pollfd结构,用于指定测试某个给定描述符fd的条件。</p>
 <p><img src="https://data2.liuin.cn/2018-05-27-15274265737476.jpg" alt=""></p>
@@ -856,7 +856,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年10月4日 - 14时10分
+	2018年10月9日 - 21时10分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
