@@ -116,7 +116,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_28_1519799540229.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_28_1519799982888.jpg">
-<meta property="og:updated_time" content="2018-02-28T07:37:04.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Docker Swarm 简介">
 <meta name="twitter:description" content="Docker Swarm 为Docker 提供容器集群服务，是 Docker 官 方对容器云生态进行支持的核心方案。">
@@ -263,12 +263,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -388,7 +388,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-28T15:36:04+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-28T15:36:04+00:00">
                 2018-02-28
               </time>
             
@@ -453,7 +453,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1,823 字
+                  1,898 字
                 </span>
               
 
@@ -508,15 +508,15 @@
 </ul>
 <p><img src="https://data2.liuin.cn/story-writer/2018_2_28_1519799982888.jpg" alt="enter description here"></p>
 <h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><h3 id="初始化-swarm-init"><a href="#初始化-swarm-init" class="headerlink" title="初始化 (swarm init)"></a>初始化 (swarm init)</h3><p>使用<code>docker swarm init</code>来在本机初始化一个swarm集群</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">$ docker swarm init --advertise-addr 192.168.99.100</div><div class="line">Swarm initialized: current node (dxn1zf6l61qsb1josjja83ngz) is now a manager.</div><div class="line"></div><div class="line">To add a worker to this swarm, run the following <span class="built_in">command</span>:</div><div class="line"></div><div class="line">    docker swarm join \</div><div class="line">    --token SWMTKN-1-49nj1cmql0jkz5s954yi3oex3nedyz0fb0xx14ie39trti4wxv-8vxv8rssmk743ojnwacrr2e7c \</div><div class="line">    192.168.99.100:2377</div><div class="line"></div><div class="line">To add a manager to this swarm, run <span class="string">'docker swarm join-token manager'</span> and follow the instructions.</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ docker swarm init --advertise-addr 192.168.99.100</span><br><span class="line">Swarm initialized: current node (dxn1zf6l61qsb1josjja83ngz) is now a manager.</span><br><span class="line"></span><br><span class="line">To add a worker to this swarm, run the following <span class="built_in">command</span>:</span><br><span class="line"></span><br><span class="line">    docker swarm join \</span><br><span class="line">    --token SWMTKN-1-49nj1cmql0jkz5s954yi3oex3nedyz0fb0xx14ie39trti4wxv-8vxv8rssmk743ojnwacrr2e7c \</span><br><span class="line">    192.168.99.100:2377</span><br><span class="line"></span><br><span class="line">To add a manager to this swarm, run <span class="string">'docker swarm join-token manager'</span> and follow the instructions.</span><br></pre></td></tr></table></figure>
 <p>如果你的 Docker 主机有多个网卡，拥有多个 IP，必须使用 <code>--advertise-addr</code>指定 IP。</p>
 <p>执行 docker swarm init 命令的节点自动成为管理节点。</p>
 <h3 id="添加节点-swarm-join"><a href="#添加节点-swarm-join" class="headerlink" title="添加节点 (swarm join)"></a>添加节点 (swarm join)</h3><p>向集群中添加一个工作节点/管理节点</p>
 <p>格式： <code>docker swarm join [OPTIONS] HOST:PORT</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">docker@worker1:~$ docker swarm join \</div><div class="line">    --token SWMTKN-1-49nj1cmql0jkz5s954yi3oex3nedyz0fb0xx14ie39trti4wxv-8vxv8rssmk743ojnwacrr2e7c \</div><div class="line">    192.168.99.100:2377</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker@worker1:~$ docker swarm join \</span><br><span class="line">    --token SWMTKN-1-49nj1cmql0jkz5s954yi3oex3nedyz0fb0xx14ie39trti4wxv-8vxv8rssmk743ojnwacrr2e7c \</span><br><span class="line">    192.168.99.100:2377</span><br></pre></td></tr></table></figure>
 <h3 id="查看节点-node-ls"><a href="#查看节点-node-ls" class="headerlink" title="查看节点 (node ls)"></a>查看节点 (node ls)</h3><p>使用 <code>docker node ls</code> 查看集群</p>
 <h3 id="新建服务-service-create"><a href="#新建服务-service-create" class="headerlink" title="新建服务 (service create)"></a>新建服务 (service create)</h3><p>命令格式：<code>docker service create [OPTIONS] IMAGE [COMMAND] [ARG...]</code></p>
-<p>例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ docker service create --replicas 3 -p 80:80 --name nginx nginx:1.13.7-alpine</div></pre></td></tr></table></figure></p>
+<p>例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker service create --replicas 3 -p 80:80 --name nginx nginx:1.13.7-alpine</span><br></pre></td></tr></table></figure></p>
 <p><code>--replicas</code> 表示创建多少任务</p>
 <h3 id="查看服务信息-service-ls"><a href="#查看服务信息-service-ls" class="headerlink" title="查看服务信息 (service ls)"></a>查看服务信息 (service ls)</h3><p>使用 <code>docker service ls</code> 来查看当前 Swarm 集群运行的服务</p>
 <p>想要查看其中某一个服务的详细信息，可以使用 <code>service inspect</code>命令: <code>docker service inspect [OPTIONS] SERVICE [SERVICE...]</code></p>
@@ -524,19 +524,19 @@
 <h3 id="查看服务日志-service-logs"><a href="#查看服务日志-service-logs" class="headerlink" title="查看服务日志 (service logs)"></a>查看服务日志 (service logs)</h3><p>使用 <code>docker service logs</code> 来查看某个服务的日志</p>
 <h3 id="删除服务-service-rm"><a href="#删除服务-service-rm" class="headerlink" title="删除服务 (service rm)"></a>删除服务 (service rm)</h3><p>使用 <code>docker service rm</code> 来从 Swarm 集群移除某个服务。</p>
 <h3 id="服务伸缩-service-scale"><a href="#服务伸缩-service-scale" class="headerlink" title="服务伸缩 (service scale)"></a>服务伸缩 (service scale)</h3><p>使用 <code>docker service scale</code>调整服务中的任务数量</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker service scale backend=10</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker service scale backend=10</span><br></pre></td></tr></table></figure>
 <h2 id="使用Stack部署服务"><a href="#使用Stack部署服务" class="headerlink" title="使用Stack部署服务"></a>使用Stack部署服务</h2><p>Stack是一组相互关联的服务，它们可以共享依赖关系，并且可以进行协调和缩放。 单个Stack能够定义和协调整个应用程序的功能（尽管非常复杂的应用程序可能需要使用多个Stack）</p>
 <p>正如之前使用 docker-compose.yml 来一次配置、启动多个容器，在 Swarm 集群中也可以使用 compose 文件 （docker-compose.yml） 来配置、启动多个服务。</p>
 <p>我们使用 docker service create 一次只能部署一个服务，使用 docker-compose.yml 我们可以一次启动多个关联的服务。我们在此以 Swarm 集群中部署 WordPress 为例进行说明。</p>
-<p>docker-compose.yml 文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">version: &quot;3&quot;</div><div class="line"></div><div class="line">services:</div><div class="line">  wordpress:</div><div class="line">    image: wordpress</div><div class="line">    ports:</div><div class="line">      - 80:80</div><div class="line">    networks:</div><div class="line">      - overlay</div><div class="line">    environment:</div><div class="line">      WORDPRESS_DB_HOST: db:3306</div><div class="line">      WORDPRESS_DB_USER: wordpress</div><div class="line">      WORDPRESS_DB_PASSWORD: wordpress</div><div class="line">    deploy:</div><div class="line">      mode: replicated</div><div class="line">      replicas: 3</div><div class="line"></div><div class="line">  db:</div><div class="line">    image: mysql</div><div class="line">    networks:</div><div class="line">       - overlay</div><div class="line">    volumes:</div><div class="line">      - db-data:/var/lib/mysql</div><div class="line">    environment:</div><div class="line">      MYSQL_ROOT_PASSWORD: somewordpress</div><div class="line">      MYSQL_DATABASE: wordpress</div><div class="line">      MYSQL_USER: wordpress</div><div class="line">      MYSQL_PASSWORD: wordpress</div><div class="line">    deploy:</div><div class="line">      placement:</div><div class="line">        constraints: [node.role == manager]</div><div class="line"></div><div class="line">  visualizer:</div><div class="line">    image: dockersamples/visualizer:stable</div><div class="line">    ports:</div><div class="line">      - &quot;8080:8080&quot;</div><div class="line">    stop_grace_period: 1m30s</div><div class="line">    volumes:</div><div class="line">      - &quot;/var/run/docker.sock:/var/run/docker.sock&quot;</div><div class="line">    deploy:</div><div class="line">      placement:</div><div class="line">        constraints: [node.role == manager]</div><div class="line"></div><div class="line">volumes:</div><div class="line">  db-data:</div><div class="line">networks:</div><div class="line">  overlay:</div></pre></td></tr></table></figure></p>
+<p>docker-compose.yml 文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">version: &quot;3&quot;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  wordpress:</span><br><span class="line">    image: wordpress</span><br><span class="line">    ports:</span><br><span class="line">      - 80:80</span><br><span class="line">    networks:</span><br><span class="line">      - overlay</span><br><span class="line">    environment:</span><br><span class="line">      WORDPRESS_DB_HOST: db:3306</span><br><span class="line">      WORDPRESS_DB_USER: wordpress</span><br><span class="line">      WORDPRESS_DB_PASSWORD: wordpress</span><br><span class="line">    deploy:</span><br><span class="line">      mode: replicated</span><br><span class="line">      replicas: 3</span><br><span class="line"></span><br><span class="line">  db:</span><br><span class="line">    image: mysql</span><br><span class="line">    networks:</span><br><span class="line">       - overlay</span><br><span class="line">    volumes:</span><br><span class="line">      - db-data:/var/lib/mysql</span><br><span class="line">    environment:</span><br><span class="line">      MYSQL_ROOT_PASSWORD: somewordpress</span><br><span class="line">      MYSQL_DATABASE: wordpress</span><br><span class="line">      MYSQL_USER: wordpress</span><br><span class="line">      MYSQL_PASSWORD: wordpress</span><br><span class="line">    deploy:</span><br><span class="line">      placement:</span><br><span class="line">        constraints: [node.role == manager]</span><br><span class="line"></span><br><span class="line">  visualizer:</span><br><span class="line">    image: dockersamples/visualizer:stable</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;8080:8080&quot;</span><br><span class="line">    stop_grace_period: 1m30s</span><br><span class="line">    volumes:</span><br><span class="line">      - &quot;/var/run/docker.sock:/var/run/docker.sock&quot;</span><br><span class="line">    deploy:</span><br><span class="line">      placement:</span><br><span class="line">        constraints: [node.role == manager]</span><br><span class="line"></span><br><span class="line">volumes:</span><br><span class="line">  db-data:</span><br><span class="line">networks:</span><br><span class="line">  overlay:</span><br></pre></td></tr></table></figure></p>
 <p>在 Swarm 集群管理节点新建该文件，其中的 visualizer 服务提供一个可视化页面，我们可以从浏览器中很直观的查看集群中各个服务的运行节点。</p>
-<h3 id="部署服务"><a href="#部署服务" class="headerlink" title="部署服务"></a>部署服务</h3><p>部署服务使用 <code>docker stack deploy</code>，其中 -c 参数指定 compose 文件名。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ docker stack deploy -c docker-compose.yml wordpress</div></pre></td></tr></table></figure></p>
-<h3 id="查看服务"><a href="#查看服务" class="headerlink" title="查看服务"></a>查看服务</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ docker stack ls</div><div class="line">NAME                SERVICES</div><div class="line">wordpress           3</div></pre></td></tr></table></figure>
-<h3 id="移除服务"><a href="#移除服务" class="headerlink" title="移除服务"></a>移除服务</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">要移除服务，使用 docker stack down</div><div class="line"></div><div class="line">$ docker stack down wordpress</div><div class="line">Removing service wordpress_db</div><div class="line">Removing service wordpress_visualizer</div><div class="line">Removing service wordpress_wordpress</div><div class="line">Removing network wordpress_overlay</div><div class="line">Removing network wordpress_default</div></pre></td></tr></table></figure>
+<h3 id="部署服务"><a href="#部署服务" class="headerlink" title="部署服务"></a>部署服务</h3><p>部署服务使用 <code>docker stack deploy</code>，其中 -c 参数指定 compose 文件名。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker stack deploy -c docker-compose.yml wordpress</span><br></pre></td></tr></table></figure></p>
+<h3 id="查看服务"><a href="#查看服务" class="headerlink" title="查看服务"></a>查看服务</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ docker stack ls</span><br><span class="line">NAME                SERVICES</span><br><span class="line">wordpress           3</span><br></pre></td></tr></table></figure>
+<h3 id="移除服务"><a href="#移除服务" class="headerlink" title="移除服务"></a>移除服务</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">要移除服务，使用 docker stack down</span><br><span class="line"></span><br><span class="line">$ docker stack down wordpress</span><br><span class="line">Removing service wordpress_db</span><br><span class="line">Removing service wordpress_visualizer</span><br><span class="line">Removing service wordpress_wordpress</span><br><span class="line">Removing network wordpress_overlay</span><br><span class="line">Removing network wordpress_default</span><br></pre></td></tr></table></figure>
 <p>该命令不会移除服务所使用的 数据卷，如果你想移除数据卷请使用 docker volume rm</p>
 <h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><ul>
-<li><a href="https://0x9.me/WYIcD" target="_blank" rel="external">https://0x9.me/WYIcD</a></li>
-<li><a href="https://0x9.me/Woidc" target="_blank" rel="external">https://0x9.me/Woidc</a></li>
+<li><a href="https://0x9.me/WYIcD" target="_blank" rel="noopener">https://0x9.me/WYIcD</a></li>
+<li><a href="https://0x9.me/Woidc" target="_blank" rel="noopener">https://0x9.me/Woidc</a></li>
 </ul>
 
       
@@ -595,7 +595,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年2月28日 - 15时02分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -714,7 +714,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -827,7 +827,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -842,7 +842,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

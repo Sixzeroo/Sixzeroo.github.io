@@ -115,7 +115,7 @@
 <meta property="og:description" content="近段时间遇到一个问题：有多个服务要放在一个主机上，但是想用域名来区分这些服务而不是端口号（就像IP地址一样，没有人愿意记端口号）。后面找到了Nginx配置反向代理这个解决方案，这里总结一下。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_14_1518583313864.jpg">
-<meta property="og:updated_time" content="2018-03-26T06:31:56.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Nginx 配置反向代理">
 <meta name="twitter:description" content="近段时间遇到一个问题：有多个服务要放在一个主机上，但是想用域名来区分这些服务而不是端口号（就像IP地址一样，没有人愿意记端口号）。后面找到了Nginx配置反向代理这个解决方案，这里总结一下。">
@@ -262,12 +262,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -387,7 +387,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-14T13:26:06+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-14T13:26:06+00:00">
                 2018-02-14
               </time>
             
@@ -452,7 +452,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2,006 字
+                  2,092 字
                 </span>
               
 
@@ -485,11 +485,11 @@
 <p><img src="https://data2.liuin.cn/story-writer/2018_2_14_1518583313864.jpg" alt="正向代理和反向代理示意图"></p>
 <h2 id="Nginx-配置反向代理"><a href="#Nginx-配置反向代理" class="headerlink" title="Nginx 配置反向代理"></a>Nginx 配置反向代理</h2><p>使用Nginx配置反向代理需要用到的配置模块有http模块、server模块、location模块、upstream模块</p>
 <h3 id="http模块"><a href="#http模块" class="headerlink" title="http模块"></a>http模块</h3><p>http模块负责<strong>HTTP服务器相关属性的配置</strong>，它里面有server和upstream子模块</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">http &#123;</div><div class="line">	# include用来设定文件的mime类型,类型在配置文件目录下的mime.type文件定义，来告诉nginx来识别文件类型。</div><div class="line">    include mime.types;</div><div class="line">    </div><div class="line">	# default_type 设定了默认的类型为二进制流，也就是当文件类型未定义时使用这种方式</div><div class="line">	default_type application/octet-stream;</div><div class="line">	</div><div class="line">	# log_format 用于设置日志的格式，和记录哪些参数</div><div class="line">    log_format main &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;</div><div class="line">                    &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;</div><div class="line">                    &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;;</div><div class="line">					</div><div class="line">	# 纪录每次的访问日志的文件地址，后面的main是日志的格式样式，对应于log_format的main。</div><div class="line">    access_log /usr/local/var/log/nginx/access.log  main;</div><div class="line">	</div><div class="line">	# sendfile开启高效文件传输模式。将tcp_nopush和tcp_nodelay两个指令设置为on用于防止网络阻塞。</div><div class="line">    sendfile on;</div><div class="line">    tcp_nopush on;</div><div class="line">    tcp_nodelay on;</div><div class="line">	</div><div class="line">	# keepalive设置客户端连接保持活动的超时时间。在超过这个时间之后，服务器会关闭该连接。</div><div class="line">    keepalive_timeout 10;</div><div class="line">    #gzip on;</div><div class="line">    upstream myproject &#123;</div><div class="line">        .....</div><div class="line">    &#125;</div><div class="line">    server &#123;</div><div class="line">        ....</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">http &#123;</span><br><span class="line">	# include用来设定文件的mime类型,类型在配置文件目录下的mime.type文件定义，来告诉nginx来识别文件类型。</span><br><span class="line">    include mime.types;</span><br><span class="line">    </span><br><span class="line">	# default_type 设定了默认的类型为二进制流，也就是当文件类型未定义时使用这种方式</span><br><span class="line">	default_type application/octet-stream;</span><br><span class="line">	</span><br><span class="line">	# log_format 用于设置日志的格式，和记录哪些参数</span><br><span class="line">    log_format main &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;</span><br><span class="line">                    &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;</span><br><span class="line">                    &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;;</span><br><span class="line">					</span><br><span class="line">	# 纪录每次的访问日志的文件地址，后面的main是日志的格式样式，对应于log_format的main。</span><br><span class="line">    access_log /usr/local/var/log/nginx/access.log  main;</span><br><span class="line">	</span><br><span class="line">	# sendfile开启高效文件传输模式。将tcp_nopush和tcp_nodelay两个指令设置为on用于防止网络阻塞。</span><br><span class="line">    sendfile on;</span><br><span class="line">    tcp_nopush on;</span><br><span class="line">    tcp_nodelay on;</span><br><span class="line">	</span><br><span class="line">	# keepalive设置客户端连接保持活动的超时时间。在超过这个时间之后，服务器会关闭该连接。</span><br><span class="line">    keepalive_timeout 10;</span><br><span class="line">    #gzip on;</span><br><span class="line">    upstream myproject &#123;</span><br><span class="line">        .....</span><br><span class="line">    &#125;</span><br><span class="line">    server &#123;</span><br><span class="line">        ....</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="server模块"><a href="#server模块" class="headerlink" title="server模块"></a>server模块</h3><p>为http模块的子模块，定义一个虚拟主机。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">server &#123;</div><div class="line">	# listen 指定虚拟主机监听的服务端口</div><div class="line">    listen 8080;</div><div class="line">	</div><div class="line">	# server_name 用来指定IP地址或者域名，多个域名之间用空格分开</div><div class="line">    server_name localhost 192.168.12.10 www.yangyi.com;</div><div class="line">    </div><div class="line">	# 全局定义，如果都是这一个目录，这样定义最简单。</div><div class="line">    # root 表示在这整个server虚拟主机内，全部的root web根目录。</div><div class="line">	root   /Users/yangyi/www;</div><div class="line">	# index 全局定义访问的默认首页地址。</div><div class="line">    index  index.php index.html index.htm; </div><div class="line">	# charset 用于设置网页的默认编码格式。</div><div class="line">    charset utf-8;</div><div class="line">	# access_log 用来指定此虚拟主机的访问日志存放路径，最后的main用于指定访问日志的输出格式。</div><div class="line">    access_log  usr/local/var/log/host.access.log  main;</div><div class="line">    error_log  usr/local/var/log/host.error.log  error;</div><div class="line">    ....</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">	# listen 指定虚拟主机监听的服务端口</span><br><span class="line">    listen 8080;</span><br><span class="line">	</span><br><span class="line">	# server_name 用来指定IP地址或者域名，多个域名之间用空格分开</span><br><span class="line">    server_name localhost 192.168.12.10 www.yangyi.com;</span><br><span class="line">    </span><br><span class="line">	# 全局定义，如果都是这一个目录，这样定义最简单。</span><br><span class="line">    # root 表示在这整个server虚拟主机内，全部的root web根目录。</span><br><span class="line">	root   /Users/yangyi/www;</span><br><span class="line">	# index 全局定义访问的默认首页地址。</span><br><span class="line">    index  index.php index.html index.htm; </span><br><span class="line">	# charset 用于设置网页的默认编码格式。</span><br><span class="line">    charset utf-8;</span><br><span class="line">	# access_log 用来指定此虚拟主机的访问日志存放路径，最后的main用于指定访问日志的输出格式。</span><br><span class="line">    access_log  usr/local/var/log/host.access.log  main;</span><br><span class="line">    error_log  usr/local/var/log/host.error.log  error;</span><br><span class="line">    ....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="upstream模块"><a href="#upstream模块" class="headerlink" title="upstream模块"></a>upstream模块</h3><p>负责负载均衡模块，通过一个简单的调度算法来实现客户端IP到后端服务器的负载均衡。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">upstream iyangyi.com&#123;</div><div class="line">    ip_hash;</div><div class="line">    server 192.168.12.1:80;</div><div class="line">    server 192.168.12.2:80 down;</div><div class="line">    server 192.168.12.3:8080  max_fails=3  fail_timeout=20s;</div><div class="line">    server 192.168.12.4:8080;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">upstream iyangyi.com&#123;</span><br><span class="line">    ip_hash;</span><br><span class="line">    server 192.168.12.1:80;</span><br><span class="line">    server 192.168.12.2:80 down;</span><br><span class="line">    server 192.168.12.3:8080  max_fails=3  fail_timeout=20s;</span><br><span class="line">    server 192.168.12.4:8080;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>解释：</p>
 <ul>
 <li>通过upstream指令指定了一个负载均衡器的名称iyangyi.com。这个名称可以任意指定，在后面需要的地方直接调用即可。</li>
@@ -504,14 +504,14 @@
 <li><strong>url_hash（第三方）</strong>。按访问url的hash结果来分配请求，使每个url定向到同一个后端服务器，可以进一步提高后端缓存服务器的效率。Nginx本身是不支持url_hash的，如果需要使用这种调度算法，必须安装Nginx的hash软件包。</li>
 </ul>
 <h3 id="location模块"><a href="#location模块" class="headerlink" title="location模块"></a>location模块</h3><p>location模块使用来定位URL、解析URL的，指明定位到的URL的功能是什么。提供了强大的正则匹配功能，也支持条件判断匹配，用户可以通过location指令实现Nginx对动、静态网页进行过滤处理。</p>
-<p>最简单的一个例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">location / &#123;</div><div class="line">    root   /Users/yangyi/www;</div><div class="line">    index  index.php index.html index.htm;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>最简单的一个例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">location / &#123;</span><br><span class="line">    root   /Users/yangyi/www;</span><br><span class="line">    index  index.php index.html index.htm;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <ul>
 <li>location / 表示匹配根目录</li>
 <li>root 指令用于指定访问根目录时，虚拟主机的web目录</li>
 <li>index 用于设定我们只输入域名后访问的默认首页地址</li>
 </ul>
 <p>当我们需要进行反向代理的时候，主要配置也是在这里的，其使用的是location模块下的proxy_pass选项：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">location / &#123;</div><div class="line">	proxy_pass          https://gist.github.com;</div><div class="line">	proxy_cache_valid   200 302 1h;</div><div class="line">	proxy_cache_valid   404 1m;</div><div class="line">	proxy_cache_use_stale error timeout invalid_header updating</div><div class="line">		http_500 http_502 http_503 http_504;</div><div class="line">	proxy_set_header    Accept-Encoding &quot;&quot;;</div><div class="line">	proxy_set_header    Accept-Language &quot;zh-CN&quot;;</div><div class="line">	proxy_set_header    User-Agent $http_user_agent;</div><div class="line">	sub_filter  https://gist-assets.github.com/ http://gist.example.com;</div><div class="line">	sub_filter  https://gist.github.com/ http://gist.example.com;</div><div class="line">	sub_filter_once     off;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">location / &#123;</span><br><span class="line">	proxy_pass          https://gist.github.com;</span><br><span class="line">	proxy_cache_valid   200 302 1h;</span><br><span class="line">	proxy_cache_valid   404 1m;</span><br><span class="line">	proxy_cache_use_stale error timeout invalid_header updating</span><br><span class="line">		http_500 http_502 http_503 http_504;</span><br><span class="line">	proxy_set_header    Accept-Encoding &quot;&quot;;</span><br><span class="line">	proxy_set_header    Accept-Language &quot;zh-CN&quot;;</span><br><span class="line">	proxy_set_header    User-Agent $http_user_agent;</span><br><span class="line">	sub_filter  https://gist-assets.github.com/ http://gist.example.com;</span><br><span class="line">	sub_filter  https://gist.github.com/ http://gist.example.com;</span><br><span class="line">	sub_filter_once     off;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>解释：</p>
 <ul>
 <li>proxy_pass 指定反向代理的地址</li>
@@ -526,7 +526,7 @@
 <li>负载均衡，最大化服务器集群的效率</li>
 <li>请求的统一控制，包括设置权限、过滤规则等；</li>
 </ul>
-<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>配置本地主机<code>gist.example.com</code>到github的<code>gist.github.com</code>的server模块配置如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">server &#123;</div><div class="line">    listen  80;</div><div class="line">    server_name gist.example.com;</div><div class="line">    access_log  off;</div><div class="line">    resolver    8.8.8.8;</div><div class="line">    location / &#123;</div><div class="line">        proxy_pass          https://gist.github.com;</div><div class="line">        proxy_cache_valid   200 302 1h;</div><div class="line">        proxy_cache_valid   404 1m;</div><div class="line">        proxy_cache_use_stale error timeout invalid_header updating</div><div class="line">            http_500 http_502 http_503 http_504;</div><div class="line">        proxy_set_header    Accept-Encoding &quot;&quot;;</div><div class="line">        proxy_set_header    Accept-Language &quot;zh-CN&quot;;</div><div class="line">        proxy_set_header    User-Agent $http_user_agent;</div><div class="line">        sub_filter  https://gist-assets.github.com/ http://gist.example.com;</div><div class="line">        sub_filter  https://gist.github.com/ http://gist.example.com;</div><div class="line">        sub_filter_once     off;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>配置本地主机<code>gist.example.com</code>到github的<code>gist.github.com</code>的server模块配置如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen  80;</span><br><span class="line">    server_name gist.example.com;</span><br><span class="line">    access_log  off;</span><br><span class="line">    resolver    8.8.8.8;</span><br><span class="line">    location / &#123;</span><br><span class="line">        proxy_pass          https://gist.github.com;</span><br><span class="line">        proxy_cache_valid   200 302 1h;</span><br><span class="line">        proxy_cache_valid   404 1m;</span><br><span class="line">        proxy_cache_use_stale error timeout invalid_header updating</span><br><span class="line">            http_500 http_502 http_503 http_504;</span><br><span class="line">        proxy_set_header    Accept-Encoding &quot;&quot;;</span><br><span class="line">        proxy_set_header    Accept-Language &quot;zh-CN&quot;;</span><br><span class="line">        proxy_set_header    User-Agent $http_user_agent;</span><br><span class="line">        sub_filter  https://gist-assets.github.com/ http://gist.example.com;</span><br><span class="line">        sub_filter  https://gist.github.com/ http://gist.example.com;</span><br><span class="line">        sub_filter_once     off;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <ul>
 <li>井号开头的行是注释</li>
 <li>server 开始了 server 块</li>
@@ -547,10 +547,10 @@
 <li>sub_filter_once 被关闭，替换所有可替换的内容</li>
 </ul>
 <h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><ul>
-<li><a href="https://liam0205.me/2015/09/07/reverse-proxy-to-get-access-to-gist/" target="_blank" rel="external">https://liam0205.me/2015/09/07/reverse-proxy-to-get-access-to-gist/</a></li>
-<li><a href="https://www.jianshu.com/p/bed000e1830b" target="_blank" rel="external">https://www.jianshu.com/p/bed000e1830b</a></li>
-<li><a href="http://blog.csdn.net/physicsdandan/article/details/45667357" target="_blank" rel="external">http://blog.csdn.net/physicsdandan/article/details/45667357</a></li>
-<li><a href="https://paste.ubuntu.com/p/jZ8tBwGYcM/" target="_blank" rel="external">nginx配置整理（含注释）</a></li>
+<li><a href="https://liam0205.me/2015/09/07/reverse-proxy-to-get-access-to-gist/" target="_blank" rel="noopener">https://liam0205.me/2015/09/07/reverse-proxy-to-get-access-to-gist/</a></li>
+<li><a href="https://www.jianshu.com/p/bed000e1830b" target="_blank" rel="noopener">https://www.jianshu.com/p/bed000e1830b</a></li>
+<li><a href="http://blog.csdn.net/physicsdandan/article/details/45667357" target="_blank" rel="noopener">http://blog.csdn.net/physicsdandan/article/details/45667357</a></li>
+<li><a href="https://paste.ubuntu.com/p/jZ8tBwGYcM/" target="_blank" rel="noopener">nginx配置整理（含注释）</a></li>
 </ul>
 
       
@@ -609,7 +609,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年3月26日 - 14时03分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -728,7 +728,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -841,7 +841,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -856,7 +856,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

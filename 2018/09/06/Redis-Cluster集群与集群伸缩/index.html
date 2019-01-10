@@ -117,7 +117,7 @@
 <meta property="og:image" content="http://data3.liuin.cn/2018-10-01-15383778091095.jpg">
 <meta property="og:image" content="http://data3.liuin.cn/2018-10-01-15383781014879.jpg">
 <meta property="og:image" content="http://data3.liuin.cn/2018-10-01-15383800895858.jpg">
-<meta property="og:updated_time" content="2018-10-01T14:51:56.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:57.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis Cluster集群与集群伸缩">
 <meta name="twitter:description" content="使用Redis的时候遇到单机内存、并发、流量等瓶颈时，可以采用Cluster架构达到负载均衡的目的。Redis Cluster是Redis的分布式解决方案。">
@@ -264,12 +264,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -389,7 +389,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-06T19:24:27+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-06T19:24:27+00:00">
                 2018-09-06
               </time>
             
@@ -454,7 +454,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2,133 字
+                  2,146 字
                 </span>
               
 
@@ -520,14 +520,14 @@
 <li>不支持多数据库空间，集群模式下只能够使用数据库0</li>
 </ul>
 <h2 id="Redis-Cluster搭建"><a href="#Redis-Cluster搭建" class="headerlink" title="Redis Cluster搭建"></a>Redis Cluster搭建</h2><h3 id="节点准备"><a href="#节点准备" class="headerlink" title="节点准备"></a>节点准备</h3><p>Redis集群一般由多个节点组成，节点数量至少为6个才能保证组成完整高可用的集群。建议为集群内所有节点<strong>统一目录</strong>，一般划分三个目录：conf、 data、log，分别存放配置、数据和日志相关文件。</p>
-<p>相比单机模式需要改变的配置如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">port 6379                               //端口</div><div class="line">cluster-enabled yes                     //开启集群模式</div><div class="line">cluster-config-file nodes-6379.conf     //集群内部的配置文件</div><div class="line">cluster-node-timeout 15000              //节点超时时间，单位毫秒</div></pre></td></tr></table></figure></p>
+<p>相比单机模式需要改变的配置如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">port 6379                               //端口</span><br><span class="line">cluster-enabled yes                     //开启集群模式</span><br><span class="line">cluster-config-file nodes-6379.conf     //集群内部的配置文件</span><br><span class="line">cluster-node-timeout 15000              //节点超时时间，单位毫秒</span><br></pre></td></tr></table></figure></p>
 <p>注意到上面配置了集群内部的配置文件，集群配置文件的作用：当集群内节点发生信息变化时，如添加节点、节点下线、故障转移等。节点会自动保存集群的状态到配置文件中。该配置文件由Redis自行维护，不要手动修改，防止节点重启时产生集群信息错乱。</p>
 <p>启动所有节点以后可以通过 <code>CLUSTER NODES</code> 查看集群状态</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; CLUSTER NODES</div><div class="line">29978c0169ecc0a9054de7f4142155c1ab70258b :6379 myself,master - 0 0 0 connected</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; CLUSTER NODES</span><br><span class="line">29978c0169ecc0a9054de7f4142155c1ab70258b :6379 myself,master - 0 0 0 connected</span><br></pre></td></tr></table></figure>
 <h3 id="节点握手"><a href="#节点握手" class="headerlink" title="节点握手"></a>节点握手</h3><p>节点握手是指一批运行在集群模式下的节点通过Gossip协议彼此通信， 达到感知对方的过程。节点握手是集群彼此通信的第一步，由客户端发起命令：<code>CLUSTER MEET [ip] [port]</code></p>
 <p>Redis Clust的节点中是用<code>clusterNode</code>表示一个节点的状态的，握手实际上就是两个节点交换<code>clusterNode</code>的过程，交换的不仅仅是自己的<code>clusterNode</code>还有之间已经通过握手获取的<code>clusterNode</code>信息。当集群中所有的节点都互通以后，每一个节点都会拥有整个集群所有节点的<code>clusterNode</code>信息。</p>
 <h3 id="分配槽"><a href="#分配槽" class="headerlink" title="分配槽"></a>分配槽</h3><p>Redis集群把所有的数据映射到16384个槽中。每个key会映射为一个固 定的槽，只有当节点分配了槽，才能响应和这些槽关联的键命令。通过 <code>CLUSTER ADDSLOTS</code>命令为节点分配槽。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">redis-cli -h 127.0.0.1 -p 6379 cluster addslots &#123;0..5461&#125;</div><div class="line">OK</div><div class="line">redis-cli -h 127.0.0.1 -p 6380 cluster addslots &#123;5462..10922&#125;</div><div class="line">OK</div><div class="line">redis-cli -h 127.0.0.1 -p 6381 cluster addslots &#123;10923..16383&#125;</div><div class="line">OK</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -h 127.0.0.1 -p 6379 cluster addslots &#123;0..5461&#125;</span><br><span class="line">OK</span><br><span class="line">redis-cli -h 127.0.0.1 -p 6380 cluster addslots &#123;5462..10922&#125;</span><br><span class="line">OK</span><br><span class="line">redis-cli -h 127.0.0.1 -p 6381 cluster addslots &#123;10923..16383&#125;</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
 <p>当数据库中的16384个槽都有节点在处理时,集群处于上线状态(ok);相反地,如果数据库中有任何一个槽没有得到处理,那么集群处于下线状态(fail)，可以通过<code>CLUSTER INFO</code>获取到的集群状态查看</p>
 <h2 id="Redis-Cluster集群伸缩"><a href="#Redis-Cluster集群伸缩" class="headerlink" title="Redis Cluster集群伸缩"></a>Redis Cluster集群伸缩</h2><p>Redis集群提供了灵活的节点扩容和收缩方案。在不影响集群对外服务 的情况下，可以为集群添加节点进行扩容也可以下线部分节点进行缩容。</p>
 <p>伸缩的重点是槽位的重新分配，和数据的转移。</p>
@@ -539,7 +539,7 @@
 <li><code>redis-trib</code>向源节点发送 <code>CLUSTER GETKEYSINSLOT&lt;s1ot&gt; &lt;count&gt;</code>命令,获得最多count个属于槽s1ot的键值对的键名(key name)</li>
 <li>对于步骤3获得的每个键名,<code>redis-trib</code>都向源节点发送一个 <code>MIGRATE &lt;target_ip&gt; &lt;target_port&gt; &lt;key_name&gt; &lt;timeout&gt;</code>命令,将被选中的键原子地从源节点迁移至目标节点。</li>
 <li>重复执行步骤3和步骤4,直到源节点保存的所有属于槽s1ot的键值对都被迁移至目标节点为止。</li>
-<li><code>redis-trib</code>向集群中的任意一个节点发送 `CLUSTER SETSLOT <slot> NODE <target_id> 命令,将槽slot指派绐目标节点,这一指派信息会通过消息发送至整个集群,最终集群中的所有节点都会知道槽s1ot已经指派给了目标节点。</target_id></slot></li>
+<li><code>redis-trib</code>向集群中的任意一个节点发送 `CLUSTER SETSLOT <slot> NODE &lt;target_id&gt; 命令,将槽slot指派绐目标节点,这一指派信息会通过消息发送至整个集群,最终集群中的所有节点都会知道槽s1ot已经指派给了目标节点。</slot></li>
 </ol>
 <p><img src="http://data3.liuin.cn/2018-10-01-15383800895858.jpg" alt=""></p>
 <h3 id="ASK-错误"><a href="#ASK-错误" class="headerlink" title="ASK 错误"></a>ASK 错误</h3><p>在进行集群伸缩期间,源节点向目标节点迁移一个槽的过程中,可能会出现这样一种情况:属于被迁移槽的一部分键值对保存在源节点里面,而另一部分键值对则保存在目标节点里面。</p>
@@ -620,7 +620,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年10月1日 - 22时10分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -735,7 +735,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -848,7 +848,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -863,7 +863,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

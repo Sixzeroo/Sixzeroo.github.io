@@ -114,7 +114,7 @@
 <meta property="og:site_name" content="Sixzeroo">
 <meta property="og:description" content="本文展示使用Docker部署Hexo博客（当然也可以是其他的服务）在服务器上的一种方案，主要用到是webhook来触发git pull操作。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-03-02T09:47:40.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用Docker部署Hexo博客">
 <meta name="twitter:description" content="本文展示使用Docker部署Hexo博客（当然也可以是其他的服务）在服务器上的一种方案，主要用到是webhook来触发git pull操作。">
@@ -260,12 +260,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -385,7 +385,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-02T17:39:37+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-02T17:39:37+00:00">
                 2018-03-02
               </time>
             
@@ -450,7 +450,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  597 字
+                  650 字
                 </span>
               
 
@@ -478,7 +478,7 @@
         <p>本文展示使用Docker部署Hexo博客（当然也可以是其他的服务）在服务器上的一种方案，主要用到是webhook来触发git pull操作。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>之前部署Hexo博客的时候好像配置蛮久的，想着能不能把这些东西都放进Docker里面，以后换服务器以后部署也方面，于是便有了这波操作。</p>
-<p>这里使用的是<a href="https://github.com/adnanh/webhook" target="_blank" rel="external">webhook</a>这个轮子来实现持续集成的。</p>
+<p>这里使用的是<a href="https://github.com/adnanh/webhook" target="_blank" rel="noopener">webhook</a>这个轮子来实现持续集成的。</p>
 <p>工作示意图：<br>本地编辑—-git push—-&gt;Github—-webhook—-&gt;server—-get pull—-&gt;内容更新</p>
 <p>使用到两个Docker：</p>
 <ol>
@@ -486,14 +486,14 @@
 <li><code>nginx</code>: Web服务器，展示网站内容</li>
 </ol>
 <h2 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h2><p>Nginx容器的配置比较简单,只需要修改<code>nginx.conf</code>配置，监听80端口就行了。（如果需要需要https，则需要配置要证书以及配置监听443端口）。</p>
-<p>这里贴出我的<code>docker-compose.yml</code>文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">version: &apos;3&apos;</div><div class="line">services:</div><div class="line">    web:</div><div class="line">        image: nginx</div><div class="line">        volumes:</div><div class="line">            - ./nginx.conf:/etc/nginx/nginx.conf</div><div class="line">            - ./sites-enabled:/etc/nginx/sites-enabled</div><div class="line">            - /path-to-your-content:/var/www</div><div class="line">            - ./ssl:/ssl</div><div class="line">        ports:</div><div class="line">            - &quot;80:80&quot;</div><div class="line">            - &quot;443:443&quot;</div></pre></td></tr></table></figure></p>
+<p>这里贴出我的<code>docker-compose.yml</code>文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">version: &apos;3&apos;</span><br><span class="line">services:</span><br><span class="line">    web:</span><br><span class="line">        image: nginx</span><br><span class="line">        volumes:</span><br><span class="line">            - ./nginx.conf:/etc/nginx/nginx.conf</span><br><span class="line">            - ./sites-enabled:/etc/nginx/sites-enabled</span><br><span class="line">            - /path-to-your-content:/var/www</span><br><span class="line">            - ./ssl:/ssl</span><br><span class="line">        ports:</span><br><span class="line">            - &quot;80:80&quot;</span><br><span class="line">            - &quot;443:443&quot;</span><br></pre></td></tr></table></figure></p>
 <p>ssl文件夹中的是证书，<code>path-to-your-content</code>是你静态页面的路径。</p>
 <h2 id="Webhook"><a href="#Webhook" class="headerlink" title="Webhook"></a>Webhook</h2><p>Webhook任务是解析发过来的请求，然后执行脚本来从远程仓库中拉取更新。</p>
-<p>首先是构建镜像：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">FROM golang</div><div class="line">MAINTAINER sixzeroo &lt;sixzeroo60@gmail.com&gt;</div><div class="line"></div><div class="line">RUN mkdir -p /code/webhook \</div><div class="line">    &amp;&amp; touch /code/webhook/hook.json \</div><div class="line">    &amp;&amp; go get github.com/adnanh/webhook</div><div class="line"></div><div class="line">WORKDIR /code/webhook</div><div class="line"></div><div class="line">ENTRYPOINT /go/bin/webhook -hooks /code/webhook/hooks.json -verbose</div></pre></td></tr></table></figure></p>
-<p>成品：<a href="https://hub.docker.com/r/sixzeroo/webhook/" target="_blank" rel="external">sixzeroo/webhook</a></p>
-<p>之后就可以使用webhook来创建钩子任务了，其中配置文件在<code>hooks.json</code>中：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[</div><div class="line">  &#123;</div><div class="line">    <span class="attr">"id"</span>: <span class="string">"your-id"</span>,</div><div class="line">    <span class="attr">"execute-command"</span>: <span class="string">"/code/webhook/work.sh"</span>,</div><div class="line">    <span class="attr">"command-working-directory"</span>: <span class="string">"/code/webhook"</span></div><div class="line">  &#125;</div><div class="line">]</div></pre></td></tr></table></figure></p>
-<p>执行的脚本就是从GitHub中拉取更新而已，<code>work.sh</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#! /bin/sh</div><div class="line"></div><div class="line">cd /var/www &amp;&amp; git pull</div><div class="line"></div><div class="line">curtime=`date +&quot;%Y%m%d%H%M%S&quot;`</div><div class="line"></div><div class="line">if [ $? -eq 0 ];then</div><div class="line">    echo &quot;$curtime pull success!&quot; &gt;&gt; /code/webhook/git.log</div><div class="line">else</div><div class="line">    echo &quot;$curtime pull fail!&quot; &gt;&gt; /code/webhook/git.log</div><div class="line">fi</div></pre></td></tr></table></figure></p>
-<p>最后配置整个服务，<code>docker-compose.yml</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">version: &quot;3&quot;</div><div class="line">services:</div><div class="line"></div><div class="line">    webhook:</div><div class="line">        image: sixzeroo/webhook</div><div class="line">        volumes:</div><div class="line">         - ./:/code/webhook</div><div class="line">         - /path-to-your-content:/var/www</div><div class="line">         - /key-path:/root/.ssh</div><div class="line">        ports:</div><div class="line">         - &quot;9000:9000&quot;</div></pre></td></tr></table></figure></p>
+<p>首先是构建镜像：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">FROM golang</span><br><span class="line">MAINTAINER sixzeroo &lt;sixzeroo60@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">RUN mkdir -p /code/webhook \</span><br><span class="line">    &amp;&amp; touch /code/webhook/hook.json \</span><br><span class="line">    &amp;&amp; go get github.com/adnanh/webhook</span><br><span class="line"></span><br><span class="line">WORKDIR /code/webhook</span><br><span class="line"></span><br><span class="line">ENTRYPOINT /go/bin/webhook -hooks /code/webhook/hooks.json -verbose</span><br></pre></td></tr></table></figure></p>
+<p>成品：<a href="https://hub.docker.com/r/sixzeroo/webhook/" target="_blank" rel="noopener">sixzeroo/webhook</a></p>
+<p>之后就可以使用webhook来创建钩子任务了，其中配置文件在<code>hooks.json</code>中：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">"id"</span>: <span class="string">"your-id"</span>,</span><br><span class="line">    <span class="attr">"execute-command"</span>: <span class="string">"/code/webhook/work.sh"</span>,</span><br><span class="line">    <span class="attr">"command-working-directory"</span>: <span class="string">"/code/webhook"</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
+<p>执行的脚本就是从GitHub中拉取更新而已，<code>work.sh</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#! /bin/sh</span><br><span class="line"></span><br><span class="line">cd /var/www &amp;&amp; git pull</span><br><span class="line"></span><br><span class="line">curtime=`date +&quot;%Y%m%d%H%M%S&quot;`</span><br><span class="line"></span><br><span class="line">if [ $? -eq 0 ];then</span><br><span class="line">    echo &quot;$curtime pull success!&quot; &gt;&gt; /code/webhook/git.log</span><br><span class="line">else</span><br><span class="line">    echo &quot;$curtime pull fail!&quot; &gt;&gt; /code/webhook/git.log</span><br><span class="line">fi</span><br></pre></td></tr></table></figure></p>
+<p>最后配置整个服务，<code>docker-compose.yml</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">version: &quot;3&quot;</span><br><span class="line">services:</span><br><span class="line"></span><br><span class="line">    webhook:</span><br><span class="line">        image: sixzeroo/webhook</span><br><span class="line">        volumes:</span><br><span class="line">         - ./:/code/webhook</span><br><span class="line">         - /path-to-your-content:/var/www</span><br><span class="line">         - /key-path:/root/.ssh</span><br><span class="line">        ports:</span><br><span class="line">         - &quot;9000:9000&quot;</span><br></pre></td></tr></table></figure></p>
 <p>其中<code>key-path</code>是你ssh文件夹路径</p>
 <p>最后启动两个服务就可以工作了，设置GitHub当有push的时候发送<code>http://your-host:9000/hooks/your-id</code>这样的webhook就行了。</p>
 <p>这里不把两个容器放到一个服务里面的原因是Nginx容器之后会有新的服务部署，里面会做一些修改。</p>
@@ -554,7 +554,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年3月2日 - 17时03分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -675,7 +675,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -788,7 +788,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -803,7 +803,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

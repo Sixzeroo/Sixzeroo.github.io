@@ -117,7 +117,7 @@
 <meta property="og:image" content="https://data2.liuin.cn/story-writer/2017_12_10_2333.png">
 <meta property="og:image" content="https://data2.liuin.cn/story-writer/2017_12_10_1512908235159.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/story-writer/2017_12_10_1512908269821.jpg">
-<meta property="og:updated_time" content="2018-03-01T02:14:17.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="初识Docker">
 <meta name="twitter:description" content="本文是我初步了解Docker技术的笔记">
@@ -264,12 +264,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -389,7 +389,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-10T20:10:47+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-10T20:10:47+00:00">
                 2017-12-10
               </time>
             
@@ -454,7 +454,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2,556 字
+                  2,604 字
                 </span>
               
 
@@ -493,36 +493,36 @@
 <p>按照 Docker 最佳实践的要求，容器不应该向其存储层内写入任何数据，容器存储层要保持无状态化。所有的文件写入操作，都应该使用 数据卷（Volume）、或者绑定宿主目录，在这些位置的读写会跳过容器存储层，直接对宿主（或网络存储）发生读写，其性能和稳定性更高。</p>
 <h3 id="仓库-Repository"><a href="#仓库-Repository" class="headerlink" title="仓库(Repository)"></a>仓库(Repository)</h3><p>和GitHub中的仓库类似，Docker中的仓库也是展现不同版本的镜像的地方。一个仓库包含一个软件（或者开发环境）的不同版本的镜像，标签就是对应着这些镜像的版本号。我们可以通过 &lt;仓库名&gt;:&lt;标签&gt; 的格式来指定具体是这个软件哪个版本的镜像。</p>
 <p>与Github这种代码托管平台一样，仓库我们可以放在公共的Docker Registry中（最常用的是 Docker Hub，国内有许多高质量的镜像服务），也可以放在私有的Docker Registry中。</p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>官方安装指南在<a href="https://docs.docker.com/engine/installation/#prior-releases" target="_blank" rel="external">这里</a></p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>官方安装指南在<a href="https://docs.docker.com/engine/installation/#prior-releases" target="_blank" rel="noopener">这里</a></p>
 <h3 id="Ubuntu"><a href="#Ubuntu" class="headerlink" title="Ubuntu"></a>Ubuntu</h3><h4 id="加载可选模块"><a href="#加载可选模块" class="headerlink" title="加载可选模块"></a>加载可选模块</h4><p>从 Ubuntu 14.04 开始，一部分内核模块移到了可选内核模块包。AUFS 内核驱动属于可选内核模块的一部分，作为推荐的 Docker 存储层驱动，一般建议安装可选内核模块包以使用 AUFS。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">sudo apt-get update</div><div class="line"></div><div class="line">sudo apt-get install \</div><div class="line">    linux-image-extra-$(uname -r) \</div><div class="line">    linux-image-extra-virtual</div></pre></td></tr></table></figure>
-<h4 id="向APT中添加源"><a href="#向APT中添加源" class="headerlink" title="向APT中添加源"></a>向APT中添加源</h4><p>添加使用 HTTPS 传输的软件包以及 CA 证书:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install \</div><div class="line">    apt-transport-https \</div><div class="line">    ca-certificates \</div><div class="line">    curl \</div><div class="line">    software-properties-common</div></pre></td></tr></table></figure></p>
-<p>添加软件源的 GPG 密钥（因为国内的网络问题，可以使用国内的源）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">curl -fsSL https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu/gpg | sudo apt-key add -</div><div class="line"></div><div class="line"># 官方源</div><div class="line"># curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line"></span><br><span class="line">sudo apt-get install \</span><br><span class="line">    linux-image-extra-$(uname -r) \</span><br><span class="line">    linux-image-extra-virtual</span><br></pre></td></tr></table></figure>
+<h4 id="向APT中添加源"><a href="#向APT中添加源" class="headerlink" title="向APT中添加源"></a>向APT中添加源</h4><p>添加使用 HTTPS 传输的软件包以及 CA 证书:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install \</span><br><span class="line">    apt-transport-https \</span><br><span class="line">    ca-certificates \</span><br><span class="line">    curl \</span><br><span class="line">    software-properties-common</span><br></pre></td></tr></table></figure></p>
+<p>添加软件源的 GPG 密钥（因为国内的网络问题，可以使用国内的源）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu/gpg | sudo apt-key add -</span><br><span class="line"></span><br><span class="line"># 官方源</span><br><span class="line"># curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -</span><br></pre></td></tr></table></figure></p>
 <p>向<code>source.list</code>中加入Docker软件源</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ sudo add-apt-repository \</div><div class="line">    &quot;deb [arch=amd64] https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu \</div><div class="line">    $(lsb_release -cs) \</div><div class="line">    stable&quot;</div><div class="line"></div><div class="line"></div><div class="line"># 官方源</div><div class="line"># $ sudo add-apt-repository \</div><div class="line">#    &quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu \</div><div class="line">#    $(lsb_release -cs) \</div><div class="line">#    stable&quot;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ sudo add-apt-repository \</span><br><span class="line">    &quot;deb [arch=amd64] https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu \</span><br><span class="line">    $(lsb_release -cs) \</span><br><span class="line">    stable&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 官方源</span><br><span class="line"># $ sudo add-apt-repository \</span><br><span class="line">#    &quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu \</span><br><span class="line">#    $(lsb_release -cs) \</span><br><span class="line">#    stable&quot;</span><br></pre></td></tr></table></figure>
 <h4 id="安装Docker-CE"><a href="#安装Docker-CE" class="headerlink" title="安装Docker CE"></a>安装Docker CE</h4><p>更新apt，并安装`Docker CE’:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ sudo apt-get update</div><div class="line"></div><div class="line">$ sudo apt-get install docker-ce</div></pre></td></tr></table></figure>
-<h3 id="使用脚本自动安装"><a href="#使用脚本自动安装" class="headerlink" title="使用脚本自动安装"></a>使用脚本自动安装</h3><p>官方版：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -sSL https://get.docker.com/ | sh</div></pre></td></tr></table></figure></p>
-<p>阿里云安装脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -sSL http://acs-public-mirror.oss-cn-hangzhou.aliyuncs.com/docker-engine/internet | sh -</div></pre></td></tr></table></figure></p>
-<p>DaoCloud安装脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -sSL https://get.daocloud.io/docker | sh</div></pre></td></tr></table></figure></p>
-<h3 id="镜像加速器"><a href="#镜像加速器" class="headerlink" title="镜像加速器"></a>镜像加速器</h3><p><a href="https://cloud.tencent.com/document/product/457/9113?!preview=true&amp;lang=zh" target="_blank" rel="external">腾讯云</a>官方给出的配置方法：<br>修改 Docker 配置文件 <code>/etc/default/docker</code>，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">DOCKER_OPTS=&quot;--registry-mirror=https://mirror.ccs.tencentyun.com&quot;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line"></span><br><span class="line">$ sudo apt-get install docker-ce</span><br></pre></td></tr></table></figure>
+<h3 id="使用脚本自动安装"><a href="#使用脚本自动安装" class="headerlink" title="使用脚本自动安装"></a>使用脚本自动安装</h3><p>官方版：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -sSL https://get.docker.com/ | sh</span><br></pre></td></tr></table></figure></p>
+<p>阿里云安装脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -sSL http://acs-public-mirror.oss-cn-hangzhou.aliyuncs.com/docker-engine/internet | sh -</span><br></pre></td></tr></table></figure></p>
+<p>DaoCloud安装脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -sSL https://get.daocloud.io/docker | sh</span><br></pre></td></tr></table></figure></p>
+<h3 id="镜像加速器"><a href="#镜像加速器" class="headerlink" title="镜像加速器"></a>镜像加速器</h3><p><a href="https://cloud.tencent.com/document/product/457/9113?!preview=true&amp;lang=zh" target="_blank" rel="noopener">腾讯云</a>官方给出的配置方法：<br>修改 Docker 配置文件 <code>/etc/default/docker</code>，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DOCKER_OPTS=&quot;--registry-mirror=https://mirror.ccs.tencentyun.com&quot;</span><br></pre></td></tr></table></figure></p>
 <p>更高效的配置：</p>
-<p>通过修改daemon配置文件<code>/etc/docker/daemon.json</code>来使用加速器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">sudo mkdir -p /etc/docker</div><div class="line">sudo tee /etc/docker/daemon.json &lt;&lt;-&apos;EOF&apos;</div><div class="line">&#123;</div><div class="line">  &quot;registry-mirrors&quot;: [&quot;https://mirror.ccs.tencentyun.com&quot;]</div><div class="line">&#125;</div><div class="line">EOF</div><div class="line">sudo systemctl daemon-reload</div><div class="line">sudo systemctl restart docker</div></pre></td></tr></table></figure></p>
-<p>用<code>docker info</code>测试是否配置好，查看是否有以下的信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Registry Mirrors:</div><div class="line"> https://mirror.ccs.tencentyun.com</div></pre></td></tr></table></figure></p>
-<h3 id="Docker-compose-安装"><a href="#Docker-compose-安装" class="headerlink" title="Docker-compose 安装"></a>Docker-compose 安装</h3><p>可以参考<a href="https://docs.docker.com/compose/install/" target="_blank" rel="external">官方文档</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose</div><div class="line">sudo chmod +x /usr/local/bin/docker-compose</div></pre></td></tr></table></figure>
-<p>但是我在操作上面的命令的时候会出现下载不了的错误，所以我就从<a href="https://github.com/docker/compose/releases" target="_blank" rel="external">官方的Github</a>下载了最新的realease，然后复制到<code>/usr/local/bin/</code>中</p>
+<p>通过修改daemon配置文件<code>/etc/docker/daemon.json</code>来使用加速器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p /etc/docker</span><br><span class="line">sudo tee /etc/docker/daemon.json &lt;&lt;-&apos;EOF&apos;</span><br><span class="line">&#123;</span><br><span class="line">  &quot;registry-mirrors&quot;: [&quot;https://mirror.ccs.tencentyun.com&quot;]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure></p>
+<p>用<code>docker info</code>测试是否配置好，查看是否有以下的信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Registry Mirrors:</span><br><span class="line"> https://mirror.ccs.tencentyun.com</span><br></pre></td></tr></table></figure></p>
+<h3 id="Docker-compose-安装"><a href="#Docker-compose-安装" class="headerlink" title="Docker-compose 安装"></a>Docker-compose 安装</h3><p>可以参考<a href="https://docs.docker.com/compose/install/" target="_blank" rel="noopener">官方文档</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose</span><br><span class="line">sudo chmod +x /usr/local/bin/docker-compose</span><br></pre></td></tr></table></figure>
+<p>但是我在操作上面的命令的时候会出现下载不了的错误，所以我就从<a href="https://github.com/docker/compose/releases" target="_blank" rel="noopener">官方的Github</a>下载了最新的realease，然后复制到<code>/usr/local/bin/</code>中</p>
 <h3 id="创建docker用户组"><a href="#创建docker用户组" class="headerlink" title="创建docker用户组"></a>创建docker用户组</h3><p>Docker守候进程绑定的是一个unix socket，而不是TCP端口。这个套接字默认的属主是root，其他是用户可以使用sudo命令来访问这个套接字文件。因为这个原因，docker服务进程都是以root帐号的身份运行的。</p>
 <p>为了避免每次运行docker命令的时候都需要输入sudo，可以创建一个docker用户组，并把相应的用户添加到这个分组里面。当docker进程启动的时候，会设置该套接字可以被docker这个分组的用户读写。这样只要是在docker这个组里面的用户就可以直接执行docker命令了。</p>
-<p>警告：该dockergroup等同于root帐号，具体的详情可以参考这篇文章：<a href="https://docs.docker.com/engine/security/" target="_blank" rel="external">Docker Daemon Attack Surface</a></p>
+<p>警告：该dockergroup等同于root帐号，具体的详情可以参考这篇文章：<a href="https://docs.docker.com/engine/security/" target="_blank" rel="noopener">Docker Daemon Attack Surface</a></p>
 <p><code>sudo usermod -aG docker your_username</code></p>
-<h2 id="镜像操作"><a href="#镜像操作" class="headerlink" title="镜像操作"></a>镜像操作</h2><h3 id="获取镜像"><a href="#获取镜像" class="headerlink" title="获取镜像"></a>获取镜像</h3><p>获取镜像的格式是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker pull [选项] [Docker Registry 地址[:端口号]/]仓库名[:标签]</div></pre></td></tr></table></figure></p>
+<h2 id="镜像操作"><a href="#镜像操作" class="headerlink" title="镜像操作"></a>镜像操作</h2><h3 id="获取镜像"><a href="#获取镜像" class="headerlink" title="获取镜像"></a>获取镜像</h3><p>获取镜像的格式是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull [选项] [Docker Registry 地址[:端口号]/]仓库名[:标签]</span><br></pre></td></tr></table></figure></p>
 <p>具体的帮助文档可以通过<code>docker pull --help</code>查看<br>参数解释：</p>
 <ul>
 <li>Docker 镜像仓库地址：地址的格式一般是 &lt;域名/IP&gt;[:端口号]。默认地址是 Docker Hub。</li>
 <li>仓库名：如之前所说，这里的仓库名是两段式名称，即 &lt;用户名&gt;/&lt;软件名&gt;。对于 Docker Hub，如果不给出用户名，则默认为 library，也就是官方镜像。</li>
 </ul>
-<p>运行测试：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo docker run -it --rm ubuntu:16.04 bash</div></pre></td></tr></table></figure></p>
+<p>运行测试：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo docker run -it --rm ubuntu:16.04 bash</span><br></pre></td></tr></table></figure></p>
 <p>参数解释：</p>
 <ul>
 <li>-it：这是两个参数，一个是 -i：交互式操作，一个是 -t 终端。我们这里打算进入 bash 执行一些命令并查看返回结果，因此我们需要交互式终端。</li>
@@ -532,7 +532,7 @@
 </ul>
 <h3 id="列出镜像"><a href="#列出镜像" class="headerlink" title="列出镜像"></a>列出镜像</h3><p>一般使用的使用的是<code>docker image ls</code>或者<code>docker images</code> 指令<br>可以使用相应的<code>--help</code>查看帮助</p>
 <h3 id="制作镜像"><a href="#制作镜像" class="headerlink" title="制作镜像"></a>制作镜像</h3><p>当我们运行一个容器的时候（如果不使用卷的话），我们做的任何文件修改都会被记录于容器存储层里。而 Docker 提供了一个 docker commit 命令，可以将容器的存储层保存下来成为镜像。换句话说，就是在原有镜像的基础上，再叠加上容器的存储层，并构成新的镜像。以后我们运行这个新镜像的时候，就会拥有原有容器最后的文件变化。</p>
-<p><code>docker commit</code>语法格式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">docker commit [选项] &lt;容器ID或容器名&gt; [&lt;仓库名&gt;[:&lt;标签&gt;]]</div><div class="line"></div><div class="line"># 例子</div><div class="line">$ docker commit \</div><div class="line">    --author &quot;Tao Wang &lt;twang2218@gmail.com&gt;&quot; \</div><div class="line">    --message &quot;修改了默认网页&quot; \</div><div class="line">    webserver \</div><div class="line">    nginx:v2</div></pre></td></tr></table></figure></p>
+<p><code>docker commit</code>语法格式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker commit [选项] &lt;容器ID或容器名&gt; [&lt;仓库名&gt;[:&lt;标签&gt;]]</span><br><span class="line"></span><br><span class="line"># 例子</span><br><span class="line">$ docker commit \</span><br><span class="line">    --author &quot;Tao Wang &lt;twang2218@gmail.com&gt;&quot; \</span><br><span class="line">    --message &quot;修改了默认网页&quot; \</span><br><span class="line">    webserver \</span><br><span class="line">    nginx:v2</span><br></pre></td></tr></table></figure></p>
 <p>可以搭配<code>docker diff</code>查看容器当前的修改和<code>docker history</code>查看镜像的相关历史记录</p>
 <p>注意：慎用<code>docker commit</code>操作：</p>
 <blockquote>
@@ -540,9 +540,9 @@
 </blockquote>
 <h3 id="推送镜像"><a href="#推送镜像" class="headerlink" title="推送镜像"></a>推送镜像</h3><p>当你需要把本地制作的镜像推送到远端仓库中，你就可以使用<code>docker push</code>命令，这个命令默认推送到的是Docker的官方镜像仓库：Docker Hub。</p>
 <p>在推送之前，你需要在Docker Hub中创建好相应的image并登录：<code>docker login [OPTIONS] [SERVER]</code></p>
-<p>然后使用<code>push</code>命令推送：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker push [OPTIONS] NAME[:TAG]</div></pre></td></tr></table></figure></p>
-<p>例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ docker commit c16378f943fe rhel-httpd</div><div class="line"></div><div class="line">$ docker tag rhel-httpd registry-host:5000/myadmin/rhel-httpd</div><div class="line"></div><div class="line">$ docker push registry-host:5000/myadmin/rhel-httpd</div></pre></td></tr></table></figure></p>
-<p>参考：<br><a href="http://aleonchen.com/2017/02/07/qcloud-docker/" target="_blank" rel="external">博客1</a></p>
+<p>然后使用<code>push</code>命令推送：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker push [OPTIONS] NAME[:TAG]</span><br></pre></td></tr></table></figure></p>
+<p>例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ docker commit c16378f943fe rhel-httpd</span><br><span class="line"></span><br><span class="line">$ docker tag rhel-httpd registry-host:5000/myadmin/rhel-httpd</span><br><span class="line"></span><br><span class="line">$ docker push registry-host:5000/myadmin/rhel-httpd</span><br></pre></td></tr></table></figure></p>
+<p>参考：<br><a href="http://aleonchen.com/2017/02/07/qcloud-docker/" target="_blank" rel="noopener">博客1</a></p>
 
       
     </div>
@@ -600,7 +600,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年3月1日 - 10时03分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -719,7 +719,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -832,7 +832,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -847,7 +847,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

@@ -114,7 +114,7 @@
 <meta property="og:site_name" content="Sixzeroo">
 <meta property="og:description" content="对Hexo 的配置文件夹进行分析。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-11-24T17:49:26.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hexo 结构解析">
 <meta name="twitter:description" content="对Hexo 的配置文件夹进行分析。">
@@ -260,12 +260,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -385,7 +385,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-09T16:19:57+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-09T16:19:57+00:00">
                 2017-11-09
               </time>
             
@@ -450,7 +450,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  442 字
+                  457 字
                 </span>
               
 
@@ -477,8 +477,8 @@
       
         <p>对Hexo 的配置文件夹进行分析。</p>
 <a id="more"></a>
-<h2 id="总体结构"><a href="#总体结构" class="headerlink" title="总体结构"></a>总体结构</h2><p>在hexo的主目录下有一下文件和文件夹：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">├── _config.yml	    #站点配置文件</div><div class="line">├── db.json            #缓存文件</div><div class="line">├── debug.log       #hexo s --debug 产生的日志文件</div><div class="line">├── node_modules    #nodejs 本地包</div><div class="line">├── package.json    #nodejs 本地配置信息</div><div class="line">├── public               #生成的静态文件所在的文件夹</div><div class="line">├── scaffolds          #新生成page的模板</div><div class="line">├── source             #文章所在文件夹</div><div class="line">└── themes           #主题所在文件夹</div><div class="line"></div><div class="line">5 directories, 4 files</div></pre></td></tr></table></figure></p>
-<h2 id="主题文件结构"><a href="#主题文件结构" class="headerlink" title="主题文件结构"></a>主题文件结构</h2><p>一个主题的大致结构如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">.</div><div class="line">├── _config.yml   # 主题配置文件</div><div class="line">├── languages     #语言文件夹</div><div class="line">├── layout            # 布局文件夹。用于存放主题的模板文件，决定了网站内容的呈现方式</div><div class="line">├── scripts        # 脚本文件夹</div><div class="line">└── source       # 资源文件夹，除了模板以外的 Asset，例如 CSS、JavaScript 文件等，都应该放在这个文件夹中。</div></pre></td></tr></table></figure></p>
+<h2 id="总体结构"><a href="#总体结构" class="headerlink" title="总体结构"></a>总体结构</h2><p>在hexo的主目录下有一下文件和文件夹：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">├── _config.yml	    #站点配置文件</span><br><span class="line">├── db.json            #缓存文件</span><br><span class="line">├── debug.log       #hexo s --debug 产生的日志文件</span><br><span class="line">├── node_modules    #nodejs 本地包</span><br><span class="line">├── package.json    #nodejs 本地配置信息</span><br><span class="line">├── public               #生成的静态文件所在的文件夹</span><br><span class="line">├── scaffolds          #新生成page的模板</span><br><span class="line">├── source             #文章所在文件夹</span><br><span class="line">└── themes           #主题所在文件夹</span><br><span class="line"></span><br><span class="line">5 directories, 4 files</span><br></pre></td></tr></table></figure></p>
+<h2 id="主题文件结构"><a href="#主题文件结构" class="headerlink" title="主题文件结构"></a>主题文件结构</h2><p>一个主题的大致结构如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── _config.yml   # 主题配置文件</span><br><span class="line">├── languages     #语言文件夹</span><br><span class="line">├── layout            # 布局文件夹。用于存放主题的模板文件，决定了网站内容的呈现方式</span><br><span class="line">├── scripts        # 脚本文件夹</span><br><span class="line">└── source       # 资源文件夹，除了模板以外的 Asset，例如 CSS、JavaScript 文件等，都应该放在这个文件夹中。</span><br></pre></td></tr></table></figure></p>
 <h3 id="layout"><a href="#layout" class="headerlink" title="layout"></a>layout</h3><p>布局文件夹。用于存放主题的模板文件，决定了网站内容的呈现方式。Hexo 默认使用的Swig模板引擎。使用语法和Jinja2、Django模板引擎类似。</p>
 <p>文件或文件夹开头名称为 _（下划线线）或隐藏的文件会被忽略。</p>
 <p>每个模板都默认使用 layout 布局，实际对应的文件是_layout.swig 文件。下面是各个页面所对应的模板的名称：</p>
@@ -581,7 +581,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2017年11月25日 - 01时11分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -700,7 +700,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -813,7 +813,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -828,7 +828,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

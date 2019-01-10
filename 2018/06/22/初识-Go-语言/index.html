@@ -114,7 +114,7 @@
 <meta property="og:site_name" content="Sixzeroo">
 <meta property="og:description" content="今天来会一会这个小地鼠">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-06-24T07:06:26.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:57.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="初识 Go 语言">
 <meta name="twitter:description" content="今天来会一会这个小地鼠">
@@ -260,12 +260,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -385,7 +385,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-22T08:51:45+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-22T08:51:45+00:00">
                 2018-06-22
               </time>
             
@@ -496,23 +496,23 @@
 <li>错误处理</li>
 </ol>
 <p>在Go语言中处理错误的基本模式是：函数通常返回多个值，其中最后一个值是error类型，用于表示错误类型极其描述；调用者每次调用完一个函数，都需要检查这个error并进行相应的错误处理：if err != nil { /*这种代码写多了不想吐么*/ }。此模式跟C语言那种很原始的错误处理相比如出一辙，并无实质性改进。</p>
-<ol>
+<ol start="2">
 <li>软件包管理</li>
 </ol>
 <p>Go 语言的软件包管理绝对不是完美的。默认情况下，它没有办法制定特定版本的依赖库，也无法创建可复写的 builds。相比之下 Python、Node 和 Ruby 都有更好的软件包管理系统。然而通过正确的工具，Go 语言的软件包管理也可以表现得不错。</p>
 <h2 id="基本语法学习"><a href="#基本语法学习" class="headerlink" title="基本语法学习"></a>基本语法学习</h2><p>找到两个口碑比较好的入门Go语言的教程：</p>
 <ul>
-<li><a href="https://tour.go-zh.org/welcome/1" target="_blank" rel="external">Go语言之旅</a></li>
-<li><a href="https://legacy.gitbook.com/book/yar999/gopl-zh/details" target="_blank" rel="external">Go语言圣经</a></li>
+<li><a href="https://tour.go-zh.org/welcome/1" target="_blank" rel="noopener">Go语言之旅</a></li>
+<li><a href="https://legacy.gitbook.com/book/yar999/gopl-zh/details" target="_blank" rel="noopener">Go语言圣经</a></li>
 </ul>
 <h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>Go在Linux上的配置比较简单，无非就是下载一个二进制文件，然后添加一下环境变量。</p>
-<p>Go在mac上推荐使用brew进行安装，使用官网的安装包进行安装因为<a href="https://support.apple.com/zh-cn/HT204899" target="_blank" rel="external">苹果对一些目录的保护</a>，后面在安装其他库的时候可能会存在问题</p>
-<p>具体可以参考官方<a href="https://golang.org/doc/install" target="_blank" rel="external">配置文档</a></p>
+<p>Go在mac上推荐使用brew进行安装，使用官网的安装包进行安装因为<a href="https://support.apple.com/zh-cn/HT204899" target="_blank" rel="noopener">苹果对一些目录的保护</a>，后面在安装其他库的时候可能会存在问题</p>
+<p>具体可以参考官方<a href="https://golang.org/doc/install" target="_blank" rel="noopener">配置文档</a></p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a href="https://www.zhihu.com/question/21409296" target="_blank" rel="external">https://www.zhihu.com/question/21409296</a></li>
-<li><a href="https://blog.csdn.net/itsenlin/article/details/53750262" target="_blank" rel="external">https://blog.csdn.net/itsenlin/article/details/53750262</a></li>
-<li><a href="https://blog.csdn.net/liigo/article/details/23699459" target="_blank" rel="external">https://blog.csdn.net/liigo/article/details/23699459</a></li>
-<li><a href="http://www.techug.com/post/bad-and-good-of-golang.html" target="_blank" rel="external">http://www.techug.com/post/bad-and-good-of-golang.html</a></li>
+<li><a href="https://www.zhihu.com/question/21409296" target="_blank" rel="noopener">https://www.zhihu.com/question/21409296</a></li>
+<li><a href="https://blog.csdn.net/itsenlin/article/details/53750262" target="_blank" rel="noopener">https://blog.csdn.net/itsenlin/article/details/53750262</a></li>
+<li><a href="https://blog.csdn.net/liigo/article/details/23699459" target="_blank" rel="noopener">https://blog.csdn.net/liigo/article/details/23699459</a></li>
+<li><a href="http://www.techug.com/post/bad-and-good-of-golang.html" target="_blank" rel="noopener">http://www.techug.com/post/bad-and-good-of-golang.html</a></li>
 </ul>
 
       
@@ -571,7 +571,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年6月24日 - 15时06分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -690,7 +690,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -803,7 +803,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -818,7 +818,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

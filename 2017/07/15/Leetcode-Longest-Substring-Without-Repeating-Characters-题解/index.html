@@ -114,7 +114,7 @@
 <meta property="og:site_name" content="Sixzeroo">
 <meta property="og:description" content="题目链接:https://leetcode.com/problems/longest-substring-without-repeating-characters/#/description">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-07-15T13:56:41.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="[Leetcode] Longest Substring Without Repeating Characters 题解">
 <meta name="twitter:description" content="题目链接:https://leetcode.com/problems/longest-substring-without-repeating-characters/#/description">
@@ -260,12 +260,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -385,7 +385,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-15T21:46:55+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-15T21:46:55+00:00">
                 2017-07-15
               </time>
             
@@ -450,7 +450,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  211 字
+                  227 字
                 </span>
               
 
@@ -475,7 +475,7 @@
       
 
       
-        <p>题目链接:<a href="https://leetcode.com/problems/longest-substring-without-repeating-characters/#/description" target="_blank" rel="external">https://leetcode.com/problems/longest-substring-without-repeating-characters/#/description</a></p>
+        <p>题目链接:<a href="https://leetcode.com/problems/longest-substring-without-repeating-characters/#/description" target="_blank" rel="noopener">https://leetcode.com/problems/longest-substring-without-repeating-characters/#/description</a></p>
 <a id="more"></a>
 <h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>给出一个字符串，求出其中最长的不重复字符串的长度</p>
 <h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><ul>
@@ -483,7 +483,7 @@
 <li>设定一个开始指针表示计算字符开始的地方（初始值为0），这样每次扫描到一个字符的时候，先更新这个指针。然后计算开始指针到扫描的地方的字符串长度更新结果值。</li>
 <li>最后更新字符出现的索引值</li>
 </ul>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">lengthOfLongestSubstring</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> a[<span class="number">256</span>];</div><div class="line">        <span class="built_in">memset</span>(a,<span class="number">0</span>,<span class="keyword">sizeof</span>(a));</div><div class="line">        <span class="keyword">int</span> ans=<span class="number">0</span>,num=<span class="number">0</span>,start=<span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=s.size();i++)</div><div class="line">        &#123;</div><div class="line">            start=start&gt;a[s[i<span class="number">-1</span>]]?start:a[s[i<span class="number">-1</span>]];</div><div class="line">            num=i-start;</div><div class="line">            ans=ans&gt;num?ans:num;</div><div class="line">            a[s[i<span class="number">-1</span>]]=i;</div><div class="line">        &#125;</div><div class="line">        ans=ans&gt;num?ans:num;</div><div class="line">        <span class="keyword">return</span> ans;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">lengthOfLongestSubstring</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> a[<span class="number">256</span>];</span><br><span class="line">        <span class="built_in">memset</span>(a,<span class="number">0</span>,<span class="keyword">sizeof</span>(a));</span><br><span class="line">        <span class="keyword">int</span> ans=<span class="number">0</span>,num=<span class="number">0</span>,start=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=s.size();i++)</span><br><span class="line">        &#123;</span><br><span class="line">            start=start&gt;a[s[i<span class="number">-1</span>]]?start:a[s[i<span class="number">-1</span>]];</span><br><span class="line">            num=i-start;</span><br><span class="line">            ans=ans&gt;num?ans:num;</span><br><span class="line">            a[s[i<span class="number">-1</span>]]=i;</span><br><span class="line">        &#125;</span><br><span class="line">        ans=ans&gt;num?ans:num;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -541,7 +541,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2017年7月15日 - 21时07分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -660,7 +660,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -773,7 +773,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -788,7 +788,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

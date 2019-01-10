@@ -115,7 +115,7 @@
 <meta property="og:description" content="《Pro Git》读书笔记">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_2_11_1518354037927.jpg">
-<meta property="og:updated_time" content="2018-02-23T04:05:57.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Git 内部原理">
 <meta name="twitter:description" content="《Pro Git》读书笔记">
@@ -262,12 +262,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -387,7 +387,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-11T21:39:14+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-11T21:39:14+00:00">
                 2018-02-11
               </time>
             
@@ -452,7 +452,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2,690 字
+                  2,708 字
                 </span>
               
 
@@ -482,7 +482,7 @@
 <p>从根本上来讲 Git 是一个内容寻址（content-addressable）文件系统</p>
 <h2 id="底层命令和高层命令"><a href="#底层命令和高层命令" class="headerlink" title="底层命令和高层命令"></a>底层命令和高层命令</h2><p>由于 Git 最初是一套面向版本控制系统的工具集，而不是一个完整的、用户友好的版本控制系统，所以它还包含了一部分用于完成底层工作的命令。这些命令被设计成能以 UNIX 命令行的风格连接在一起，抑或藉由脚本调用，来完成工作。这部分命令一般被称作“<strong>底层（plumbing）”命令</strong>，而那些更友好的命令则被称作“高层（porcelain）”命令。</p>
 <p>当在一个新目录或已有目录执行 git init 时，Git 会创建一个 .git 目录。这个目录包含了几乎所有 Git 存储和操作的对象。如若想备份或复制一个版本库，只需把这个目录拷贝至另一处即可。</p>
-<p>目录结构如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ ls -F1</div><div class="line">index				# 保存暂存区信息</div><div class="line">HEAD				# 指示目前被检出的分支</div><div class="line">config*				# 包含项目特有的配置项</div><div class="line">description			# 仅供GitWeb使用</div><div class="line">hooks/				# 包含hook钩子脚本</div><div class="line">info/				# 包含全局性排除（global exclude）文件</div><div class="line">objects/			# 存储所有的数据内容</div><div class="line">refs/				# 存储指向数据（分支）的提交对象的指针</div></pre></td></tr></table></figure></p>
+<p>目录结构如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ ls -F1</span><br><span class="line">index				# 保存暂存区信息</span><br><span class="line">HEAD				# 指示目前被检出的分支</span><br><span class="line">config*				# 包含项目特有的配置项</span><br><span class="line">description			# 仅供GitWeb使用</span><br><span class="line">hooks/				# 包含hook钩子脚本</span><br><span class="line">info/				# 包含全局性排除（global exclude）文件</span><br><span class="line">objects/			# 存储所有的数据内容</span><br><span class="line">refs/				# 存储指向数据（分支）的提交对象的指针</span><br></pre></td></tr></table></figure></p>
 <h2 id="Git-对象"><a href="#Git-对象" class="headerlink" title="Git 对象"></a>Git 对象</h2><p>Git 是一个内容寻址文件系统。Git 的核心部分是一个简单的键值对数据库（key-value data store）。你可以向该数据库插入任意类型的内容，它会返回一个键值，通过该键值可以在任意时刻再次检索（retrieve）该内容。</p>
 <h3 id="树对象"><a href="#树对象" class="headerlink" title="树对象"></a>树对象</h3><p>树对象（tree object），它能解决文件名保存的问题，也允许我们将多个文件组织到一起。Git 以一种类似于 UNIX 文件系统的方式存储内容，但作了些许简化。所有内容均以树对象和数据对象的形式存储，其中<strong>树对象对应了 UNIX 中的目录项</strong>，<strong>数据对象则大致上对应了 inodes 或文件内容</strong>。一个树对象包含了一条或多条树对象记录（tree entry），<strong>每条记录含有一个指向数据对象或者子树对象的 SHA-1 指针，以及相应的模式、类型、文件名信息</strong>。</p>
 <p>通常，Git 根据某一时刻暂存区（即 index 区域，下同）所表示的状态创建并记录一个对应的树对象，如此重复便可依次记录（某个时间段内）一系列的树对象。因此，为创建一个树对象，首先需要通过暂存一些文件来创建一个暂存区。</p>
@@ -503,11 +503,11 @@
 <p>包文件包含了刚才从文件系统中移除的所有对象的内容。索引文件包含了包文件的偏移信息，我们通过索引文件就可以快速定位任意一个指定对象。</p>
 <p>同样有趣的地方在于，最新版本完整保存了文件内容，而原始的版本反而是以差异方式保存的——这是因为大部分情况下需要快速访问文件的最新版本。</p>
 <h2 id="引用规格"><a href="#引用规格" class="headerlink" title="引用规格"></a>引用规格</h2><p>我们已经使用过一些诸如远程分支到本地引用的简单映射方式，但这种映射可以更复杂。</p>
-<p>添加一个远程版本库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[remote &quot;origin&quot;]</div><div class="line">url = https://github.com/schacon/simplegit-progit</div><div class="line">fetch = +refs/heads/*:refs/remotes/origin/*</div></pre></td></tr></table></figure></p>
+<p>添加一个远程版本库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[remote &quot;origin&quot;]</span><br><span class="line">url = https://github.com/schacon/simplegit-progit</span><br><span class="line">fetch = +refs/heads/*:refs/remotes/origin/*</span><br></pre></td></tr></table></figure></p>
 <p>引用规格的格式由一个可选的 + 号和紧随其后的 \<src>:\<dst> 组成，其中 \<src> 是一个模式（pattern），代表远程版本库中的引用；\<dst> 是那些远程引用在本地所对应的位置。+ 号告诉 Git 即使在不能快进的情况下也要（强制）更新引用</dst></src></dst></src></p>
-<h3 id="引用规格推送"><a href="#引用规格推送" class="headerlink" title="引用规格推送"></a>引用规格推送</h3><p>如果 QA 团队想把他们的 master 分支推送到远程服务器的 qa/master 分支上，可以运行：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git push origin master:refs/heads/qa/master</div></pre></td></tr></table></figure></p>
-<p>如果他们希望 Git 每次运行 git push origin 时都像上面这样推送，可以在他们的配置文件中添加一条 push值：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[remote &quot;origin&quot;]</div><div class="line">url = https://github.com/schacon/simplegit-progit</div><div class="line">fetch = +refs/heads/*:refs/remotes/origin/*</div><div class="line">push = refs/heads/master:refs/heads/qa/master</div></pre></td></tr></table></figure></p>
-<h3 id="删除引用"><a href="#删除引用" class="headerlink" title="删除引用"></a>删除引用</h3><p>你还可以借助类似下面的命令通过引用规格从远程服务器上删除引用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git push origin :topic</div></pre></td></tr></table></figure></p>
+<h3 id="引用规格推送"><a href="#引用规格推送" class="headerlink" title="引用规格推送"></a>引用规格推送</h3><p>如果 QA 团队想把他们的 master 分支推送到远程服务器的 qa/master 分支上，可以运行：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git push origin master:refs/heads/qa/master</span><br></pre></td></tr></table></figure></p>
+<p>如果他们希望 Git 每次运行 git push origin 时都像上面这样推送，可以在他们的配置文件中添加一条 push值：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[remote &quot;origin&quot;]</span><br><span class="line">url = https://github.com/schacon/simplegit-progit</span><br><span class="line">fetch = +refs/heads/*:refs/remotes/origin/*</span><br><span class="line">push = refs/heads/master:refs/heads/qa/master</span><br></pre></td></tr></table></figure></p>
+<h3 id="删除引用"><a href="#删除引用" class="headerlink" title="删除引用"></a>删除引用</h3><p>你还可以借助类似下面的命令通过引用规格从远程服务器上删除引用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git push origin :topic</span><br></pre></td></tr></table></figure></p>
 <p>因为引用规格（的格式）是 \<src>:\<dst>，所以上述命令把 \<src> 留空，意味着把远程版本库的 topic 分支<br>定义为空值，也就是删除它。</src></dst></src></p>
 <h2 id="传输协议"><a href="#传输协议" class="headerlink" title="传输协议"></a>传输协议</h2><p>Git 可以通过两种主要的方式在版本库之间传输数据：“哑（dumb）”协议和“智能（smart）”协议。</p>
 <h3 id="哑协议"><a href="#哑协议" class="headerlink" title="哑协议"></a>哑协议</h3><p>如果你正在架设一个基于 HTTP 协议的只读版本库，一般而言这种情况下使用的就是哑协议。</p>
@@ -572,7 +572,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年2月23日 - 12时02分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -691,7 +691,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -804,7 +804,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -819,7 +819,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

@@ -114,7 +114,7 @@
 <meta property="og:site_name" content="Sixzeroo">
 <meta property="og:description" content="题目连接：http://poj.org/problem?id=2739">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-04-24T13:25:33.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="POJ 2739 素数打表+暴力枚举">
 <meta name="twitter:description" content="题目连接：http://poj.org/problem?id=2739">
@@ -260,12 +260,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -385,7 +385,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-24T21:20:50+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-24T21:20:50+00:00">
                 2017-04-24
               </time>
             
@@ -450,7 +450,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  237 字
+                  282 字
                 </span>
               
 
@@ -475,11 +475,11 @@
       
 
       
-        <p>题目连接：<a href="http://poj.org/problem?id=2739" target="_blank" rel="external">http://poj.org/problem?id=2739</a></p>
+        <p>题目连接：<a href="http://poj.org/problem?id=2739" target="_blank" rel="noopener">http://poj.org/problem?id=2739</a></p>
 <a id="more"></a>
 <h3 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h3><p>给出一个数，问其有多少种方案能够分解成连续多个素数的和</p>
 <h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>因为这道题的数据规模只有10000所以完全可以暴力解决，首先使用欧拉筛选得到素数表，枚举所有在数据范围内的连续素数和，打表。</p>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxp=<span class="number">10005</span>;</div><div class="line"><span class="keyword">bool</span> is_prime[maxp];</div><div class="line"><span class="keyword">int</span> prime[maxp],num;</div><div class="line"><span class="keyword">int</span> a[maxp];</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span>    <span class="comment">//欧拉筛选素数打表</span></span></div><div class="line">&#123;</div><div class="line">	num=<span class="number">0</span>;</div><div class="line">    <span class="built_in">memset</span>(is_prime,<span class="literal">true</span>,<span class="keyword">sizeof</span>(is_prime));</div><div class="line">	is_prime[<span class="number">0</span>]=is_prime[<span class="number">1</span>]=<span class="literal">false</span>;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;maxp;i++)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">if</span>(is_prime[i]) prime[num++]=i;</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;num &amp;&amp; i*prime[j]&lt;maxp;j++)</div><div class="line">		&#123;</div><div class="line">			is_prime[i*prime[j]]=<span class="literal">false</span>;</div><div class="line">			<span class="keyword">if</span>(i%prime[j]==<span class="number">0</span>) <span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">fun</span><span class="params">()</span>  <span class="comment">//枚举所有的连续素数和，打表</span></span></div><div class="line">&#123;</div><div class="line">	<span class="built_in">memset</span>(a,<span class="number">0</span>,<span class="keyword">sizeof</span>(a));</div><div class="line">	<span class="keyword">int</span> tmp;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;num;i++)</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=i;j&lt;num;j++)</div><div class="line">		&#123;</div><div class="line">			tmp=<span class="number">0</span>;</div><div class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> k=i;k&lt;=j;k++)</div><div class="line">				tmp+=prime[k];</div><div class="line">			<span class="keyword">if</span>(tmp&lt;maxp)</div><div class="line">				a[tmp]++;</div><div class="line">		&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> t;</div><div class="line">	init();</div><div class="line">	fun();</div><div class="line">	<span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;t)!=EOF &amp;&amp; t)</div><div class="line">	&#123;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,a[t]);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxp=<span class="number">10005</span>;</span><br><span class="line"><span class="keyword">bool</span> is_prime[maxp];</span><br><span class="line"><span class="keyword">int</span> prime[maxp],num;</span><br><span class="line"><span class="keyword">int</span> a[maxp];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span>    <span class="comment">//欧拉筛选素数打表</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	num=<span class="number">0</span>;</span><br><span class="line">    <span class="built_in">memset</span>(is_prime,<span class="literal">true</span>,<span class="keyword">sizeof</span>(is_prime));</span><br><span class="line">	is_prime[<span class="number">0</span>]=is_prime[<span class="number">1</span>]=<span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;maxp;i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(is_prime[i]) prime[num++]=i;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;num &amp;&amp; i*prime[j]&lt;maxp;j++)</span><br><span class="line">		&#123;</span><br><span class="line">			is_prime[i*prime[j]]=<span class="literal">false</span>;</span><br><span class="line">			<span class="keyword">if</span>(i%prime[j]==<span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">fun</span><span class="params">()</span>  <span class="comment">//枚举所有的连续素数和，打表</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">memset</span>(a,<span class="number">0</span>,<span class="keyword">sizeof</span>(a));</span><br><span class="line">	<span class="keyword">int</span> tmp;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;num;i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=i;j&lt;num;j++)</span><br><span class="line">		&#123;</span><br><span class="line">			tmp=<span class="number">0</span>;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> k=i;k&lt;=j;k++)</span><br><span class="line">				tmp+=prime[k];</span><br><span class="line">			<span class="keyword">if</span>(tmp&lt;maxp)</span><br><span class="line">				a[tmp]++;</span><br><span class="line">		&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> t;</span><br><span class="line">	init();</span><br><span class="line">	fun();</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;t)!=EOF &amp;&amp; t)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,a[t]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -537,7 +537,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2017年4月24日 - 21时04分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -656,7 +656,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -769,7 +769,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -784,7 +784,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

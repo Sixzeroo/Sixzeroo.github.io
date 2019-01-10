@@ -114,7 +114,7 @@
 <meta property="og:site_name" content="Sixzeroo">
 <meta property="og:description" content="之前使用git一直停留在比较浅的层面，最近涉及部署的相关东西的时候接触到了Git的hook，感觉这个东西非常有趣，下面总结一下我对Git中hook的认识以及分享一下我使用git的hook部署hexo博客到服务器上的过程。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-06-11T17:42:10.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="初识 Git hook钩子">
 <meta name="twitter:description" content="之前使用git一直停留在比较浅的层面，最近涉及部署的相关东西的时候接触到了Git的hook，感觉这个东西非常有趣，下面总结一下我对Git中hook的认识以及分享一下我使用git的hook部署hexo博客到服务器上的过程。">
@@ -260,12 +260,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -385,7 +385,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-12T01:13:23+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-12T01:13:23+00:00">
                 2017-06-12
               </time>
             
@@ -428,7 +428,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  771 字
+                  782 字
                 </span>
               
 
@@ -457,19 +457,19 @@
 <a id="more"></a>
 <h2 id="hook"><a href="#hook" class="headerlink" title="hook"></a>hook</h2><h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>Git钩子是仓库中特定事件发生时Git自动运行的普通脚本。每当我们创建一个仓库的时候，我们仓库的.git/hooks目录中有一些示例脚本。<br>这些脚本可以是任何脚本语言编写的，只要它们最后能编译到可执行文件。每次脚本中的#!/bin/sh定义了你的文件将被如何解释。</p>
 <h3 id="pre-receive"><a href="#pre-receive" class="headerlink" title="pre-receive"></a>pre-receive</h3><p>git有非常多的本地钩子和服务端钩子，因为这次我使用的主要是pre-receive来部署博客，所以介绍一下pre-receive钩子,更多的钩子信息可以在文章最后的参考信息中查看<br>pre-receive钩子在有人用git push向仓库推送代码时被执行。它只存在于远端仓库中，而不是原来的仓库中。<br>所以我们可以用来在hexo提交更新的时候对服务器上的相关资源进行更新</p>
-<h2 id="使用-Git-hook-自动部署-Hexo博客"><a href="#使用-Git-hook-自动部署-Hexo博客" class="headerlink" title="使用 Git hook 自动部署 Hexo博客"></a>使用 Git hook 自动部署 Hexo博客</h2><h3 id="创建远程仓库"><a href="#创建远程仓库" class="headerlink" title="创建远程仓库"></a>创建远程仓库</h3><p>首先我们要在服务器器创建一个管理内容的仓库：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo mkdir /var/repo</div><div class="line"><span class="built_in">cd</span> /var/repo</div><div class="line">sudo git init --bare blog.git</div></pre></td></tr></table></figure></p>
+<h2 id="使用-Git-hook-自动部署-Hexo博客"><a href="#使用-Git-hook-自动部署-Hexo博客" class="headerlink" title="使用 Git hook 自动部署 Hexo博客"></a>使用 Git hook 自动部署 Hexo博客</h2><h3 id="创建远程仓库"><a href="#创建远程仓库" class="headerlink" title="创建远程仓库"></a>创建远程仓库</h3><p>首先我们要在服务器器创建一个管理内容的仓库：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /var/repo</span><br><span class="line"><span class="built_in">cd</span> /var/repo</span><br><span class="line">sudo git init --bare blog.git</span><br></pre></td></tr></table></figure></p>
 <blockquote>
 <p>这里使用了 –bare 参数，是为了创建一个裸仓库，没有工作区。我们不会在裸仓库上进行操作，它只为共享而存在。<br>后面在hook的设置中会讲到工作区的设置</p>
 </blockquote>
-<h3 id="配置hook"><a href="#配置hook" class="headerlink" title="配置hook"></a>配置hook</h3><p>因为是在push操作时才发生的事件所以使用post-receive钩子，钩子将在git操作完以后运行<br>在blog.git/hooks 目录下新建一个post-receive文件：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /var/repo/blog.git/hooks</div><div class="line">vim post-reveive</div></pre></td></tr></table></figure></p>
+<h3 id="配置hook"><a href="#配置hook" class="headerlink" title="配置hook"></a>配置hook</h3><p>因为是在push操作时才发生的事件所以使用post-receive钩子，钩子将在git操作完以后运行<br>在blog.git/hooks 目录下新建一个post-receive文件：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /var/repo/blog.git/hooks</span><br><span class="line">vim post-reveive</span><br></pre></td></tr></table></figure></p>
 <p>在post-receive中写入以下内容</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/sh</span></div><div class="line">git --work-tree=/var/www/hexo --git-dir=/var/repo/blog.git checkout <span class="_">-f</span></div></pre></td></tr></table></figure>
-<p>注意，/var/www/hexo 要换成你自己的部署目录，一般可能都是 /var/www/html。上面那句 git 命令可以在我们每次 push 完之后，把部署目录更新到博客的最新生成状态。这样便可以完成达到自动部署的目的了。<br>同时加上可执行权限<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chmod +x post-receive</div></pre></td></tr></table></figure></p>
-<h3 id="本地配置"><a href="#本地配置" class="headerlink" title="本地配置"></a>本地配置</h3><p>修改 hexo 目录下的 _config.yml 文件 ，使得hexo博客可以自动deploy到服务器上：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">deploy:</div><div class="line">  <span class="built_in">type</span>: git</div><div class="line">  repo: git@www.example.com:/var/repo/blog.git</div><div class="line">  branch: master</div></pre></td></tr></table></figure></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">git --work-tree=/var/www/hexo --git-dir=/var/repo/blog.git checkout -f</span><br></pre></td></tr></table></figure>
+<p>注意，/var/www/hexo 要换成你自己的部署目录，一般可能都是 /var/www/html。上面那句 git 命令可以在我们每次 push 完之后，把部署目录更新到博客的最新生成状态。这样便可以完成达到自动部署的目的了。<br>同时加上可执行权限<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod +x post-receive</span><br></pre></td></tr></table></figure></p>
+<h3 id="本地配置"><a href="#本地配置" class="headerlink" title="本地配置"></a>本地配置</h3><p>修改 hexo 目录下的 _config.yml 文件 ，使得hexo博客可以自动deploy到服务器上：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: git</span><br><span class="line">  repo: git@www.example.com:/var/repo/blog.git</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure></p>
 <p>切换服务器地址和目录为你自己的服务器的地址和目录</p>
 <h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><p>此时你创建新的文章的时候就可以通过git hook来进行自动部署了，而不需要使用GitHub page的相关服务了</p>
 <hr>
-<p>参考：<br><a href="https://github.com/geeeeeeeeek/git-recipes/wiki/5.4-Git%E9%92%A9%E5%AD%90%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BD%A0%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81" target="_blank" rel="external">https://github.com/geeeeeeeeek/git-recipes/wiki/5.4-Git%E9%92%A9%E5%AD%90%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BD%A0%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81</a></p>
+<p>参考：<br><a href="https://github.com/geeeeeeeeek/git-recipes/wiki/5.4-Git%E9%92%A9%E5%AD%90%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BD%A0%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81" target="_blank" rel="noopener">https://github.com/geeeeeeeeek/git-recipes/wiki/5.4-Git%E9%92%A9%E5%AD%90%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BD%A0%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81</a></p>
 
       
     </div>
@@ -527,7 +527,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2017年6月12日 - 01时06分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -646,7 +646,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -759,7 +759,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -774,7 +774,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

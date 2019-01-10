@@ -115,7 +115,7 @@
 <meta property="og:description" content="LeetCode 题解——Longest Valid Parentheses">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://data2.liuin.cn/2018-03-18-15213386227746.jpg">
-<meta property="og:updated_time" content="2018-03-18T02:18:57.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LeetCode 题解——Longest Valid Parentheses">
 <meta name="twitter:description" content="LeetCode 题解——Longest Valid Parentheses">
@@ -262,12 +262,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -387,7 +387,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-18T09:52:16+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-18T09:52:16+00:00">
                 2018-03-18
               </time>
             
@@ -452,7 +452,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  407 字
+                  446 字
                 </span>
               
 
@@ -483,10 +483,10 @@
 <h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><h3 id="DP"><a href="#DP" class="headerlink" title="DP"></a>DP</h3><p>一个思路是用动态规划思想：用数组dp[i]表示以s[i]结尾的匹配子字符串的长度，这样我们可以得到状态转移方程：</p>
 <p><img src="https://data2.liuin.cn/2018-03-18-15213386227746.jpg" alt=""></p>
 <p>其中后面一个分支表示的情况是，最后以后<code>)</code>跳过前面的已经能够匹配的子字符串能和其前面的<code>(</code>匹配</p>
-<p>代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">longestValidParentheses</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> len = s.length(), res = <span class="number">0</span>;</div><div class="line">        <span class="comment">// len+1 数组，最前面一个当做0</span></div><div class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; dp(len+<span class="number">1</span>, <span class="number">0</span>);</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>; i&lt;=len; i++)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span>(i&gt;<span class="number">1</span> &amp;&amp; s[i<span class="number">-1</span>] == <span class="string">')'</span> &amp;&amp; s[i<span class="number">-2</span>] == <span class="string">'('</span>) dp[i]=dp[i<span class="number">-2</span>] + <span class="number">2</span>;</div><div class="line">            <span class="keyword">if</span>(i&gt;<span class="number">1</span> &amp;&amp; s[i<span class="number">-1</span>] == <span class="string">')'</span> &amp;&amp; s[i<span class="number">-2</span>] == <span class="string">')'</span> &amp;&amp; s[i-dp[i<span class="number">-1</span>]<span class="number">-2</span>] == <span class="string">'('</span>) dp[i] = dp[i<span class="number">-1</span>] + dp[i-dp[i<span class="number">-1</span>]<span class="number">-2</span>] + <span class="number">2</span>;</div><div class="line">            res = max(res, dp[i]);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">longestValidParentheses</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> len = s.length(), res = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">// len+1 数组，最前面一个当做0</span></span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; dp(len+<span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>; i&lt;=len; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(i&gt;<span class="number">1</span> &amp;&amp; s[i<span class="number">-1</span>] == <span class="string">')'</span> &amp;&amp; s[i<span class="number">-2</span>] == <span class="string">'('</span>) dp[i]=dp[i<span class="number">-2</span>] + <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">if</span>(i&gt;<span class="number">1</span> &amp;&amp; s[i<span class="number">-1</span>] == <span class="string">')'</span> &amp;&amp; s[i<span class="number">-2</span>] == <span class="string">')'</span> &amp;&amp; s[i-dp[i<span class="number">-1</span>]<span class="number">-2</span>] == <span class="string">'('</span>) dp[i] = dp[i<span class="number">-1</span>] + dp[i-dp[i<span class="number">-1</span>]<span class="number">-2</span>] + <span class="number">2</span>;</span><br><span class="line">            res = max(res, dp[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
 <h3 id="利用栈"><a href="#利用栈" class="headerlink" title="利用栈"></a>利用栈</h3><p>这种括号字符串的题目，大部分都能够用栈来解决，按照以往的思路：遇到左括号入栈、遇到右括号出栈，这样输入匹配的括号之后，栈里面的东西不多不少，如果此时我们记录，第一个入栈时的位置，那么最后一个出栈的时候就可以通过位置（index）计算其长度了。</p>
-<p>代码:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">longestValidParentheses</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</div><div class="line">        <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; st;</div><div class="line">        <span class="keyword">int</span> len = s.length();</div><div class="line">        <span class="keyword">int</span> res = <span class="number">0</span>;</div><div class="line">        st.push(<span class="number">-1</span>);</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;len; i++)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span>(s[i] == <span class="string">'('</span>)</div><div class="line">                st.push(i);</div><div class="line">            <span class="keyword">else</span></div><div class="line">            &#123;</div><div class="line">                st.pop();</div><div class="line">                <span class="comment">// 栈为空的时候表示新的串匹配开始</span></div><div class="line">                <span class="keyword">if</span>(st.empty())</div><div class="line">                    st.push(i);</div><div class="line">                <span class="keyword">else</span></div><div class="line">                &#123;</div><div class="line">                    res = max(res, i-st.top());</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>更多LeetCode题解，欢迎查看我的<a href="https://github.com/Sixzeroo/LeetCode" target="_blank" rel="external">GitHub项目</a></p>
+<p>代码:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">longestValidParentheses</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; st;</span><br><span class="line">        <span class="keyword">int</span> len = s.length();</span><br><span class="line">        <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">        st.push(<span class="number">-1</span>);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;len; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(s[i] == <span class="string">'('</span>)</span><br><span class="line">                st.push(i);</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                st.pop();</span><br><span class="line">                <span class="comment">// 栈为空的时候表示新的串匹配开始</span></span><br><span class="line">                <span class="keyword">if</span>(st.empty())</span><br><span class="line">                    st.push(i);</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    res = max(res, i-st.top());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>更多LeetCode题解，欢迎查看我的<a href="https://github.com/Sixzeroo/LeetCode" target="_blank" rel="noopener">GitHub项目</a></p>
 
       
     </div>
@@ -544,7 +544,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年3月18日 - 10时03分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -665,7 +665,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -778,7 +778,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -793,7 +793,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

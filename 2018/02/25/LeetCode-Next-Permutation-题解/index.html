@@ -115,7 +115,7 @@
 <meta property="og:description" content="LeetCode Next Permutation 题解">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://leetcode.com/media/original_images/31_Next_Permutation.gif">
-<meta property="og:updated_time" content="2018-03-02T13:53:30.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LeetCode Next Permutation 题解">
 <meta name="twitter:description" content="LeetCode Next Permutation 题解">
@@ -262,12 +262,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -387,7 +387,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-25T09:27:43+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-25T09:27:43+00:00">
                 2018-02-25
               </time>
             
@@ -452,7 +452,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  533 字
+                  565 字
                 </span>
               
 
@@ -483,15 +483,19 @@
 <h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>首先我们要了解什么是字典序，这里参考wiki的解释：</p>
 <blockquote>
 <p>设想一本英语字典里的单词，何者在前何者在后？</p>
+</blockquote>
+<blockquote>
 <p>显然的做法是先按照第一个字母、以 a、b、c……z 的顺序排列；如果第一个字母一样，那么比较第二个、第三个乃至后面的字母。如果比到最后两个单词不一样长（比如，sigh 和 sight），那么把短者排在前。</p>
+</blockquote>
+<blockquote>
 <p>通过这种方法，我们可以给本来不相关的单词强行规定出一个顺序。“单词”可以看作是“字母”的字符串，而把这一点推而广之就可以认为是给对应位置元素所属集合分别相同的各个有序多元组规定顺序</p>
 </blockquote>
 <p>我的理解是：<strong>把一组数的所有排列情况按照字母顺序进行一次排序得到的就是一个字典序</strong></p>
 <p>在这道题中要求给定排列的下一个字典序，可以知道把一个大一点的数往前移动这个序列的字典序一定会变大，那么就要从后往前找到第一个能变大的数（变大指和它后面的某个数互换以后），找到这个数以后把他和比他大的“第一个”数互换获得最小的增量，然后把这个数后面的数字按照从小到大的顺序重新排列。</p>
 <p>举个例子：</p>
 <p><img src="https://leetcode.com/media/original_images/31_Next_Permutation.gif" alt="enter description here"></p>
-<h2 id="代码-C"><a href="#代码-C" class="headerlink" title="代码(C++)"></a>代码(C++)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">class Solution &#123;</div><div class="line">public:</div><div class="line">    void nextPermutation(vector&lt;int&gt;&amp; nums) &#123;</div><div class="line">        int first = nums.size(), len = nums.size();</div><div class="line">        // 倒序查找第一个升序数</div><div class="line">        for(int i=len-1; i&gt;0;--i)</div><div class="line">        &#123;</div><div class="line">            if(nums[i] &gt; nums[i-1])</div><div class="line">            &#123;</div><div class="line">                first = i-1;</div><div class="line">                break;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        if(first == len)</div><div class="line">            reverse(nums.begin(), nums.end());</div><div class="line">        else</div><div class="line">        &#123;</div><div class="line">            int second = len-1;</div><div class="line">            // 在后面找一个刚好比这个数大一点的数和其互换</div><div class="line">            for(int i=first + 1;i&lt;len;++i)</div><div class="line">            &#123;</div><div class="line">                if(nums[i]&lt;=nums[first])</div><div class="line">                &#123;</div><div class="line">                    second = i-1;</div><div class="line">                    break;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            swap(nums[first], nums[second]);</div><div class="line">            // 反转后面的部分</div><div class="line">            reverse(nums.begin()+first+1, nums.end());</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>更多LeetCode题解，欢迎查看我的<a href="https://github.com/Sixzeroo/LeetCode" target="_blank" rel="external">GitHub项目</a></p>
+<h2 id="代码-C"><a href="#代码-C" class="headerlink" title="代码(C++)"></a>代码(C++)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    void nextPermutation(vector&lt;int&gt;&amp; nums) &#123;</span><br><span class="line">        int first = nums.size(), len = nums.size();</span><br><span class="line">        // 倒序查找第一个升序数</span><br><span class="line">        for(int i=len-1; i&gt;0;--i)</span><br><span class="line">        &#123;</span><br><span class="line">            if(nums[i] &gt; nums[i-1])</span><br><span class="line">            &#123;</span><br><span class="line">                first = i-1;</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        if(first == len)</span><br><span class="line">            reverse(nums.begin(), nums.end());</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            int second = len-1;</span><br><span class="line">            // 在后面找一个刚好比这个数大一点的数和其互换</span><br><span class="line">            for(int i=first + 1;i&lt;len;++i)</span><br><span class="line">            &#123;</span><br><span class="line">                if(nums[i]&lt;=nums[first])</span><br><span class="line">                &#123;</span><br><span class="line">                    second = i-1;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            swap(nums[first], nums[second]);</span><br><span class="line">            // 反转后面的部分</span><br><span class="line">            reverse(nums.begin()+first+1, nums.end());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>更多LeetCode题解，欢迎查看我的<a href="https://github.com/Sixzeroo/LeetCode" target="_blank" rel="noopener">GitHub项目</a></p>
 
       
     </div>
@@ -549,7 +553,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年3月2日 - 21时03分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -668,7 +672,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -781,7 +785,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -796,7 +800,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

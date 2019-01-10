@@ -123,7 +123,7 @@
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-01-15251551733307.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-01-15251552824446.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-01-15251555962605.jpg">
-<meta property="og:updated_time" content="2018-05-24T11:32:42.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="APUE 进程关系">
 <meta name="twitter:description" content="《UNIX环境高级编程》第9章 进程关系 笔记">
@@ -270,12 +270,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -395,7 +395,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-01T10:55:38+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-01T10:55:38+00:00">
                 2018-05-01
               </time>
             
@@ -460,7 +460,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  3,169 字
+                  3,201 字
                 </span>
               
 
@@ -513,19 +513,19 @@
 <p><img src="https://data2.liuin.cn/2018-05-01-15251534277316.jpg" alt=""></p>
 <p>当通过终端或网络登录时,我们得到一个登录shell,其标准输入、标准输出和标准错误要么连接到一个终端设备,要么连接到一个伪终端设备上。</p>
 <h2 id="进程组"><a href="#进程组" class="headerlink" title="进程组"></a>进程组</h2><p>进程组是一个或多个进程的集合。通常,它们是在同一作业中结合起来的,<strong>同一进程组中的各进程接收来自同一终端的各种信号</strong>。每个进程组有一个唯一的进程组ID。进程组ID类似于进程ID——它是一个正整数,并可存放在pid_t数据类型中。函数 getpgrp返回调用进程的进程组ID。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> getpgrp(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: process group ID of calling process</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">pid_t</span> getpgrp(<span class="keyword">void</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Returns: process group ID of calling process</span></span><br></pre></td></tr></table></figure>
 <p>getpgid函数返回指定进程所在的进程组ID：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> getpgid(<span class="keyword">pid_t</span> pid);</div><div class="line"></div><div class="line"><span class="comment">// Returns: process group ID if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">pid_t</span> getpgid(<span class="keyword">pid_t</span> pid);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Returns: process group ID if OK, −1 on error</span></span><br></pre></td></tr></table></figure>
 <p>每个进程组有一个组长进程。组长进程的进程组ID等于其进程ID。</p>
 <p>进程组组长可以创建一个进程组、创建该组中的进程,然后终止。<strong>只要在某个进程组中有个进程存在,则该进程组就存在,这与其组长进程是否终止无关</strong>。从进程组创建开始到其中最后一个进程离开为止的时间区间称为进程组的生命期。某个进程组中的最后一个进程可以终止,也可以转移到另一个进程组</p>
 <p>进程调用setpgid可以加入一个现有的进程组或者创建一个新进程组</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setpgid</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">pid_t</span> pgid)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">setpgid</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">pid_t</span> pgid)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></span><br></pre></td></tr></table></figure>
 <p>一个进程只能为它自己或它的子进程设置进程组ID。在它的子进程调用了exec后,它就不再更改该子进程的进程组ID</p>
 <h2 id="会话"><a href="#会话" class="headerlink" title="会话"></a>会话</h2><p>会话( session)是一个或多个进程组的集合</p>
 <p><img src="https://data2.liuin.cn/2018-05-01-15251538207763.jpg" alt=""></p>
 <p>通常是由shell管道将几个进程编成一组的。</p>
 <p>进程调用setsid函数建立一个新会话</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> setsid(<span class="keyword">void</span>);</div><div class="line"></div><div class="line"><span class="comment">// Returns: process group ID if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">pid_t</span> setsid(<span class="keyword">void</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Returns: process group ID if OK, −1 on error</span></span><br></pre></td></tr></table></figure>
 <p>如果调用此函数的进程不是一个进程组的组长,则此函数创建个新会话。具体会发生以下3件事。</p>
 <ol>
 <li>进程变成新会话的会话首进程( session leader,会话首进程是创建该会话的进程)。此时,该进程是新会话中的唯一进程</li>
@@ -535,7 +535,7 @@
 <p>如果该调用进程已经是一个进程组的组长,则此函数返回出错。为了保证不处于这种情况,通常先调用fork,然后使其父进程终止,而子进程则继续。因为子进程继承了父进程的进程组ID,而其进程ID则是新分配的,两者不可能相等,这就保证了子进程不是一个进程组的组长</p>
 <p>会话首进程是具有唯一进程ID的单个进程,所以<strong>可以将会话首进程的进程ID视为会话ID</strong></p>
 <p><code>getsid</code>函数返回会话首进程的进程组ID</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> getsid(<span class="keyword">pid_t</span> pid); </div><div class="line"></div><div class="line"><span class="comment">// Returns: session leader’s process group ID if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">pid_t</span> getsid(<span class="keyword">pid_t</span> pid); </span><br><span class="line"></span><br><span class="line"><span class="comment">// Returns: session leader’s process group ID if OK, −1 on error</span></span><br></pre></td></tr></table></figure>
 <p>如若pid是0, getsid返回调用进程的会话首进程的进程组ID。出于安全方面的考虑些实现有如下限制:如若pid并不属于调用者所在的会话,那么调用进程就不能得到该会话首进程的进程组ID</p>
 <h2 id="控制终端"><a href="#控制终端" class="headerlink" title="控制终端"></a>控制终端</h2><p>会话和进程组还有一些其他特性</p>
 <ul>
@@ -550,11 +550,11 @@
 <p><img src="https://data2.liuin.cn/2018-05-01-15251544917844.jpg" alt=""></p>
 <p>有时不管标准输入、标准输出是否重定向,程序都要与控制终端交互作用。保证程序能与控制终端对话的方法是open文件/dev/tty。在内核中,此特殊文件是控制终端的同义语。自然地,如果程序没有控制终端,则对于此设备的open将失败。</p>
 <h2 id="函数tcgetpgrp、tcsetpgrp和tcgetsid"><a href="#函数tcgetpgrp、tcsetpgrp和tcgetsid" class="headerlink" title="函数tcgetpgrp、tcsetpgrp和tcgetsid"></a>函数tcgetpgrp、tcsetpgrp和tcgetsid</h2><p>需要有一种方法来通知内核哪一个进程组是前台进程组,这样,终端设备驱动程序就能知道将终端输入和终端产生的信号发送到何处</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> tcgetpgrp(<span class="keyword">int</span> fd); </div><div class="line"></div><div class="line"><span class="comment">// Returns: process group ID of foreground process group if OK, −1 on error </span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcsetpgrp</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">pid_t</span> pgrpid)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">pid_t</span> tcgetpgrp(<span class="keyword">int</span> fd); </span><br><span class="line"></span><br><span class="line"><span class="comment">// Returns: process group ID of foreground process group if OK, −1 on error </span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcsetpgrp</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">pid_t</span> pgrpid)</span></span>; </span><br><span class="line"></span><br><span class="line"><span class="comment">// Returns: 0 if OK, −1 on error</span></span><br></pre></td></tr></table></figure>
 <p>函数tcgetpgrp返回前台进程组ID,它与在fd上打开的终端相关联</p>
 <p>如果进程有一个控制终端,则该进程可以调用 tcsetpgrp将前台进程组ID设置为pergid值应当是在同一会话中的一个进程组的ID。fd必须引用该会话的控制终端。</p>
 <p>给出控制TTY的文件描述符,通过 tcgetsid函数,应用程序就能获得会话首进程的进程组ID</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;termios.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">pid_t</span> tcgetsid(<span class="keyword">int</span> fd); </div><div class="line"></div><div class="line"><span class="comment">// Returns: session leader’s process group ID if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;termios.h&gt; </span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">pid_t</span> tcgetsid(<span class="keyword">int</span> fd); </span><br><span class="line"></span><br><span class="line"><span class="comment">// Returns: session leader’s process group ID if OK, −1 on error</span></span><br></pre></td></tr></table></figure>
 <h2 id="作业控制"><a href="#作业控制" class="headerlink" title="作业控制"></a>作业控制</h2><p>作业控制允许<strong>在一个终端上启动多个作业(进程组)</strong>，它控制哪一个作业可以访问该终端以及哪些作业在后台运行。作业控制要求以下3种形式的支持。</p>
 <ol>
 <li>支持作业控制的 shell</li>
@@ -634,7 +634,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年5月24日 - 19时05分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -753,7 +753,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -866,7 +866,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -881,7 +881,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

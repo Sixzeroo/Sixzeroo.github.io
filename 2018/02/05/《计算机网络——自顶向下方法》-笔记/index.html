@@ -146,7 +146,7 @@
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-12-15261286729783.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-12-15261287184076.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-12-15261288469140.jpg">
-<meta property="og:updated_time" content="2018-05-12T12:41:12.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《计算机网络——自顶向下方法》 笔记">
 <meta name="twitter:description" content="阅读《计算机网络——自顶向下方法》过程中的笔记，持续更新中。">
@@ -293,12 +293,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -418,7 +418,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-05T10:38:09+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-05T10:38:09+00:00">
                 2018-02-05
               </time>
             
@@ -483,7 +483,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  14,233 字
+                  14,300 字
                 </span>
               
 
@@ -704,7 +704,7 @@
 <p>为了处理扩展性问题,DNS使用了大量的DNS服务器,它们以层次方式组织,并且 分布在全世界范围内。没有一台DNS服务器拥有因特网上所有主机的映射。相反,该映射分布在所有的DNS服务器上。大致说来,有3种类型的DNS服务器:<strong>根DNS服务器、 顶级域DNS服务器和权威DNS服务器</strong>。</p>
 <p><img src="https://data2.liuin.cn/story-writer/2018_2_5_1517829730009.jpg" alt="enter description here"></p>
 <p>DNS查询有<strong>递归查询</strong>（recursive query）和<strong>迭代查询</strong>（iterative query）。</p>
-<ol>
+<ol start="2">
 <li>DNS缓存</li>
 </ol>
 <p>为了改善时延性能并减 少在因特网上到处传输的DNS报文数量 DNS广泛使用了缓存技术。DNS缓存的原 理非常简单。在一个请求链中,当某DNS服务器接收一个DNS回答(例如,包含主 机名到IP地址的映射)时,它能将该回答 中的信息缓存在本地存储器中</p>
@@ -742,14 +742,14 @@
 <p>发送方的源地址也是由源主机的IP地址和源套接字的端口号组成</p>
 <p>示例程序：</p>
 <p><img src="https://data2.liuin.cn/story-writer/2018_2_7_1517978583354.jpg" alt="enter description here"></p>
-<p>UDPclient.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 引入socket包，python网络通信的基础</span></div><div class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</div><div class="line"></div><div class="line"><span class="comment"># 提供IP地址（域名）和端口号</span></div><div class="line">serverName = <span class="string">'hostname'</span></div><div class="line">serverPort = <span class="number">12000</span></div><div class="line"></div><div class="line"><span class="comment"># 创建客户套接字，AF_INET表示底层网络使用IPv4，SOCK_DGRAM表示为UDP套接字</span></div><div class="line">clientSocket = socket(AF_INET, SOCK_DGRAM)</div><div class="line">message = raw_input(<span class="string">'Input lowercase sentence'</span>)</div><div class="line"></div><div class="line"><span class="comment"># 向目的套接字发送</span></div><div class="line">clientSocket.sendto(message,(serverName,serverPort))</div><div class="line"></div><div class="line"><span class="comment"># 接收分组，取2048作为缓存输入</span></div><div class="line">modifiedMessage, serverAddress = clientSocket.recvform(<span class="number">2048</span>)</div><div class="line"></div><div class="line">print(modifiedMessage)</div><div class="line">clientSocket.close()</div></pre></td></tr></table></figure></p>
-<p>UDPserver.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</div><div class="line"></div><div class="line">serverPort = <span class="number">12000</span></div><div class="line">serverSocket = socket(AF_INET, SOCK_DGRAM)</div><div class="line"></div><div class="line"><span class="comment"># 将服务器端口和套接字绑定在一起</span></div><div class="line">serverSocket.bind(<span class="string">''</span>, serverPort)</div><div class="line"></div><div class="line">print(<span class="string">"The server is ready to receive"</span>)</div><div class="line"><span class="keyword">while</span> ture:</div><div class="line">    message, clientAddress = serverSocket.recvform(<span class="number">2048</span>)</div><div class="line">    modifiedMessage = message.upper()</div><div class="line">    serverSocket.sendto(modifiedMessage, clientAddress)</div></pre></td></tr></table></figure></p>
+<p>UDPclient.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 引入socket包，python网络通信的基础</span></span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment"># 提供IP地址（域名）和端口号</span></span><br><span class="line">serverName = <span class="string">'hostname'</span></span><br><span class="line">serverPort = <span class="number">12000</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建客户套接字，AF_INET表示底层网络使用IPv4，SOCK_DGRAM表示为UDP套接字</span></span><br><span class="line">clientSocket = socket(AF_INET, SOCK_DGRAM)</span><br><span class="line">message = raw_input(<span class="string">'Input lowercase sentence'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 向目的套接字发送</span></span><br><span class="line">clientSocket.sendto(message,(serverName,serverPort))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 接收分组，取2048作为缓存输入</span></span><br><span class="line">modifiedMessage, serverAddress = clientSocket.recvform(<span class="number">2048</span>)</span><br><span class="line"></span><br><span class="line">print(modifiedMessage)</span><br><span class="line">clientSocket.close()</span><br></pre></td></tr></table></figure></p>
+<p>UDPserver.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">serverPort = <span class="number">12000</span></span><br><span class="line">serverSocket = socket(AF_INET, SOCK_DGRAM)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将服务器端口和套接字绑定在一起</span></span><br><span class="line">serverSocket.bind(<span class="string">''</span>, serverPort)</span><br><span class="line"></span><br><span class="line">print(<span class="string">"The server is ready to receive"</span>)</span><br><span class="line"><span class="keyword">while</span> ture:</span><br><span class="line">    message, clientAddress = serverSocket.recvform(<span class="number">2048</span>)</span><br><span class="line">    modifiedMessage = message.upper()</span><br><span class="line">    serverSocket.sendto(modifiedMessage, clientAddress)</span><br></pre></td></tr></table></figure></p>
 <h3 id="TCP套接字编程"><a href="#TCP套接字编程" class="headerlink" title="TCP套接字编程"></a>TCP套接字编程</h3><p>与UDP不同，TCP是一个面向连接的协议。这意味着客户和服务器能够相互发送数据之前，他们要先握手创建一个TCP连接。</p>
 <p>注意两点：<br>第一,与在UDP中的情况一样,TCP服务器在客户试图发起接触前必须作 为进程运行起来。<br>第二,服务器程序必须具有一扇特殊的门,更精确地说是一个特殊的套 接字,该门门欢迎来自运行在任意主机上的客户进程的某些初始接触。使用房子/门来比喻 进程/套接字,有时我们将客户的初始接触称为“敲欢迎之门”。</p>
 <p><img src="https://data2.liuin.cn/story-writer/2018_2_7_1517979977215.jpg" alt="enter description here"></p>
 <p><img src="https://data2.liuin.cn/story-writer/2018_2_7_1517980098223.jpg" alt="enter description here"></p>
-<p>TCPclient.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</div><div class="line"></div><div class="line">serverName = <span class="string">'servername'</span></div><div class="line">serverPort = <span class="number">12000</span></div><div class="line"></div><div class="line">clientSocket = socket(AF_INET, SOCK_STREAM)</div><div class="line"><span class="comment"># 不同之处，传输数据之前要先进行连接</span></div><div class="line">clientSocket.connect((serverName, serverPort))</div><div class="line"></div><div class="line">sentence = raw_input(<span class="string">'Input lowercase sentence'</span>)</div><div class="line">clientSocket.send(sentence)</div><div class="line">modifiedSentence = clientSocket.recv(<span class="number">1024</span>)</div><div class="line"></div><div class="line">print(<span class="string">"From server:"</span>, modifiedSentence)</div><div class="line">clientSocket.close()</div></pre></td></tr></table></figure></p>
-<p>TCPserver.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</div><div class="line"></div><div class="line">serverPort = <span class="number">12000</span></div><div class="line"><span class="comment"># 创建TCP套接字</span></div><div class="line">serverSocket = socket(AF_INET, SOCK_STREAM)</div><div class="line"></div><div class="line"><span class="comment"># serverSocket 是我们的欢迎套接字</span></div><div class="line">serverSocket.bind(<span class="string">''</span>, serverPort)</div><div class="line">serverSocket.lisetn(<span class="number">1</span>)</div><div class="line">print(<span class="string">"The server is ready to receive"</span>)</div><div class="line"></div><div class="line"><span class="keyword">while</span> ture:</div><div class="line">    <span class="comment"># 当客户端敲门时，创建一个服务的新套接字</span></div><div class="line">    connectionSocket ,addr = serverSocket.accept()</div><div class="line">    sentence = connectionSocket.recv(<span class="number">1024</span>)</div><div class="line">    capitalizedSentence = sentence.upper()</div><div class="line">    connectionSocket.sendto(capitalizedSentence)</div><div class="line">    connectionSocket.close()</div></pre></td></tr></table></figure></p>
+<p>TCPclient.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">serverName = <span class="string">'servername'</span></span><br><span class="line">serverPort = <span class="number">12000</span></span><br><span class="line"></span><br><span class="line">clientSocket = socket(AF_INET, SOCK_STREAM)</span><br><span class="line"><span class="comment"># 不同之处，传输数据之前要先进行连接</span></span><br><span class="line">clientSocket.connect((serverName, serverPort))</span><br><span class="line"></span><br><span class="line">sentence = raw_input(<span class="string">'Input lowercase sentence'</span>)</span><br><span class="line">clientSocket.send(sentence)</span><br><span class="line">modifiedSentence = clientSocket.recv(<span class="number">1024</span>)</span><br><span class="line"></span><br><span class="line">print(<span class="string">"From server:"</span>, modifiedSentence)</span><br><span class="line">clientSocket.close()</span><br></pre></td></tr></table></figure></p>
+<p>TCPserver.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">serverPort = <span class="number">12000</span></span><br><span class="line"><span class="comment"># 创建TCP套接字</span></span><br><span class="line">serverSocket = socket(AF_INET, SOCK_STREAM)</span><br><span class="line"></span><br><span class="line"><span class="comment"># serverSocket 是我们的欢迎套接字</span></span><br><span class="line">serverSocket.bind(<span class="string">''</span>, serverPort)</span><br><span class="line">serverSocket.lisetn(<span class="number">1</span>)</span><br><span class="line">print(<span class="string">"The server is ready to receive"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> ture:</span><br><span class="line">    <span class="comment"># 当客户端敲门时，创建一个服务的新套接字</span></span><br><span class="line">    connectionSocket ,addr = serverSocket.accept()</span><br><span class="line">    sentence = connectionSocket.recv(<span class="number">1024</span>)</span><br><span class="line">    capitalizedSentence = sentence.upper()</span><br><span class="line">    connectionSocket.sendto(capitalizedSentence)</span><br><span class="line">    connectionSocket.close()</span><br></pre></td></tr></table></figure></p>
 <h1 id="运输层"><a href="#运输层" class="headerlink" title="运输层"></a>运输层</h1><h2 id="概述和运输层服务"><a href="#概述和运输层服务" class="headerlink" title="概述和运输层服务"></a>概述和运输层服务</h2><p>运输层协议为运行在不同主机上的应用进程之间提供了逻辑通信( logic communication)功能。从应用程序的角度看,通过逻辑通信,运行不同进程的主机好像直接相连一样;实际上,这些主机也许位于地球的两侧,通过很多路由器及多种不同类型的链路相连。</p>
 <h3 id="运输层和网络层之间的关系"><a href="#运输层和网络层之间的关系" class="headerlink" title="运输层和网络层之间的关系"></a>运输层和网络层之间的关系</h3><p>前面讲过,在协议栈中,运输层刚好位于网络层之上。网络层提供了主机之间的逻辑通信,而运输层为运行在不同主机上的进程之间提供了逻辑通信。</p>
 <h3 id="因特网运输层概述"><a href="#因特网运输层概述" class="headerlink" title="因特网运输层概述"></a>因特网运输层概述</h3><p>前面讲过因特网(更一般地讲是一个TCP/IP网络)为应用层提供了两种截然不同的可用运输层协议。这些协议一种是UDP(用户数据报协议),它为调用它的应用程序提供了一种<strong>不可靠、无连接</strong>的服务。另一种是TCP(传输控制协议),它为调用它的应用程序提供了一种<strong>可靠的、面向连接</strong>的服务。当设计一个网络应用程序时,该应用程序的开发人员必须指定使用这两种运输协议中的哪一种。</p>
@@ -954,7 +954,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年5月12日 - 20时05分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -1073,7 +1073,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -1186,7 +1186,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -1201,7 +1201,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

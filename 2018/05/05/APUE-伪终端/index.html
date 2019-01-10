@@ -120,7 +120,7 @@
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-05-15255092890944.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-05-15255094556754.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-05-15255095797010.jpg">
-<meta property="og:updated_time" content="2018-05-05T11:14:17.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="APUE 伪终端">
 <meta name="twitter:description" content="《UNIX环境高级编程》第19章 伪终端 笔记">
@@ -267,12 +267,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -392,7 +392,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-05T16:09:34+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-05T16:09:34+00:00">
                 2018-05-05
               </time>
             
@@ -457,7 +457,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1,716 字
+                  1,729 字
                 </span>
               
 
@@ -526,27 +526,27 @@
 <p>如果有源程序,则可以加入fflush调用强制标准I/O缓冲区在某些节点冲洗或者把缓冲模式改使用 setybuf的行缓冲。然而,如果没有源程序,可以在pty程序下运行该程序,让标准I/O库认为标准输出是终端。</p>
 <p><img src="https://data2.liuin.cn/2018-05-05-15255095797010.jpg" alt=""></p>
 <h2 id="打开伪终端设备"><a href="#打开伪终端设备" class="headerlink" title="打开伪终端设备"></a>打开伪终端设备</h2><p>PTY表现得就像物理终端设备一样,因此应用程序就无须在意它们在使用的是何种设备。各种平台打开伪终端设备的方法有所不同。posix_openpt函数提供了一种可移植的方法来打开下一个可用<strong>伪终端主设备</strong>。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; #include &lt;fcntl.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">posix_openpt</span><span class="params">(<span class="keyword">int</span> oﬂag)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: ﬁle descriptor of next available PTY master if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; #include &lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">posix_openpt</span><span class="params">(<span class="keyword">int</span> oﬂag)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Returns: ﬁle descriptor of next available PTY master if OK, −1 on error</span></span><br></pre></td></tr></table></figure>
 <p>在伪终端从设备可用之前,它的权限必须设置,以便应用程序可以访问它。 grantpt函数提供这样的功能:它把从设备节点的用户ID设置为调用者的实际用户ID,设置其组ID为一非指定值,通常是可以访问该终端设备的组。权限被设置为:对个体所有者是读写,对组所有者是写(0620)</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">grantpt</span><span class="params">(<span class="keyword">int</span> fd)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">unlockpt</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 on success, −1 on error</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">grantpt</span><span class="params">(<span class="keyword">int</span> fd)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">unlockpt</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Both return: 0 on success, −1 on error</span></span><br></pre></td></tr></table></figure>
 <p>unlockpt函数用于准予对伪终端从设备的访问,从而允许应用程序打开该设备。阻止其他进程打开从设备后,建立该设备的应用程序有机会在使用主、从设备之前正确地初始化这些设备</p>
 <p>注意,在 grantpt和unlockpt这两个函数中,文件描述符参数是与伪终端主设备关联的文件描述符。</p>
 <p>如果给定了伪终端主设备的文件描述符,那么可以用 ptsname函数找到伪终端从设备的路径名。这使应用程序可以独立于给定平台的某种特定约定而标识从设备。注意,该函数返回的名字可能存储在静态存储中,因此后续的调用可能会覆盖它。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">ptsname</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to name of PTY slave if OK, NULL on error</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">char</span> *<span class="title">ptsname</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Returns: pointer to name of PTY slave if OK, NULL on error</span></span><br></pre></td></tr></table></figure>
 <h2 id="高级特性"><a href="#高级特性" class="headerlink" title="高级特性"></a>高级特性</h2><p>伪终端还有其他特性：</p>
 <ol>
 <li>打包模式</li>
 </ol>
 <p>打包模式(packet mode)能够使PTY主设备了解到PTY从设备的状态变化</p>
-<ol>
+<ol start="2">
 <li>远程模式</li>
 </ol>
 <p>PTY主设备可以用 TIOCREMOTE ioct1命令将PTY从设备设置成远程模式</p>
-<ol>
+<ol start="3">
 <li>窗口大小变化</li>
 </ol>
 <p>PTY主设备上的进程可以用 TIOCSWINSZ ioct1命令来设置从设备的窗口大小。如果新的大小和当前的大小不同, SIGWINCH信号将被发送到PTY从设备的前台进程组。</p>
-<ol>
+<ol start="4">
 <li>信号发生</li>
 </ol>
 <p>读、写PTY主设备的进程可以向PTY从设备的进程组发送信号</p>
@@ -607,7 +607,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年5月5日 - 19时05分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -726,7 +726,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -839,7 +839,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -854,7 +854,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

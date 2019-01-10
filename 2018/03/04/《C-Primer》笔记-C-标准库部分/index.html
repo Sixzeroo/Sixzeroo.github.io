@@ -157,7 +157,7 @@
 <meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_4_1520130502646.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_4_1520130696044.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/story-writer/2018_3_4_1520132049585.jpg">
-<meta property="og:updated_time" content="2018-05-06T02:58:35.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《C++ Primer》笔记 C++标准库部分">
 <meta name="twitter:description" content="《C++ Primer》笔记 C++基础部分">
@@ -304,12 +304,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -429,7 +429,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-04T10:58:33+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-04T10:58:33+00:00">
                 2018-03-04
               </time>
             
@@ -971,7 +971,7 @@
 <h2 id="动态数组"><a href="#动态数组" class="headerlink" title="动态数组"></a>动态数组</h2><p>new和 delete运算符一次分配释放一个对象,但某些应用需要一次为很多对象分配内存的功能。</p>
 <p>为了支持这种需求,C++语言和标准库提供了两种一次分配一个对象数组的方法。C+语言定义了另一种new表达式语法,可以分配并初始化一个对象数组。标准库中包含个名为allocator的类,允许我们们将分配和初始化分离。使用allocator通常会提供更好的性能和更灵活的内存管理能力</p>
 <h3 id="new和数组"><a href="#new和数组" class="headerlink" title="new和数组"></a>new和数组</h3><p>为了让new分配一个对象数组,我们要在类型名之后跟一对方括号,在其中指明要分配的对象的数目。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> *pia = <span class="keyword">new</span> <span class="keyword">int</span> [get_size()]; <span class="comment">// pia指向第一个int</span></div></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> *pia = <span class="keyword">new</span> <span class="keyword">int</span> [get_size()]; <span class="comment">// pia指向第一个int</span></span><br></pre></td></tr></table></figure>
 <p>虽然我们]通常称newT[]分配的内存为“动态数组”,但这种叫法某种程度上有些误导。当用new分配一个数组时,我们并未得到一个数组类型的对象,而是得到一个数组元素类型的指针。不能对动态数组调用begin和end。</p>
 <blockquote>
 <p>释放动态数组</p>
@@ -1045,7 +1045,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年5月6日 - 10时05分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -1164,7 +1164,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -1277,7 +1277,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -1292,7 +1292,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

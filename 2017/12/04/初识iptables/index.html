@@ -114,7 +114,7 @@
 <meta property="og:site_name" content="Sixzeroo">
 <meta property="og:description" content="iptables 可以简单理解为 Linux 系统内核级防火墙 netfilter 的用户态客户端。Linux 管理员通过调用 iptables 命令，配置 Linux 内核 netfilter 模块规则，对网络数据包的流动进行管理。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-12-04T14:47:23.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:57.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="初识iptables">
 <meta name="twitter:description" content="iptables 可以简单理解为 Linux 系统内核级防火墙 netfilter 的用户态客户端。Linux 管理员通过调用 iptables 命令，配置 Linux 内核 netfilter 模块规则，对网络数据包的流动进行管理。">
@@ -260,12 +260,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -385,7 +385,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-04T22:44:30+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-04T22:44:30+00:00">
                 2017-12-04
               </time>
             
@@ -450,7 +450,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1,945 字
+                  1,978 字
                 </span>
               
 
@@ -475,34 +475,36 @@
       
 
       
-        <p><a href="https://www.wikiwand.com/zh-cn/Iptables" target="_blank" rel="external">iptables</a> 可以简单理解为 Linux 系统内核级防火墙 netfilter 的用户态客户端。<br>Linux 管理员通过调用 iptables 命令，配置 Linux 内核 netfilter 模块规则，对网络数据包的流动进行管理。</p>
+        <p><a href="https://www.wikiwand.com/zh-cn/Iptables" target="_blank" rel="noopener">iptables</a> 可以简单理解为 Linux 系统内核级防火墙 netfilter 的用户态客户端。<br>Linux 管理员通过调用 iptables 命令，配置 Linux 内核 netfilter 模块规则，对网络数据包的流动进行管理。</p>
 <a id="more"></a>
 <h4 id="iptables-基本命令"><a href="#iptables-基本命令" class="headerlink" title="iptables 基本命令"></a>iptables 基本命令</h4><h5 id="iptables-语法帮助"><a href="#iptables-语法帮助" class="headerlink" title="iptables 语法帮助"></a>iptables 语法帮助</h5><p>可以使用<code>iptables</code>查看iptables的帮助文档</p>
 <h5 id="查看-iptables-表的规则"><a href="#查看-iptables-表的规则" class="headerlink" title="查看 iptables 表的规则"></a>查看 iptables 表的规则</h5><p>iptables 有[表 (tables)] 的概念，每张表又包含不同[链 (chains)]，大部分情况下我们仅需要使用 filter 和 nat 两张表的链就可以完成功能。</p>
-<p>使用以下命令可以查看 filter 表中的规则。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo iptables -L -n</div></pre></td></tr></table></figure></p>
+<p>使用以下命令可以查看 filter 表中的规则。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo iptables -L -n</span><br></pre></td></tr></table></figure></p>
 <p>参数解析 -L 列出规则， -n 不显示域名，命令默认显示的是 filter 表，可以通过 -t 参数来指定其他表</p>
 <p>可以看到目前 filter 表中有 3 条链: INPUT, FORWARD, OUTPUT。 3 条链都没有任何规则存在，因此通过网卡的网络数据包不会受到任何影响。</p>
 <blockquote>
 <p>iptables 包含 5 张表（tables）：<br> raw 用于配置数据包，raw 中的数据包不会被系统跟踪。<br> filter 是用于存放所有与防火墙相关操作的默认表。<br> nat 用于网络地址转换（例如：端口转发）。<br> mangle 用于对特定数据包的修改。<br> security 用于强制访问控制网络规则。</p>
+</blockquote>
+<blockquote>
 <p>链可以看作是一系列规则集合，默认的链被用于不同的场景，用户也可以创建自定义的链。例如：<br>filter 表的 INPUT 链用于进入网卡的数据包过滤<br>filter 表的 OUTPUT 链用于过滤网卡对外发送的数据包过滤 一条链中的规则从上自下顺序执行。<br>实验</p>
 </blockquote>
-<h4 id="禁止访问目的地址"><a href="#禁止访问目的地址" class="headerlink" title="禁止访问目的地址"></a>禁止访问目的地址</h4><h5 id="添加一条规则到-Filter-表"><a href="#添加一条规则到-Filter-表" class="headerlink" title="添加一条规则到 Filter 表"></a>添加一条规则到 Filter 表</h5><p>在没有任何防火墙规则时，尝试 ping 百度的服务器，ping 是可以正常返回的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ping -c 4 www.baidu.com</div><div class="line">PING qcloud.com (119.29.47.192) 56(84) bytes of data.</div><div class="line">64 bytes from 119.29.47.192: icmp_seq=1 ttl=58 time=3.11 ms</div><div class="line">64 bytes from 119.29.47.192: icmp_seq=2 ttl=58 time=3.10 ms</div><div class="line">64 bytes from 119.29.47.192: icmp_seq=3 ttl=58 time=3.17 ms</div></pre></td></tr></table></figure></p>
-<p>假设我们作为 Linux 管理员，不希望有人从本机 ping 百度的服务器，那么就可以用到如下的 iptables 命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo iptables -I OUTPUT -p icmp -d www.baidu.com -j DROP</div></pre></td></tr></table></figure></p>
+<h4 id="禁止访问目的地址"><a href="#禁止访问目的地址" class="headerlink" title="禁止访问目的地址"></a>禁止访问目的地址</h4><h5 id="添加一条规则到-Filter-表"><a href="#添加一条规则到-Filter-表" class="headerlink" title="添加一条规则到 Filter 表"></a>添加一条规则到 Filter 表</h5><p>在没有任何防火墙规则时，尝试 ping 百度的服务器，ping 是可以正常返回的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ping -c 4 www.baidu.com</span><br><span class="line">PING qcloud.com (119.29.47.192) 56(84) bytes of data.</span><br><span class="line">64 bytes from 119.29.47.192: icmp_seq=1 ttl=58 time=3.11 ms</span><br><span class="line">64 bytes from 119.29.47.192: icmp_seq=2 ttl=58 time=3.10 ms</span><br><span class="line">64 bytes from 119.29.47.192: icmp_seq=3 ttl=58 time=3.17 ms</span><br></pre></td></tr></table></figure></p>
+<p>假设我们作为 Linux 管理员，不希望有人从本机 ping 百度的服务器，那么就可以用到如下的 iptables 命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo iptables -I OUTPUT -p icmp -d www.baidu.com -j DROP</span><br></pre></td></tr></table></figure></p>
 <p>参数解析 -I 添加规则到链的最前面， -p 匹配协议， -d 匹配目的地址， -j DROP 将匹配的数据包实施丢掉动作</p>
 <blockquote>
 <p>重要:<br>因为在 iptables 一个链中的规则是从上到下依次执行的，因此一条规则在链中的位置十分重要。<br>例如一条拒绝全部连接的规则 -j REJECT 一定要放在链的最后，而允许通行的规则要放在这条规则之前。<br>否则所有网络数据包进入链后直接匹配到这条规则，将导致所有连接被拒绝。</p>
 </blockquote>
-<p>现在我们可以用 <code>sudo iptables -L -n</code> 命令看到 filter 表的 OUTPUT 链中新增了两条记录，其中 destination 地址是 DNS 返回的百度服务器 IP 地址。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Chain OUTPUT (policy ACCEPT)</div><div class="line">target     prot opt source               destination</div><div class="line">DROP       icmp --  0.0.0.0/0            220.181.112.244</div><div class="line">DROP       icmp --  0.0.0.0/0            220.181.111.188</div></pre></td></tr></table></figure></p>
-<p>这时再 ping 百度服务器会发现无法 ping 通了，因为访问百度服务器 IP 地址的数据包已经被防火墙过滤丢掉了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ping -c 4 www.baidu.com</div><div class="line">PING www.a.shifen.com (220.181.111.188) 56(84) bytes of data.</div><div class="line">ping: sendmsg: Operation not permitted</div><div class="line">ping: sendmsg: Operation not permitted</div></pre></td></tr></table></figure></p>
+<p>现在我们可以用 <code>sudo iptables -L -n</code> 命令看到 filter 表的 OUTPUT 链中新增了两条记录，其中 destination 地址是 DNS 返回的百度服务器 IP 地址。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Chain OUTPUT (policy ACCEPT)</span><br><span class="line">target     prot opt source               destination</span><br><span class="line">DROP       icmp --  0.0.0.0/0            220.181.112.244</span><br><span class="line">DROP       icmp --  0.0.0.0/0            220.181.111.188</span><br></pre></td></tr></table></figure></p>
+<p>这时再 ping 百度服务器会发现无法 ping 通了，因为访问百度服务器 IP 地址的数据包已经被防火墙过滤丢掉了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ping -c 4 www.baidu.com</span><br><span class="line">PING www.a.shifen.com (220.181.111.188) 56(84) bytes of data.</span><br><span class="line">ping: sendmsg: Operation not permitted</span><br><span class="line">ping: sendmsg: Operation not permitted</span><br></pre></td></tr></table></figure></p>
 <h4 id="导出、编辑、导入规则"><a href="#导出、编辑、导入规则" class="headerlink" title="导出、编辑、导入规则"></a>导出、编辑、导入规则</h4><p>在进行一系列复杂的防火墙配置时，大多数时候不建议直接调用 iptables 做规则修改。 因为任何一条错误的配置或者一个 typo （输入错误）都有可能导致严重的网络问题。</p>
 <p>一个最佳实践是导出现有规则到文本文件，对该文本文件进行编辑，进行检查无误后再将其导入。</p>
-<h5 id="导出规则"><a href="#导出规则" class="headerlink" title="导出规则"></a>导出规则</h5><p>通过如下命令导出所有规则到文本文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo iptables-save &gt; /home/ubuntu/iptables_rules</div></pre></td></tr></table></figure></p>
-<h5 id="编辑规则"><a href="#编辑规则" class="headerlink" title="编辑规则"></a>编辑规则</h5><p>在新标签页打开 iptables_rules，在 filter 表的 :OUTPUT ACCEPT 链下面添加一条规则的格式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">-A OUTPUT -p icmp -d 114.114.114.114 -j DROP</div></pre></td></tr></table></figure></p>
-<h5 id="导入规则"><a href="#导入规则" class="headerlink" title="导入规则"></a>导入规则</h5><p>使用命令将编辑过的规则重新导入 iptables<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo iptables-restore /home/ubuntu/iptables_rules</div></pre></td></tr></table></figure></p>
+<h5 id="导出规则"><a href="#导出规则" class="headerlink" title="导出规则"></a>导出规则</h5><p>通过如下命令导出所有规则到文本文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo iptables-save &gt; /home/ubuntu/iptables_rules</span><br></pre></td></tr></table></figure></p>
+<h5 id="编辑规则"><a href="#编辑规则" class="headerlink" title="编辑规则"></a>编辑规则</h5><p>在新标签页打开 iptables_rules，在 filter 表的 :OUTPUT ACCEPT 链下面添加一条规则的格式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-A OUTPUT -p icmp -d 114.114.114.114 -j DROP</span><br></pre></td></tr></table></figure></p>
+<h5 id="导入规则"><a href="#导入规则" class="headerlink" title="导入规则"></a>导入规则</h5><p>使用命令将编辑过的规则重新导入 iptables<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo iptables-restore /home/ubuntu/iptables_rules</span><br></pre></td></tr></table></figure></p>
 <p>使用 sudo iptables -L -n 查看是否有禁止 ping 114.114.114.114 的新增规则</p>
 <h5 id="清除全部规则"><a href="#清除全部规则" class="headerlink" title="清除全部规则"></a>清除全部规则</h5><p>现在我们清除上一小节中增加的规则，还原到没有任何规则的初始状态。</p>
 <p>Note：当你因为错误的配置 iptables 导致自己无法远程访问的时候，从 console 执行这条命令可以快速修复状态。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo iptables -F</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo iptables -F</span><br></pre></td></tr></table></figure>
 <p>iptables 还提供 -X 参数清除[自定义链]， -Z 参数重置计数器</p>
 <h4 id="黑-白名单"><a href="#黑-白名单" class="headerlink" title="黑/白名单"></a>黑/白名单</h4><p>某公司禁止特定的 PC 设备访问和工作无关的网站，而其他设备则不受限制。</p>
 <p>分析：</p>
@@ -510,20 +512,20 @@
 <p>2.其次，由于目的地址可能是数百个网站，针对每一台PC配置数百条规则是不可接受的，因此我们选择使用自建一条链来实现。</p>
 <p>3.公司只限制部分 PC 访问，因此对 PC 的匹配最好使用 IP 地址匹配，不匹配的设备则不受限制。</p>
 <p>Note: 对于进入 INPUT 链的入站规则还可以采用 mac 匹配。</p>
-<h5 id="查看本机-IP-地址。"><a href="#查看本机-IP-地址。" class="headerlink" title="查看本机 IP 地址。"></a>查看本机 IP 地址。</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo ip a show eth0</div></pre></td></tr></table></figure>
+<h5 id="查看本机-IP-地址。"><a href="#查看本机-IP-地址。" class="headerlink" title="查看本机 IP 地址。"></a>查看本机 IP 地址。</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ip a show eth0</span><br></pre></td></tr></table></figure>
 <p>在 inet 之后的就是本机网口的 IP 地址，例如 10.135.166.86</p>
 <p>查看公网IP也可以使用一些IP工具进行查看</p>
-<h5 id="编辑-iptables-规则："><a href="#编辑-iptables-规则：" class="headerlink" title="编辑 iptables 规则："></a>编辑 iptables 规则：</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">//清除已有规则</div><div class="line"></div><div class="line">sudo iptables -F</div><div class="line">//清除自建链</div><div class="line"></div><div class="line">sudo iptables -X</div><div class="line">//新建一个叫做 BLACKLIST 的链</div><div class="line"></div><div class="line">sudo iptables -N BLACKLIST</div><div class="line">//当访问的源 IP 地址是本机的时候进入 BLACKLIST 链</div><div class="line"></div><div class="line">sudo iptables -A OUTPUT -s 10.135.166.86 -j BLACKLIST</div><div class="line">//向 BLACKLIST 链添加 2 条规则</div><div class="line"></div><div class="line">sudo iptables -A BLACKLIST -d 114.114.114.114 -j DROP</div><div class="line">sudo iptables -A BLACKLIST -d 220.181.111.188 -j DROP</div></pre></td></tr></table></figure>
+<h5 id="编辑-iptables-规则："><a href="#编辑-iptables-规则：" class="headerlink" title="编辑 iptables 规则："></a>编辑 iptables 规则：</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">//清除已有规则</span><br><span class="line"></span><br><span class="line">sudo iptables -F</span><br><span class="line">//清除自建链</span><br><span class="line"></span><br><span class="line">sudo iptables -X</span><br><span class="line">//新建一个叫做 BLACKLIST 的链</span><br><span class="line"></span><br><span class="line">sudo iptables -N BLACKLIST</span><br><span class="line">//当访问的源 IP 地址是本机的时候进入 BLACKLIST 链</span><br><span class="line"></span><br><span class="line">sudo iptables -A OUTPUT -s 10.135.166.86 -j BLACKLIST</span><br><span class="line">//向 BLACKLIST 链添加 2 条规则</span><br><span class="line"></span><br><span class="line">sudo iptables -A BLACKLIST -d 114.114.114.114 -j DROP</span><br><span class="line">sudo iptables -A BLACKLIST -d 220.181.111.188 -j DROP</span><br></pre></td></tr></table></figure>
 <p>如上配置后，会发现本机已经无法 ping BLACKLIST 中的目的地址了。</p>
 <p>如果后续要增加新的禁止访问的目的地址，则只需向 BLACKLIST 链添加新规则。<br>如果需要限制另一台 PC 通过本网关转发访问外网，则只需添加一条 OUTPUT 链的源 IP 匹配规则并指向 -j BLACKLIST。</p>
 <h4 id="端口映射"><a href="#端口映射" class="headerlink" title="端口映射"></a>端口映射</h4><p>分析： 通常来讲应该首先考虑程序本身能否配置监听多个端口，或者使用负载均衡器作为代理程序。 但在本次实验中我们将使用 iptables 监听 8080 端口并将网络数据包转发给本地80端口</p>
 <p>首先测试 <code>telnet 0 80</code> 和 <code>telnet 0 8080</code> 可以看到 80 和 8080 端口都是不通的。</p>
-<p>接下来我们用 netcat 监听 80 端口：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo nc -k -l 80 &amp;</div></pre></td></tr></table></figure></p>
+<p>接下来我们用 netcat 监听 80 端口：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nc -k -l 80 &amp;</span><br></pre></td></tr></table></figure></p>
 <p>这时候 telnet 0 80 发现 80 端口可以工作了。</p>
-<p>下面我们用 iptables 做一个端口映射<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo iptables -t nat -A OUTPUT -p tcp -d 127.0.0.1 --dport 8080 -j DNAT --to 127.0.0.1:80</div></pre></td></tr></table></figure></p>
+<p>下面我们用 iptables 做一个端口映射<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo iptables -t nat -A OUTPUT -p tcp -d 127.0.0.1 --dport 8080 -j DNAT --to 127.0.0.1:80</span><br></pre></td></tr></table></figure></p>
 <p>这里我们用到了 -t nat 参数，表示我们使用了 netfilter 的 nat 表。在 nat 表的 OUTPUT 链上做了一个 -j DNAT 转发，将访问内网 8080 端口的数据包转向了 80 端口。</p>
 <p>这时候 telnet 0 8080 发现 8080 端口也可以工作了。</p>
-<p>如果是监听外网的 8080 端口转发到 80 端口，则需要执行以下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo iptables -t nat -A PREROUTING -p tcp --dport 8080 -j REDIRECT --to-ports 80</div></pre></td></tr></table></figure></p>
+<p>如果是监听外网的 8080 端口转发到 80 端口，则需要执行以下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo iptables -t nat -A PREROUTING -p tcp --dport 8080 -j REDIRECT --to-ports 80</span><br></pre></td></tr></table></figure></p>
 <p>通过使用 PREROUTING 链直接将访问 8080 端口的数据包转发到 80 端口</p>
 
       
@@ -582,7 +584,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2017年12月4日 - 22时12分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -701,7 +703,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -814,7 +816,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -829,7 +831,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

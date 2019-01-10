@@ -114,7 +114,7 @@
 <meta property="og:site_name" content="Sixzeroo">
 <meta property="og:description" content="题目链接：http://acm.hdu.edu.cn/showproblem.php?pid=1868">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-05-16T07:41:11.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HDU 1868 Consecutive sum 数学+枚举">
 <meta name="twitter:description" content="题目链接：http://acm.hdu.edu.cn/showproblem.php?pid=1868">
@@ -260,12 +260,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -385,7 +385,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-16T15:38:13+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-16T15:38:13+00:00">
                 2017-05-16
               </time>
             
@@ -450,7 +450,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  180 字
+                  219 字
                 </span>
               
 
@@ -475,11 +475,11 @@
       
 
       
-        <p>题目链接：<a href="http://acm.hdu.edu.cn/showproblem.php?pid=1868" target="_blank" rel="external">http://acm.hdu.edu.cn/showproblem.php?pid=1868</a></p>
+        <p>题目链接：<a href="http://acm.hdu.edu.cn/showproblem.php?pid=1868" target="_blank" rel="noopener">http://acm.hdu.edu.cn/showproblem.php?pid=1868</a></p>
 <a id="more"></a>
 <h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>给出一个数n，求出这个数被分解成连续多个数之和的方案数</p>
 <h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>连续多个数之和可以看成等差数列，得到公式：x(i+i+x-1)/2=n。这样我们可以枚举x，在根号n的复杂度下将问题求解</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdlib&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cmath&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;ctime&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;queue&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> INF 0x3f3f3f3f</span></div><div class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxn=<span class="number">100005</span>;</div><div class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxm=<span class="number">100005</span>; </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	ll x;</div><div class="line">	<span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%lld"</span>,&amp;x)!=EOF)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">int</span> ans=<span class="number">0</span>;</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">2</span>;i*i&lt;=<span class="number">2</span>*x;i++)</div><div class="line">		&#123;</div><div class="line">			<span class="keyword">if</span>((<span class="number">2</span>*x)%i) <span class="keyword">continue</span>;</div><div class="line">			<span class="keyword">int</span> tmp=<span class="number">2</span>*x/i+<span class="number">1</span>-i;</div><div class="line">			<span class="keyword">if</span>(tmp%<span class="number">2</span>) <span class="keyword">continue</span>;</div><div class="line">			ans++;</div><div class="line">		&#125;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,ans);</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	freopen(<span class="string">"input.txt"</span>,<span class="string">"r"</span>,<span class="built_in">stdin</span>);</div><div class="line">	solve();</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdlib&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;ctime&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> INF 0x3f3f3f3f</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxn=<span class="number">100005</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxm=<span class="number">100005</span>; </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	ll x;</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%lld"</span>,&amp;x)!=EOF)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">int</span> ans=<span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">2</span>;i*i&lt;=<span class="number">2</span>*x;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>((<span class="number">2</span>*x)%i) <span class="keyword">continue</span>;</span><br><span class="line">			<span class="keyword">int</span> tmp=<span class="number">2</span>*x/i+<span class="number">1</span>-i;</span><br><span class="line">			<span class="keyword">if</span>(tmp%<span class="number">2</span>) <span class="keyword">continue</span>;</span><br><span class="line">			ans++;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,ans);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	freopen(<span class="string">"input.txt"</span>,<span class="string">"r"</span>,<span class="built_in">stdin</span>);</span><br><span class="line">	solve();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -537,7 +537,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2017年5月16日 - 15时05分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -656,7 +656,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -769,7 +769,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -784,7 +784,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

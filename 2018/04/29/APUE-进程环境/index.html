@@ -117,7 +117,7 @@
 <meta property="og:image" content="https://data2.liuin.cn/2018-04-30-15250569958373.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-04-30-15250572321583.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-04-30-15250574049036.jpg">
-<meta property="og:updated_time" content="2018-10-04T06:46:40.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="APUE 进程环境">
 <meta name="twitter:description" content="《UNIX环境高级编程》第7章 进程环境 笔记">
@@ -264,12 +264,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -389,7 +389,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-29T18:30:25+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-29T18:30:25+00:00">
                 2018-04-29
               </time>
             
@@ -454,7 +454,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2,284 字
+                  2,334 字
                 </span>
               
 
@@ -494,7 +494,7 @@
 <li>从最后一个线程调用 pthread_exit</li>
 </ol>
 <p>异常终止有3种方式,它们是:</p>
-<ol>
+<ol start="6">
 <li>调用 abort</li>
 <li>接到一个信号</li>
 <li>最后一个线程对取消请求做出响应</li>
@@ -503,14 +503,14 @@
 <p>退出函数</p>
 </blockquote>
 <p>3个函数用于正常终止一个程序:_exit和_Exit立即进入内核,exit则先执行一些清理处理,然后返回内核。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">exit</span><span class="params">(<span class="keyword">int</span> status)</span></span>; </div><div class="line"><span class="keyword">void</span> _Exit(<span class="keyword">int</span> status);</div><div class="line"> </div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">void</span> _exit(<span class="keyword">int</span> status);</div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">exit</span><span class="params">(<span class="keyword">int</span> status)</span></span>; </span><br><span class="line"><span class="keyword">void</span> _Exit(<span class="keyword">int</span> status);</span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> _exit(<span class="keyword">int</span> status);</span><br></pre></td></tr></table></figure>
 <p><code>exit</code>函数总是执行一个标准I/O库的清理关闭操作:对于所有打开流调用fclose函数。这造成输出缓冲中的所有数据都被冲洗(写到文件上)</p>
 <p>3个退出函数都带一个整型参数,称为终止状态(或退出状态, exit status)。大多数UNIX系统 shell都提供检查进程终止状态的方法。</p>
 <blockquote>
 <p>函数atexit</p>
 </blockquote>
 <p>按照ISO C的规定,一个进程可以登记多至32个函数,这些函数将由exit自动调用。我们称这些函数为终止处理程序( exit handler),并调用 atexit函数来登记这些函数。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdlib.h&gt;</div><div class="line"></div><div class="line">int atexit(void (*func)(void));</div><div class="line"></div><div class="line">// Returns: 0 if OK, nonzero on error</div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">int atexit(void (*func)(void));</span><br><span class="line"></span><br><span class="line"><span class="comment">// Returns: 0 if OK, nonzero on error</span></span><br></pre></td></tr></table></figure>
 <p>其中, <code>atexit</code>的参数是一个函数地址,当调用此函数时无需向它传递任何参数,也不期望它返回一个值。exit调用这些函数的顺序与它们登记时候的顺序相反。同一函数如若登记多次也会被调用多次。</p>
 <p>exit首先调用各终止程序，然后关闭（通过fclose）所有打开的流</p>
 <p><img src="https://data2.liuin.cn/2018-04-30-15250569958373.jpg" alt=""></p>
@@ -539,17 +539,17 @@
 <li>calloc,为指定数量指定长度的对象分配存储空间。该空间中的每一位(bit)都初始化为0</li>
 <li>realloc,增加或减少以前分配区的长度。当增加长度时,可能需将以前分配区的内容移到另一个足够大的区域,以便在尾端提供增加的存储区,而新增区域内的初始值则不确定。</li>
 </ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> *<span class="title">malloc</span><span class="params">(<span class="keyword">size_t</span> size)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> *<span class="title">calloc</span><span class="params">(<span class="keyword">size_t</span> nobj, <span class="keyword">size_t</span> size)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> *<span class="title">realloc</span><span class="params">(<span class="keyword">void</span> *ptr, <span class="keyword">size_t</span> newsize)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// All three return: non-null pointer if OK, NULL on error</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">free</span><span class="params">(<span class="keyword">void</span> *ptr)</span></span>;</div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">malloc</span><span class="params">(<span class="keyword">size_t</span> size)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">calloc</span><span class="params">(<span class="keyword">size_t</span> nobj, <span class="keyword">size_t</span> size)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">realloc</span><span class="params">(<span class="keyword">void</span> *ptr, <span class="keyword">size_t</span> newsize)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// All three return: non-null pointer if OK, NULL on error</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">free</span><span class="params">(<span class="keyword">void</span> *ptr)</span></span>;</span><br></pre></td></tr></table></figure>
 <p>这3个分配函数所返回的指针一定是适当对齐的,使其可用于任何数据对象。</p>
 <p>函数free释放ptr指向的存储空间。被释放的空间通常被送入可用存储区池,以后,可在用上述3个分配函数时再分配。</p>
 <p>这些分配例程通常用sbrk(2)系统调用实现。该系统调用扩充(或缩小)进程的堆。</p>
 <h2 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h2><p>环境字符串的形式是 <code>name=value</code></p>
 <p>UNIX内核并不查看这些字符串,它们的解释完全取决于各个应用程序。</p>
 <p>可以使用getenv函数获得环境变量的值：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">getenv</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to value associated with name, NULL if not found</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">char</span> *<span class="title">getenv</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name)</span></span>; </span><br><span class="line"></span><br><span class="line"><span class="comment">// Returns: pointer to value associated with name, NULL if not found</span></span><br></pre></td></tr></table></figure>
 <p>此函数返回一个指针,它指向<code>name=value</code>字符串中的 value。</p>
 <p>设置环境变量的三个函数:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">putenv</span><span class="params">(<span class="keyword">char</span> *str)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if OK, nonzero on error</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setenv</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">const</span> <span class="keyword">char</span> *value, <span class="keyword">int</span> rewrite)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">unsetenv</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt; </span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">putenv</span><span class="params">(<span class="keyword">char</span> *str)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Returns: 0 if OK, nonzero on error</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">setenv</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">const</span> <span class="keyword">char</span> *value, <span class="keyword">int</span> rewrite)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">unsetenv</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name)</span></span>; </span><br><span class="line"></span><br><span class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></span><br></pre></td></tr></table></figure>
 <p>用法：</p>
 <ul>
 <li>putenv取形式为<code>name=value</code>的字符串,将其放到环境表中。如果name已经存在,则先删除其原来的定义。</li>
@@ -559,9 +559,9 @@
 <p>环境表(指向实际<code>name=value</code>字符串的指针数组)和环境字符串通常存放在进程存储空间的顶部(栈之上)。删除一个字符串很简单——只要先在环境表中找到该指针,然后将所有后续指针都向环境表首部顺次移动一个位置。但是增加一个字符串或修改一个现有的字符串就困难得多。环境表和环境字符串通常占用的是进程地址空间的顶部,所以它不能再向高地址方向(向上)扩展:同时也不能移动在它之下的各栈帧,所以它也不能向低地址方向(向下)扩展。两者组合使得该空间的长度不能再增加。</p>
 <h2 id="函数setjmp和longjmp"><a href="#函数setjmp和longjmp" class="headerlink" title="函数setjmp和longjmp"></a>函数setjmp和longjmp</h2><p>在C中,goto语句是不能跨越函数的,而执行这种类型跳转功能的是函数 setjmp和1ongjmp两个函数对于处理发生在很深层嵌套函数调用中的出错情况是非常有用的</p>
 <p>setjmp和1ongjmp函数可以看成一个非局部goto函数。非局部指的是这不是由普通的C语言goto语句在一个函数内实施的跳转,而是在栈上跳过若于调用帧,返回到当前函数调用路径上的某一个函数中。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;setjmp.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setjmp</span><span class="params">(jmp_buf env)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Returns: 0 if called directly, nonzero if returning from a call to longjmp</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">longjmp</span><span class="params">(jmp_buf env, <span class="keyword">int</span> val)</span></span>;</div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;setjmp.h&gt; </span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">setjmp</span><span class="params">(jmp_buf env)</span></span>; </span><br><span class="line"></span><br><span class="line"><span class="comment">// Returns: 0 if called directly, nonzero if returning from a call to longjmp</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">longjmp</span><span class="params">(jmp_buf env, <span class="keyword">int</span> val)</span></span>;</span><br></pre></td></tr></table></figure>
 <h2 id="函数getrlimit和setrlimit"><a href="#函数getrlimit和setrlimit" class="headerlink" title="函数getrlimit和setrlimit"></a>函数getrlimit和setrlimit</h2><p>每个进程都有一组资源限制,其中一些可以用getrlimit和 setrlimit函数查询和更改。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/resource.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getrlimit</span><span class="params">(<span class="keyword">int</span> resource, <span class="keyword">struct</span> rlimit *rlptr)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setrlimit</span><span class="params">(<span class="keyword">int</span> resource, <span class="keyword">const</span> <span class="keyword">struct</span> rlimit *rlptr)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/resource.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getrlimit</span><span class="params">(<span class="keyword">int</span> resource, struct rlimit *rlptr)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">setrlimit</span><span class="params">(<span class="keyword">int</span> resource, <span class="keyword">const</span> struct rlimit *rlptr)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -619,7 +619,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年10月4日 - 14时10分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -738,7 +738,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -851,7 +851,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -866,7 +866,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

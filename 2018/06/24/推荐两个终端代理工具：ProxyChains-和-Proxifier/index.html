@@ -116,7 +116,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://data3.liuin.cn/2018-06-24-15298257914991.jpg">
 <meta property="og:image" content="http://data3.liuin.cn/2018-06-24-15298261213304.jpg">
-<meta property="og:updated_time" content="2018-09-16T12:55:38.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="推荐两个终端代理工具：ProxyChains 和 Proxifier">
 <meta name="twitter:description" content="Shadowsocks代理是sock5代理，但是我们的终端中的很多应用都是不走sock5代理的，这个时候就需要一些工具来让这些数据通过sock5进行传输，这里推荐两个Linux和Mac中常用的工具：ProxyChains 和 Proxifier">
@@ -263,12 +263,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -388,7 +388,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-24T15:10:19+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-24T15:10:19+00:00">
                 2018-06-24
               </time>
             
@@ -453,7 +453,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  703 字
+                  710 字
                 </span>
               
 
@@ -481,15 +481,15 @@
         <p>Shadowsocks代理是sock5代理，但是我们的终端中的很多应用都是不走sock5代理的，这个时候就需要一些工具来让这些数据通过sock5进行传输，这里推荐两个Linux和Mac中常用的工具：ProxyChains 和 Proxifier</p>
 <a id="more"></a>
 <h2 id="ProxyChains"><a href="#ProxyChains" class="headerlink" title="ProxyChains"></a>ProxyChains</h2><p>ProxyChains的功能就是Hook 了 sockets 相关的操作，让普通程序的 sockets 数据走 SOCKS/HTTP 代理。其在实现部分主要是重写了部分socket函数。</p>
-<p>其能够在同一条代理链中整合不同类型的代理：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">your_host &lt;--&gt;socks5 &lt;--&gt; http &lt;--&gt; socks4 &lt;--&gt; target_host</div></pre></td></tr></table></figure></p>
+<p>其能够在同一条代理链中整合不同类型的代理：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">your_host &lt;--&gt;socks5 &lt;--&gt; http &lt;--&gt; socks4 &lt;--&gt; target_host</span><br></pre></td></tr></table></figure></p>
 <h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><blockquote>
 <p>源码编译安装</p>
 </blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">// 下载源码</div><div class="line">$ git <span class="built_in">clone</span> https://github.com/rofl0r/proxychains-ng</div><div class="line">// 编译</div><div class="line">$ ./configure --prefix=/usr --sysconfdir=/etc</div><div class="line">$ make</div><div class="line">$ make install</div><div class="line">$ make install-config (安装proxychains.conf配置文件)</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 下载源码</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/rofl0r/proxychains-ng</span><br><span class="line">// 编译</span><br><span class="line">$ ./configure --prefix=/usr --sysconfdir=/etc</span><br><span class="line">$ make</span><br><span class="line">$ make install</span><br><span class="line">$ make install-config (安装proxychains.conf配置文件)</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>Mac 安装</p>
 </blockquote>
-<p>因为macOS 10.11 后开启了 <a href="https://support.apple.com/zh-cn/ht204899" target="_blank" rel="external">SIP（System Integrity Protection）</a> 会导致命令行下 proxychains-ng 代理的模式失效。所以要安装ProxyChains首先需要关闭SIP功能</p>
+<p>因为macOS 10.11 后开启了 <a href="https://support.apple.com/zh-cn/ht204899" target="_blank" rel="noopener">SIP（System Integrity Protection）</a> 会导致命令行下 proxychains-ng 代理的模式失效。所以要安装ProxyChains首先需要关闭SIP功能</p>
 <ul>
 <li>部分关闭SIP</li>
 </ul>
@@ -499,16 +499,16 @@
 </ul>
 <p>重启Mac，按住Option键进入启动盘选择模式，再按⌘ + R进入Recovery模式。<br>实用工具（Utilities）-&gt; 终端（Terminal）。<br>输入命令<code>csrutil disable</code>运行。<br>重启进入系统后，终端里输入 csrutil status，结果中如果有 System Integrity Protection status:disabled. 则说明关闭成功。</p>
 <p>关闭以后通过<code>brew</code>进行安装就行了</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ brew install proxychains-ng</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ brew install proxychains-ng</span><br></pre></td></tr></table></figure>
 <h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>proxychains-ng默认配置文件名为proxychains.conf</p>
 <ul>
 <li>通过源代码编译安装的默认为/etc/proxychains.conf。</li>
 <li>Mac下用<code>Homebrew</code>安装的默认为/usr/local/etc/proxychains.conf</li>
 </ul>
 <p>配置只需要将代理加入[ProxyList]中：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[ProxyList]</div><div class="line">socks5  127.0.0.1 1086</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[ProxyList]</span><br><span class="line">socks5  127.0.0.1 1086</span><br></pre></td></tr></table></figure>
 <h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>在你需要进行代理的页面前面加上<code>proxychains4</code>即可</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ proxhchains4 curl www.google.com</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ proxhchains4 curl www.google.com</span><br></pre></td></tr></table></figure>
 <h2 id="Proxifier"><a href="#Proxifier" class="headerlink" title="Proxifier"></a>Proxifier</h2><p>Mac用户可能会觉得关闭SIP会造成一些安全隐患，这个时候可以使用Mac下的一个工具：Proxifier</p>
 <p>Proxifier可以设定Mac上不同的应用走不同的代理，我们把我们平常需要的一些终端应用设置走指定的代理就行了</p>
 <h3 id="添加代理"><a href="#添加代理" class="headerlink" title="添加代理"></a>添加代理</h3><p>打开Proxifier，打开<code>Proxies-&gt;Add</code>，输入地址和端口号添加对应的sock5代理</p>
@@ -574,7 +574,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年9月16日 - 20时09分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -693,7 +693,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -806,7 +806,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -821,7 +821,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

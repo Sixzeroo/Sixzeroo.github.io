@@ -117,7 +117,7 @@
 <meta property="og:image" content="http://oeziv5rwi.bkt.clouddn.com/2016/11/16/001.PNG">
 <meta property="og:image" content="http://oeziv5rwi.bkt.clouddn.com/2016/11/16/002.PNG">
 <meta property="og:image" content="http://oeziv5rwi.bkt.clouddn.com/2016/11/16/003.PNG">
-<meta property="og:updated_time" content="2017-03-30T11:24:21.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:57.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="初次打codeforces">
 <meta name="twitter:description" content="今天凌晨开始了的第一把CF（并不是TC的CF），第一次做全英文的题目，第一次在国外的的平台上比赛，还是有一些鸡冻的。昨天大致的看了看codeforces，感觉确实比国内的一些平台做得好（在比赛中的体验也确实是这样），特别是看到传说中的tourist大神，看到他的rating曲线，感觉好牛逼啊。。。。。。">
@@ -264,12 +264,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -389,7 +389,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-16T19:01:39+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-16T19:01:39+00:00">
                 2016-11-16
               </time>
             
@@ -454,7 +454,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1,318 字
+                  1,371 字
                 </span>
               
 
@@ -499,10 +499,10 @@
 <h3 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h3><ul>
 <li>因为后面给的第二种类型的法术是递增的（包括获得的药水数量和消耗的体力），这样我们就可以使用二分查找（upper_bound函数）找到，进行第一种类型的法术选择以后的第二种的最优策略，这样时间复杂度就是O(m*logk)了</li>
 </ul>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;queue&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;utility&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> MAXSIZE 200005</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> in(a) scanf(<span class="meta-string">"%d"</span>,&amp;a)</span></div><div class="line"></div><div class="line"><span class="keyword">long</span> <span class="keyword">long</span> n,m,k,x,s;</div><div class="line"><span class="keyword">long</span> <span class="keyword">long</span> a[MAXSIZE],b[MAXSIZE],c[MAXSIZE],d[MAXSIZE];</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">long</span> <span class="keyword">long</span> i;</div><div class="line">    <span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;n&gt;&gt;m&gt;&gt;k)</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">cin</span>&gt;&gt;x&gt;&gt;s;  <span class="comment">//数据输入</span></div><div class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;m;i++)</div><div class="line">            <span class="built_in">cin</span>&gt;&gt;a[i];</div><div class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;m;i++)</div><div class="line">            <span class="built_in">cin</span>&gt;&gt;b[i];</div><div class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;k;i++)</div><div class="line">            <span class="built_in">cin</span>&gt;&gt;c[i];</div><div class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;k;i++)</div><div class="line">            <span class="built_in">cin</span>&gt;&gt;d[i];</div><div class="line"></div><div class="line">        a[m]=x;</div><div class="line">        b[m]=<span class="number">0</span>;</div><div class="line">        <span class="keyword">long</span> <span class="keyword">long</span> imin,o,e;</div><div class="line">        imin=n*x;</div><div class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;=m;i++)</div><div class="line">        &#123;</div><div class="line">            o=s-b[i];</div><div class="line">            <span class="keyword">if</span>(o&lt;<span class="number">0</span>)</div><div class="line">                <span class="keyword">continue</span>;</div><div class="line">            e=upper_bound(d,d+k,o)-d;</div><div class="line">            <span class="keyword">if</span>(e)</div><div class="line">                imin=min(a[i]*(n-c[e<span class="number">-1</span>]),imin);    </div><div class="line">            <span class="keyword">else</span>     <span class="comment">//注意不进行第二次选择的情况</span></div><div class="line">                imin=min(a[i]*n,imin);</div><div class="line">        &#125;</div><div class="line">        <span class="built_in">cout</span>&lt;&lt;imin&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    solve();</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAXSIZE 200005</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> in(a) scanf(<span class="meta-string">"%d"</span>,&amp;a)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> n,m,k,x,s;</span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> a[MAXSIZE],b[MAXSIZE],c[MAXSIZE],d[MAXSIZE];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">long</span> i;</span><br><span class="line">    <span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;n&gt;&gt;m&gt;&gt;k)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cin</span>&gt;&gt;x&gt;&gt;s;  <span class="comment">//数据输入</span></span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;m;i++)</span><br><span class="line">            <span class="built_in">cin</span>&gt;&gt;a[i];</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;m;i++)</span><br><span class="line">            <span class="built_in">cin</span>&gt;&gt;b[i];</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;k;i++)</span><br><span class="line">            <span class="built_in">cin</span>&gt;&gt;c[i];</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;k;i++)</span><br><span class="line">            <span class="built_in">cin</span>&gt;&gt;d[i];</span><br><span class="line"></span><br><span class="line">        a[m]=x;</span><br><span class="line">        b[m]=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">long</span> imin,o,e;</span><br><span class="line">        imin=n*x;</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;=m;i++)</span><br><span class="line">        &#123;</span><br><span class="line">            o=s-b[i];</span><br><span class="line">            <span class="keyword">if</span>(o&lt;<span class="number">0</span>)</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            e=upper_bound(d,d+k,o)-d;</span><br><span class="line">            <span class="keyword">if</span>(e)</span><br><span class="line">                imin=min(a[i]*(n-c[e<span class="number">-1</span>]),imin);    </span><br><span class="line">            <span class="keyword">else</span>     <span class="comment">//注意不进行第二次选择的情况</span></span><br><span class="line">                imin=min(a[i]*n,imin);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;imin&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    solve();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="吐槽"><a href="#吐槽" class="headerlink" title="吐槽"></a>吐槽</h3><ul>
 <li>在cf的比赛中，比赛时提交的程序只进行一部分测试点的测试，比赛结束以后重新验证测试点会多好多</li>
-<li>初始rating积分是1500，我竟然少了几十分。。。。听说这个积分的计算用到的是一个叫<em>Elo rating system</em>的东西，看起来好高大上的样子。（<a href="https://en.wikipedia.org/wiki/Elo_rating_system" target="_blank" rel="external">维基的解释</a>）</li>
+<li>初始rating积分是1500，我竟然少了几十分。。。。听说这个积分的计算用到的是一个叫<em>Elo rating system</em>的东西，看起来好高大上的样子。（<a href="https://en.wikipedia.org/wiki/Elo_rating_system" target="_blank" rel="noopener">维基的解释</a>）</li>
 </ul>
 
       
@@ -561,7 +561,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2017年3月30日 - 19时03分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -682,7 +682,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -795,7 +795,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -810,7 +810,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

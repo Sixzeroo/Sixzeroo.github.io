@@ -127,7 +127,7 @@
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-05-15255061066356.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-05-15255076147395.jpg">
 <meta property="og:image" content="https://data2.liuin.cn/2018-05-05-15255076954042.jpg">
-<meta property="og:updated_time" content="2018-05-05T08:09:10.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="APUE 终端I&#x2F;O">
 <meta name="twitter:description" content="《UNIX环境高级编程》第18章 终端I/O 笔记">
@@ -274,12 +274,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -399,7 +399,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-05T10:53:52+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-05T10:53:52+00:00">
                 2018-05-05
               </time>
             
@@ -464,7 +464,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2,202 字
+                  2,240 字
                 </span>
               
 
@@ -509,7 +509,7 @@
 <p>大多数UNIX系统在一个称为终端行规程(terminal linediscipline)的模块中进行全部的规范处理。可以将这个模块设想成一个盒子,<strong>位于内核通用读、写函数和实际设备驱动程序之间</strong>。</p>
 <p><img src="https://data2.liuin.cn/2018-05-05-15255057246778.jpg" alt=""></p>
 <p>由于将规范处理分离为单独的模块,所有的终端驱动程序都能够一致地支持规范处理。</p>
-<p>所有可以检测和更改的终端设备特性都包含在termios结构中。该结构定义在头文件<termios.h>中,本章使用这一头文件。</termios.h></p>
+<p>所有可以检测和更改的终端设备特性都包含在termios结构中。该结构定义在头文件&lt;termios.h&gt;中,本章使用这一头文件。</p>
 <p><img src="https://data2.liuin.cn/2018-05-05-15255057581968.jpg" alt=""></p>
 <p>各个标志位的作用：</p>
 <ul>
@@ -531,7 +531,7 @@
 <p>在POSIX的11个特殊字符中,其中有9个字符的值可以任意更改。不能更改的两个特殊字符是换行符和回车符(分别是\n和\r),也可能是STOP和START字符(依赖于实现)。为了更改,只需要修改termios结构中c_cc数组的相应项。该数组中的元素都用名字作为下标进行引用,每个名字都以字母V开头。</p>
 <p>对各个字符的详细解释可见原书内容</p>
 <h2 id="获得和设置终端属性"><a href="#获得和设置终端属性" class="headerlink" title="获得和设置终端属性"></a>获得和设置终端属性</h2><p>为了获得和设置 termios结构,可以调用 tcgetattr和 tcsetattr函数。这样就可以检测和修改各种终端选项标志和特殊字符,使终端按我们所希望的方式进行操作。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;termios.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcgetattr</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">struct</span> termios *termptr)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcsetattr</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> opt, <span class="keyword">const</span> <span class="keyword">struct</span> termios *termptr)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;termios.h&gt; </span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcgetattr</span><span class="params">(<span class="keyword">int</span> fd, struct termios *termptr)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcsetattr</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> opt, <span class="keyword">const</span> struct termios *termptr)</span></span>; </span><br><span class="line"></span><br><span class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></span><br></pre></td></tr></table></figure>
 <p>tcsetattr的参数opt使我们可以指定在什么时候新的终端属性才起作用。opt可以指定为下列常量中的一个:</p>
 <ul>
 <li>TCSANOW   更改立即发生。</li>
@@ -542,14 +542,14 @@
 <h2 id="stty命令"><a href="#stty命令" class="headerlink" title="stty命令"></a>stty命令</h2><p>上节说明的所有选项都可以被检查和更改:在程序中用tcgetattr和tcsetattr函数进行检查和更改;在命令行(或shell脚本)中用stty(1)命令进行检查和更改。简单地说,stty(1)命令就是终端I/O所列的前6个函数的接口。</p>
 <h2 id="波特率函数"><a href="#波特率函数" class="headerlink" title="波特率函数"></a>波特率函数</h2><p>术语波特率(baud rate)是一个历史沿用的术语,现在它指的是“位/秒”(bit per second)。虽然大多数终端设备对输入和输出使用同一波特率,但是只要硬件许可,可以将它们设置为两个不同值。</p>
 <p>设置波特率函数：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;termios.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="keyword">speed_t</span> cfgetispeed(<span class="keyword">const</span> <span class="keyword">struct</span> termios *termptr); </div><div class="line"><span class="keyword">speed_t</span> cfgetospeed(<span class="keyword">const</span> <span class="keyword">struct</span> termios *termptr); </div><div class="line"></div><div class="line"><span class="comment">// Both return: baud rate value </span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">cfsetispeed</span><span class="params">(<span class="keyword">struct</span> termios *termptr, <span class="keyword">speed_t</span> speed)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">cfsetospeed</span><span class="params">(<span class="keyword">struct</span> termios *termptr, <span class="keyword">speed_t</span> speed)</span></span>; </div><div class="line"></div><div class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;termios.h&gt; </span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">speed_t</span> cfgetispeed(<span class="keyword">const</span> struct termios *termptr); </span><br><span class="line"><span class="keyword">speed_t</span> cfgetospeed(<span class="keyword">const</span> struct termios *termptr); </span><br><span class="line"></span><br><span class="line"><span class="comment">// Both return: baud rate value </span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">cfsetispeed</span><span class="params">(struct termios *termptr, <span class="keyword">speed_t</span> speed)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">cfsetospeed</span><span class="params">(struct termios *termptr, <span class="keyword">speed_t</span> speed)</span></span>; </span><br><span class="line"></span><br><span class="line"><span class="comment">// Both return: 0 if OK, −1 on error</span></span><br></pre></td></tr></table></figure>
 <h2 id="行控制函数"><a href="#行控制函数" class="headerlink" title="行控制函数"></a>行控制函数</h2><p>下列4个函数提供了终端设备的行控制能力：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;termios.h&gt; </span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcdrain</span><span class="params">(<span class="keyword">int</span> fd)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcflow</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> action)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcflush</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> <span class="built_in">queue</span>)</span></span>; </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcsendbreak</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> duration)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// All four return: 0 if OK, −1 on error</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;termios.h&gt; </span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcdrain</span><span class="params">(<span class="keyword">int</span> fd)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcflow</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> action)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcflush</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> <span class="built_in">queue</span>)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">tcsendbreak</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> duration)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// All four return: 0 if OK, −1 on error</span></span><br></pre></td></tr></table></figure>
 <p>tcdrain函数等待所有输出都被传递。<br>tcflow函数用于对输入和输出流控制进行控制。<br>tcflush函数冲洗(抛弃)输入缓冲区(其中的数据是终端驱动程序已接收到,但用户程序尚未读取的)或输出缓冲区(其中的数据是用户程序已经写入,但尚未被传递的)。<br>tcsendbreak函数在一个指定的时间区间内发送连续的0值位流。</p>
 <h2 id="终端标识"><a href="#终端标识" class="headerlink" title="终端标识"></a>终端标识</h2><p>历史上,在大多数UNIX系统版本中,控制终端的名字一直是/dev/tty。POSIX.1提供了个运行时函数,可用来确定控制终端的名字。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">ctermid</span><span class="params">(<span class="keyword">char</span> *ptr)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to name of controlling terminal on success, pointer to empty string on error</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">char</span> *<span class="title">ctermid</span><span class="params">(<span class="keyword">char</span> *ptr)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Returns: pointer to name of controlling terminal on success, pointer to empty string on error</span></span><br></pre></td></tr></table></figure>
 <p>另外还有两个UNIX系统比较感兴趣的函数: isatty和 ttyname。如果文件描述符引用个终端设备,则 isatty返回真。 ttyname返回的是在该文件描述符上打开的终端设备的路径名</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">isatty</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: 1 (true) if terminal device, 0 (false) otherwise</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span> *<span class="title">ttyname</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// Returns: pointer to pathname of terminal, NULL on error</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">isatty</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Returns: 1 (true) if terminal device, 0 (false) otherwise</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">char</span> *<span class="title">ttyname</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Returns: pointer to pathname of terminal, NULL on error</span></span><br></pre></td></tr></table></figure>
 <h2 id="规范模式"><a href="#规范模式" class="headerlink" title="规范模式"></a>规范模式</h2><p>规范模式很简单:发一个读请求,<strong>当一行已经输入后,终端驱动程序即返回</strong>。以下几个条件造成读返回。</p>
 <ol>
 <li>所请求的字节数已读到时,读返回。无需读一个完整的行。如果读了部分行,那么也不会丢失任何信息,下一次读从前一次读的停止处开始。</li>
@@ -621,7 +621,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2018年5月5日 - 16时05分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -740,7 +740,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -853,7 +853,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -868,7 +868,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

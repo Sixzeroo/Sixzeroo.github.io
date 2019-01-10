@@ -114,7 +114,7 @@
 <meta property="og:site_name" content="Sixzeroo">
 <meta property="og:description" content="比赛链接：http://codeforces.com/contest/805">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-05-13T07:56:53.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Codeforces Round #411 (Div. 2) 题解">
 <meta name="twitter:description" content="比赛链接：http://codeforces.com/contest/805">
@@ -260,12 +260,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -385,7 +385,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-05T00:56:40+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-05T00:56:40+00:00">
                 2017-05-05
               </time>
             
@@ -450,7 +450,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  881 字
+                  933 字
                 </span>
               
 
@@ -475,27 +475,27 @@
       
 
       
-        <p>比赛链接：<a href="http://codeforces.com/contest/805" target="_blank" rel="external">http://codeforces.com/contest/805</a></p>
+        <p>比赛链接：<a href="http://codeforces.com/contest/805" target="_blank" rel="noopener">http://codeforces.com/contest/805</a></p>
 <a id="more"></a>
 <h2 id="A-Fake-NP"><a href="#A-Fake-NP" class="headerlink" title="A Fake NP"></a>A Fake NP</h2><h3 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h3><p>给出一个范围[l,r]，对于所有的从l到r的数的因子数中出现最多的因子数</p>
 <h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>可以发现除了范围内只有一个数，其他情况2都是出现次数最多的因子数</p>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> l,r;</div><div class="line">	<span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;l&gt;&gt;r)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">if</span>(l==r)</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;l&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">		<span class="keyword">else</span></div><div class="line">			<span class="built_in">cout</span>&lt;&lt;<span class="string">"2"</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> l,r;</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;l&gt;&gt;r)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(l==r)</span><br><span class="line">			<span class="built_in">cout</span>&lt;&lt;l&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			<span class="built_in">cout</span>&lt;&lt;<span class="string">"2"</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="B-3-palindrome"><a href="#B-3-palindrome" class="headerlink" title="B 3-palindrome"></a>B 3-palindrome</h2><h3 id="题意-1"><a href="#题意-1" class="headerlink" title="题意"></a>题意</h3><p>要求你创建一个仅含有a、b、c三个字符的长度为n的序列，要求序列中不含有长度为3的回文串,，并且要求含有c字符的数目尽可能少。</p>
 <h3 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h3><p>“aabb”这样的字符创不断循环就不会含有长度为3的回文串</p>
-<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">olve()</div><div class="line">&#123;</div><div class="line">	<span class="built_in">string</span> st=<span class="string">"aabb"</span>;</div><div class="line">	<span class="keyword">int</span> n;</div><div class="line">	<span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;n)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">int</span> d=n/<span class="number">4</span>;</div><div class="line">		n%=<span class="number">4</span>;</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;d;i++)</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;st;</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;st[i];</div><div class="line">		<span class="built_in">cout</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">olve()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">string</span> st=<span class="string">"aabb"</span>;</span><br><span class="line">	<span class="keyword">int</span> n;</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;n)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">int</span> d=n/<span class="number">4</span>;</span><br><span class="line">		n%=<span class="number">4</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;d;i++)</span><br><span class="line">			<span class="built_in">cout</span>&lt;&lt;st;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">			<span class="built_in">cout</span>&lt;&lt;st[i];</span><br><span class="line">		<span class="built_in">cout</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="C-Find-Amir"><a href="#C-Find-Amir" class="headerlink" title="C Find Amir"></a>C Find Amir</h2><h3 id="题意-2"><a href="#题意-2" class="headerlink" title="题意"></a>题意</h3><p>给出编号为1到n的n个点，规定两点(i,j)之间的权值为(i+j)mod(n+1)，求将所有点连接起来的最小代价</p>
 <h3 id="题解-2"><a href="#题解-2" class="headerlink" title="题解"></a>题解</h3><ul>
 <li>最小生成树问题，用贪心思想，发现将第1小的点和第1大的点配对，第2小的点和第2大的点配对，。。。（以此类推可以配对n/2条边）,这样的每次配对的代价都是0</li>
 <li>这样两两结对以后（奇数情况下会多出一个点），再将第i大点和第i+1小的点配对，这种配对的每次代价为1。这样就可以生成一棵最小生成树，总体的代价就是后面的配对产生的代价：偶数时候为(n/2-1)，奇数的时候是n/2</li>
 </ul>
-<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> n;</div><div class="line">	<span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;n)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">if</span>(n%<span class="number">2</span>)</div><div class="line">			<span class="built_in">cout</span>&lt;&lt;n/<span class="number">2</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">		<span class="keyword">else</span></div><div class="line">			<span class="built_in">cout</span>&lt;&lt;n/<span class="number">2</span><span class="number">-1</span>&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> n;</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;n)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(n%<span class="number">2</span>)</span><br><span class="line">			<span class="built_in">cout</span>&lt;&lt;n/<span class="number">2</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			<span class="built_in">cout</span>&lt;&lt;n/<span class="number">2</span><span class="number">-1</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="D-Minimum-number-of-steps"><a href="#D-Minimum-number-of-steps" class="headerlink" title="D Minimum number of steps"></a>D Minimum number of steps</h2><h3 id="题意-3"><a href="#题意-3" class="headerlink" title="题意"></a>题意</h3><p>给出一个只含有字符a、b的字符串，规定一次操作为将原字符串的一个’ab’子串转换成’bba’，求转换成最终无法转换的状态要进行的操作次数（对10^9+7取模）</p>
 <h3 id="题解-3"><a href="#题解-3" class="headerlink" title="题解"></a>题解</h3><ul>
 <li>操作完的最终状态应该是所有的字符a都换到了字符串的最后，同时每次操作我们可以看成a向后移动一位的过程，这样的话我们可以计算每个字符a到字符串最后全是a的部分的距离来对于这个a要进行的操作次数。</li>
 <li>但是每次a向后移动一位对前面的a是有影响的————每向后移动一位对于前面的a相当于增加了一个b，也就是增加了前面的a到字符串最后的距离。这样我们可以从后往前进行考虑来统一这种影响。</li>
 <li>从后往前扫描，用tmp记录中间b的个数，遇到a时累加到ans中同时对tmp加倍（相当于已经将当前的a转移到了最后，这样对于前面的a来说就是增加了tmp个b）。最后的答案就是所有操作的代价ans</li>
 </ul>
-<h3 id="代码-3"><a href="#代码-3" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="built_in">string</span> a;</div><div class="line">	<span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;a)</div><div class="line">	&#123;</div><div class="line">		ll tmp=<span class="number">0</span>,ans=<span class="number">0</span>,num=<span class="number">0</span>;</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=a.size()<span class="number">-1</span>;i&gt;=<span class="number">0</span>;i--)</div><div class="line">		&#123;</div><div class="line">			<span class="keyword">if</span>(a[i]==<span class="string">'a'</span>)</div><div class="line">			&#123;</div><div class="line">				ans=(ans+tmp)%MOD;</div><div class="line">				tmp=(<span class="number">2</span>*tmp)%MOD;</div><div class="line">			&#125;</div><div class="line">			<span class="keyword">else</span></div><div class="line">				tmp++;</div><div class="line">		&#125;</div><div class="line">		<span class="built_in">cout</span>&lt;&lt;ans&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="代码-3"><a href="#代码-3" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">string</span> a;</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;a)</span><br><span class="line">	&#123;</span><br><span class="line">		ll tmp=<span class="number">0</span>,ans=<span class="number">0</span>,num=<span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=a.size()<span class="number">-1</span>;i&gt;=<span class="number">0</span>;i--)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(a[i]==<span class="string">'a'</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				ans=(ans+tmp)%MOD;</span><br><span class="line">				tmp=(<span class="number">2</span>*tmp)%MOD;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">				tmp++;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">cout</span>&lt;&lt;ans&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><ul>
 <li>看清题意再敲代码，B题就是因为误以为是长度&gt;=3的回文子串而导致错了两发</li>
 <li>提高debug水平，D题思路一直对但是因为else分支里面的一个错误导致迟迟没有AC</li>
@@ -557,7 +557,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2017年5月13日 - 15时05分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -676,7 +676,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -789,7 +789,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -804,7 +804,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 

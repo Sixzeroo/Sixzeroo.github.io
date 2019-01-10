@@ -114,7 +114,7 @@
 <meta property="og:site_name" content="Sixzeroo">
 <meta property="og:description" content="平时在使用Git的时候，大多会有这种情况：因为在初始化git的时候没有考虑周全导致有些不需要的文件已经被被追踪，或者想不让在某次提交以后一些文件不被追踪（比如说一些涉及隐私的配置文件）。这里提供一些解决方案">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-11-24T17:51:23.000Z">
+<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Git 停止追踪文件">
 <meta name="twitter:description" content="平时在使用Git的时候，大多会有这种情况：因为在初始化git的时候没有考虑周全导致有些不需要的文件已经被被追踪，或者想不让在某次提交以后一些文件不被追踪（比如说一些涉及隐私的配置文件）。这里提供一些解决方案">
@@ -260,12 +260,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-taiwan">
-          <a href="/categories/台湾" rel="section">
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-train"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            台湾
+            归档
           </a>
         </li>
       
@@ -385,7 +385,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-16T22:18:23+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-16T22:18:23+00:00">
                 2017-11-16
               </time>
             
@@ -484,8 +484,8 @@
 <li>匹配模式最后跟反斜杠（/）说明要忽略的是目录。</li>
 <li>要忽略指定模式以外的文件或目录，可以在模式前加上惊叹号（!）取反。</li>
 </ul>
-<h3 id="快捷设置-gitignore"><a href="#快捷设置-gitignore" class="headerlink" title="快捷设置.gitignore"></a>快捷设置.gitignore</h3><p>一般我们在项目中会有超多不需要放到git上面的东西，但是一个一个加入到.gitignore中是非常麻烦的。可以使用gitignore.io提供的API快速创建<br>设置别名：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git config --global alias.ignore &apos;!gi() &#123; curl -L -s https://www.gitignore.io/api/$@ ; &#125;; gi&apos;</div></pre></td></tr></table></figure></p>
-<p>这样以后创建项目的时候只需要结合你的开发环境通过关键进行快捷创建：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git ignore macOS &gt;&gt; .gitignore</div></pre></td></tr></table></figure></p>
+<h3 id="快捷设置-gitignore"><a href="#快捷设置-gitignore" class="headerlink" title="快捷设置.gitignore"></a>快捷设置.gitignore</h3><p>一般我们在项目中会有超多不需要放到git上面的东西，但是一个一个加入到.gitignore中是非常麻烦的。可以使用gitignore.io提供的API快速创建<br>设置别名：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global alias.ignore &apos;!gi() &#123; curl -L -s https://www.gitignore.io/api/$@ ; &#125;; gi&apos;</span><br></pre></td></tr></table></figure></p>
+<p>这样以后创建项目的时候只需要结合你的开发环境通过关键进行快捷创建：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git ignore macOS &gt;&gt; .gitignore</span><br></pre></td></tr></table></figure></p>
 <h2 id="忽略未追踪文件"><a href="#忽略未追踪文件" class="headerlink" title="忽略未追踪文件"></a>忽略未追踪文件</h2><p>在项目开发中可能会有一些新的不想追踪的文件生成，这个时候有两种处理方法：</p>
 <ol>
 <li>更新.gitignore 文件，这种操作能够使得其他人也忽略对这些文件的追踪</li>
@@ -554,7 +554,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2017年11月25日 - 01时11分
+	2019年1月6日 - 14时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -673,7 +673,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives">
+              <a href="/archives/">
             
                 <span class="site-state-item-count">189</span>
                 <span class="site-state-item-name">日志</span>
@@ -786,7 +786,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -801,7 +801,7 @@
       <span class="post-meta-item-text">共</span>
     
     <span title="Site words total count">
-      367.7k 字
+      380.1k 字
     </span>
   
 
