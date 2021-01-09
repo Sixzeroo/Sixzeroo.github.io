@@ -114,12 +114,12 @@
 <meta property="og:site_name" content="Sixzeroo">
 <meta property="og:description" content="运行程序的时候，即不想看那些快速飘过的日志信息，又不想只让光标在那闪，怎么办呢？加个进度条吧">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://ot40h275y.bkt.clouddn.com/story-writer/2017_7_31_1501480765636.jpg">
-<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
+<meta property="og:image" content="http://data1.liuin.cn/story-writer/2017_7_31_1501480765636.jpg">
+<meta property="og:updated_time" content="2021-01-09T04:15:43.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Python实现进度条显示">
 <meta name="twitter:description" content="运行程序的时候，即不想看那些快速飘过的日志信息，又不想只让光标在那闪，怎么办呢？加个进度条吧">
-<meta name="twitter:image" content="http://ot40h275y.bkt.clouddn.com/story-writer/2017_7_31_1501480765636.jpg">
+<meta name="twitter:image" content="http://data1.liuin.cn/story-writer/2017_7_31_1501480765636.jpg">
 
 
 
@@ -480,7 +480,7 @@
         <p>运行程序的时候，即不想看那些快速飘过的日志信息，又不想只让光标在那闪，怎么办呢？加个进度条吧</p>
 <a id="more"></a>
 <h2 id="tqdm"><a href="#tqdm" class="headerlink" title="tqdm"></a>tqdm</h2><p>tqdm是Python的一个进度条库，使用起来非常方便，上手十分容易</p>
-<p><img src="http://ot40h275y.bkt.clouddn.com/story-writer/2017_7_31_1501480765636.jpg" alt="运行效果"></p>
+<p><img src="http://data1.liuin.cn/story-writer/2017_7_31_1501480765636.jpg" alt="运行效果"></p>
 <p>最简单的方式是使用tqdm包裹一个迭代器，迭代器现在所处的进度就是后面显示的进度。</p>
 <h2 id="基于迭代的使用"><a href="#基于迭代的使用" class="headerlink" title="基于迭代的使用"></a>基于迭代的使用</h2><p>tqdm可以包裹任何迭代器，显示的进度就是当前迭代的进度<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">text = <span class="string">""</span></span><br><span class="line"><span class="keyword">for</span> char <span class="keyword">in</span> tqdm([<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>]):</span><br><span class="line">    text = text + char</span><br></pre></td></tr></table></figure></p>
 <h2 id="手动操作"><a href="#手动操作" class="headerlink" title="手动操作"></a>手动操作</h2><p>通过with来控制tqdm()的更新：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> tqdm(total=<span class="number">100</span>) <span class="keyword">as</span> pbar:</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):</span><br><span class="line">        pbar.update(<span class="number">10</span>)</span><br></pre></td></tr></table></figure></p>
@@ -543,7 +543,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2019年1月6日 - 14时01分
+	2021年1月9日 - 04时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>

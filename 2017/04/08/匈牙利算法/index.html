@@ -114,14 +114,14 @@
 <meta property="og:site_name" content="Sixzeroo">
 <meta property="og:description" content="今天实验室的“周末算法讲堂”轮到我啦，今天主要讲的是匈牙利算法，主要用来解决最大的二分匹配问题（当然还可以用最大流来解决）。下面把握准备过程的资料整理总结出来吧。（感觉这么点东西讲的东西比较少，实验室的大佬们别介意啊）后面会讲到在这个的基础上解决最大权完美匹配问题的KM算法">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oeziv5rwi.bkt.clouddn.com/2017/4/8/001.jpg">
-<meta property="og:image" content="http://oeziv5rwi.bkt.clouddn.com/2017/4/8/002.jpg">
-<meta property="og:image" content="http://oeziv5rwi.bkt.clouddn.com/2017/4/8/003.jpg">
-<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
+<meta property="og:image" content="http://data1.liuin.cn/2017/4/8/001.jpg">
+<meta property="og:image" content="http://data1.liuin.cn/2017/4/8/002.jpg">
+<meta property="og:image" content="http://data1.liuin.cn/2017/4/8/003.jpg">
+<meta property="og:updated_time" content="2021-01-09T04:14:51.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="匈牙利算法">
 <meta name="twitter:description" content="今天实验室的“周末算法讲堂”轮到我啦，今天主要讲的是匈牙利算法，主要用来解决最大的二分匹配问题（当然还可以用最大流来解决）。下面把握准备过程的资料整理总结出来吧。（感觉这么点东西讲的东西比较少，实验室的大佬们别介意啊）后面会讲到在这个的基础上解决最大权完美匹配问题的KM算法">
-<meta name="twitter:image" content="http://oeziv5rwi.bkt.clouddn.com/2017/4/8/001.jpg">
+<meta name="twitter:image" content="http://data1.liuin.cn/2017/4/8/001.jpg">
 
 
 
@@ -481,15 +481,15 @@
       
         <p>今天实验室的“周末算法讲堂”轮到我啦，今天主要讲的是匈牙利算法，主要用来解决最大的二分匹配问题（当然还可以用最大流来解决）。下面把握准备过程的资料整理总结出来吧。（感觉这么点东西讲的东西比较少，实验室的大佬们别介意啊）<br>后面会讲到在这个的基础上解决最大权完美匹配问题的KM算法</p>
 <a id="more"></a>
-<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><h3 id="二分图"><a href="#二分图" class="headerlink" title="二分图"></a>二分图</h3><p>如果图中点可以被分为两组，并且使得所有边都跨越组的边界，则这就是一个二分图。每一条边的两个端点都分别在两个组当中<br><img src="http://oeziv5rwi.bkt.clouddn.com/2017/4/8/001.jpg" alt="二分图"></p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><h3 id="二分图"><a href="#二分图" class="headerlink" title="二分图"></a>二分图</h3><p>如果图中点可以被分为两组，并且使得所有边都跨越组的边界，则这就是一个二分图。每一条边的两个端点都分别在两个组当中<br><img src="http://data1.liuin.cn/2017/4/8/001.jpg" alt="二分图"></p>
 <h3 id="匹配"><a href="#匹配" class="headerlink" title="匹配"></a>匹配</h3><p>在图论中，一个「匹配」（matching）是原图边的一个子集，其中任意两条边都没有公共顶点。图中的点要么有一条边相连，要么没有边相连，不可能一个点和多条边相连。</p>
 <h3 id="最大匹配"><a href="#最大匹配" class="headerlink" title="最大匹配"></a>最大匹配</h3><p>一个图中含有匹配数最多的匹配</p>
 <h3 id="暴力算法"><a href="#暴力算法" class="headerlink" title="暴力算法"></a>暴力算法</h3><p>求出所有的匹配方案，从中选取覆盖顶点数最大的匹配方案。</p>
 <h3 id="最大流算法"><a href="#最大流算法" class="headerlink" title="最大流算法"></a>最大流算法</h3><p>在两边各加一个源点和一个汇点，同时为两边的每一个点都添加一条指向源点/汇点的边，如图所示。同时从源点到汇点给每一条边都指定方向。这样问题就转换成最大流问题，通过最大流的相关算法就可以求解。</p>
-<p><img src="http://oeziv5rwi.bkt.clouddn.com/2017/4/8/002.jpg" alt="最大流求解二分匹配问题"></p>
+<p><img src="http://data1.liuin.cn/2017/4/8/002.jpg" alt="最大流求解二分匹配问题"></p>
 <hr>
 <h2 id="算法实现"><a href="#算法实现" class="headerlink" title="算法实现"></a>算法实现</h2><p>匈牙利算法提供一种找图中的最大匹配的算法</p>
-<h3 id="增广路径"><a href="#增广路径" class="headerlink" title="增广路径"></a>增广路径</h3><p>从未匹配点出发，交替通过未匹配边和已匹配边，最后到达另一个未匹配点的路径。<br><img src="http://oeziv5rwi.bkt.clouddn.com/2017/4/8/003.jpg" alt="增广路径"><br>性质</p>
+<h3 id="增广路径"><a href="#增广路径" class="headerlink" title="增广路径"></a>增广路径</h3><p>从未匹配点出发，交替通过未匹配边和已匹配边，最后到达另一个未匹配点的路径。<br><img src="http://data1.liuin.cn/2017/4/8/003.jpg" alt="增广路径"><br>性质</p>
 <ol>
 <li>增广路的长度一定是奇数，并且第一条边和最后一条边一定不是匹配边。</li>
 <li>增广路径中未匹配边的数量始终比已匹配边的数量多一位。<br>这样通过反转（已匹配边变成未匹配边，未匹配边变成已匹配边）就可以增加一天匹配边。反转不改变匹配的性质。<br>可以证明，找到最大的匹配当且仅当找不到新的增广路：<br>最大匹配是一定不存在增广路，性质2容易证明<br>找不到增广路一定是最大匹配，证明比较麻烦，忽略<br>每找到一条增广路就可以增加一条匹配边。匈牙利算法实际上就是不断从未匹配点开始找增广路的算法。一个点找到匹配的边以后，以后寻找增广路的过程中这个点始终都会有匹配的边</li>
@@ -560,7 +560,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2019年1月6日 - 14时01分
+	2021年1月9日 - 04时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>

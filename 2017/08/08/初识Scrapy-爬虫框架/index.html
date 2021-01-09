@@ -114,12 +114,12 @@
 <meta property="og:site_name" content="Sixzeroo">
 <meta property="og:description" content="之前写的爬虫差不多都是用requests发出请求然后通过BeautifulSoup进行解析获取数据，最近接触到了一个python的爬虫框架Scrapy。前后者的区别有点组装机和品牌机之间的区别。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://ot40h275y.bkt.clouddn.com/story-writer/2017_7_25_1500991351462.jpg">
-<meta property="og:updated_time" content="2019-01-06T14:12:56.000Z">
+<meta property="og:image" content="http://data1.liuin.cn/story-writer/2017_7_25_1500991351462.jpg">
+<meta property="og:updated_time" content="2021-01-09T04:15:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="初识Scrapy 爬虫框架">
 <meta name="twitter:description" content="之前写的爬虫差不多都是用requests发出请求然后通过BeautifulSoup进行解析获取数据，最近接触到了一个python的爬虫框架Scrapy。前后者的区别有点组装机和品牌机之间的区别。">
-<meta name="twitter:image" content="http://ot40h275y.bkt.clouddn.com/story-writer/2017_7_25_1500991351462.jpg">
+<meta name="twitter:image" content="http://data1.liuin.cn/story-writer/2017_7_25_1500991351462.jpg">
 
 
 
@@ -484,7 +484,7 @@
 <li>使用异步模式，提高速度，不要自己去实现异步框架</li>
 <li>使用已有的轮子，大量减少代码量</li>
 </ul>
-<h2 id="框架架构"><a href="#框架架构" class="headerlink" title="框架架构"></a>框架架构</h2><p><img src="http://ot40h275y.bkt.clouddn.com/story-writer/2017_7_25_1500991351462.jpg" alt="架构图"><br>Scrapy Engine: 这是引擎，负责Spiders、ItemPipeline、Downloader、Scheduler中间的通讯，信号、数据传递等等！</p>
+<h2 id="框架架构"><a href="#框架架构" class="headerlink" title="框架架构"></a>框架架构</h2><p><img src="http://data1.liuin.cn/story-writer/2017_7_25_1500991351462.jpg" alt="架构图"><br>Scrapy Engine: 这是引擎，负责Spiders、ItemPipeline、Downloader、Scheduler中间的通讯，信号、数据传递等等！</p>
 <p>Scheduler(调度器): 它负责接受引擎发送过来的requests请求，并按照一定的方式进行整理排列，入队、并等待Scrapy Engine(引擎)来请求时，交给引擎</p>
 <p>Downloader（下载器）：负责下载Scrapy Engine(引擎)发送的所有Requests请求，并将其获取到的Responses交还给Scrapy Engine(引擎)，由引擎交给Spiders来处理</p>
 <p>Spiders：它负责处理所有Responses,从中分析提取数据，获取Item字段需要的数据，并将需要跟进的URL提交给引擎，再次进入Scheduler(调度器)，业务逻辑的主要部分</p>
@@ -567,7 +567,7 @@
   </li>
   <li class="post-copyright-author">
 	<strong>最后更新: </strong>
-	2019年1月6日 - 14时01分
+	2021年1月9日 - 04时01分
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
